@@ -1627,15 +1627,18 @@ export function CustomerSelectionModal({
                           <input style={{ ...baseInputStyle, color: oioAccounting ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={oioAccounting} placeholder={t('accountingPlaceholder')} onChange={e => setOioAccounting(e.target.value)} />
                         </InputBox>
                       </div>
-                      <div style={{ flex: 1 }}>
-                        <FieldLabel>{t('customerReference')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: oioCustomerReference ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={oioCustomerReference} placeholder={t('customerReferencePlaceholder')} onChange={e => setOioCustomerReference(e.target.value)} />
-                        </InputBox>
-                      </div>
+                      {erpScenario !== 'Aspect4 DK' && (
+                        <div style={{ flex: 1 }}>
+                          <FieldLabel>{t('customerReference')}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input style={{ ...baseInputStyle, color: oioCustomerReference ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={oioCustomerReference} placeholder={t('customerReferencePlaceholder')} onChange={e => setOioCustomerReference(e.target.value)} />
+                          </InputBox>
+                        </div>
+                      )}
                     </div>
 
                     {/* Requisition + Contact person reference */}
+                    {erpScenario !== 'Aspect4 DK' && (
                     <div style={{ display: 'flex', gap: 22 }}>
                       <div style={{ flex: 1 }}>
                         <FieldLabel>{t('requisitionRequired')}</FieldLabel>
@@ -1650,8 +1653,10 @@ export function CustomerSelectionModal({
                         </InputBox>
                       </div>
                     </div>
+                    )}
 
                     {/* Contact person select + plus button */}
+                    {erpScenario !== 'Aspect4 DK' && (
                     <div style={{ display: 'flex', gap: 22 }}>
                       <div style={{ flex: 1 }}>
                         <FieldLabel>{t('contactPerson')}</FieldLabel>
@@ -1687,6 +1692,7 @@ export function CustomerSelectionModal({
                         </InputBox>
                       </div>
                     </div>
+                    )}
                   </>
                 )}
               </div>
