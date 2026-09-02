@@ -274,6 +274,12 @@ const no: Translations = {
   cardScanned: 'Kundekort skannet',
   cardScannedDetails: 'Feltene er forhåndsutfylt basert på kortskanning',
   scannedFieldLabel: 'skannet',
+
+  // ── Hovedordre modal ───────────────────────────────────────────────────────
+  hovedordre: 'Hovedordre',
+  searchMainOrder: 'Søk i hovedordre',
+  searchMainOrderPlaceholder: 'Søk etter ordrenummer, rekv. eller adresse',
+  fetchMainOrder: 'Hent valgte hovedordre',
 };
 
 export default no;

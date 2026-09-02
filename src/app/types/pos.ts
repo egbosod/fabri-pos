@@ -110,7 +110,8 @@ export type ModalName =
   | 'payment'
   | 'config'
   | 'faktura'
-  | 'switch-user';
+  | 'switch-user'
+  | 'hovedordre';
 
 export interface PaymentTotals {
   subtotal: number;

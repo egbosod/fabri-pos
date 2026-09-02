@@ -271,4 +271,10 @@ export interface Translations {
   cardScanned: string;
   cardScannedDetails: string;
   scannedFieldLabel: string;
+
+  // ── Hovedordre modal ───────────────────────────────────────────────────────
+  hovedordre: string;
+  searchMainOrder: string;
+  searchMainOrderPlaceholder: string;
+  fetchMainOrder: string;
 }

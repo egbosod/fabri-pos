@@ -10,6 +10,7 @@ import { InventorySearchModal } from './InventorySearchModal';
 import { ItemConfigurationModal } from './ItemConfigurationModal';
 import { PaymentFlowModal } from './PaymentFlowModal';
 import { FakturaModal } from './FakturaModal';
+import { HovedordreModal } from './HovedordreModal';
 import { SettingsModal } from './SettingsModal';
 import { EnvDebugBanner } from './EnvDebugBanner';
 import ProfileBadge from './ProfileBadge';
@@ -362,6 +363,14 @@ function RootLayoutInner() {
       {isModalOpen('faktura') && (
         <FakturaModal onClose={closeModal} customerName={selectedCustomer?.name} />
       )}
+
+      <HovedordreModal
+        isOpen={isModalOpen('hovedordre')}
+        onClose={closeModal}
+        onSelect={(order) => {
+          closeModal();
+        }}
+      />
 
       <PaymentFlowModal
         isOpen={isModalOpen('payment')}

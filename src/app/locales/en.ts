@@ -273,6 +273,12 @@ const en: Translations = {
   cardScanned: 'Customer card scanned',
   cardScannedDetails: 'Fields have been pre-filled from the card scan',
   scannedFieldLabel: 'scanned',
+
+  // ── Hovedordre modal ───────────────────────────────────────────────────────
+  hovedordre: 'Main Order',
+  searchMainOrder: 'Search main order',
+  searchMainOrderPlaceholder: 'Search by order number, requisition or address',
+  fetchMainOrder: 'Fetch selected main order',
 };
 
 export default en;

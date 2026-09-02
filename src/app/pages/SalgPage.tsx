@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router';
 import { useModalParams } from '../hooks/useModalParams';
 import svgPaths from '../imports/svg-mrnj5uwtcu';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
 import { usePOS } from '../contexts/POSContext';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClipboardList, faUser } from '@fortawesome/pro-regular-svg-icons';
 import { OrderGroup } from '../components/OrderGroup';
 import { AggregatedHandOpenOrderGroup } from '../components/AggregatedHandOpenOrderGroup';
 import { AggregatedOrderClosedGroup } from '../components/AggregatedOrderClosedGroup';
@@ -35,32 +38,16 @@ function SearchIcon() {
 
 function OrdersIcon() {
   return (
-    <div className="absolute inset-[6.05%_14.84%]" data-name="Group">
-      <div className="absolute inset-[-3.56%_-4.44%]">
-        <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12 15">
-          <g id="Group">
-            <path d="M3.1055 6.18774H8.37894" stroke="var(--stroke-0, black)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.9375" />
-            <path d="M3.1055 8.38501H8.37894" stroke="var(--stroke-0, black)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.9375" />
-            <path d="M3.1055 10.5823H8.37894" stroke="var(--stroke-0, black)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.9375" />
-            <path d={svgPaths.p2994e800} stroke="var(--stroke-0, black)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="0.9375" />
-            <path d={svgPaths.p33760100} stroke="var(--stroke-0, black)" strokeWidth="0.9375" />
-            <path d={svgPaths.p7425e80} stroke="var(--stroke-0, black)" strokeWidth="0.9375" />
-          </g>
-        </svg>
-      </div>
+    <div className="flex items-center justify-center" data-name="Orders Icon">
+      <FontAwesomeIcon icon={faClipboardList} className="text-[15px] text-foreground" />
     </div>
   );
 }
 
 function UserGroupIcon() {
   return (
-    <div className="absolute bottom-0 left-[6.25%] right-[6.25%] top-0" data-name="Group">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11 12">
-        <g id="Group">
-          <path d={svgPaths.p10bfa400} fill="var(--fill-0, black)" id="Vector" />
-          <path d={svgPaths.p34bbb900} fill="var(--fill-0, black)" id="Vector_2" />
-        </g>
-      </svg>
+    <div className="flex items-center justify-center" data-name="User Icon">
+      <FontAwesomeIcon icon={faUser} className="text-[12px] text-foreground" />
     </div>
   );
 }
@@ -462,6 +449,8 @@ function SearchAndActionsBar({
   onRemoveAllItemsFromGroup,
   addedItems,
   onRemoveAddedItem,
+  erpScenario,
+  selectedCustomer,
 }: {
   orderGroups: OrderGroupData[];
   swipeableOrderLineStates: Record<string, SwipeableOrderLineState>;
@@ -470,11 +459,16 @@ function SearchAndActionsBar({
   onRemoveAllItemsFromGroup: (groupId: string) => void;
   addedItems: CartItem[];
   onRemoveAddedItem: (index: number) => void;
+  erpScenario?: string;
+  selectedCustomer?: any;
 }) {
   const { t } = useLanguage();
   const { searchQuery, inventorySearchValue, setInventorySearchValue, handleAddToSale } = usePOS();
   const { openModal } = useModalParams();
   const [searchFocused, setSearchFocused] = React.useState(false);
+
+  const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
+  const showHovedordreButton = isAspect4 && selectedCustomer;
 
   const handleSearchInput = (value: string) => {
     setInventorySearchValue(value);
@@ -551,6 +545,15 @@ function SearchAndActionsBar({
                 </div>
               </div>
             </button>
+            {/* Hovedordre button - Prototype B */}
+            {showHovedordreButton && (
+              <button
+                onClick={() => openModal('hovedordre')}
+                className="bg-card border border-border box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
+              >
+                <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('hovedordre')}</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -566,6 +569,7 @@ export default function SalgPage() {
   const navigate = useNavigate();
   const { openModal } = useModalParams();
   const { t } = useLanguage();
+  const { erpScenario } = useSettings();
   const {
     selectedCustomer,
     selectedProject,
@@ -652,6 +656,8 @@ export default function SalgPage() {
         onRemoveAllItemsFromGroup={handleRemoveAllItemsFromGroup}
         addedItems={addedItems}
         onRemoveAddedItem={handleRemoveAddedItem}
+        erpScenario={erpScenario}
+        selectedCustomer={selectedCustomer}
       />
 
       {/* Sidebar */}
@@ -666,7 +672,7 @@ export default function SalgPage() {
             >
               <div className="flex flex-row items-center justify-center min-w-inherit size-full">
                 <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
-                  <div className="overflow-clip relative shrink-0 size-[12px] text-foreground">
+                  <div className="flex items-center justify-center shrink-0 text-foreground">
                     <UserGroupIcon />
                   </div>
                   <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('selectCustomerButton')}</span>
@@ -675,17 +681,31 @@ export default function SalgPage() {
             </button>
           </div>
         ) : (
-          <CustomerBadge
-            customer={selectedCustomer}
-            project={selectedProject}
-            mode="sales"
-            onEdit={() => openModal('customer')}
-            onRemove={handleRemoveCustomer}
-            onGiftCard={() => {}}
-            onBankTerminal={() => {}}
-            onExchangeSlip={() => openModal('faktura')}
-            onPreviousPurchases={() => navigate('/tidligere-kjop')}
-          />
+          <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
+            <CustomerBadge
+              customer={selectedCustomer}
+              project={selectedProject}
+              mode="sales"
+              onEdit={() => openModal('customer')}
+              onRemove={handleRemoveCustomer}
+              onGiftCard={() => {}}
+              onBankTerminal={() => {}}
+              onExchangeSlip={() => openModal('faktura')}
+              onPreviousPurchases={() => navigate('/tidligere-kjop')}
+            />
+            {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') && (
+              <button
+                onClick={() => openModal('hovedordre')}
+                className="bg-card border border-border h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
+              >
+                <div className="flex flex-row items-center justify-center min-w-inherit size-full">
+                  <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
+                    <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('hovedordre')}</span>
+                  </div>
+                </div>
+              </button>
+            )}
+          </div>
         )}
 
         {localHasItems && (
