@@ -1,4 +1,6 @@
 import svgPaths from "./svg-mrnj5uwtcu";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser } from '@fortawesome/pro-regular-svg-icons';
 
 function Group1() {
   return (
@@ -433,8 +435,8 @@ function Body() {
             <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
             <div className="flex flex-row items-center justify-center min-w-inherit size-full">
               <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
-                <div className="overflow-clip relative shrink-0 size-[12px]" data-name="Icon / User">
-                  <Group7 />
+                <div className="flex items-center justify-center shrink-0" data-name="Icon / User">
+                  <FontAwesomeIcon icon={faUser} className="text-[12px] text-[#090914]" />
                 </div>
                 <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Velg kunde / prosjekt</p>
               </div>

@@ -1,4 +1,6 @@
 import svgPaths from "./svg-0k1vbeqfxk";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faClipboardList } from '@fortawesome/pro-regular-svg-icons';
 
 function Group1() {
   return (
@@ -309,9 +311,8 @@ function Button2() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <div className="overflow-clip relative shrink-0 size-[15px]" data-name="Icon / Orders">
-        <div className="absolute left-0 size-[15px] top-0" data-name="Icon Plate" />
-        <Group5 />
+      <div className="flex items-center justify-center shrink-0" data-name="Icon / Orders">
+        <FontAwesomeIcon icon={faClipboardList} className="text-[15px] text-[#090914]" />
       </div>
       <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Hent ordre</p>
     </div>

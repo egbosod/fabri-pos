@@ -468,7 +468,6 @@ function SearchAndActionsBar({
   const [searchFocused, setSearchFocused] = React.useState(false);
 
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
-  const showHovedordreButton = isAspect4 && selectedCustomer;
 
   const handleSearchInput = (value: string) => {
     setInventorySearchValue(value);
@@ -545,15 +544,6 @@ function SearchAndActionsBar({
                 </div>
               </div>
             </button>
-            {/* Hovedordre button - Prototype B */}
-            {showHovedordreButton && (
-              <button
-                onClick={() => openModal('hovedordre')}
-                className="bg-card border border-border box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
-              >
-                <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('hovedordre')}</span>
-              </button>
-            )}
           </div>
         </div>
       </div>
@@ -700,7 +690,7 @@ export default function SalgPage() {
               >
                 <div className="flex flex-row items-center justify-center min-w-inherit size-full">
                   <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
-                    <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('hovedordre')}</span>
+                    <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('velgHovedordre')}</span>
                   </div>
                 </div>
               </button>

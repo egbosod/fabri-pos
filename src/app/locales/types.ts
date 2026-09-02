@@ -274,6 +274,7 @@ export interface Translations {
 
   // ── Hovedordre modal ───────────────────────────────────────────────────────
   hovedordre: string;
+  velgHovedordre: string;
   searchMainOrder: string;
   searchMainOrderPlaceholder: string;
   fetchMainOrder: string;

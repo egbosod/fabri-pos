@@ -64,7 +64,7 @@ function versionedImportAliases(): Record<string, string> {
 export default defineConfig({
   base: process.env.VITE_BASE ?? '/',
   server: {
-    port: 5174,
+    port: 5173,
   },
   plugins: [
     figmaAssetResolver(),

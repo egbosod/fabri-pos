@@ -276,6 +276,7 @@ const en: Translations = {
 
   // ── Hovedordre modal ───────────────────────────────────────────────────────
   hovedordre: 'Main Order',
+  velgHovedordre: 'Select Main Order',
   searchMainOrder: 'Search main order',
   searchMainOrderPlaceholder: 'Search by order number, requisition or address',
   fetchMainOrder: 'Fetch selected main order',

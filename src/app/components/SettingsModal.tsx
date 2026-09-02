@@ -38,7 +38,34 @@ export function SettingsModal() {
     erp: true,
     shortcuts: true,
     developer: true,
+    wcag: false,
   });
+
+  // WCAG toggles (no persistence yet - visual testing only)
+  const [wcagContrast, setWcagContrast] = useState(false);
+  const [wcagTypography, setWcagTypography] = useState(false);
+  const [wcagAll, setWcagAll] = useState(false);
+
+  const handleWcagContrastToggle = () => {
+    const newState = !wcagContrast;
+    setWcagContrast(newState);
+    document.documentElement.classList.toggle('wcag-contrast', newState);
+  };
+
+  const handleWcagTypographyToggle = () => {
+    const newState = !wcagTypography;
+    setWcagTypography(newState);
+    document.documentElement.classList.toggle('wcag-typography', newState);
+  };
+
+  const handleWcagAllToggle = () => {
+    const newState = !wcagAll;
+    setWcagAll(newState);
+    setWcagContrast(newState);
+    setWcagTypography(newState);
+    document.documentElement.classList.toggle('wcag-contrast', newState);
+    document.documentElement.classList.toggle('wcag-typography', newState);
+  };
 
   const toggleSection = (key: string) => {
     setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }));
@@ -771,6 +798,109 @@ export function SettingsModal() {
                     </p>
                   </div>
                   <Toggle checked={showDebugBanner} onChange={() => setShowDebugBanner(!showDebugBanner)} />
+                </RowCard>
+              </div>
+            )}
+          </div>
+
+          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
+
+          {/* ─ WCAG Accessibility ─ */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            <SectionHeader sectionKey="wcag">
+              WCAG Accessibility / Tilgjenkelighet
+            </SectionHeader>
+            {expandedSections.wcag && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+                <DescText>
+                  Test visual accessibility features. Toggle individual settings or enable all at once.
+                </DescText>
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Farger / Contrast
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      Enable WCAG AA/AAA contrast ratios for all text.
+                    </p>
+                  </div>
+                  <Toggle checked={wcagContrast} onChange={handleWcagContrastToggle} />
+                </RowCard>
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Typografi / Typography
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      Larger font sizes, enhanced line-height and letter-spacing.
+                    </p>
+                  </div>
+                  <Toggle checked={wcagTypography} onChange={handleWcagTypographyToggle} />
+                </RowCard>
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      Enable All
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      Activate all accessibility features at once.
+                    </p>
+                  </div>
+                  <Toggle checked={wcagAll} onChange={handleWcagAllToggle} />
                 </RowCard>
               </div>
             )}

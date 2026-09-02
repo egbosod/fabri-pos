@@ -1,0 +1,61 @@
+/* WCAG Accessibility Mode - Visual Testing Styles */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Contrast Mode: WCAG AA/AAA Color Compliance
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.wcag-contrast {
+  --foreground: #000000;           /* Pure black - 21:1 contrast */
+  --muted-foreground: #404040;     /* Dark gray - 10:1 contrast */
+  --card-foreground: #000000;      /* Black text on cards */
+  --border: #1a1a1a;               /* Very dark border */
+  --secondary: #e0e0e0;            /* Lighter gray for better contrast */
+}
+
+.wcag-contrast :focus-visible {
+  outline: 3px solid #000000 !important;
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Typography Mode: Enhanced Readability
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.wcag-typography {
+  --font-size: 18px;        /* Base size increased */
+  --text-2xl: 28px;         /* Headings larger */
+  --text-xl: 21px;
+  --text-lg: 18px;
+  --text-base: 16px;        /* Was 14px */
+  --text-sm: 14px;          /* Was 12px */
+  --text-xs: 12px;          /* Was 11px */
+}
+
+.wcag-typography html {
+  font-size: 18px;
+}
+
+.wcag-typography body {
+  line-height: 1.8;         /* Was 1.5 - better readability */
+  letter-spacing: 0.03em;   /* Improved spacing */
+}
+
+.wcag-typography h1,
+.wcag-typography h2,
+.wcag-typography h3,
+.wcag-typography h4 {
+  line-height: 1.8;
+  letter-spacing: 0.02em;
+}
+
+.wcag-typography p {
+  letter-spacing: 0.02em;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Combined: Both Contrast and Typography
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.wcag-contrast.wcag-typography {
+  /* Both classes are applied - CSS cascade handles it */
+}
