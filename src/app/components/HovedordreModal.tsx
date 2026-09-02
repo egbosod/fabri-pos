@@ -213,7 +213,7 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
 
         {/* Footer */}
         <div className="relative shrink-0 w-full border-t border-[#e6e6e8]">
-          <div className="flex flex-row items-center justify-between size-full px-[20px] py-[20px]">
+          <div className="flex flex-row items-center justify-start gap-[10px] size-full px-[20px] py-[20px]">
             <button
               onClick={onClose}
               className="bg-white box-border content-stretch flex gap-[8px] h-[48px] items-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 hover:bg-gray-50 transition-colors"
