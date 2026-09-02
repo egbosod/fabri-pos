@@ -232,14 +232,6 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
         <div className="relative shrink-0 w-full border-t border-[#e6e6e8]">
           <div className="flex flex-row items-center justify-start gap-[10px] size-full px-[20px] py-[20px]">
             <button
-              onClick={onClose}
-              className="bg-white box-border content-stretch flex gap-[8px] h-[48px] items-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 hover:bg-gray-50 transition-colors"
-              data-name="Button"
-            >
-              <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-              <p className="font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[15px] text-nowrap whitespace-pre">{t('cancel')}</p>
-            </button>
-            <button
               onClick={handleSelect}
               disabled={!selectedOrderId}
               style={{
@@ -264,6 +256,14 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
               data-name="Button"
             >
               {t('fetchMainOrder')}
+            </button>
+            <button
+              onClick={onClose}
+              className="bg-white box-border content-stretch flex gap-[8px] h-[48px] items-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 hover:bg-gray-50 transition-colors"
+              data-name="Button"
+            >
+              <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
+              <p className="font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[15px] text-nowrap whitespace-pre">{t('cancel')}</p>
             </button>
           </div>
         </div>
