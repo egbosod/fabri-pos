@@ -180,12 +180,29 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
                 return (
                   <div
                     key={order.id}
-                    onClick={() => setSelectedOrderId(order.id)}
-                    className={`bg-white box-border content-stretch flex gap-[5px] items-center justify-between px-[15px] py-[12px] relative rounded-[5px] shrink-0 w-full cursor-pointer transition-colors ${
+                    className={`bg-white box-border content-stretch flex gap-[15px] items-center px-[15px] py-[12px] relative rounded-[5px] shrink-0 w-full transition-colors ${
                       isSelected ? 'bg-blue-50 border border-[#0d97fc]' : 'border border-[#d5d5d7] hover:bg-gray-50'
                     }`}
                     data-name="Orderrow"
                   >
+                    {/* Radio Button */}
+                    <div className="relative shrink-0 size-[20px]">
+                      <input
+                        type="radio"
+                        name="hovedordre-selection"
+                        value={order.id}
+                        checked={isSelected}
+                        onChange={() => setSelectedOrderId(order.id)}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                      <div className="absolute inset-0 bg-white border-2 border-[#d5d5d7] rounded-full pointer-events-none flex items-center justify-center">
+                        {isSelected && (
+                          <div className="w-[10px] h-[10px] bg-[#0d97fc] rounded-full"></div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Order Data */}
                     <div className="font-normal text-[#22222c] text-[14px] text-nowrap w-[100px]">
                       {order.ordrenummer}
                     </div>
