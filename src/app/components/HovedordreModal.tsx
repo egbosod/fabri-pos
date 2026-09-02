@@ -7,10 +7,9 @@ interface HovedordreOrder {
   ordrenummer: string;
   dato: string;
   rekv: string;
+  projekt: string;
   adresse1: string;
   adresse2?: string;
-  adresse3?: string;
-  adresse4?: string;
 }
 
 interface HovedordreModalProps {
@@ -20,16 +19,16 @@ interface HovedordreModalProps {
 }
 
 const mockHovedordrer: HovedordreOrder[] = [
-  { id: '1', ordrenummer: '520591', dato: '12. juni 2023', rekv: 'REK-001', adresse1: 'Hovedveien 1', adresse2: 'Oslo', adresse3: '0150' },
-  { id: '2', ordrenummer: '365842', dato: '11. juni 2023', rekv: 'REK-002', adresse1: 'Storgata 15', adresse2: 'Bergen', adresse3: '5013' },
-  { id: '3', ordrenummer: '520591-2', dato: '10. juni 2023', rekv: 'REK-003', adresse1: 'Kirkegata 8', adresse2: 'Trondheim', adresse3: '7011' },
-  { id: '4', ordrenummer: '258748', dato: '9. juni 2023', rekv: 'REK-004', adresse1: 'Torggata 3', adresse2: 'Stavanger', adresse3: '4006' },
-  { id: '5', ordrenummer: '478923', dato: '8. juni 2023', rekv: 'REK-005', adresse1: 'Nedre gate 22', adresse2: 'Kristiansand', adresse3: '4614' },
-  { id: '6', ordrenummer: '556789', dato: '7. juni 2023', rekv: 'REK-006', adresse1: 'Østgata 5', adresse2: 'Fredrikstad', adresse3: '1607' },
-  { id: '7', ordrenummer: '667234', dato: '6. juni 2023', rekv: 'REK-007', adresse1: 'Vestneset 12', adresse2: 'Tromsø', adresse3: '9008' },
-  { id: '8', ordrenummer: '701234', dato: '5. juni 2023', rekv: 'REK-008', adresse1: 'Sentergata 9', adresse2: 'Lillehammer', adresse3: '2609' },
-  { id: '9', ordrenummer: '812456', dato: '4. juni 2023', rekv: 'REK-009', adresse1: 'Fv. Langseth gt 11', adresse2: 'Hamar', adresse3: '2317' },
-  { id: '10', ordrenummer: '934567', dato: '3. juni 2023', rekv: 'REK-010', adresse1: 'Arkitekt Wies gt 4', adresse2: 'Gjøvik', adresse3: '2815' },
+  { id: '1', ordrenummer: '520591', dato: '12. juni 2023', rekv: 'REK-001', projekt: 'NT6', adresse1: 'Hovedveien 1', adresse2: 'Oslo' },
+  { id: '2', ordrenummer: '365842', dato: '11. juni 2023', rekv: 'REK-002', projekt: 'NT6', adresse1: 'Storgata 15', adresse2: 'Bergen' },
+  { id: '3', ordrenummer: '520591-2', dato: '10. juni 2023', rekv: 'REK-003', projekt: 'Prosjekt Trondheim', adresse1: 'Kirkegata 8', adresse2: 'Trondheim' },
+  { id: '4', ordrenummer: '258748', dato: '9. juni 2023', rekv: 'REK-004', projekt: 'NT7', adresse1: 'Torggata 3', adresse2: 'Stavanger' },
+  { id: '5', ordrenummer: '478923', dato: '8. juni 2023', rekv: 'REK-005', projekt: 'Prosjekt Oslo', adresse1: 'Nedre gate 22', adresse2: 'Kristiansand' },
+  { id: '6', ordrenummer: '556789', dato: '7. juni 2023', rekv: 'REK-006', projekt: 'Hytteutbygging', adresse1: 'Østgata 5', adresse2: 'Fredrikstad' },
+  { id: '7', ordrenummer: '667234', dato: '6. juni 2023', rekv: 'REK-007', projekt: 'NT8', adresse1: 'Vestneset 12', adresse2: 'Tromsø' },
+  { id: '8', ordrenummer: '701234', dato: '5. juni 2023', rekv: 'REK-008', projekt: 'Renovering', adresse1: 'Sentergata 9', adresse2: 'Lillehammer' },
+  { id: '9', ordrenummer: '812456', dato: '4. juni 2023', rekv: 'REK-009', projekt: 'NT9', adresse1: 'Fv. Langseth gt 11', adresse2: 'Hamar' },
+  { id: '10', ordrenummer: '934567', dato: '3. juni 2023', rekv: 'REK-010', projekt: 'Terrasse', adresse1: 'Arkitekt Wies gt 4', adresse2: 'Gjøvik' },
 ];
 
 function IconOrders() {
@@ -82,9 +81,9 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
     return mockHovedordrer.filter(order =>
       order.ordrenummer.toLowerCase().includes(query) ||
       order.rekv.toLowerCase().includes(query) ||
+      order.projekt.toLowerCase().includes(query) ||
       order.adresse1.toLowerCase().includes(query) ||
-      order.adresse2?.toLowerCase().includes(query) ||
-      order.adresse3?.toLowerCase().includes(query)
+      order.adresse2?.toLowerCase().includes(query)
     );
   }, [searchQuery]);
 
@@ -155,16 +154,13 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
               <p className="leading-[normal] text-nowrap whitespace-pre">Rekv.</p>
             </div>
             <div className="absolute flex flex-col justify-center left-[280px] top-[7.5px] translate-y-[-50%]">
+              <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt</p>
+            </div>
+            <div className="absolute flex flex-col justify-center left-[420px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 1</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[450px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[590px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 2</p>
-            </div>
-            <div className="absolute flex flex-col justify-center left-[620px] top-[7.5px] translate-y-[-50%]">
-              <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 3</p>
-            </div>
-            <div className="absolute flex flex-col justify-center left-[790px] top-[7.5px] translate-y-[-50%]">
-              <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 4</p>
             </div>
           </div>
         </div>
@@ -199,17 +195,14 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
                     <div className="font-normal text-[#22222c] text-[14px] text-nowrap w-[60px]">
                       {order.rekv}
                     </div>
+                    <div className="font-normal text-[#22222c] text-[14px] text-nowrap flex-1 min-w-[120px]">
+                      {order.projekt}
+                    </div>
                     <div className="font-normal text-[#22222c] text-[14px] text-nowrap flex-1 min-w-[150px]">
                       {order.adresse1}
                     </div>
                     <div className="font-normal text-[#6b6b72] text-[12px] text-nowrap flex-1 min-w-[150px]">
                       {order.adresse2 || ''}
-                    </div>
-                    <div className="font-normal text-[#6b6b72] text-[12px] text-nowrap flex-1 min-w-[150px]">
-                      {order.adresse3 || ''}
-                    </div>
-                    <div className="font-normal text-[#6b6b72] text-[12px] text-nowrap flex-1 min-w-[150px]">
-                      {order.adresse4 || ''}
                     </div>
                   </div>
                 );
