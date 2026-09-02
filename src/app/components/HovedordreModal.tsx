@@ -156,10 +156,10 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
             <div className="absolute flex flex-col justify-center left-[330px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[470px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[500px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 1</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[640px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[720px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 2</p>
             </div>
           </div>
