@@ -142,24 +142,24 @@ export function HovedordreModal({ isOpen, onClose, onSelect }: HovedordreModalPr
         </div>
 
         {/* Table Header */}
-        <div className="box-border content-stretch flex flex-col gap-[10px] items-start pl-[20px] pr-0 py-0 relative shrink-0 pb-[10px]">
+        <div className="box-border content-stretch flex flex-col gap-[10px] items-start pl-[15px] pr-0 py-0 relative shrink-0 pb-[10px]">
           <div className="font-medium h-[15px] leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap w-full">
-            <div className="absolute flex flex-col justify-center left-[0px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[50px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Ordrenummer</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[120px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[170px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Dato</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[200px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[250px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Rekv.</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[280px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[330px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[420px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[470px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 1</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[590px] top-[7.5px] translate-y-[-50%]">
+            <div className="absolute flex flex-col justify-center left-[640px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Adresse 2</p>
             </div>
           </div>
