@@ -103,6 +103,7 @@ function RootLayoutInner() {
     showUserLogoutNotification,
     paymentTotals,
     resetPOS,
+    setSelectedHovedordre,
   } = usePOS();
 
   const isPriceCheckMode = location.pathname === '/priskontroll';
@@ -368,6 +369,7 @@ function RootLayoutInner() {
         isOpen={isModalOpen('hovedordre')}
         onClose={closeModal}
         onSelect={(order) => {
+          setSelectedHovedordre(order);
           closeModal();
         }}
       />

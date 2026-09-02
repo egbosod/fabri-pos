@@ -571,6 +571,7 @@ export default function SalgPage() {
     handleRemoveAddedItem,
     paymentTotals,
     hasOrderItems,
+    selectedHovedordre,
   } = usePOS();
 
   const [swipeableOrderLineStates, setSwipeableOrderLineStates] = useState<Record<string, SwipeableOrderLineState>>({});
@@ -690,7 +691,9 @@ export default function SalgPage() {
               >
                 <div className="flex flex-row items-center justify-center min-w-inherit size-full">
                   <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
-                    <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('velgHovedordre')}</span>
+                    <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                      {selectedHovedordre ? selectedHovedordre.ordrenummer : t('velgHovedordre')}
+                    </span>
                   </div>
                 </div>
               </button>

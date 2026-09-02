@@ -40,6 +40,8 @@ interface POSContextValue {
   paymentTotals: PaymentTotals;
   hasOrderItems: boolean;
   resetPOS: () => void;
+  selectedHovedordre: { ordrenummer: string } | null;
+  setSelectedHovedordre: (order: { ordrenummer: string } | null) => void;
 }
 
 const POSContext = createContext<POSContextValue | null>(null);
@@ -162,7 +164,11 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
   const handleRemoveCustomer = useCallback(() => {
     setSelectedCustomer(null);
     setSelectedProject(null);
+    setSelectedHovedordre(null);
   }, []);
+
+  /* ── Hovedordre (Main order) ────────────────────────────────────────────── */
+  const [selectedHovedordre, setSelectedHovedordre] = useState<{ ordrenummer: string } | null>(null);
 
   /* ── Search ─────────────────────────────────────────────────────────────── */
   const [searchQuery, setSearchQuery] = useState('');
@@ -245,6 +251,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setOrderGroups([]);
     setSelectedCustomer(null);
     setSelectedProject(null);
+    setSelectedHovedordre(null);
     setSearchQuery('');
     setInventorySearchValue('');
     setCurrentUser('Erik Wheeler');
@@ -285,6 +292,8 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     paymentTotals,
     hasOrderItems,
     resetPOS,
+    selectedHovedordre,
+    setSelectedHovedordre,
   };
 
   return <POSContext.Provider value={value}>{children}</POSContext.Provider>;
