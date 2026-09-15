@@ -4,6 +4,9 @@ const STORAGE_KEY = 'fabri-pos-prototype-auth-v2';
 const VALID_EMAIL = 'hawkeye@eg.no';
 const VALID_PASSWORD = 'fabri2840';
 
+// Colleagues who can log in with any password (no real auth, prototype only)
+const ALLOWLISTED_EMAILS = ['ckall@eg.no', 'ofrib@eg.no', 'adfin@eg.no', 'snorro@eg.no'];
+
 // Figma asset: Logo_Fabri_Version_2 (node 4:570)
 const LOGO_URL = 'https://www.figma.com/api/mcp/asset/9ebc3fd5-eaf8-4230-a0cd-ac4068c0d725';
 
@@ -40,14 +43,18 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
 
   const validate = () => {
     let ok = true;
-    if (email.trim().toLowerCase() !== VALID_EMAIL) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const isAllowlisted = ALLOWLISTED_EMAILS.includes(normalizedEmail);
+
+    if (normalizedEmail !== VALID_EMAIL && !isAllowlisted) {
       setEmailError('Unrecognised email');
       ok = false;
     } else {
       setEmailError('');
     }
 
-    if (password !== VALID_PASSWORD) {
+    // Allowlisted colleagues can use any password
+    if (!isAllowlisted && password !== VALID_PASSWORD) {
       setPasswordError('Incorrect password');
       ok = false;
     } else {
