@@ -4,6 +4,16 @@ interface ModalCTAFooterProps {
   cancelText: string;
   confirmText: string;
   confirmDisabled?: boolean;
+  /**
+   * Optional third action, rendered after Cancel using the same secondary
+   * button primitives. Used by the VIP card mode to offer
+   * "Remove VIP card" / "Continue as normal customer".
+   */
+  extraAction?: {
+    label: string;
+    onClick: () => void;
+    disabled?: boolean;
+  };
 }
 
 export function ModalCTAFooter({
@@ -12,6 +22,7 @@ export function ModalCTAFooter({
   cancelText,
   confirmText,
   confirmDisabled = false,
+  extraAction,
 }: ModalCTAFooterProps) {
   return (
     <div
@@ -88,6 +99,40 @@ export function ModalCTAFooter({
       >
         {cancelText}
       </button>
+
+      {/* Optional extra action — secondary styling, pushed to the right */}
+      {extraAction && (
+        <button
+          onClick={extraAction.onClick}
+          disabled={extraAction.disabled}
+          style={{
+            height: 48,
+            minWidth: 100,
+            padding: '6px 20px',
+            marginLeft: 'auto',
+            background: 'var(--card)',
+            border: '1px solid var(--border)',
+            borderRadius: 'var(--radius)',
+            cursor: extraAction.disabled ? 'not-allowed' : 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            transition: 'background 0.12s',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 'var(--font-weight-semibold)' as React.CSSProperties['fontWeight'],
+            fontSize: 'var(--text-sm)',
+            lineHeight: 1.75,
+            color: 'var(--foreground)',
+            opacity: extraAction.disabled ? 0.6 : 1,
+            whiteSpace: 'nowrap',
+          }}
+          onMouseEnter={e => { if (!extraAction.disabled) e.currentTarget.style.background = 'color-mix(in srgb, var(--border) 20%, var(--card))'; }}
+          onMouseLeave={e => { if (!extraAction.disabled) e.currentTarget.style.background = 'var(--card)'; }}
+        >
+          {extraAction.label}
+        </button>
+      )}
     </div>
   );
 }

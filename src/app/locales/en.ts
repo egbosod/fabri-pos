@@ -280,6 +280,22 @@ const en: Translations = {
   searchMainOrder: 'Search main order',
   searchMainOrderPlaceholder: 'Search by order number, requisition or address',
   fetchMainOrder: 'Fetch selected main order',
+
+  // VIP card (Aspect4 DK / Prototype C)
+  tabVipCard: 'VIP CARD',
+  vipCardRegistered: 'VIP card registered',
+  vipStatusOpen: 'Open',
+  vipStatusBlocked: 'Blocked',
+  vipBlockedInfo: 'This VIP card is blocked. The sale cannot be completed until the card is removed.',
+  removeVipCard: 'Remove VIP card',
+  continueAsNormalCustomer: 'Continue as normal customer',
+  vipCreditTitle: 'CREDIT',
+  vipCreditUsed: 'Used',
+  vipCreditRemaining: 'Remaining',
+  overCreditLimit: 'Over credit limit',
+  vipRecipient: 'Recipient / Attention',
+  vipRecipientPlaceholder: 'Recipient name',
+  vipCannotFinalize: 'The sale cannot be completed while the VIP card is blocked.',
 };
 
 export default en;

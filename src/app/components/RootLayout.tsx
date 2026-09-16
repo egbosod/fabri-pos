@@ -23,7 +23,7 @@ import { POSProvider } from '../contexts/POSContext';
 import { usePOS } from '../contexts/POSContext';
 import { useModalParams } from '../hooks/useModalParams';
 import { navigateToPrototype } from '../utils/environmentNavigation';
-import type { OrderLineState } from '../types/pos';
+import type { OrderLineState, VipCardData, VipCardStatus } from '../types/pos';
 import type { ScannedCardData } from './CustomerSelectionModal';
 import { playBarcodeBeep } from '../utils/scanSound';
 import type { ScannedArticleData } from './InventorySearchModal';
@@ -60,6 +60,31 @@ function generateFakeCardScan(): ScannedCardData {
   };
 }
 
+// ─── Mock pool for fake VIP card scans (Aspect4 DK / Prototype C) ─────────────
+// Names mirror mockCustomers in CustomerSelectionModal so the lookup by
+// customerNumber resolves to a real record.
+const SCAN_VIP_CUSTOMERS = [
+  { customerNumber: '399999', name: 'Fenriz Nattgaard', line1: 'Trandalsvegen 12',  postalCode: '1890', city: 'Rakkestad' },
+  { customerNumber: '400000', name: 'Varg Grimfjell',   line1: 'Svartskogsveien 1', postalCode: '5353', city: 'Straume'   },
+  { customerNumber: '400001', name: 'Elsa Frostheim',   line1: 'Isslottveien 3',    postalCode: '0150', city: 'Oslo'      },
+];
+
+function generateFakeVipScan(): VipCardData {
+  const pool = pickRandom(SCAN_VIP_CUSTOMERS);
+  const status = pickRandom<VipCardStatus>(['open', 'open', 'blocked']);
+  return {
+    cardId:              `VIP-${pool.customerNumber}-${Math.floor(Math.random() * 90000) + 10000}`,
+    customerId:          pool.customerNumber,
+    customerName:        pool.name,
+    status,
+    // Deliberately includes low limits so Flow 2 (over limit) is easy to hit.
+    creditLimit:         pickRandom([2000, 10000, 50000]),
+    projectRequired:     Math.random() > 0.5,
+    requisitionRequired: Math.random() > 0.5,
+    address: { line1: pool.line1, postalCode: pool.postalCode, city: pool.city },
+  };
+}
+
 export function RootLayout() {
   return (
     <LanguageProvider>
@@ -76,7 +101,7 @@ function RootLayoutInner() {
   const navigate = useNavigate();
   const location = useLocation();
   const { activeModal, openModal, closeModal, isModalOpen } = useModalParams();
-  const { switchUserFlow, setSwitchUserFlow, resetSettings, showFlowIndicator, setShowFlowIndicator } = useSettings();
+  const { switchUserFlow, setSwitchUserFlow, resetSettings, showFlowIndicator, setShowFlowIndicator, erpScenario } = useSettings();
 
   const {
     addedItems,
@@ -104,6 +129,10 @@ function RootLayoutInner() {
     paymentTotals,
     resetPOS,
     setSelectedHovedordre,
+    vipCard,
+    setVipCard,
+    setVipAcknowledged,
+    vipBlocked,
   } = usePOS();
 
   const isPriceCheckMode = location.pathname === '/priskontroll';
@@ -236,12 +265,32 @@ function RootLayoutInner() {
           openModal('customer');
         }
       }
+
+      // Ctrl+< → Simulate a VIP card scan (Aspect4 DK, Prototype C only)
+      if (e.ctrlKey && e.key === '<') {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (erpScenario !== 'Aspect4 DK' || switchUserFlow !== 'C') {
+          toast('VIP card scan unavailable', {
+            description: "Set ERP scenario to 'Aspect4 DK' and Prototype to 'C' in Settings first",
+            duration: 3000,
+          });
+          return;
+        }
+
+        playBarcodeBeep();
+        const mockVip = generateFakeVipScan();
+        setVipCard(mockVip);
+        setVipAcknowledged(false);
+        openModal('customer');
+      }
     };
 
     // Use capture phase (true) to intercept the event before browser shortcuts
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, [currentUser, switchUserFlow, setSwitchUserFlow, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator]);
+  }, [currentUser, switchUserFlow, setSwitchUserFlow, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, setVipCard, setVipAcknowledged]);
 
   /* ── Modals rendering (URL-addressable) ───────────���────────────────── */
   const renderModals = () => (
@@ -256,6 +305,10 @@ function RootLayoutInner() {
           isPriceCheckMode={isPriceCheckMode}
           scannedCardData={scannedCardData}
           onCardDataProcessed={() => setScannedCardData(null)}
+          vipCard={vipCard}
+          saleTotal={paymentTotals.total}
+          onVipRemoved={() => setVipCard(null)}
+          onVipAcknowledged={() => setVipAcknowledged(true)}
         />
       )}
 
@@ -386,6 +439,7 @@ function RootLayoutInner() {
         onProfileClick={() => setShowProfileMenu(true)}
         isProfileOpen={showProfileMenu}
         currentUser={currentUser}
+        vipBlocked={vipBlocked}
       />
 
       <SwitchUserModalFlowB

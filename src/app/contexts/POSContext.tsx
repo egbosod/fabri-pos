@@ -6,6 +6,7 @@ import type {
   OrderGroupData,
   OrderLineState,
   PaymentTotals,
+  VipCardData,
 } from '../types/pos';
 
 /* ─── Context value shape ──────────────────────────────────────────────────── */
@@ -42,6 +43,12 @@ interface POSContextValue {
   resetPOS: () => void;
   selectedHovedordre: { ordrenummer: string } | null;
   setSelectedHovedordre: (order: { ordrenummer: string } | null) => void;
+  /* VIP card (Aspect4 DK / Prototype C) */
+  vipCard: VipCardData | null;
+  setVipCard: (card: VipCardData | null) => void;
+  vipAcknowledged: boolean;
+  setVipAcknowledged: (ack: boolean) => void;
+  vipBlocked: boolean;
 }
 
 const POSContext = createContext<POSContextValue | null>(null);
@@ -167,6 +174,14 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setSelectedHovedordre(null);
   }, []);
 
+  /* ── VIP card ───────────────────────────────────────────────────────────── */
+  // Sale-scoped: must outlive the customer modal so PaymentFlowModal can read it.
+  const [vipCard, setVipCard] = useState<VipCardData | null>(null);
+  const [vipAcknowledged, setVipAcknowledged] = useState(false);
+
+  /** A blocked-and-unacknowledged VIP card prevents finalizing the sale (Flow 1). */
+  const vipBlocked = !!vipCard && vipCard.status === 'blocked' && !vipAcknowledged;
+
   /* ── Hovedordre (Main order) ────────────────────────────────────────────── */
   const [selectedHovedordre, setSelectedHovedordre] = useState<{ ordrenummer: string } | null>(null);
 
@@ -259,6 +274,8 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setPendingInventoryItems([]);
     setUserSwitchToast({ visible: false, username: '' });
     setUserLogoutToast({ visible: false, username: '' });
+    setVipCard(null);
+    setVipAcknowledged(false);
   }, []);
 
   /* ── Context value ──────────────────────────────────────────────────────── */
@@ -294,6 +311,11 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     resetPOS,
     selectedHovedordre,
     setSelectedHovedordre,
+    vipCard,
+    setVipCard,
+    vipAcknowledged,
+    setVipAcknowledged,
+    vipBlocked,
   };
 
   return <POSContext.Provider value={value}>{children}</POSContext.Provider>;

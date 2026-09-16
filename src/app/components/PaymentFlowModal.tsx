@@ -28,9 +28,11 @@ interface PaymentFlowModalProps {
   onProfileClick?: () => void;
   isProfileOpen?: boolean;
   currentUser?: string;
+  /** True while a blocked, unacknowledged VIP card is attached to the sale (Flow 1) */
+  vipBlocked?: boolean;
 }
 
-export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComplete, onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, currentUser }: PaymentFlowModalProps) {
+export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComplete, onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, currentUser, vipBlocked = false }: PaymentFlowModalProps) {
   const { t } = useLanguage();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('card');
   const [inputAmount, setInputAmount] = useState('');
@@ -174,6 +176,9 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
   };
 
   const handleConfirmPayment = async () => {
+    // Flow 1: a blocked VIP card must be removed/acknowledged in the customer
+    // modal before the sale can be finalized.
+    if (vipBlocked) return;
     if (remainingAmount > 0) return;
     
     setIsProcessingPayment(true);
@@ -704,12 +709,22 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
             {!isProcessingPayment && (
               <button
                 onClick={handleConfirmPayment}
-                disabled={remainingAmount > 0}
+                disabled={remainingAmount > 0 || vipBlocked}
                 className="bg-primary text-primary-foreground h-[48px] px-[20px] rounded-[var(--radius)] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed mt-[20px] w-full"
                 style={{ fontWeight: 'var(--font-weight-semibold)' }}
               >
                 {t('confirmPayment')}
               </button>
+            )}
+
+            {/* Blocked VIP card — reuses the existing inline info text pattern */}
+            {vipBlocked && !isProcessingPayment && (
+              <p
+                className="mt-[10px] text-center"
+                style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--destructive)', lineHeight: 1.6 }}
+              >
+                {t('vipCannotFinalize')}
+              </p>
             )}
 
             {/* Payment Processing Animation */}

@@ -274,6 +274,22 @@ const sv: Translations = {
   cardScanned: 'Kundkort skannat',
   cardScannedDetails: 'Fälten är förifyllda baserat på kortskanning',
   scannedFieldLabel: 'skannat',
+
+  // VIP card (Aspect4 DK / Prototype C)
+  tabVipCard: 'VIP-KORT',
+  vipCardRegistered: 'VIP-kort registrerat',
+  vipStatusOpen: 'Öppet',
+  vipStatusBlocked: 'Spärrat',
+  vipBlockedInfo: 'VIP-kortet är spärrat. Försäljningen kan inte slutföras förrän kortet tas bort.',
+  removeVipCard: 'Ta bort VIP-kort',
+  continueAsNormalCustomer: 'Fortsätt som vanlig kund',
+  vipCreditTitle: 'KREDIT',
+  vipCreditUsed: 'Använt',
+  vipCreditRemaining: 'Återstående',
+  overCreditLimit: 'Över kreditgräns',
+  vipRecipient: 'Mottagare / Att.',
+  vipRecipientPlaceholder: 'Mottagarens namn',
+  vipCannotFinalize: 'Försäljningen kan inte slutföras medan VIP-kortet är spärrat.',
 };
 
 export default sv;

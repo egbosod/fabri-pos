@@ -278,4 +278,20 @@ export interface Translations {
   searchMainOrder: string;
   searchMainOrderPlaceholder: string;
   fetchMainOrder: string;
+
+  // VIP card (Aspect4 DK / Prototype C)
+  tabVipCard: string;
+  vipCardRegistered: string;
+  vipStatusOpen: string;
+  vipStatusBlocked: string;
+  vipBlockedInfo: string;
+  removeVipCard: string;
+  continueAsNormalCustomer: string;
+  vipCreditTitle: string;
+  vipCreditUsed: string;
+  vipCreditRemaining: string;
+  overCreditLimit: string;
+  vipRecipient: string;
+  vipRecipientPlaceholder: string;
+  vipCannotFinalize: string;
 }

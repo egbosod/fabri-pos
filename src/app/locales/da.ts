@@ -277,6 +277,22 @@ const da: Translations = {
   cardScanned: 'Kundekort skannet',
   cardScannedDetails: 'Felterne er forudfyldt baseret på kortscanning',
   scannedFieldLabel: 'skannet',
+
+  // VIP card (Aspect4 DK / Prototype C)
+  tabVipCard: 'VIP-KORT',
+  vipCardRegistered: 'VIP-kort registreret',
+  vipStatusOpen: 'Åben',
+  vipStatusBlocked: 'Spærret',
+  vipBlockedInfo: 'VIP-kortet er spærret. Salget kan ikke afsluttes, før kortet fjernes.',
+  removeVipCard: 'Fjern VIP-kort',
+  continueAsNormalCustomer: 'Fortsæt som normal kunde',
+  vipCreditTitle: 'KREDIT',
+  vipCreditUsed: 'Brugt',
+  vipCreditRemaining: 'Resterende',
+  overCreditLimit: 'Over kreditgrænse',
+  vipRecipient: 'Modtager / Att.',
+  vipRecipientPlaceholder: 'Modtagerens navn',
+  vipCannotFinalize: 'Salget kan ikke afsluttes, mens VIP-kortet er spærret.',
 };
 
 export default da;

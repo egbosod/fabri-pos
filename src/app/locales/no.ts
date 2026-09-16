@@ -281,6 +281,22 @@ const no: Translations = {
   searchMainOrder: 'Søk i hovedordre',
   searchMainOrderPlaceholder: 'Søk etter ordrenummer, rekv. eller adresse',
   fetchMainOrder: 'Hent valgte hovedordre',
+
+  // VIP card (Aspect4 DK / Prototype C)
+  tabVipCard: 'VIP KORT',
+  vipCardRegistered: 'VIP-kort registrert',
+  vipStatusOpen: 'Åpent',
+  vipStatusBlocked: 'Sperret',
+  vipBlockedInfo: 'VIP-kortet er sperret. Salget kan ikke fullføres før kortet fjernes.',
+  removeVipCard: 'Fjern VIP-kort',
+  continueAsNormalCustomer: 'Fortsett som vanlig kunde',
+  vipCreditTitle: 'KREDITT',
+  vipCreditUsed: 'Brukt',
+  vipCreditRemaining: 'Gjenstående',
+  overCreditLimit: 'Over kredittgrense',
+  vipRecipient: 'Mottaker / Att.',
+  vipRecipientPlaceholder: 'Navn på mottaker',
+  vipCannotFinalize: 'Salget kan ikke fullføres mens VIP-kortet er sperret.',
 };
 
 export default no;

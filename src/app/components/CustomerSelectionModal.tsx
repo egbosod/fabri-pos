@@ -8,6 +8,7 @@ import { CreateNewContactPersonModal, ContactPersonData } from './CreateNewConta
 import { CreateNewProjectModal, NewProjectData } from './CreateNewProjectModal';
 import { ModalCTAFooter } from './ModalCTAFooter';
 import { playBarcodeBeep } from '../utils/scanSound';
+import type { VipCardData } from '../types/pos';
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -72,6 +73,14 @@ interface CustomerSelectionModalProps {
   scannedCardData?: ScannedCardData | null;
   /** Called once the scanned data has been applied to the form */
   onCardDataProcessed?: () => void;
+  /** Active VIP card for this sale — puts the modal into VIP mode (Aspect4 DK / Prototype C) */
+  vipCard?: VipCardData | null;
+  /** Running sale total, used as "Used" in the VIP credit panel (live per line item) */
+  saleTotal?: number;
+  /** Clears the VIP card from the sale (Flow 3) */
+  onVipRemoved?: () => void;
+  /** Marks a blocked VIP card as acknowledged by the cashier (Flow 1) */
+  onVipAcknowledged?: () => void;
 }
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -625,12 +634,16 @@ export function CustomerSelectionModal({
   isPriceCheckMode = false,
   scannedCardData,
   onCardDataProcessed,
+  vipCard = null,
+  saleTotal = 0,
+  onVipRemoved,
+  onVipAcknowledged,
 }: CustomerSelectionModalProps) {
   const { t } = useLanguage();
   const { erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard } = useSettings();
 
-  type TabKey = 'generelt' | 'leveringsadresse' | 'oioInformation';
-  const [activeTab, setActiveTab] = useState<TabKey>('generelt');
+  type TabKey = 'generelt' | 'leveringsadresse' | 'oioInformation' | 'vipKort';
+  const [activeTab, setActiveTab] = useState<TabKey>(vipCard ? 'vipKort' : 'generelt');
 
   // Customer / Project search + selection
   const [customerSearch, setCustomerSearch] = useState('');
@@ -879,6 +892,68 @@ export function CustomerSelectionModal({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scannedCardData]);
 
+  // ─── VIP card auto-populate ─────────────────────────────────────────────────
+  // Fields are pre-filled for both Open and Blocked cards so the cashier sees
+  // what the card carries; the blocked state is communicated by the header
+  // badge + the footer action, not by withholding data.
+
+  useEffect(() => {
+    if (!vipCard) return;
+
+    const customer = mockCustomers.find(c => c.customerNumber === vipCard.customerId);
+    if (customer) {
+      setSelectedCustomer(customer);
+      setCustomerSearch(`${customer.name} (${customer.customerNumber})`);
+    }
+
+    if (vipCard.address) {
+      setDeliveryName(prev => prev || vipCard.customerName);
+      setDeliveryAddress1(prev => prev || vipCard.address!.line1);
+      setDeliveryAddress2(prev => prev || (vipCard.address!.line2 ?? ''));
+      setDeliveryPostalCode(prev => prev || vipCard.address!.postalCode);
+      setDeliveryCity(prev => prev || vipCard.address!.city);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [vipCard]);
+
+  // Keep the active tab valid as VIP mode is switched on/off.
+  useEffect(() => {
+    if (vipCard) setActiveTab('vipKort');
+    else setActiveTab(prev => (prev === 'vipKort' ? 'generelt' : prev));
+  }, [vipCard]);
+
+  /**
+   * Flow 3 — VIP removal, field-scoped.
+   *
+   * Re-fetches only the API-sourced customer fields (identity, address, credit
+   * limit, project/requisition-required flags) from the standard customer
+   * source, and clears the VIP card from the sale. Cashier-entered, sale-scoped
+   * fields (requisition number, delivery address, recipient/attention) are
+   * deliberately left untouched — this is NOT a full customer wipe/reload.
+   */
+  const handleVipRemoveOrDismiss = useCallback(() => {
+    if (!vipCard) return;
+
+    const refreshed = mockCustomers.find(c => c.customerNumber === vipCard.customerId);
+    if (refreshed) {
+      setSelectedCustomer(prev => (prev ? { ...prev, ...refreshed } : refreshed));
+      setCustomerSearch(`${refreshed.name} (${refreshed.customerNumber})`);
+    }
+
+    // Blocked cards must be explicitly acknowledged before the sale can finalize.
+    onVipAcknowledged?.();
+    onVipRemoved?.();
+  }, [vipCard, onVipAcknowledged, onVipRemoved]);
+
+  // ─── VIP credit calculation (live — recomputed on every sale-total change) ──
+  // Covers both Flow 2 Case A (already over limit at scan) and Case B (crosses
+  // the limit mid-sale as line items are added).
+  const vipCreditRemaining = vipCard ? vipCard.creditLimit - saleTotal : 0;
+  const vipOverLimit = !!vipCard && vipCreditRemaining < 0;
+
+  const formatAmount = (n: number) =>
+    n.toLocaleString('no-NO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).replace(/,/g, ' ');
+
   // ─── Side panel data ─────────────────────────────────────────────────────────
 
   const customerCardRows: CardRowData[] = selectedCustomer ? [
@@ -958,10 +1033,15 @@ export function CustomerSelectionModal({
     return sections;
   })() : null;
 
+  // In VIP mode the Generelt / Leveringsadresse tabs are removed from the tab
+  // bar entirely (not disabled) and replaced by a single VIP Kort tab.
+  const isVipMode = !!vipCard;
+
   const tabs: { key: TabKey; label: string; show: boolean }[] = [
-    { key: 'generelt', label: t('tabGeneral'), show: true },
-    { key: 'leveringsadresse', label: t('tabDeliveryAddress'), show: !isPriceCheckMode },
-    { key: 'oioInformation', label: t('tabOioInformation'), show: erpScenario === 'Aspect4 DK' },
+    { key: 'generelt', label: t('tabGeneral'), show: !isVipMode },
+    { key: 'leveringsadresse', label: t('tabDeliveryAddress'), show: !isVipMode && !isPriceCheckMode },
+    { key: 'oioInformation', label: t('tabOioInformation'), show: !isVipMode && erpScenario === 'Aspect4 DK' },
+    { key: 'vipKort', label: t('tabVipCard'), show: isVipMode },
   ];
 
   // ─── Shared input field helper ────────────────────────────────────────────────
@@ -997,6 +1077,32 @@ export function CustomerSelectionModal({
                   {t('selectCustomer')}
                 </span>
               </div>
+
+              {/* ── VIP status line: "{customer} – VIP card registered – {Open|Blocked}" ── */}
+              {vipCard && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                  <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-base)', color: 'var(--card-foreground)', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {vipCard.customerName} – {t('vipCardRegistered')} –
+                  </span>
+                  <span style={{
+                    flexShrink: 0,
+                    padding: '3px 10px',
+                    borderRadius: 'var(--radius)',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 'var(--text-sm)',
+                    lineHeight: 1.4,
+                    whiteSpace: 'nowrap',
+                    color: vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)',
+                    background: vipCard.status === 'open'
+                      ? 'color-mix(in srgb, var(--chart-2) 14%, var(--card))'
+                      : 'color-mix(in srgb, var(--destructive) 14%, var(--card))',
+                    border: `1px solid color-mix(in srgb, ${vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)'} 35%, transparent)`,
+                  }}>
+                    {vipCard.status === 'open' ? t('vipStatusOpen') : t('vipStatusBlocked')}
+                  </span>
+                </div>
+              )}
 
               {/* ── Card-scan badge (shown when modal was opened via Ctrl+-) ── */}
               {showScanBanner && (
@@ -1589,6 +1695,76 @@ export function CustomerSelectionModal({
                   </>
                 )}
 
+                {/* ═══ VIP KORT TAB (Aspect4 DK / Prototype C) ═══ */}
+                {/* Fields are the same cashier-entered, sale-scoped fields as the
+                    Generelt / Leveringsadresse tabs — only relocated here. */}
+                {activeTab === 'vipKort' && vipCard && (
+                  <>
+                    {/* Blocked notice — reuses the existing info-banner pattern */}
+                    {vipCard.status === 'blocked' && (
+                      <div style={{ background: 'color-mix(in srgb, var(--destructive) 15%, var(--card))', borderRadius: 'var(--radius-sm)', padding: 15 }}>
+                        <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.75, margin: 0 }}>
+                          {t('vipBlockedInfo')}
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Rekvisisjonsnummer */}
+                    <div>
+                      <FieldLabel>{vipCard.requisitionRequired ? t('requisitionRequired') : t('requisition')}</FieldLabel>
+                      <InputBox focused={false}>
+                        <input style={{ ...baseInputStyle, color: requisitionNumber ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={requisitionNumber} placeholder={t('requisitionPlaceholder')} onChange={e => setRequisitionNumber(e.target.value)} />
+                      </InputBox>
+                    </div>
+
+                    {/* Leveringsadresse — 3 lines */}
+                    <div>
+                      <FieldLabel>{t('name')}</FieldLabel>
+                      <InputBox focused={false}>
+                        <input style={{ ...baseInputStyle, color: deliveryName ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryName} placeholder={t('namePlaceholder')} onChange={e => setDeliveryName(e.target.value)} />
+                      </InputBox>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 22 }}>
+                      <div style={{ flex: 1 }}>
+                        <FieldLabel>{t('address1')}</FieldLabel>
+                        <InputBox focused={false}>
+                          <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
+                        </InputBox>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <FieldLabel>{t('address2')}</FieldLabel>
+                        <InputBox focused={false}>
+                          <input style={{ ...baseInputStyle, color: deliveryAddress2 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress2} placeholder={t('address2Placeholder')} onChange={e => setDeliveryAddress2(e.target.value)} />
+                        </InputBox>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 22 }}>
+                      <div style={{ width: 160 }}>
+                        <FieldLabel>{t('postalCode')}</FieldLabel>
+                        <InputBox focused={false}>
+                          <input style={{ ...baseInputStyle, color: deliveryPostalCode ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryPostalCode} placeholder={t('postalCodePlaceholder')} onChange={e => setDeliveryPostalCode(e.target.value)} />
+                        </InputBox>
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <FieldLabel>{t('city')}</FieldLabel>
+                        <InputBox focused={false}>
+                          <input style={{ ...baseInputStyle, color: deliveryCity ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryCity} placeholder={t('cityPlaceholder')} onChange={e => setDeliveryCity(e.target.value)} />
+                        </InputBox>
+                      </div>
+                    </div>
+
+                    {/* Mottaker / Att. */}
+                    <div>
+                      <FieldLabel>{t('vipRecipient')}</FieldLabel>
+                      <InputBox focused={false}>
+                        <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
+                      </InputBox>
+                    </div>
+                  </>
+                )}
+
                 {/* ═══ OIO INFORMATION TAB (Aspect4 DK) ═══ */}
                 {activeTab === 'oioInformation' && (
                   <>
@@ -1724,6 +1900,57 @@ export function CustomerSelectionModal({
                   rows={projectCardRows}
                   expandedCard={projectExpandedCard}
                 />
+              )}
+
+              {/* ── VIP credit panel — Limit / Used / Remaining (live) ── */}
+              {vipCard && (
+                <div style={{
+                  background: 'var(--card)',
+                  border: `1px solid ${vipOverLimit ? 'color-mix(in srgb, var(--destructive) 50%, transparent)' : 'var(--border)'}`,
+                  borderRadius: 'var(--radius)',
+                  padding: 15,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 10,
+                }}>
+                  <FieldLabel>{t('vipCreditTitle')}</FieldLabel>
+
+                  {([
+                    [t('creditLimit'), formatAmount(vipCard.creditLimit), false],
+                    [t('vipCreditUsed'), formatAmount(saleTotal), false],
+                    [t('vipCreditRemaining'), formatAmount(vipCreditRemaining), true],
+                  ] as [string, string, boolean][]).map(([label, value, emphasise]) => (
+                    <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
+                      <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', lineHeight: 1.6 }}>
+                        {label}
+                      </span>
+                      <span style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: emphasise ? 700 : 400,
+                        fontSize: 'var(--text-sm)',
+                        lineHeight: 1.6,
+                        whiteSpace: 'nowrap',
+                        color: emphasise && vipOverLimit ? 'var(--destructive)' : 'var(--foreground)',
+                      }}>
+                        {value}
+                      </span>
+                    </div>
+                  ))}
+
+                  {/* Flow 2: over limit is a visible warning, never a hard stop */}
+                  {vipOverLimit && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
+                        <path d="M7 1.5L13 12.5H1L7 1.5Z" stroke="var(--destructive)" strokeWidth="1.3" strokeLinejoin="round" />
+                        <path d="M7 5.5V8.5" stroke="var(--destructive)" strokeWidth="1.3" strokeLinecap="round" />
+                        <circle cx="7" cy="10.4" r="0.75" fill="var(--destructive)" />
+                      </svg>
+                      <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--destructive)', lineHeight: 1.5 }}>
+                        {t('overCreditLimit')}
+                      </span>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
 
@@ -1898,6 +2125,10 @@ export function CustomerSelectionModal({
               cancelText={t('cancel')}
               confirmText={t('confirm')}
               confirmDisabled={!selectedCustomer}
+              extraAction={vipCard ? {
+                label: vipCard.status === 'open' ? t('removeVipCard') : t('continueAsNormalCustomer'),
+                onClick: handleVipRemoveOrDismiss,
+              } : undefined}
             />
           </div>
         </div>

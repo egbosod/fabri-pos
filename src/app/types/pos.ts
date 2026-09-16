@@ -120,3 +120,24 @@ export interface PaymentTotals {
   itemCount: number;
   returnAmount: number;
 }
+/* ─── VIP card (Aspect4 DK / Prototype C) ──────────────────────────────────── */
+
+export type VipCardStatus = 'open' | 'blocked';
+
+/**
+ * Payload returned by the VIP card reader (aspect4-pos-proxy).
+ * Simulated in the prototype via the Ctrl+< shortcut.
+ */
+export interface VipCardData {
+  /** Raw VIP card id / barcode */
+  cardId: string;
+  /** Customer number used to look up the customer record */
+  customerId: string;
+  customerName: string;
+  status: VipCardStatus;
+  /** Numeric — formatted at render time only */
+  creditLimit: number;
+  projectRequired: boolean;
+  requisitionRequired: boolean;
+  address?: { line1: string; line2?: string; postalCode: string; city: string };
+}
