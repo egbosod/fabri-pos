@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router';
 import svgPaths from "../imports/svg-eg5d06zxyw";
 import svgPathsFlowC from "../imports/svg-t2nttlmtd0";
 import { useLanguage, Language } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { usePOS } from '../contexts/POSContext';
 import { LogOut, KeyRound, Lock, Pencil } from 'lucide-react';
-import { navigateToPrototype } from '../utils/environmentNavigation';
 import { setLoginToken } from '../utils/loginToken';
 
 // --- Assets ---
@@ -148,6 +148,7 @@ interface UserOptionProps {
 function UserOption({ name, isExpanded, authMode, setAuthMode, onClick, onUserSwitch }: UserOptionProps) {
   const { t } = useLanguage();
   const { switchUserFlow, showPasswordOption } = useSettings();
+  const navigate = useNavigate();
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -171,7 +172,7 @@ function UserOption({ name, isExpanded, authMode, setAuthMode, onClick, onUserSw
 
   const handlePasswordClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigateToPrototype('loginHome');
+    navigate('/login');
   };
   
   const handleFlowBClick = (e: React.MouseEvent) => {
@@ -307,6 +308,7 @@ interface UserOptionFlowCProps {
 function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onUserSwitch, autoFocusPin = false }: UserOptionFlowCProps) {
   const { t } = useLanguage();
   const { showPasswordOption } = useSettings();
+  const navigate = useNavigate();
   const [authMode, setAuthMode] = useState<'selection' | 'pin'>('selection');
   const [pin, setPin] = useState('');
   const [error, setError] = useState(false);
@@ -345,9 +347,9 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
     if (action === 'pin') {
       setAuthMode('pin');
     } else if (action === 'password') {
-      navigateToPrototype('loginHome');
+      navigate('/login');
     } else if (action === 'logoff') {
-      navigateToPrototype('loginWithPIN');
+      navigate('/login?mode=pin&user=' + encodeURIComponent(name));
     }
   };
 
@@ -378,11 +380,11 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
   const handleCurrentUserAction = (e: React.MouseEvent, action: string) => {
     e.stopPropagation();
     if (action === 'editPin') {
-      navigateToPrototype('loginChangePIN');
+      navigate('/login/pin/change');
     } else if (action === 'editPassword') {
-      navigateToPrototype('loginHome');
+      navigate('/login');
     } else if (action === 'lockUser') {
-      navigateToPrototype('loginWithPIN');
+      navigate('/login?mode=pin&user=' + encodeURIComponent(name));
     }
   };
 
@@ -572,25 +574,16 @@ function LogoutButton() {
   const { t } = useLanguage();
   const { switchUserFlow } = useSettings();
   const { currentUser } = usePOS();
+  const navigate = useNavigate();
   
   const handleLogout = () => {
     if (switchUserFlow === 'C') {
       // Store login token before locking POS
       setLoginToken(currentUser);
       
-      // Navigate to Logon prototype with user context
-      navigateToPrototype('loginLockUser', {
-        userContext: {
-          username: currentUser,
-          metadata: {
-            action: 'lockPOS',
-            timestamp: Date.now(),
-            flow: 'C'
-          }
-        }
-      });
+      navigate('/login?mode=pin&user=' + encodeURIComponent(currentUser) + '&activeToken=true');
     } else {
-      navigateToPrototype('loginHome');
+      navigate('/login');
     }
   };
 

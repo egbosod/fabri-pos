@@ -11,18 +11,14 @@ import { ItemConfigurationModal } from './ItemConfigurationModal';
 import { PaymentFlowModal } from './PaymentFlowModal';
 import { FakturaModal } from './FakturaModal';
 import { HovedordreModal } from './HovedordreModal';
-import { SettingsModal } from './SettingsModal';
 import { EnvDebugBanner } from './EnvDebugBanner';
 import ProfileBadge from './ProfileBadge';
 import ToastParkertSalg from '../imports/ToastParkertSalg';
 import ToastLogoutSuccess from '../imports/ToastLogoutSuccess';
 import { useSettings } from '../contexts/SettingsContext';
-import { LanguageProvider } from '../contexts/LanguageContext';
-import { SettingsProvider } from '../contexts/SettingsContext';
 import { POSProvider } from '../contexts/POSContext';
 import { usePOS } from '../contexts/POSContext';
 import { useModalParams } from '../hooks/useModalParams';
-import { navigateToPrototype } from '../utils/environmentNavigation';
 import type { OrderLineState, VipCardData, VipCardStatus } from '../types/pos';
 import type { ScannedCardData } from './CustomerSelectionModal';
 import { playBarcodeBeep } from '../utils/scanSound';
@@ -87,13 +83,9 @@ function generateFakeVipScan(): VipCardData {
 
 export function RootLayout() {
   return (
-    <LanguageProvider>
-      <SettingsProvider>
-        <POSProvider>
-          <RootLayoutInner />
-        </POSProvider>
-      </SettingsProvider>
-    </LanguageProvider>
+    <POSProvider>
+      <RootLayoutInner />
+    </POSProvider>
   );
 }
 
@@ -193,7 +185,7 @@ function RootLayoutInner() {
       if ((e.metaKey || e.ctrlKey) && e.key === 'l') {
         e.preventDefault();
         showUserLogoutNotification(currentUser);
-        setTimeout(() => navigateToPrototype('loginHome'), 500);
+        setTimeout(() => navigate('/login'), 500);
       }
 
       // H → Reset everything and go to default page
@@ -501,7 +493,6 @@ function RootLayoutInner() {
 
       {/* ── URL-addressable modals ───────────────────────────────────────── */}
       {renderModals()}
-      <SettingsModal />
 
       {/* ── Toasts ───────────────────────────────────────────────────────── */}
       {userSwitchToast.visible && (

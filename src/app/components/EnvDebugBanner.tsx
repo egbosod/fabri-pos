@@ -3,7 +3,7 @@
  * Toggle visibility with the "d" key or the switch in Settings (press "." to open).
  */
 
-import { isFigmaMake, getEnvironment, getPrototypeUrl } from '../utils/environmentNavigation';
+import { isFigmaMake, getEnvironment } from '../utils/environmentNavigation';
 import { useSettings } from '../contexts/SettingsContext';
 
 export function EnvDebugBanner() {
@@ -46,10 +46,6 @@ export function EnvDebugBanner() {
       <div><span className="text-slate-400">this hostname: </span><span className="text-cyan-300">{hostname}</span></div>
       <div><span className="text-slate-400">this href:     </span><span className="text-cyan-200 break-all">{href}</span></div>
       <div><span className="text-slate-400">parent href:   </span><span className="text-purple-300 break-all">{parentHref}</span></div>
-      <div className="flex gap-2 flex-wrap mt-[2px]">
-        <span className="text-slate-400">loginHome →</span>
-        <span className="text-green-300">{getPrototypeUrl('loginHome')}</span>
-      </div>
     </div>
   );
 }

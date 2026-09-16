@@ -23,6 +23,14 @@ export interface SettingsContextType {
   setShowPasswordOption: (show: boolean) => void;
   scanCustomerCard: boolean;
   setScanCustomerCard: (enabled: boolean) => void;
+  twoFactorEnabled: boolean;
+  setTwoFactorEnabled: (enabled: boolean) => void;
+  showLoginButton: boolean;
+  setShowLoginButton: (show: boolean) => void;
+  showTwoFactorButton: boolean;
+  setShowTwoFactorButton: (show: boolean) => void;
+  showForgotPassword: boolean;
+  setShowForgotPassword: (show: boolean) => void;
   resetSettings: () => void;
 }
 
@@ -54,6 +62,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [allowCreateContactPerson, setAllowCreateContactPerson] = useState(false);
   const [showPasswordOption, setShowPasswordOption] = useState(false);
   const [scanCustomerCard, setScanCustomerCard] = useState(true);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
+  const [showLoginButton, setShowLoginButton] = useState(true);
+  const [showTwoFactorButton, setShowTwoFactorButton] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(true);
 
   const openSettingsModal = useCallback(() => setIsSettingsModalOpen(true), []);
   const closeSettingsModal = useCallback(() => setIsSettingsModalOpen(false), []);
@@ -73,6 +85,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setAllowCreateContactPerson(false);
     setShowPasswordOption(false);
     setScanCustomerCard(false);
+    setTwoFactorEnabled(true);
+    setShowLoginButton(true);
+    setShowTwoFactorButton(false);
+    setShowForgotPassword(true);
   }, []);
 
   // Keyboard listener for "." (settings) and "d" (debug banner)
@@ -121,6 +137,14 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setShowPasswordOption,
         scanCustomerCard,
         setScanCustomerCard,
+        twoFactorEnabled,
+        setTwoFactorEnabled,
+        showLoginButton,
+        setShowLoginButton,
+        showTwoFactorButton,
+        setShowTwoFactorButton,
+        showForgotPassword,
+        setShowForgotPassword,
         resetSettings,
       }}
     >

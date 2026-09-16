@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
+import { getLoginToken } from '../utils/loginToken';
 import type {
   Customer,
   Project,
@@ -190,7 +191,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
   const [inventorySearchValue, setInventorySearchValue] = useState('');
 
   /* ── User ────────────────────────────────────────────────────────────────── */
-  const [currentUser, setCurrentUser] = useState('Erik Wheeler');
+  const [currentUser, setCurrentUser] = useState(() => getLoginToken()?.username ?? 'Erik Wheeler');
 
   /* ── Item config staging ────────────────────────────────────────────────── */
   const [currentConfigItem, setCurrentConfigItem] = useState<{

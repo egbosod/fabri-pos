@@ -2,3 +2,6 @@ node_modules/
 dist/
 .DS_Store
 .pnpmfile.cjs
+
+# Standalone Figma Make exports dropped in the repo root (kept outside git)
+🤖 POS Logon/

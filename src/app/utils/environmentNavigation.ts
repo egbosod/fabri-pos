@@ -25,8 +25,6 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { PROTOTYPE_LINKS } from '../config/links';
-
 /**
  * Returns true  → Figma Make editor (unpublished)
  * Returns false → Published figma.site prototype
@@ -92,96 +90,4 @@ export function isFigmaMake(): boolean {
 // Get the current environment type
 export function getEnvironment(): 'make' | 'published' {
   return isFigmaMake() ? 'make' : 'published';
-}
-
-/**
- * Prototype URL configurations – imported from centralized config
- */
-const PROTOTYPE_URLS = PROTOTYPE_LINKS;
-
-export type PrototypeKey = keyof typeof PROTOTYPE_URLS;
-
-/**
- * Options for navigating to a prototype
- */
-export interface NavigationOptions {
-  /** User context to pass to the target prototype */
-  userContext?: {
-    username: string;
-    /** Additional metadata */
-    metadata?: Record<string, any>;
-  };
-  /** Additional query parameters to append */
-  queryParams?: Record<string, string>;
-}
-
-/**
- * Get environment-aware URL for a specific prototype
- */
-export function getPrototypeUrl(prototypeKey: PrototypeKey): string {
-  const env = getEnvironment();
-  return PROTOTYPE_URLS[prototypeKey][env];
-}
-
-/**
- * Navigate to another prototype using environment-aware URL.
- * Always navigates the TOP window so Figma's chrome is replaced, not just the iframe.
- */
-export function navigateToPrototype(prototypeKey: PrototypeKey, options?: NavigationOptions): void {
-  let url = getPrototypeUrl(prototypeKey);
-
-  // Append user context as query parameters if provided
-  if (options?.userContext) {
-    const { username, metadata } = options.userContext;
-    const userContextQuery = `userContext=${encodeURIComponent(JSON.stringify({ username, metadata }))}`;
-    const separator = url.includes('?') ? '&' : '?';
-    url += `${separator}${userContextQuery}`;
-  }
-
-  // Append additional query parameters if provided
-  if (options?.queryParams) {
-    const queryParams = new URLSearchParams(options.queryParams);
-    const separator = url.includes('?') ? '&' : '?';
-    url += `${separator}${queryParams.toString()}`;
-  }
-
-  try {
-    if (window.top) {
-      window.top.location.href = url;
-    } else {
-      window.location.href = url;
-    }
-  } catch {
-    // Cross-origin top window – open in a new tab as fallback
-    window.open(url, '_blank');
-  }
-}
-
-/**
- * Debug helper – call debugEnvironment() in the browser console to inspect.
- */
-export function debugEnvironment(): void {
-  const hostname = window.location.hostname;
-  const href     = window.location.href;
-  let parentHref = '(cross-origin – cannot read)';
-  let canReadParent = false;
-  try {
-    if (window.top) {
-      parentHref = window.top.location.href;
-      canReadParent = true;
-    }
-  } catch { /* cross-origin */ }
-
-  console.log('=== Environment Navigation Debug ===');
-  console.log('this window hostname :', hostname);
-  console.log('this window href     :', href);
-  console.log('parent href          :', parentHref);
-  console.log('can read parent      :', canReadParent);
-  console.log('isFigmaMake()        :', isFigmaMake());
-  console.log('getEnvironment()     :', getEnvironment());
-  console.log('\nResolved prototype URLs:');
-  (Object.keys(PROTOTYPE_URLS) as PrototypeKey[]).forEach(key => {
-    console.log(`  ${key} →`, getPrototypeUrl(key));
-  });
-  console.log('====================================');
 }
