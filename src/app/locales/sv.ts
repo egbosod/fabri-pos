@@ -202,6 +202,7 @@ const sv: Translations = {
   specificCustomerNumberPlaceholder: 'Sök efter specifikt kundnummer',
   getCustomer: 'Hämta kund',
   noCustomersFound: 'Inga kunder hittades',
+  noCustomersFoundTrySpecific: 'Ingen kund hittades. Prova att hitta kunden med ett specifikt kundnummer',
   requisitionPlaceholder: 'Ange rekvisitionsnummer',
   contactPersonPlaceholder: 'Välj kontaktperson',
   contactPersonReferencePlaceholder: 'Ange kontaktpersonreferens',

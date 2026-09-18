@@ -201,6 +201,7 @@ const en: Translations = {
   specificCustomerNumberPlaceholder: 'Search for specific customer number',
   getCustomer: 'Get customer',
   noCustomersFound: 'No customers found',
+  noCustomersFoundTrySpecific: 'No customer found. Try finding the customer with a specific number',
   requisitionPlaceholder: 'Enter requisition number',
   contactPersonPlaceholder: 'Select contact person',
   contactPersonReferencePlaceholder: 'Enter contact person reference',

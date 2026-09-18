@@ -205,6 +205,7 @@ const da: Translations = {
   specificCustomerNumberPlaceholder: 'Søg efter specifikt kundenummer',
   getCustomer: 'Hent kunde',
   noCustomersFound: 'Ingen kunder fundet',
+  noCustomersFoundTrySpecific: 'Ingen kunde fundet. Prøv at finde kunden med et specifikt kundenummer',
   requisitionPlaceholder: 'Indtast rekvisitionsnummer',
   contactPersonPlaceholder: 'Vælg kontaktperson',
   contactPersonReferencePlaceholder: 'Indtast kontaktpersonreference',

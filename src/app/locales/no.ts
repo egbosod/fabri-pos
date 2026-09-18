@@ -202,6 +202,7 @@ const no: Translations = {
   specificCustomerNumberPlaceholder: 'Søk etter spesifikt kundenummer',
   getCustomer: 'Hent kunde',
   noCustomersFound: 'Ingen kunder funnet',
+  noCustomersFoundTrySpecific: 'Ingen kunde funnet. Prøv å finne kunden med et spesifikt kundenummer',
   requisitionPlaceholder: 'Angi rekvisisjonsnummer',
   contactPersonPlaceholder: 'Velg kontaktperson',
   contactPersonReferencePlaceholder: 'Angi kontaktpersonreferanse',

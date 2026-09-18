@@ -200,6 +200,7 @@ export interface Translations {
   specificCustomerNumberPlaceholder: string;
   getCustomer: string;
   noCustomersFound: string;
+  noCustomersFoundTrySpecific: string;
   requisitionPlaceholder: string;
   contactPersonPlaceholder: string;
   contactPersonReferencePlaceholder: string;

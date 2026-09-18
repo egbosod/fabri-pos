@@ -295,7 +295,7 @@ interface DropdownCustomer {
   category?: string;
 }
 
-function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef }: {
+function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, awaitingInput, suggestSpecificNumber }: {
   rect: DOMRect | null;
   modalRight: number | null;
   rows: DropdownCustomer[];
@@ -304,11 +304,15 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
   onSelect: (r: DropdownCustomer) => void;
   topSlot?: React.ReactNode;
   panelRef?: React.Ref<HTMLDivElement>;
+  awaitingInput?: boolean;
+  suggestSpecificNumber?: boolean;
 }) {
   const { t } = useLanguage();
-  // With a topSlot the panel must survive an empty result set — an empty list is
-  // exactly when the user needs the specific-number toggle.
-  if (!rect || (rows.length === 0 && !topSlot)) return null;
+  // Nothing renders until the user has typed — not even the topSlot, since the
+  // specific-number toggle only becomes relevant once a real search came back
+  // empty. After that, a topSlot keeps the panel alive through an empty result
+  // set, which is exactly when the user needs that toggle.
+  if (!rect || (rows.length === 0 && (awaitingInput || !topSlot))) return null;
   const dropWidth = (modalRight != null ? modalRight - 20 : rect.right) - rect.left;
 
   return (
@@ -335,7 +339,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
       )}
       {rows.length === 0 ? (
         <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
-          {t('noCustomersFound')}
+          {t(suggestSpecificNumber ? 'noCustomersFoundTrySpecific' : 'noCustomersFound')}
         </div>
       ) : (
       <>
@@ -855,9 +859,13 @@ export function CustomerSelectionModal({
 
   // ─── Filtering ──────────────────────────────────────────────────────────────
 
+  // The customer list only appears once at least one character has been typed —
+  // an empty query is "not searched yet", not "everything".
+  const customerQuery = customerSearch.trim();
+
   const matchesSearch = (list: Customer[]) => list.filter(c =>
-    c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
-    c.customerNumber.includes(customerSearch)
+    c.name.toLowerCase().includes(customerQuery.toLowerCase()) ||
+    c.customerNumber.includes(customerQuery)
   );
 
   const specificMode = isAspect4 && specificNumberOn;
@@ -866,12 +874,14 @@ export function CustomerSelectionModal({
   // explicit "Get customer" press.
   const erpLookupReady =
     specificMode &&
-    customerSearch.trim() !== '' &&
+    customerQuery !== '' &&
     (customerSearchConcept === 'A' || erpFetched);
 
-  const filteredCustomers = specificMode
-    ? (erpLookupReady ? matchesSearch(erpOnlyCustomers) : [])
-    : matchesSearch(mockCustomers);
+  const filteredCustomers = customerQuery === ''
+    ? []
+    : specificMode
+      ? (erpLookupReady ? matchesSearch(erpOnlyCustomers) : [])
+      : matchesSearch(mockCustomers);
 
   const filteredProjects = projectSearch
     ? mockProjects.filter(p =>
@@ -2264,6 +2274,8 @@ export function CustomerSelectionModal({
         onHover={setHoveredCustomer}
         onSelect={handleCustomerSelect}
         panelRef={customerDropdownRef}
+        awaitingInput={customerQuery === ''}
+        suggestSpecificNumber={isAspect4 && !specificNumberOn}
         topSlot={isAspect4 && customerSearchConcept === 'A' ? (
           <SpecificNumberToggle
             checked={specificNumberOn}
