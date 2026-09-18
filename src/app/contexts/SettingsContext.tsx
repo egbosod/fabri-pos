@@ -1,14 +1,16 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef, ReactNode, useEffect } from 'react';
+import {
+  DEFAULT_SETTINGS,
+  readSettingsFromURL,
+  type SwitchUserFlow,
+  type HovedordrePlacement,
+  type CustomerSearchConcept,
+  type ErpScenario,
+} from '../utils/settingsUrl';
 
-export type SwitchUserFlow = 'A' | 'B' | 'C';
-// Where the Hovedordre trigger lives. Independent of SwitchUserFlow.
-//   A = action bar only   B = sidebar, shown disabled up front   C = sidebar, only once a customer exists
-export type HovedordrePlacement = 'A' | 'B' | 'C';
-// How a customer is fetched from an external ERP source in the select-customer modal.
-//   A = toggle inside the search results, fetch happens automatically
-//   B = toggle in the modal header, plus an explicit "Get customer" button
-export type CustomerSearchConcept = 'A' | 'B';
-export type ErpScenario = 'Nexstep' | 'Trygg2000' | 'Aspect4' | 'Aspect4 DK' | 'AX' | 'IFS';
+// Re-exported for existing consumers that import these types from SettingsContext.
+export type { SwitchUserFlow, HovedordrePlacement, CustomerSearchConcept, ErpScenario };
+export { DEFAULT_SETTINGS };
 
 export interface SettingsContextType {
   switchUserFlow: SwitchUserFlow;
@@ -47,63 +49,85 @@ export interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-/**
- * Get initial flow from URL parameters
- * Supports: ?flow=A, ?flow=B, ?flow=C
- */
-function getFlowFromURL(): SwitchUserFlow {
-  const params = new URLSearchParams(window.location.search);
-  const flowParam = params.get('flow')?.toUpperCase();
-  
-  if (flowParam === 'A' || flowParam === 'B' || flowParam === 'C') {
-    return flowParam as SwitchUserFlow;
-  }
-  
-  // Default to Flow C if no valid parameter
-  return 'C';
-}
+// Settings carried in via a shared link (?flow=, ?erp=, ...). Read once at module
+// scope so it isn't re-parsed (and doesn't stomp user changes) on every render.
+const urlSettings = readSettingsFromURL(window.location.search);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [switchUserFlow, setSwitchUserFlow] = useState<SwitchUserFlow>(getFlowFromURL());
-  const [erpScenario, setErpScenario] = useState<ErpScenario>('Nexstep');
-  const [hovedordrePlacement, setHovedordrePlacement] = useState<HovedordrePlacement>('A');
-  const [customerSearchConcept, setCustomerSearchConcept] = useState<CustomerSearchConcept>('A');
-  const [showFlowIndicator, setShowFlowIndicator] = useState(true);
-  const [showDebugBanner, setShowDebugBanner] = useState(false);
+  const [switchUserFlow, setSwitchUserFlow] = useState<SwitchUserFlow>(
+    urlSettings.switchUserFlow ?? DEFAULT_SETTINGS.switchUserFlow,
+  );
+  const [erpScenario, setErpScenario] = useState<ErpScenario>(
+    urlSettings.erpScenario ?? DEFAULT_SETTINGS.erpScenario,
+  );
+  const [hovedordrePlacement, setHovedordrePlacement] = useState<HovedordrePlacement>(
+    urlSettings.hovedordrePlacement ?? DEFAULT_SETTINGS.hovedordrePlacement,
+  );
+  const [customerSearchConcept, setCustomerSearchConcept] = useState<CustomerSearchConcept>(
+    urlSettings.customerSearchConcept ?? DEFAULT_SETTINGS.customerSearchConcept,
+  );
+  const [showFlowIndicator, setShowFlowIndicator] = useState(
+    urlSettings.showFlowIndicator ?? DEFAULT_SETTINGS.showFlowIndicator,
+  );
+  const [showDebugBanner, setShowDebugBanner] = useState(
+    urlSettings.showDebugBanner ?? DEFAULT_SETTINGS.showDebugBanner,
+  );
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-  const [allowCreateProject, setAllowCreateProject] = useState(false);
-  const [allowCreateContactPerson, setAllowCreateContactPerson] = useState(false);
-  const [showPasswordOption, setShowPasswordOption] = useState(false);
-  const [scanCustomerCard, setScanCustomerCard] = useState(true);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(true);
-  const [showLoginButton, setShowLoginButton] = useState(true);
-  const [showTwoFactorButton, setShowTwoFactorButton] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(true);
+  const [allowCreateProject, setAllowCreateProject] = useState(
+    urlSettings.allowCreateProject ?? DEFAULT_SETTINGS.allowCreateProject,
+  );
+  const [allowCreateContactPerson, setAllowCreateContactPerson] = useState(
+    urlSettings.allowCreateContactPerson ?? DEFAULT_SETTINGS.allowCreateContactPerson,
+  );
+  const [showPasswordOption, setShowPasswordOption] = useState(
+    urlSettings.showPasswordOption ?? DEFAULT_SETTINGS.showPasswordOption,
+  );
+  const [scanCustomerCard, setScanCustomerCard] = useState(
+    urlSettings.scanCustomerCard ?? DEFAULT_SETTINGS.scanCustomerCard,
+  );
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(
+    urlSettings.twoFactorEnabled ?? DEFAULT_SETTINGS.twoFactorEnabled,
+  );
+  const [showLoginButton, setShowLoginButton] = useState(
+    urlSettings.showLoginButton ?? DEFAULT_SETTINGS.showLoginButton,
+  );
+  const [showTwoFactorButton, setShowTwoFactorButton] = useState(
+    urlSettings.showTwoFactorButton ?? DEFAULT_SETTINGS.showTwoFactorButton,
+  );
+  const [showForgotPassword, setShowForgotPassword] = useState(
+    urlSettings.showForgotPassword ?? DEFAULT_SETTINGS.showForgotPassword,
+  );
 
   const openSettingsModal = useCallback(() => setIsSettingsModalOpen(true), []);
   const closeSettingsModal = useCallback(() => setIsSettingsModalOpen(false), []);
 
-  // Auto-enable scan for Aspect4 ERP sources
+  // Auto-enable scan for Aspect4 ERP sources — but only on an actual change,
+  // not on mount, so a shared `?scan=` value isn't immediately stomped.
+  const isErpMounted = useRef(false);
   useEffect(() => {
+    if (!isErpMounted.current) {
+      isErpMounted.current = true;
+      return;
+    }
     setScanCustomerCard(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK');
   }, [erpScenario]);
 
   const resetSettings = useCallback(() => {
-    setSwitchUserFlow(getFlowFromURL());
-    setErpScenario('Nexstep');
-    setHovedordrePlacement('A');
-    setCustomerSearchConcept('A');
-    setShowFlowIndicator(true);
-    setShowDebugBanner(false);
+    setSwitchUserFlow(DEFAULT_SETTINGS.switchUserFlow);
+    setErpScenario(DEFAULT_SETTINGS.erpScenario);
+    setHovedordrePlacement(DEFAULT_SETTINGS.hovedordrePlacement);
+    setCustomerSearchConcept(DEFAULT_SETTINGS.customerSearchConcept);
+    setShowFlowIndicator(DEFAULT_SETTINGS.showFlowIndicator);
+    setShowDebugBanner(DEFAULT_SETTINGS.showDebugBanner);
     setIsSettingsModalOpen(false);
-    setAllowCreateProject(false);
-    setAllowCreateContactPerson(false);
-    setShowPasswordOption(false);
-    setScanCustomerCard(false);
-    setTwoFactorEnabled(true);
-    setShowLoginButton(true);
-    setShowTwoFactorButton(false);
-    setShowForgotPassword(true);
+    setAllowCreateProject(DEFAULT_SETTINGS.allowCreateProject);
+    setAllowCreateContactPerson(DEFAULT_SETTINGS.allowCreateContactPerson);
+    setShowPasswordOption(DEFAULT_SETTINGS.showPasswordOption);
+    setScanCustomerCard(DEFAULT_SETTINGS.scanCustomerCard);
+    setTwoFactorEnabled(DEFAULT_SETTINGS.twoFactorEnabled);
+    setShowLoginButton(DEFAULT_SETTINGS.showLoginButton);
+    setShowTwoFactorButton(DEFAULT_SETTINGS.showTwoFactorButton);
+    setShowForgotPassword(DEFAULT_SETTINGS.showForgotPassword);
   }, []);
 
   // Keyboard listener for "." (settings) and "d" (debug banner)
