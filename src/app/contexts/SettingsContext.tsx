@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react';
 
 export type SwitchUserFlow = 'A' | 'B' | 'C';
+// Where the Hovedordre trigger lives. Independent of SwitchUserFlow.
+//   A = action bar only   B = sidebar, shown disabled up front   C = sidebar, only once a customer exists
+export type HovedordrePlacement = 'A' | 'B' | 'C';
+// How a customer is fetched from an external ERP source in the select-customer modal.
+//   A = toggle inside the search results, fetch happens automatically
+//   B = toggle in the modal header, plus an explicit "Get customer" button
+export type CustomerSearchConcept = 'A' | 'B';
 export type ErpScenario = 'Nexstep' | 'Trygg2000' | 'Aspect4' | 'Aspect4 DK' | 'AX' | 'IFS';
 
 export interface SettingsContextType {
@@ -8,6 +15,10 @@ export interface SettingsContextType {
   setSwitchUserFlow: (flow: SwitchUserFlow) => void;
   erpScenario: ErpScenario;
   setErpScenario: (scenario: ErpScenario) => void;
+  hovedordrePlacement: HovedordrePlacement;
+  setHovedordrePlacement: (placement: HovedordrePlacement) => void;
+  customerSearchConcept: CustomerSearchConcept;
+  setCustomerSearchConcept: (concept: CustomerSearchConcept) => void;
   showFlowIndicator: boolean;
   setShowFlowIndicator: (show: boolean) => void;
   showDebugBanner: boolean;
@@ -55,6 +66,8 @@ function getFlowFromURL(): SwitchUserFlow {
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [switchUserFlow, setSwitchUserFlow] = useState<SwitchUserFlow>(getFlowFromURL());
   const [erpScenario, setErpScenario] = useState<ErpScenario>('Nexstep');
+  const [hovedordrePlacement, setHovedordrePlacement] = useState<HovedordrePlacement>('A');
+  const [customerSearchConcept, setCustomerSearchConcept] = useState<CustomerSearchConcept>('A');
   const [showFlowIndicator, setShowFlowIndicator] = useState(true);
   const [showDebugBanner, setShowDebugBanner] = useState(false);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
@@ -78,6 +91,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const resetSettings = useCallback(() => {
     setSwitchUserFlow(getFlowFromURL());
     setErpScenario('Nexstep');
+    setHovedordrePlacement('A');
+    setCustomerSearchConcept('A');
     setShowFlowIndicator(true);
     setShowDebugBanner(false);
     setIsSettingsModalOpen(false);
@@ -122,6 +137,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setSwitchUserFlow,
         erpScenario,
         setErpScenario,
+        hovedordrePlacement,
+        setHovedordrePlacement,
+        customerSearchConcept,
+        setCustomerSearchConcept,
         showFlowIndicator,
         setShowFlowIndicator,
         showDebugBanner,

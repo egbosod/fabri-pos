@@ -7,6 +7,7 @@ import { Plus } from 'lucide-react';
 import { CreateNewContactPersonModal, ContactPersonData } from './CreateNewContactPersonModal';
 import { CreateNewProjectModal, NewProjectData } from './CreateNewProjectModal';
 import { ModalCTAFooter } from './ModalCTAFooter';
+import { Switch } from './ui/switch';
 import { playBarcodeBeep } from '../utils/scanSound';
 import type { VipCardData } from '../types/pos';
 
@@ -108,6 +109,13 @@ const mockCustomers: Customer[] = [
   { id: '20', name: 'Maniac Skadesmann',     customerNumber: '400018', type: 'Privat', discountRate: 0,  category: 'Forbrukersalg', mobile: '+47 910 77 777', email: 'maniac@mayhem.no',         street: 'Skarvetoppen 1',     postalCode: '3560', city: 'Hemsedal' },
 ];
 
+// Customers that exist only in the external ERP, not in the local register.
+// Unreachable by normal search — searching 12345 returns nothing until
+// "Specific customer number" is switched on, which is the point of the concept.
+const erpOnlyCustomers: Customer[] = [
+  { id: 'erp-1', name: 'Snorre Rogne', customerNumber: '12345', type: 'Proff', discountRate: 7, category: 'Byggmestre', mobile: '+47 915 12 345', email: 'snorre@rogne.no', street: 'Byggerivegen 43', postalCode: '2653', city: 'Vestre Gausdal', creditLimit: '25 000', availableCredit: '25 000', totalBalance: '0', invoicedBalance: '0', dueBalance: '0' },
+];
+
 const mockProjects: Project[] = [
   { id: '1', nr: '399999', ekstNr: '1337', navn: 'Byggmester Snorre Rogne', kategori: 'Byggmestre', adresse: 'Byggerivegen 43', postnr: '2653', sted: 'Vestre Gausdal', utlopsdato: '31.12.2023' },
   { id: '2', nr: '310601', ekstNr: '', navn: 'Snorre Rogne forbruker', kategori: 'Forbrukersalg', adresse: 'Veståsvegen 43', postnr: '2821', sted: 'Gjøvik', utlopsdato: '31.12.2023' },
@@ -130,6 +138,50 @@ const MOCK_CONTACTS = [
 ];
 
 // ─── Scan Card Button ─────────────────────────────────────────────────────────
+
+function SpecificNumberToggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  const { t } = useLanguage();
+  return (
+    <label
+      onMouseDown={e => e.preventDefault()}
+      style={{ display: 'flex', alignItems: 'center', gap: 9, height: 48, padding: '0 14px', cursor: 'pointer', flexShrink: 0 }}
+    >
+      <Switch checked={checked} onCheckedChange={onChange} />
+      <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--card-foreground)', whiteSpace: 'nowrap' }}>
+        {t('specificCustomerNumber')}
+      </span>
+    </label>
+  );
+}
+
+function GetCustomerButton({ onClick, disabled }: { onClick: () => void; disabled: boolean }) {
+  const { t } = useLanguage();
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      onMouseDown={e => e.preventDefault()}
+      style={{
+        background: disabled ? 'var(--secondary)' : 'var(--primary)',
+        color: disabled ? 'var(--secondary-foreground)' : 'var(--primary-foreground)',
+        opacity: disabled ? 0.6 : 1,
+        border: 'none',
+        borderRadius: 'var(--radius-button)',
+        height: 48,
+        padding: '6px 20px',
+        fontFamily: "'Montserrat', sans-serif",
+        fontWeight: 600,
+        fontSize: 'var(--text-lg)',
+        lineHeight: 1.75,
+        whiteSpace: 'nowrap',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        flexShrink: 0,
+      }}
+    >
+      {t('getCustomer')}
+    </button>
+  );
+}
 
 function ScanCardButton({ onClick, active = false }: { onClick: () => void; active?: boolean }) {
   return (
@@ -243,25 +295,29 @@ interface DropdownCustomer {
   category?: string;
 }
 
-function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect }: {
+function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef }: {
   rect: DOMRect | null;
   modalRight: number | null;
   rows: DropdownCustomer[];
   hoveredIdx: number | null;
   onHover: (i: number | null) => void;
   onSelect: (r: DropdownCustomer) => void;
+  topSlot?: React.ReactNode;
+  panelRef?: React.Ref<HTMLDivElement>;
 }) {
   const { t } = useLanguage();
-  if (!rect || rows.length === 0) return null;
+  // With a topSlot the panel must survive an empty result set — an empty list is
+  // exactly when the user needs the specific-number toggle.
+  if (!rect || (rows.length === 0 && !topSlot)) return null;
   const dropWidth = (modalRight != null ? modalRight - 20 : rect.right) - rect.left;
 
   return (
-    <div style={{
+    <div ref={panelRef} style={{
       position: 'fixed',
       top: rect.bottom + 2,
       left: rect.left,
       width: dropWidth,
-      maxHeight: HEADER_H + ROW_H * 6.5,
+      maxHeight: HEADER_H + ROW_H * 6.5 + (topSlot ? 48 : 0),
       zIndex: 2147483647,
       background: 'var(--card)',
       border: '1px solid var(--border)',
@@ -272,6 +328,17 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
       overflow: 'hidden',
       fontFamily: "'Montserrat', sans-serif",
     }}>
+      {topSlot && (
+        <div style={{ flexShrink: 0, borderBottom: rows.length === 0 ? 'none' : '1px solid var(--border)' }}>
+          {topSlot}
+        </div>
+      )}
+      {rows.length === 0 ? (
+        <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
+          {t('noCustomersFound')}
+        </div>
+      ) : (
+      <>
       <div style={{ display: 'grid', gridTemplateColumns: CUSTOMER_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
         {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory')].map(h => (
           <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
@@ -302,6 +369,8 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
           </div>
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 }
@@ -640,7 +709,13 @@ export function CustomerSelectionModal({
   onVipAcknowledged,
 }: CustomerSelectionModalProps) {
   const { t } = useLanguage();
-  const { erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard } = useSettings();
+  const { erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard, customerSearchConcept } = useSettings();
+  const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
+  // "Specific customer number" — look the customer up in the external ERP
+  // instead of the local register. erpFetched only matters for concept B,
+  // where the lookup waits for an explicit "Get customer" press.
+  const [specificNumberOn, setSpecificNumberOn] = useState(false);
+  const [erpFetched, setErpFetched] = useState(false);
 
   type TabKey = 'generelt' | 'leveringsadresse' | 'oioInformation' | 'vipKort';
   const [activeTab, setActiveTab] = useState<TabKey>(vipCard ? 'vipKort' : 'generelt');
@@ -662,7 +737,22 @@ export function CustomerSelectionModal({
 
   // Refs for floating dropdowns and auto-focus
   const customerSearchInputRef = useRef<HTMLInputElement>(null);
+  // The dropdown closes 150ms after the input blurs. Interacting with controls
+  // *inside* the dropdown must be able to cancel that, or the panel vanishes
+  // mid-click.
+  const customerBlurTimer = useRef<number | null>(null);
+  const cancelCustomerClose = () => {
+    if (customerBlurTimer.current !== null) {
+      clearTimeout(customerBlurTimer.current);
+      customerBlurTimer.current = null;
+    }
+  };
   const customerAnchorRef = useRef<HTMLDivElement>(null);
+  // The customer dropdown is rendered outside the anchor (fixed position), so
+  // the outside-click handler below needs an explicit reference to it —
+  // otherwise clicking anything inside it, such as the specific-number toggle,
+  // counts as "outside" and closes the panel.
+  const customerDropdownRef = useRef<HTMLDivElement>(null);
   const projectAnchorRef = useRef<HTMLDivElement>(null);
   const contactAnchorRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -765,10 +855,23 @@ export function CustomerSelectionModal({
 
   // ─── Filtering ──────────────────────────────────────────────────────────────
 
-  const filteredCustomers = mockCustomers.filter(c =>
+  const matchesSearch = (list: Customer[]) => list.filter(c =>
     c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
     c.customerNumber.includes(customerSearch)
   );
+
+  const specificMode = isAspect4 && specificNumberOn;
+
+  // Concept A fetches as soon as the toggle is on; concept B waits for an
+  // explicit "Get customer" press.
+  const erpLookupReady =
+    specificMode &&
+    customerSearch.trim() !== '' &&
+    (customerSearchConcept === 'A' || erpFetched);
+
+  const filteredCustomers = specificMode
+    ? (erpLookupReady ? matchesSearch(erpOnlyCustomers) : [])
+    : matchesSearch(mockCustomers);
 
   const filteredProjects = projectSearch
     ? mockProjects.filter(p =>
@@ -830,7 +933,11 @@ export function CustomerSelectionModal({
 
   useEffect(() => {
     function handle(e: MouseEvent) {
-      if (customerAnchorRef.current && !customerAnchorRef.current.contains(e.target as Node)) setCustomerOpen(false);
+      const target = e.target as Node;
+      const insideCustomer =
+        customerAnchorRef.current?.contains(target) ||
+        customerDropdownRef.current?.contains(target);
+      if (customerAnchorRef.current && !insideCustomer) setCustomerOpen(false);
       if (projectAnchorRef.current && !projectAnchorRef.current.contains(e.target as Node)) setProjectOpen(false);
       if (contactAnchorRef.current && !contactAnchorRef.current.contains(e.target as Node)) setContactOpen(false);
     }
@@ -1135,6 +1242,13 @@ export function CustomerSelectionModal({
                   </div>
                 </div>
               )}
+
+              {isAspect4 && customerSearchConcept === 'B' && (
+                <SpecificNumberToggle
+                  checked={specificNumberOn}
+                  onChange={v => { setSpecificNumberOn(v); setErpFetched(false); }}
+                />
+              )}
             </div>
           </div>
 
@@ -1210,16 +1324,17 @@ export function CustomerSelectionModal({
                                   ref={customerSearchInputRef}
                                   style={{ ...baseInputStyle, color: customerSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={customerSearch}
-                                  placeholder={t('customerSearchPlaceholder')}
+                                  placeholder={specificNumberOn ? t('specificCustomerNumberPlaceholder') : t('customerSearchPlaceholder')}
                                   onChange={e => {
                                     setCustomerSearch(e.target.value);
                                     setCustomerOpen(true);
+                                    setErpFetched(false);
                                     if (e.target.value === '') {
                                       setSelectedCustomer(null);
                                     }
                                   }}
-                                  onFocus={() => setCustomerOpen(true)}
-                                  onBlur={() => setTimeout(() => setCustomerOpen(false), 150)}
+                                  onFocus={() => { cancelCustomerClose(); setCustomerOpen(true); }}
+                                  onBlur={() => { customerBlurTimer.current = window.setTimeout(() => setCustomerOpen(false), 150); }}
                                   onKeyDown={e => {
                                     if (e.ctrlKey && e.key === '-') {
                                       e.preventDefault();
@@ -1234,6 +1349,12 @@ export function CustomerSelectionModal({
                               </InputBox>
                             </div>
                             {scanCustomerCard && <ScanCardButton onClick={() => { if (scanHasResult) { setScanHasResult(false); setCardScanInput(''); } else { setScanPanelOpen(v => !v); } }} active={scanPanelOpen} />}
+                            {isAspect4 && customerSearchConcept === 'B' && specificNumberOn && (
+                              <GetCustomerButton
+                                onClick={() => { setErpFetched(true); cancelCustomerClose(); setCustomerOpen(true); customerSearchInputRef.current?.focus(); }}
+                                disabled={customerSearch.trim() === ''}
+                              />
+                            )}
                           </div>
                         </div>
 
@@ -2142,6 +2263,19 @@ export function CustomerSelectionModal({
         hoveredIdx={hoveredCustomer}
         onHover={setHoveredCustomer}
         onSelect={handleCustomerSelect}
+        panelRef={customerDropdownRef}
+        topSlot={isAspect4 && customerSearchConcept === 'A' ? (
+          <SpecificNumberToggle
+            checked={specificNumberOn}
+            onChange={v => {
+              setSpecificNumberOn(v);
+              setErpFetched(false);
+              cancelCustomerClose();
+              setCustomerOpen(true);
+              customerSearchInputRef.current?.focus();
+            }}
+          />
+        ) : undefined}
       />
       <ProjectDropdownTable
         rect={projectRect}

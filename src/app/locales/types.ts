@@ -196,6 +196,10 @@ export interface Translations {
   requisition: string;
   customerReferencePlaceholder: string;
   customerSearchPlaceholder: string;
+  specificCustomerNumber: string;
+  specificCustomerNumberPlaceholder: string;
+  getCustomer: string;
+  noCustomersFound: string;
   requisitionPlaceholder: string;
   contactPersonPlaceholder: string;
   contactPersonReferencePlaceholder: string;

@@ -451,6 +451,7 @@ function SearchAndActionsBar({
   onRemoveAddedItem,
   erpScenario,
   selectedCustomer,
+  hovedordrePlacement,
 }: {
   orderGroups: OrderGroupData[];
   swipeableOrderLineStates: Record<string, SwipeableOrderLineState>;
@@ -461,9 +462,10 @@ function SearchAndActionsBar({
   onRemoveAddedItem: (index: number) => void;
   erpScenario?: string;
   selectedCustomer?: any;
+  hovedordrePlacement?: 'A' | 'B' | 'C';
 }) {
   const { t } = useLanguage();
-  const { searchQuery, inventorySearchValue, setInventorySearchValue, handleAddToSale } = usePOS();
+  const { searchQuery, inventorySearchValue, setInventorySearchValue, handleAddToSale, selectedHovedordre } = usePOS();
   const { openModal } = useModalParams();
   const [searchFocused, setSearchFocused] = React.useState(false);
 
@@ -544,10 +546,60 @@ function SearchAndActionsBar({
                 </div>
               </div>
             </button>
+            {/* Hovedordre trigger, variant A: action bar only. Shown from the
+                start; a main order needs a customer to give it context. */}
+            {isAspect4 && hovedordrePlacement === 'A' && (
+              <button
+                onClick={() => openModal('hovedordre')}
+                disabled={!selectedCustomer}
+                className={`border box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 transition-colors ${
+                  selectedCustomer
+                    ? 'bg-card border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    : 'bg-secondary border-border cursor-not-allowed'
+                }`}
+              >
+                <span
+                  className={selectedCustomer ? 'text-foreground' : 'text-secondary-foreground opacity-60'}
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
+                  {selectedHovedordre ? selectedHovedordre.ordrenummer : t('velgHovedordre')}
+                </span>
+              </button>
+            )}
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+/* Hovedordre trigger as it appears in the sidebar, under the customer card.
+   Used by variants B and C; `disabled` covers B's pre-customer state. */
+function SidebarHovedordreButton({ disabled = false }: { disabled?: boolean }) {
+  const { t } = useLanguage();
+  const { openModal } = useModalParams();
+  const { selectedHovedordre } = usePOS();
+  return (
+    <button
+      onClick={() => openModal('hovedordre')}
+      disabled={disabled}
+      className={`border h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full transition-colors ${
+        disabled
+          ? 'bg-secondary border-border cursor-not-allowed'
+          : 'bg-card border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+      }`}
+    >
+      <div className="flex flex-row items-center justify-center min-w-inherit size-full">
+        <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
+          <span
+            className={disabled ? 'text-secondary-foreground opacity-60' : 'text-foreground'}
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
+            {selectedHovedordre ? selectedHovedordre.ordrenummer : t('velgHovedordre')}
+          </span>
+        </div>
+      </div>
+    </button>
   );
 }
 
@@ -559,7 +611,7 @@ export default function SalgPage() {
   const navigate = useNavigate();
   const { openModal } = useModalParams();
   const { t } = useLanguage();
-  const { erpScenario } = useSettings();
+  const { erpScenario, hovedordrePlacement } = useSettings();
   const {
     selectedCustomer,
     selectedProject,
@@ -571,7 +623,6 @@ export default function SalgPage() {
     handleRemoveAddedItem,
     paymentTotals,
     hasOrderItems,
-    selectedHovedordre,
   } = usePOS();
 
   const [swipeableOrderLineStates, setSwipeableOrderLineStates] = useState<Record<string, SwipeableOrderLineState>>({});
@@ -649,6 +700,7 @@ export default function SalgPage() {
         onRemoveAddedItem={handleRemoveAddedItem}
         erpScenario={erpScenario}
         selectedCustomer={selectedCustomer}
+        hovedordrePlacement={hovedordrePlacement}
       />
 
       {/* Sidebar */}
@@ -670,6 +722,9 @@ export default function SalgPage() {
                 </div>
               </div>
             </button>
+            {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') && hovedordrePlacement === 'B' && (
+              <SidebarHovedordreButton disabled />
+            )}
           </div>
         ) : (
           <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
@@ -684,19 +739,9 @@ export default function SalgPage() {
               onExchangeSlip={() => openModal('faktura')}
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
             />
-            {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') && (
-              <button
-                onClick={() => openModal('hovedordre')}
-                className="bg-card border border-border h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
-              >
-                <div className="flex flex-row items-center justify-center min-w-inherit size-full">
-                  <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
-                    <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                      {selectedHovedordre ? selectedHovedordre.ordrenummer : t('velgHovedordre')}
-                    </span>
-                  </div>
-                </div>
-              </button>
+            {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') &&
+              (hovedordrePlacement === 'B' || hovedordrePlacement === 'C') && (
+              <SidebarHovedordreButton />
             )}
           </div>
         )}

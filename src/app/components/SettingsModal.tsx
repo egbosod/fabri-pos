@@ -9,6 +9,10 @@ export function SettingsModal() {
     setSwitchUserFlow,
     erpScenario,
     setErpScenario,
+    hovedordrePlacement,
+    setHovedordrePlacement,
+    customerSearchConcept,
+    setCustomerSearchConcept,
     isSettingsModalOpen,
     closeSettingsModal,
     showFlowIndicator,
@@ -310,6 +314,17 @@ export function SettingsModal() {
     C: 'Flow C: Simple menu with user list and direct action buttons.',
   };
 
+  const customerSearchDescriptions: Record<string, string> = {
+    A: 'A: Toggle sits in the search results; the ERP lookup runs automatically.',
+    B: 'B: Toggle sits top right in the header, with an explicit "Get customer" button.',
+  };
+
+  const hovedordreDescriptions: Record<string, string> = {
+    A: 'A: Action bar only, disabled until a customer is selected.',
+    B: 'B: Sidebar only, shown disabled until a customer is selected.',
+    C: 'C: Sidebar only, appears once a customer is selected.',
+  };
+
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
 
   return (
@@ -565,6 +580,138 @@ export function SettingsModal() {
                     {erpDescriptions[erpScenario]}
                   </p>
                 </div>
+
+                {isAspect4 && (
+                  <RowCard>
+                    <div>
+                      <p
+                        style={{
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 'var(--font-weight-semibold)',
+                          fontSize: 'var(--text-base)',
+                          color: 'var(--foreground)',
+                          lineHeight: 1.5,
+                          margin: 0,
+                        }}
+                      >
+                        Hovedordre placement: {hovedordrePlacement}
+                      </p>
+                      <p
+                        style={{
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontSize: 'var(--text-sm)',
+                          color: 'var(--muted-foreground)',
+                          margin: '4px 0 0',
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {hovedordreDescriptions[hovedordrePlacement]}
+                      </p>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        background: 'var(--secondary)',
+                        borderRadius: 999,
+                        padding: 4,
+                        width: 200,
+                        flexShrink: 0,
+                        position: 'relative',
+                      }}
+                    >
+                      {(['A', 'B', 'C'] as const).map(placement => (
+                        <button
+                          key={placement}
+                          onClick={() => setHovedordrePlacement(placement)}
+                          style={{
+                            flex: 1,
+                            padding: '4px 12px',
+                            fontSize: 'var(--text-sm)',
+                            fontWeight: 'var(--font-weight-semibold)',
+                            fontFamily: "'Montserrat', sans-serif",
+                            borderRadius: 999,
+                            border: 'none',
+                            cursor: 'pointer',
+                            background: hovedordrePlacement === placement ? 'var(--card)' : 'transparent',
+                            color: hovedordrePlacement === placement ? 'var(--primary)' : 'var(--muted-foreground)',
+                            boxShadow: hovedordrePlacement === placement ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                            transition: 'all 0.15s ease-in-out',
+                            zIndex: 1,
+                          }}
+                        >
+                          {placement}
+                        </button>
+                      ))}
+                    </div>
+                  </RowCard>
+                )}
+
+                {isAspect4 && (
+                  <RowCard>
+                    <div>
+                      <p
+                        style={{
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 'var(--font-weight-semibold)',
+                          fontSize: 'var(--text-base)',
+                          color: 'var(--foreground)',
+                          lineHeight: 1.5,
+                          margin: 0,
+                        }}
+                      >
+                        Specific customer number: {customerSearchConcept}
+                      </p>
+                      <p
+                        style={{
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontSize: 'var(--text-sm)',
+                          color: 'var(--muted-foreground)',
+                          margin: '4px 0 0',
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {customerSearchDescriptions[customerSearchConcept]}
+                      </p>
+                    </div>
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        background: 'var(--secondary)',
+                        borderRadius: 999,
+                        padding: 4,
+                        width: 200,
+                        flexShrink: 0,
+                        position: 'relative',
+                      }}
+                    >
+                      {(['A', 'B'] as const).map(concept => (
+                        <button
+                          key={concept}
+                          onClick={() => setCustomerSearchConcept(concept)}
+                          style={{
+                            flex: 1,
+                            padding: '4px 12px',
+                            fontSize: 'var(--text-sm)',
+                            fontWeight: 'var(--font-weight-semibold)',
+                            fontFamily: "'Montserrat', sans-serif",
+                            borderRadius: 999,
+                            border: 'none',
+                            cursor: 'pointer',
+                            background: customerSearchConcept === concept ? 'var(--card)' : 'transparent',
+                            color: customerSearchConcept === concept ? 'var(--primary)' : 'var(--muted-foreground)',
+                            boxShadow: customerSearchConcept === concept ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                            transition: 'all 0.15s ease-in-out',
+                            zIndex: 1,
+                          }}
+                        >
+                          {concept}
+                        </button>
+                      ))}
+                    </div>
+                  </RowCard>
+                )}
 
                 {/* Scan Customer Card toggle */}
                 <RowCard>
