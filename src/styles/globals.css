@@ -161,6 +161,12 @@
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 3px);
   --radius-xl: calc(var(--radius) + 6px);
+  /* Purpose-named radii. These must be re-exported here, not only declared in
+     :root, or Tailwind never generates rounded-card / rounded-input /
+     rounded-button and every element using them falls back to square. */
+  --radius-card: var(--radius-card);
+  --radius-input: var(--radius-input);
+  --radius-button: var(--radius-button);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
