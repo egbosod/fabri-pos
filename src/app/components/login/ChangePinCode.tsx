@@ -62,7 +62,7 @@ export function ChangePinCode({ onCancel, onConfirm, mode = 'change', initialUse
   const isFormValid = selectedUser && password && newPin.length >= 4 && newPin === confirmPin;
 
   return (
-    <div className="w-full max-w-[361px] bg-card rounded-[10px] overflow-hidden p-0" style={{ boxShadow: 'var(--elevation-sm)' }}>
+    <div className="w-full max-w-[361px] bg-card rounded-card overflow-hidden p-0" style={{ boxShadow: 'var(--elevation-sm)' }}>
       <AnimatePresence mode="wait">
         {!showSuccess ? (
           <motion.div
@@ -101,7 +101,7 @@ export function ChangePinCode({ onCancel, onConfirm, mode = 'change', initialUse
             {/* Title */}
             <div className="h-[40px] w-full">
               <h1 className="text-card-foreground" style={{ 
-                fontSize: 'var(--text-2xl)', 
+                fontSize: 'var(--text-xl)', 
                 fontWeight: 'var(--font-weight-semibold)',
                 lineHeight: '1.2'
               }}>
@@ -331,7 +331,7 @@ export function ChangePinCode({ onCancel, onConfirm, mode = 'change', initialUse
             <div className="h-[14px] w-full" />
 
             {/* Buttons - Responsive Layout */}
-            <div className="flex flex-row gap-[12px] items-stretch w-full h-[48px]">
+            <div className="flex flex-row gap-[20px] items-stretch w-full h-[48px]">
               <button 
                 onClick={handleConfirm}
                 disabled={!isFormValid}
@@ -354,7 +354,7 @@ export function ChangePinCode({ onCancel, onConfirm, mode = 'change', initialUse
                 className="bg-secondary h-[48px] px-[20px] py-[6px] border border-border flex items-center justify-center cursor-pointer hover:bg-muted transition-colors whitespace-nowrap text-secondary-foreground w-1/2"
                 style={{
                   borderRadius: 'var(--radius-button)',
-                  fontSize: 'var(--text-base)',
+                  fontSize: 'var(--text-lg)',
                   fontWeight: 'var(--font-weight-semibold)',
                   lineHeight: '1.75'
                 }}

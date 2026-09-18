@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "motion/react";
 import { useNavigate, useSearchParams } from "react-router";
 import { ChangePinCode } from "@/components/login/ChangePinCode";
 
@@ -19,10 +20,17 @@ export function ChangePinPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#29303b] flex items-center justify-center p-4 transition-colors duration-500">
-      <div className="w-full max-w-md">
+    <div className="w-full min-h-screen bg-[#29303b] flex items-center justify-center p-4 transition-colors duration-500">
+      <motion.div
+        key="changePin"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 20 }}
+        transition={{ duration: 0.2 }}
+        className="w-full flex justify-center"
+      >
         <ChangePinCode onCancel={handleCancel} onConfirm={handleConfirm} mode={mode} initialUser={initialUser} />
-      </div>
+      </motion.div>
     </div>
   );
 }

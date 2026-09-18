@@ -71,9 +71,10 @@
   --chart-5: rgba(146, 74, 235, 1.00);
   /* The default border radius for elements such as buttons, tooltip, and other containers. */
   --radius: 5px;
-  /* Per-component radii used by the ported login screens */
+  /* Per-component radii used by the ported login screens.
+     Containers use a larger radius than the controls inside them. */
   --radius-button: var(--radius);
-  --radius-card: var(--radius);
+  --radius-card: 10px;
   --radius-input: var(--radius);
   /* The background color for sidebars, navigation menus, and other persistent elements. */
   --sidebar: rgba(66, 66, 74, 1.00);

@@ -160,11 +160,11 @@ export function Login({ onLogin, onTwoFactorClick, initialMode = "username", ini
 
   return (
     <>
-    <div className="w-full max-w-[361px] bg-white rounded-[10px] overflow-hidden p-0 shadow-lg relative">
+    <div className="w-full max-w-[361px] bg-card rounded-card overflow-hidden p-0 shadow-[var(--elevation-sm)] relative">
       {/* Scan flash overlay */}
       {scanFlash && (
         <div 
-          className="absolute inset-0 bg-[#0094f9] rounded-[10px] z-10 pointer-events-none animate-pulse"
+          className="absolute inset-0 bg-[#0094f9] rounded-card z-10 pointer-events-none animate-pulse"
           style={{ opacity: 0.15 }}
         />
       )}
@@ -384,7 +384,7 @@ export function Login({ onLogin, onTwoFactorClick, initialMode = "username", ini
             
             <button 
                 onClick={togglePinMode}
-                className={showLoginButton ? "w-full h-[48px] bg-secondary border border-border hover:bg-muted text-secondary-foreground rounded-[5px] font-semibold text-[13px] transition-colors cursor-pointer" : "w-full h-[48px] bg-primary hover:bg-[#0083dd] text-primary-foreground rounded-[5px] font-semibold text-[15px] transition-colors shadow-sm cursor-pointer"}
+                className={showLoginButton ? "w-full h-[48px] bg-secondary border border-border hover:bg-muted text-secondary-foreground rounded-[5px] font-semibold text-[15px] transition-colors cursor-pointer" : "w-full h-[48px] bg-primary hover:bg-[#0083dd] text-primary-foreground rounded-[5px] font-semibold text-[15px] transition-colors shadow-sm cursor-pointer"}
             >
                 {isPinMode ? "Logon using Username" : "Logon using PIN"}
             </button>
@@ -392,7 +392,7 @@ export function Login({ onLogin, onTwoFactorClick, initialMode = "username", ini
             {showTwoFactorButton && (
               <button 
                   onClick={() => onTwoFactorClick(username)}
-                  className="w-full h-[48px] bg-secondary border border-border hover:bg-muted text-secondary-foreground rounded-[5px] font-semibold text-[13px] transition-colors cursor-pointer"
+                  className="w-full h-[48px] bg-secondary border border-border hover:bg-muted text-secondary-foreground rounded-[5px] font-semibold text-[15px] transition-colors cursor-pointer"
               >
                   Two factor method
               </button>

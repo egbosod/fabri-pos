@@ -80,7 +80,7 @@ export function TwoFactorLogin({ onBack, onLoginSuccess }: TwoFactorLoginProps) 
                 </g>
             </svg>
           </div>
-          <h1 className="text-xl md:text-2xl font-bold text-foreground m-0">
+          <h1 className="text-xl font-bold text-foreground m-0">
             Two-factor login
           </h1>
         </div>

@@ -72,7 +72,7 @@ export function ForgotPassword({ onBack, initialUser = "" }: ForgotPasswordProps
                 className="text-card-foreground"
                 style={{
                   fontFamily: "var(--font-family, 'Montserrat', sans-serif)",
-                  fontSize: "var(--text-2xl)",
+                  fontSize: "var(--text-xl)",
                   fontWeight: "var(--font-weight-semibold)",
                   lineHeight: "1.2",
                 }}
