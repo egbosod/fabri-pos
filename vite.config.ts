@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import path from 'path'
+import fs from 'fs'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
@@ -11,6 +12,28 @@ function figmaAssetResolver() {
       if (id.startsWith('figma:asset/')) {
         const filename = id.replace('figma:asset/', '')
         return path.resolve(__dirname, 'src/assets', filename)
+      }
+    },
+  }
+}
+
+/* GitHub Pages has no SPA fallback: a cold load of /fabri-pos/salg asks for a
+   real file at that path and 404s. Pages serves 404.html for unknown paths, so
+   shipping the built app shell under that name hands the route to the router
+   instead. Copied after the bundle is written so it carries the hashed asset
+   URLs. */
+function spaFallback() {
+  let outDir = 'dist'
+  return {
+    name: 'spa-fallback',
+    apply: 'build' as const,
+    configResolved(config) {
+      outDir = path.resolve(config.root, config.build.outDir)
+    },
+    closeBundle() {
+      const index = path.join(outDir, 'index.html')
+      if (fs.existsSync(index)) {
+        fs.copyFileSync(index, path.join(outDir, '404.html'))
       }
     },
   }
@@ -72,6 +95,7 @@ export default defineConfig({
     // Tailwind is not being actively used – do not remove them
     react(),
     tailwindcss(),
+    spaFallback(),
   ],
   resolve: {
     alias: {

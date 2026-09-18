@@ -8,6 +8,10 @@ import { LoginPage } from './pages/login/LoginPage';
 import { TwoFactorPage } from './pages/login/TwoFactorPage';
 import { ChangePinPage } from './pages/login/ChangePinPage';
 
+/* On GitHub Pages the app is served from a subfolder (/fabri-pos/), so the
+   router has to be told about that prefix or every path below is matched
+   against the wrong pathname. BASE_URL is '/' in dev, so this is a no-op
+   locally. */
 export const router = createBrowserRouter([
   {
     path: '/',
@@ -29,4 +33,6 @@ export const router = createBrowserRouter([
       { path: '*', element: <Navigate to="/login" replace /> },
     ],
   },
-]);
+], {
+  basename: import.meta.env.BASE_URL,
+});
