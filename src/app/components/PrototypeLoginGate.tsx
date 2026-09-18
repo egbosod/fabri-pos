@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
+import LogoFabriVersion from '../imports/login/LogoFabriVersion2';
 
 const STORAGE_KEY = 'fabri-pos-prototype-auth-v2';
 const VALID_EMAIL = 'hawkeye@eg.no';
-const VALID_PASSWORD = 'fabri123';
-
-// Figma asset: Logo_Fabri_Version_2 (node 4:570)
-const LOGO_URL = 'https://www.figma.com/api/mcp/asset/9ebc3fd5-eaf8-4230-a0cd-ac4068c0d725';
+// The email is the only real check. Any non-empty password is accepted so a
+// colleague opening a shared link never gets stuck on a forgotten password.
 
 function isAuthenticated(): boolean {
   try {
@@ -49,8 +48,8 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
       setEmailError('');
     }
 
-    if (password !== VALID_PASSWORD) {
-      setPasswordError('Incorrect password');
+    if (password.trim() === '') {
+      setPasswordError('Enter any password');
       ok = false;
     } else {
       setPasswordError('');
@@ -68,24 +67,26 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
   };
 
   const inputBorder = (error: string, focused: boolean) =>
-    error ? '1.5px solid #d4183d' : focused ? '1.5px solid #0094F9' : '1.5px solid #C7C7C8';
+    error
+      ? '1.5px solid var(--destructive)'
+      : focused
+        ? '1.5px solid var(--ring)'
+        : '1.5px solid var(--border)';
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-[#F4F5F7]"
+      className="fixed inset-0 flex items-center justify-center bg-background"
       style={{ fontFamily: "'Montserrat', sans-serif" }}
     >
-      <div className="w-full max-w-[360px] mx-4 bg-white rounded-[10px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
+      <div className="w-full max-w-[360px] mx-4 bg-card rounded-[var(--radius-card)] overflow-hidden shadow-[var(--elevation-sm)]">
 
         {/* Header: logo + title */}
         <div className="flex flex-col items-center gap-[16px] pt-[40px] pb-[20px] px-[20px]">
-          <img
-            src={LOGO_URL}
-            alt="EG Fabri"
-            className="h-[64px] w-[226px] object-contain"
-          />
+          <div className="h-[64px] w-[226px]" role="img" aria-label="EG Fabri">
+            <LogoFabriVersion />
+          </div>
           <p
-            className="text-[17px] font-semibold leading-[1.2] text-[#1A1B1F] whitespace-nowrap"
+            className="text-[length:var(--text-xl)] font-[var(--font-weight-semibold)] leading-[1.2] text-foreground whitespace-nowrap"
           >
             Welcome to EG Fabri POS
           </p>
@@ -101,13 +102,13 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
               <div className="flex flex-col gap-[4px]">
                 <label
                   htmlFor="gate-email"
-                  className="text-[14px] font-bold leading-[1.2] text-[#1A1B1F]"
+                  className="text-[length:var(--text-base)] font-[var(--font-weight-bold)] leading-[1.2] text-foreground"
                 >
                   EG Email
                 </label>
                 <div className="relative">
                   <div
-                    className="absolute inset-0 rounded-[8px] pointer-events-none"
+                    className="absolute inset-0 rounded-[var(--radius-input)] pointer-events-none"
                     style={{ border: inputBorder(emailError, emailFocused) }}
                   />
                   <input
@@ -120,12 +121,12 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
                     onFocus={() => setEmailFocused(true)}
                     onBlur={() => setEmailFocused(false)}
                     placeholder="name@eg.no"
-                    className="w-full h-[46px] px-[14px] bg-transparent rounded-[8px] outline-none text-[13px] text-[#1A1B1F]"
+                    className="w-full h-[46px] px-[14px] bg-transparent rounded-[var(--radius-input)] outline-none text-[length:var(--text-sm)] text-foreground"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   />
                 </div>
                 {emailError && (
-                  <p className="text-[12px] text-[#d4183d]">{emailError}</p>
+                  <p className="text-[length:var(--text-sm)] text-destructive">{emailError}</p>
                 )}
               </div>
 
@@ -133,13 +134,13 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
               <div className="flex flex-col gap-[4px]">
                 <label
                   htmlFor="gate-password"
-                  className="text-[14px] font-bold leading-[1.2] text-[#1A1B1F]"
+                  className="text-[length:var(--text-base)] font-[var(--font-weight-bold)] leading-[1.2] text-foreground"
                 >
                   Prototype password
                 </label>
                 <div className="relative">
                   <div
-                    className="absolute inset-0 rounded-[8px] pointer-events-none"
+                    className="absolute inset-0 rounded-[var(--radius-input)] pointer-events-none"
                     style={{ border: inputBorder(passwordError, passwordFocused) }}
                   />
                   <input
@@ -151,14 +152,14 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
                     onFocus={() => setPasswordFocused(true)}
                     onBlur={() => setPasswordFocused(false)}
                     placeholder="Enter password"
-                    className="w-full h-[46px] pl-[14px] pr-[46px] bg-transparent rounded-[8px] outline-none text-[13px] text-[#1A1B1F]"
+                    className="w-full h-[46px] pl-[14px] pr-[46px] bg-transparent rounded-[var(--radius-input)] outline-none text-[length:var(--text-sm)] text-foreground"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((v) => !v)}
                     className="absolute right-0 top-0 flex items-center justify-center size-[46px]"
-                    style={{ color: '#C7C7C8' }}
+                    style={{ color: 'var(--muted-foreground)' }}
                     tabIndex={-1}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
@@ -166,7 +167,7 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
                   </button>
                 </div>
                 {passwordError && (
-                  <p className="text-[12px] text-[#d4183d]">{passwordError}</p>
+                  <p className="text-[length:var(--text-sm)] text-destructive">{passwordError}</p>
                 )}
               </div>
             </div>
@@ -175,26 +176,26 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
             <div className="flex items-center justify-between mt-[21px]">
               <label className="flex items-center gap-[8px] py-[8px] cursor-pointer select-none">
                 <div
-                  className="flex items-center justify-center w-[18px] h-[18px] rounded-[3px] border shrink-0"
+                  className="flex items-center justify-center w-[18px] h-[18px] rounded-[var(--radius-sm)] border shrink-0"
                   style={{
-                    borderColor: rememberLogin ? '#0094F9' : '#C7C7C8',
-                    background: rememberLogin ? '#0094F9' : 'transparent',
+                    borderColor: rememberLogin ? 'var(--primary)' : 'var(--border)',
+                    background: rememberLogin ? 'var(--primary)' : 'transparent',
                   }}
                   onClick={() => setRememberLogin((v) => !v)}
                 >
                   {rememberLogin && (
                     <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-                      <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M1 4L3.5 6.5L9 1" stroke="var(--primary-foreground)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
                 </div>
-                <span className="text-[12px] font-normal leading-[1.4] text-[#1A1B1F] whitespace-nowrap">
+                <span className="text-[length:var(--text-sm)] font-[var(--font-weight-normal)] leading-[1.4] text-foreground whitespace-nowrap">
                   Remember login
                 </span>
               </label>
               <button
                 type="button"
-                className="text-[12px] font-semibold text-[#0094F9] whitespace-nowrap"
+                className="text-[length:var(--text-sm)] font-[var(--font-weight-semibold)] text-primary whitespace-nowrap"
                 tabIndex={-1}
               >
                 Forgot password
@@ -205,15 +206,15 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
             <div className="flex flex-col gap-[16px] mt-[60px]">
               <button
                 type="submit"
-                className="w-full h-[50px] rounded-[8px] text-white text-[14px] font-semibold leading-[1.2] transition-opacity hover:opacity-90 active:opacity-80"
-                style={{ background: '#0094F9', fontFamily: "'Montserrat', sans-serif" }}
+                className="w-full h-[50px] rounded-[var(--radius-button)] bg-primary text-primary-foreground text-[length:var(--text-base)] font-[var(--font-weight-semibold)] leading-[1.2] transition-opacity hover:opacity-90 active:opacity-80"
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
                 Access prototype
               </button>
             </div>
           </form>
 
-          <p className="text-center mt-6 text-[11px] text-[#C7C7C8]">
+          <p className="text-center mt-6 text-[length:var(--text-xs)] text-muted-foreground">
             Only for EG employees · Not a real login
           </p>
         </div>
