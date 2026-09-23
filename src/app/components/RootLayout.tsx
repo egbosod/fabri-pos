@@ -65,28 +65,81 @@ function generateFakeCardScan(): ScannedCardData {
   };
 }
 
-// ─── Mock pool for fake VIP card scans (Aspect4 DK / Prototype C) ─────────────
-// Names mirror mockCustomers in CustomerSelectionModal so the lookup by
-// customerNumber resolves to a real record.
-const SCAN_VIP_CUSTOMERS = [
-  { customerNumber: '399999', name: 'Fenriz Nattgaard', line1: 'Trandalsvegen 12',  postalCode: '1890', city: 'Rakkestad' },
-  { customerNumber: '400000', name: 'Varg Grimfjell',   line1: 'Svartskogsveien 1', postalCode: '5353', city: 'Straume'   },
-  { customerNumber: '400001', name: 'Elsa Frostheim',   line1: 'Isslottveien 3',    postalCode: '0150', city: 'Oslo'      },
+// ─── Fake VIP card scans (Aspect4 DK / Prototype C) ───────────────────────────
+// Customer numbers mirror mockCustomers in CustomerSelectionModal so the lookup
+// by customerNumber resolves to a real record.
+//
+// The five concepts under review, one per scan. Deliberately a rotation rather
+// than a random draw: random made some concepts hard to reach when testing.
+const VIP_SCAN_CONCEPTS: {
+  /** Short name of the concept, surfaced in the scan toast */
+  concept: string;
+  customerNumber: string;
+  name: string;
+  status: VipCardStatus;
+  address?: { line1: string; postalCode: string; city: string };
+  allFieldsMandatory?: boolean;
+  nameReadOnly?: boolean;
+}[] = [
+  {
+    concept: 'VIP card open',
+    customerNumber: '399999',
+    name: 'Fenriz Nattgaard',
+    status: 'open',
+    address: { line1: 'Trandalsvegen 12', postalCode: '1890', city: 'Rakkestad' },
+  },
+  {
+    concept: 'VIP card blocked',
+    customerNumber: '400000',
+    name: 'Varg Grimfjell',
+    status: 'blocked',
+    address: { line1: 'Svartskogsveien 1', postalCode: '5353', city: 'Straume' },
+  },
+  {
+    concept: 'Address fields omitted',
+    customerNumber: '400002',
+    name: 'Grutle Jernbjørn',
+    status: 'open',
+  },
+  {
+    concept: 'All fields mandatory except Navn',
+    customerNumber: '400001',
+    name: 'Abbath Blodskjegg',
+    status: 'open',
+    address: { line1: 'Isfjellveien 66', postalCode: '5700', city: 'Voss' },
+    allFieldsMandatory: true,
+  },
+  {
+    concept: 'Navn non-editable',
+    customerNumber: '400003',
+    name: 'Ihsahn Svartskov',
+    status: 'open',
+    address: { line1: 'Tronfjellgata 7', postalCode: '2400', city: 'Elverum' },
+    nameReadOnly: true,
+  },
 ];
 
-function generateFakeVipScan(): VipCardData {
-  const pool = pickRandom(SCAN_VIP_CUSTOMERS);
-  const status = pickRandom<VipCardStatus>(['open', 'open', 'blocked']);
+/** Rotation cursor — module-level so it survives re-renders within a session. */
+let vipScanCursor = 0;
+
+function generateFakeVipScan(): { card: VipCardData; concept: string } {
+  const pool = VIP_SCAN_CONCEPTS[vipScanCursor % VIP_SCAN_CONCEPTS.length];
+  vipScanCursor += 1;
   return {
-    cardId:              `VIP-${pool.customerNumber}-${Math.floor(Math.random() * 90000) + 10000}`,
-    customerId:          pool.customerNumber,
-    customerName:        pool.name,
-    status,
-    // Deliberately includes low limits so Flow 2 (over limit) is easy to hit.
-    creditLimit:         pickRandom([2000, 10000, 50000]),
-    projectRequired:     Math.random() > 0.5,
-    requisitionRequired: Math.random() > 0.5,
-    address: { line1: pool.line1, postalCode: pool.postalCode, city: pool.city },
+    concept: pool.concept,
+    card: {
+      cardId:              `VIP-${pool.customerNumber}-${Math.floor(Math.random() * 90000) + 10000}`,
+      customerId:          pool.customerNumber,
+      customerName:        pool.name,
+      status:              pool.status,
+      // Deliberately includes low limits so Flow 2 (over limit) is easy to hit.
+      creditLimit:         pickRandom([2000, 10000, 50000]),
+      projectRequired:     Math.random() > 0.5,
+      requisitionRequired: pool.allFieldsMandatory ? true : Math.random() > 0.5,
+      address:             pool.address,
+      allFieldsMandatory:  pool.allFieldsMandatory,
+      nameReadOnly:        pool.nameReadOnly,
+    },
   };
 }
 
@@ -338,10 +391,15 @@ function RootLayoutInner() {
         playBarcodeBeep();
 
         if (switchUserFlow === 'C') {
-          const mockVip = generateFakeVipScan();
-          setVipCard(mockVip);
+          const { card, concept } = generateFakeVipScan();
+          setVipCard(card);
           setVipAcknowledged(false);
           openModal('customer');
+          toast(`VIP scan: ${concept}`, {
+            description: `${card.customerName} (${card.customerId}) — scan again for the next concept`,
+            duration: 3000,
+            ...PROTOTYPE_TOAST_OPTS,
+          });
         } else {
           const mockPro = generateFakeProScan();
           setProCard(mockPro);

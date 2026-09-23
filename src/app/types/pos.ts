@@ -144,6 +144,10 @@ export interface VipCardData {
   projectRequired: boolean;
   requisitionRequired: boolean;
   address?: { line1: string; line2?: string; postalCode: string; city: string };
+  /** Every VIP field except Navn is marked mandatory (asterisk) */
+  allFieldsMandatory?: boolean;
+  /** Navn comes locked from the card and cannot be edited at the till */
+  nameReadOnly?: boolean;
 }
 
 /* ─── PRO card (XL-BYG/Aspect4 / Prototype B) ──────────────────────────────── */

@@ -1009,12 +1009,14 @@ export function CustomerSelectionModal({
     // customerName is only the fallback when no record resolves.
     setDeliveryName(prev => prev || customer?.name || vipCard.customerName);
 
-    if (vipCard.address) {
-      setDeliveryAddress1(prev => prev || vipCard.address!.line1);
-      setDeliveryAddress2(prev => prev || (vipCard.address!.line2 ?? ''));
-      setDeliveryPostalCode(prev => prev || vipCard.address!.postalCode);
-      setDeliveryCity(prev => prev || vipCard.address!.city);
-    }
+    // The address block is owned by the card, so each new card overwrites it
+    // outright — including clearing it when the card carries no address. Using
+    // `prev || …` here left the previous card's address stranded in the form,
+    // because this modal's state outlives a single scan.
+    setDeliveryAddress1(vipCard.address?.line1 ?? '');
+    setDeliveryAddress2(vipCard.address?.line2 ?? '');
+    setDeliveryPostalCode(vipCard.address?.postalCode ?? '');
+    setDeliveryCity(vipCard.address?.city ?? '');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vipCard]);
 
@@ -1050,6 +1052,14 @@ export function CustomerSelectionModal({
   // ─── VIP credit calculation (live — recomputed on every sale-total change) ──
   // Covers both Flow 2 Case A (already over limit at scan) and Case B (crosses
   // the limit mid-sale as line items are added).
+  /**
+   * Concept "all fields mandatory except Navn": the asterisk is decoration only,
+   * matching how `requisitionRequired` already works — Confirm still only needs
+   * a customer, so the cashier is never blocked by it.
+   */
+  const vipMandatory = (label: string) =>
+    vipCard?.allFieldsMandatory ? `${label} *` : label;
+
   const vipCreditRemaining = vipCard ? vipCard.creditLimit - saleTotal : 0;
   const vipOverLimit = !!vipCard && vipCreditRemaining < 0;
 
@@ -1836,45 +1846,60 @@ export function CustomerSelectionModal({
 
                     {/* Rekvisisjonsnummer */}
                     <div>
-                      <FieldLabel>{vipCard.requisitionRequired ? t('requisitionRequired') : t('requisition')}</FieldLabel>
+                      <FieldLabel>{vipCard.requisitionRequired || vipCard.allFieldsMandatory ? t('requisitionRequired') : t('requisition')}</FieldLabel>
                       <InputBox focused={false}>
                         <input style={{ ...baseInputStyle, color: requisitionNumber ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={requisitionNumber} placeholder={t('requisitionPlaceholder')} onChange={e => setRequisitionNumber(e.target.value)} />
                       </InputBox>
                     </div>
 
-                    {/* Leveringsadresse — 3 lines */}
+                    {/* Leveringsadresse — 3 lines. Navn is the one field never
+                        marked mandatory, and the one that can arrive locked. */}
                     <div>
                       <FieldLabel>{t('name')}</FieldLabel>
-                      <InputBox focused={false}>
-                        <input style={{ ...baseInputStyle, color: deliveryName ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryName} placeholder={t('namePlaceholder')} onChange={e => setDeliveryName(e.target.value)} />
+                      <InputBox focused={false} style={vipCard.nameReadOnly ? { background: 'var(--muted)' } : undefined}>
+                        <input
+                          style={{ ...baseInputStyle, color: vipCard.nameReadOnly ? 'var(--muted-foreground)' : deliveryName ? 'var(--foreground)' : 'var(--muted-foreground)', cursor: vipCard.nameReadOnly ? 'not-allowed' : undefined }}
+                          value={deliveryName}
+                          placeholder={t('namePlaceholder')}
+                          readOnly={vipCard.nameReadOnly}
+                          disabled={vipCard.nameReadOnly}
+                          onChange={e => setDeliveryName(e.target.value)}
+                        />
                       </InputBox>
                     </div>
 
-                    <div>
-                      <FieldLabel>{t('address1')}</FieldLabel>
-                      <InputBox focused={false}>
-                        <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
-                      </InputBox>
-                    </div>
+                    {/* Concept "address fields omitted": a card with no address
+                        hides Adresse / Postnummer / Poststed outright rather than
+                        showing three empty boxes. */}
+                    {vipCard.address && (
+                      <>
+                        <div>
+                          <FieldLabel>{vipMandatory(t('address1'))}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
+                          </InputBox>
+                        </div>
 
-                    <div style={{ display: 'flex', gap: 22 }}>
-                      <div style={{ width: 160 }}>
-                        <FieldLabel>{t('postalCode')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryPostalCode ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryPostalCode} placeholder={t('postalCodePlaceholder')} onChange={e => setDeliveryPostalCode(e.target.value)} />
-                        </InputBox>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <FieldLabel>{t('city')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryCity ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryCity} placeholder={t('cityPlaceholder')} onChange={e => setDeliveryCity(e.target.value)} />
-                        </InputBox>
-                      </div>
-                    </div>
+                        <div style={{ display: 'flex', gap: 22 }}>
+                          <div style={{ width: 160 }}>
+                            <FieldLabel>{vipMandatory(t('postalCode'))}</FieldLabel>
+                            <InputBox focused={false}>
+                              <input style={{ ...baseInputStyle, color: deliveryPostalCode ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryPostalCode} placeholder={t('postalCodePlaceholder')} onChange={e => setDeliveryPostalCode(e.target.value)} />
+                            </InputBox>
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <FieldLabel>{vipMandatory(t('city'))}</FieldLabel>
+                            <InputBox focused={false}>
+                              <input style={{ ...baseInputStyle, color: deliveryCity ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryCity} placeholder={t('cityPlaceholder')} onChange={e => setDeliveryCity(e.target.value)} />
+                            </InputBox>
+                          </div>
+                        </div>
+                      </>
+                    )}
 
                     {/* Mottaker / Att. */}
                     <div>
-                      <FieldLabel>{t('vipRecipient')}</FieldLabel>
+                      <FieldLabel>{vipMandatory(t('vipRecipient'))}</FieldLabel>
                       <InputBox focused={false}>
                         <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
                       </InputBox>
