@@ -107,11 +107,15 @@ export type ModalName =
   | 'pda'
   | 'pickup'
   | 'inventory'
+  | 'pricecheck-inventory'
   | 'payment'
   | 'config'
   | 'faktura'
   | 'switch-user'
-  | 'hovedordre';
+  | 'hovedordre'
+  | 'pro-card'
+  | 'packing-slip-signature'
+  | 'delivery-note';
 
 export interface PaymentTotals {
   subtotal: number;
@@ -140,4 +144,24 @@ export interface VipCardData {
   projectRequired: boolean;
   requisitionRequired: boolean;
   address?: { line1: string; line2?: string; postalCode: string; city: string };
+}
+
+/* ─── PRO card (XL-BYG/Aspect4 / Prototype B) ──────────────────────────────── */
+
+export type ProCardStatus = 'open' | 'blocked';
+
+/**
+ * Payload returned by Aspect4 (via aspect4-pos-proxy) for a PRO card lookup.
+ * Simulated in the prototype via the Ctrl+> shortcut. Independent from the
+ * VIP card concept above (Prototype C / Aspect4 DK) — do not merge the two.
+ */
+export interface ProCardData {
+  cardNumber: string;
+  customerNumber: string;
+  customerName: string;
+  address?: { line1: string; line2?: string; postalCode: string; city: string };
+  creditLimit: number;
+  status: ProCardStatus;
+  projectRequired: boolean;
+  requisitionRequired: boolean;
 }

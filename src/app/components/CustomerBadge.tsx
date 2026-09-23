@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import svgPaths from "../imports/svg-lp8f0fd0qm";
 import { CustomerMenu } from './CustomerMenu';
 import { useLanguage } from '../contexts/LanguageContext';
+import type { ProCardData } from '../types/pos';
 
 interface Customer {
   id: string;
@@ -33,6 +34,8 @@ interface CustomerBadgeProps {
   onBankTerminal?: () => void;
   onExchangeSlip?: () => void;
   onPreviousPurchases?: () => void;
+  /** PRO card (XL-BYG/Aspect4 / Prototype B) — persistent indicator, independent from VIP */
+  proCard?: ProCardData | null;
 }
 
 function VerticalDotsIcon() {
@@ -62,7 +65,8 @@ export function CustomerBadge({
   onGiftCard,
   onBankTerminal,
   onExchangeSlip,
-  onPreviousPurchases
+  onPreviousPurchases,
+  proCard
 }: CustomerBadgeProps) {
   const { t } = useLanguage();
   const [showMenu, setShowMenu] = useState(false);
@@ -132,9 +136,29 @@ export function CustomerBadge({
         <div className="size-full">
           <div className="box-border content-stretch flex flex-col gap-[15px] items-start p-[15px] relative w-full">
             <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-              <p className="basis-0 grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-foreground">
-                {customer.name}
-              </p>
+              <div className="basis-0 grow flex items-center gap-[8px] min-h-px min-w-px relative shrink-0">
+                <p className="leading-[1.75] text-foreground">
+                  {customer.name}
+                </p>
+                {proCard && (
+                  <span style={{
+                    flexShrink: 0,
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius)',
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 700,
+                    fontSize: 'var(--text-sm)',
+                    whiteSpace: 'nowrap',
+                    color: proCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)',
+                    background: proCard.status === 'open'
+                      ? 'color-mix(in srgb, var(--chart-2) 14%, var(--card))'
+                      : 'color-mix(in srgb, var(--destructive) 14%, var(--card))',
+                    border: `1px solid color-mix(in srgb, ${proCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)'} 35%, transparent)`,
+                  }}>
+                    PRO
+                  </span>
+                )}
+              </div>
               <div className="relative shrink-0">
                 <button
                   ref={triggerRef}

@@ -264,6 +264,7 @@ function OrderItemsView({
   onRemoveAllItemsFromGroup,
   addedItems = [],
   onRemoveAddedItem,
+  onUpdateAddedItem,
 }: {
   searchQuery: string;
   onAddToSale: (item: CartItem) => void;
@@ -274,6 +275,7 @@ function OrderItemsView({
   onRemoveAllItemsFromGroup: (groupId: string) => void;
   addedItems?: CartItem[];
   onRemoveAddedItem: (index: number) => void;
+  onUpdateAddedItem: (index: number, patch: Partial<CartItem>) => void;
 }) {
   const { t } = useLanguage();
   const hasResults = searchQuery.length > 0;
@@ -428,6 +430,13 @@ function OrderItemsView({
                   onSwipeableStateChange('added', index, newState);
                   if (newState === 'deleted') onRemoveAddedItem(index);
                 }}
+                onQuantityChange={(newQuantity, newUnit) => {
+                  onUpdateAddedItem(index, {
+                    quantity: newQuantity,
+                    unit: newUnit,
+                    total: item.price * newQuantity * (1 - (item.discount || 0) / 100),
+                  });
+                }}
               />
             );
           })}
@@ -449,6 +458,7 @@ function SearchAndActionsBar({
   onRemoveAllItemsFromGroup,
   addedItems,
   onRemoveAddedItem,
+  onUpdateAddedItem,
   erpScenario,
   selectedCustomer,
   hovedordrePlacement,
@@ -460,6 +470,7 @@ function SearchAndActionsBar({
   onRemoveAllItemsFromGroup: (groupId: string) => void;
   addedItems: CartItem[];
   onRemoveAddedItem: (index: number) => void;
+  onUpdateAddedItem: (index: number, patch: Partial<CartItem>) => void;
   erpScenario?: string;
   selectedCustomer?: any;
   hovedordrePlacement?: 'A' | 'B' | 'C';
@@ -491,6 +502,7 @@ function SearchAndActionsBar({
               onRemoveAllItemsFromGroup={onRemoveAllItemsFromGroup}
               addedItems={addedItems}
               onRemoveAddedItem={onRemoveAddedItem}
+              onUpdateAddedItem={onUpdateAddedItem}
             />
           </div>
           <div className="content-stretch flex gap-[10px] items-center relative rounded-bl-[3px] rounded-br-[3px] shrink-0 w-full" data-name="Search and actions">
@@ -621,11 +633,22 @@ export default function SalgPage() {
     handleRemoveAllItemsFromGroup,
     addedItems,
     handleRemoveAddedItem,
+    handleUpdateAddedItem,
     paymentTotals,
     hasOrderItems,
+    proCard,
+    vipCard,
   } = usePOS();
 
   const [swipeableOrderLineStates, setSwipeableOrderLineStates] = useState<Record<string, SwipeableOrderLineState>>({});
+
+  /* An emptied sale (e.g. completed as a packing slip) must not leave stale
+     swipe states behind — the keys would be reused by the next sale's lines. */
+  React.useEffect(() => {
+    if (orderGroups.length === 0 && addedItems.length === 0) {
+      setSwipeableOrderLineStates((prev) => (Object.keys(prev).length ? {} : prev));
+    }
+  }, [orderGroups.length, addedItems.length]);
 
   const handleSwipeableStateChange = (groupId: string | number, itemIndex: number, newState: SwipeableOrderLineState) => {
     setSwipeableOrderLineStates((prev) => ({ ...prev, [`${groupId}-${itemIndex}`]: newState }));
@@ -686,6 +709,9 @@ export default function SalgPage() {
   }, [orderGroups, addedItems, swipeableOrderLineStates]);
 
   const localHasItems = localPaymentTotals.itemCount > 0;
+  const canPay = localHasItems && !!selectedCustomer;
+  /* A VIP-card sale settles as a packing slip — direct payment is not offered. */
+  const canPayNow = canPay && !vipCard;
 
   return (
     <div className="content-stretch flex flex-row flex-1 items-stretch relative shrink-0 w-full z-[1] min-h-0" data-name="Body">
@@ -698,6 +724,7 @@ export default function SalgPage() {
         onRemoveAllItemsFromGroup={handleRemoveAllItemsFromGroup}
         addedItems={addedItems}
         onRemoveAddedItem={handleRemoveAddedItem}
+        onUpdateAddedItem={handleUpdateAddedItem}
         erpScenario={erpScenario}
         selectedCustomer={selectedCustomer}
         hovedordrePlacement={hovedordrePlacement}
@@ -738,6 +765,7 @@ export default function SalgPage() {
               onBankTerminal={() => {}}
               onExchangeSlip={() => openModal('faktura')}
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
+              proCard={proCard}
             />
             {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') &&
               (hovedordrePlacement === 'B' || hovedordrePlacement === 'C') && (
@@ -757,23 +785,32 @@ export default function SalgPage() {
         )}
 
         <div className="content-stretch flex flex-col gap-[10px] items-start justify-end relative shrink-0 w-full" data-name="Buttons">
-          {localHasItems && (
-            <button className="bg-transparent border border-primary text-primary h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full cursor-pointer hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors">
-              <div className="flex flex-row items-center justify-center min-w-inherit size-full">
-                <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
-                  <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('createPackingSlip')}</span>
-                </div>
-              </div>
-            </button>
-          )}
+          {/* Always present, so the path to a packing slip stays visible — it
+              only becomes actionable once there is a customer and a line. */}
           <button
-            onClick={() => { if (localHasItems) openModal('payment'); }}
+            onClick={() => { if (canPay) openModal('packing-slip-signature'); }}
+            disabled={!canPay}
+            className={`bg-transparent h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full transition-colors ${
+              canPay
+                ? 'border border-primary text-primary cursor-pointer hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                : 'border border-border text-muted-foreground cursor-not-allowed'
+            }`}
+          >
+            <div className="flex flex-row items-center justify-center min-w-inherit size-full">
+              <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
+                <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('createPackingSlip')}</span>
+              </div>
+            </div>
+          </button>
+          <button
+            onClick={() => { if (canPayNow) openModal('payment'); }}
+            title={vipCard ? t('vipDeliveryNoteOnly') : undefined}
             className={`h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full transition-colors ${
-              localHasItems
+              canPayNow
                 ? 'bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
                 : 'bg-muted text-muted-foreground cursor-not-allowed border border-border'
             }`}
-            disabled={!localHasItems}
+            disabled={!canPayNow}
           >
             <div className="flex flex-row items-center justify-center min-w-inherit size-full">
               <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">

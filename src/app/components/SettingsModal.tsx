@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Bug, ChevronDown, ChevronRight } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
+import { toast } from 'sonner@2.0.3';
 import { buildShareURL, type SharedSettings } from '../utils/settingsUrl';
+import { PROTOTYPE_PINK, PROTOTYPE_TOAST_OPTS } from '../utils/prototypeDescriptions';
 
 // ─── Panel language ───────────────────────────────────────────────────────────
 // This panel is an internal prototyping tool, so it keeps its own language
@@ -44,6 +46,11 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     customerSearchA: 'A: Bryteren ligger i søkeresultatet, ERP-oppslaget kjøres automatisk.',
     customerSearchB: 'B: Bryteren ligger øverst til høyre i toppen, med en egen «Hent kunde»-knapp.',
 
+    priceCheckLockHeading: 'Prissjekk – kundelås',
+    priceCheckLockA: 'A: Ingen lås. Kunde/prosjekt kan byttes fritt i prissjekk; kun varselet ved «Legg til varer i salg» vises ved avvik.',
+    priceCheckLockB: 'B: Låst som i dag, men den sperrende modalen har også en «Legg til varer i salg»-knapp ved siden av «Lukk».',
+    priceCheckLockC: 'C: Låst som i dag. Kun knappeteksten er endret fra «Ok» til «Lukk».',
+
     scanCustomerCard: 'Skann kundekort',
     scanCustomerCardAspect4: 'Aktivert som standard for Aspect4-kilder. Viser skanneknapp ved Kunde-feltet.',
     scanCustomerCardDesc: 'Vis skanneknapp ved Kunde-feltet i kundevalgmodalen.',
@@ -54,7 +61,9 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scFakeCardScan: 'Falsk kortskanning',
     scFakeCardScanDesc: 'Simuler skanning av Aspect4-kundekort',
     scFakeVipScan: 'Falsk VIP-kortskanning',
-    scFakeVipScanDesc: 'Simuler skanning av VIP-kort (krever Aspect4 DK og flyt C)',
+    scFakeVipScanDesc: 'Simuler skanning av VIP-/PRO-kort (krever Aspect4 DK). Flyt C gir VIP-kort, flyt B gir PRO-kort.',
+    simulateProCardOffline: 'Simuler offline for PRO-kort',
+    simulateProCardOfflineDesc: 'PRO-kortoppslag feiler med en offline-feilmelding i stedet for å kalle Aspect4.',
     scFakeLogout: 'Falsk utlogging',
     scFakeLogoutDesc: 'Logg ut og gå til innloggingsskjermen',
     scResetAll: 'Nullstill all tilstand',
@@ -119,6 +128,11 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     customerSearchA: 'A: Toggle sits in the search results; the ERP lookup runs automatically.',
     customerSearchB: 'B: Toggle sits top right in the header, with an explicit "Get customer" button.',
 
+    priceCheckLockHeading: 'Price check – customer lock',
+    priceCheckLockA: 'A: No lock. Customer/project can be swapped freely in price check; only the "Add to Cart" mismatch warning fires on a difference.',
+    priceCheckLockB: 'B: Locked as today, but the blocking modal also has an "Legg til varer i salg" button next to "Lukk".',
+    priceCheckLockC: 'C: Locked as today. Only the button label changed from "Ok" to "Lukk".',
+
     scanCustomerCard: 'Scan customer card',
     scanCustomerCardAspect4: 'Enabled by default for Aspect4 sources. Shows a scan button by the Customer field.',
     scanCustomerCardDesc: 'Show a scan button by the Customer field in the customer selection modal.',
@@ -129,7 +143,9 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scFakeCardScan: 'Fake card scan',
     scFakeCardScanDesc: 'Simulate an Aspect4 customer card scan',
     scFakeVipScan: 'Fake VIP card scan',
-    scFakeVipScanDesc: 'Simulate a VIP card scan (requires Aspect4 DK and Flow C)',
+    scFakeVipScanDesc: 'Simulate a VIP/PRO card scan (requires Aspect4 DK). Flow C gives a VIP card, Flow B gives a PRO card.',
+    simulateProCardOffline: 'Simulate offline for PRO card',
+    simulateProCardOfflineDesc: 'PRO card lookups fail with an offline error instead of calling Aspect4.',
     scFakeLogout: 'Fake logout',
     scFakeLogoutDesc: 'Log out and navigate to the login screen',
     scResetAll: 'Reset all state',
@@ -226,6 +242,8 @@ export function SettingsModal() {
     setHovedordrePlacement,
     customerSearchConcept,
     setCustomerSearchConcept,
+    priceCheckLockConcept,
+    setPriceCheckLockConcept,
     isSettingsModalOpen,
     closeSettingsModal,
     showFlowIndicator,
@@ -244,6 +262,8 @@ export function SettingsModal() {
     showLoginButton,
     showTwoFactorButton,
     showForgotPassword,
+    simulateProCardOffline,
+    setSimulateProCardOffline,
   } = useSettings();
 
   // Panel language is deliberately independent of the product language.
@@ -291,6 +311,7 @@ export function SettingsModal() {
       erpScenario,
       hovedordrePlacement,
       customerSearchConcept,
+      priceCheckLockConcept,
       showFlowIndicator,
       showDebugBanner,
       allowCreateProject,
@@ -305,9 +326,26 @@ export function SettingsModal() {
 
     const url = buildShareURL(settings);
 
+    // The button label flashes *and* a pink toast fires: the label is the
+    // in-place confirmation, the toast is what a collaborator sees in a
+    // screen share. English-only, like the rest of this prototyping layer.
     navigator.clipboard.writeText(url).then(
-      () => flashCopyStatus('copied'),
-      () => flashCopyStatus('failed'),
+      () => {
+        flashCopyStatus('copied');
+        toast('Share link copied', {
+          description: 'Your current prototype settings are encoded in the URL',
+          duration: 2500,
+          ...PROTOTYPE_TOAST_OPTS,
+        });
+      },
+      () => {
+        flashCopyStatus('failed');
+        toast('Copy failed', {
+          description: 'Copy the URL from the address bar instead',
+          duration: 3000,
+          ...PROTOTYPE_TOAST_OPTS,
+        });
+      },
     );
   };
 
@@ -578,6 +616,12 @@ export function SettingsModal() {
 
   const customerSearchDescriptions: Record<string, string> = { A: s.customerSearchA, B: s.customerSearchB };
 
+  const priceCheckLockDescriptions: Record<string, string> = {
+    A: s.priceCheckLockA,
+    B: s.priceCheckLockB,
+    C: s.priceCheckLockC,
+  };
+
   const hovedordreDescriptions: Record<string, string> = {
     A: s.hovedordreA,
     B: s.hovedordreB,
@@ -597,9 +641,26 @@ export function SettingsModal() {
     >
       <div
         style={{
+          // ── Settings-modal-only palette ──────────────────────────────────
+          // This panel is a prototyping tool, not the Fabri POS product, so
+          // it deliberately breaks from the app's light/blue theme: near-
+          // black/brown surfaces, near-white text, and the same pink already
+          // used for the "Prototype {letter}" badge/toasts as the one accent.
+          // Every var(--card)/var(--border)/etc. below inherits these local
+          // overrides — nothing outside this subtree is affected.
+          '--card': '#1F1512',
+          '--secondary': '#382722',
+          '--secondary-foreground': '#EDE3DE',
+          '--background': '#170F0D',
+          '--muted': '#2C1F1A',
+          '--muted-foreground': '#C9B7AF',
+          '--foreground': '#F5EFEC',
+          '--border': '#4A3830',
+          '--primary': PROTOTYPE_PINK,
+          '--primary-foreground': '#140D0B',
           background: 'var(--card)',
           borderRadius: 'var(--radius)',
-          boxShadow: '2px 2px 4px rgba(107,107,114,0.06), 4px 12px 20px rgba(107,107,114,0.16)',
+          boxShadow: '2px 2px 4px rgba(0,0,0,0.3), 4px 12px 20px rgba(0,0,0,0.45)',
           width: '100%',
           maxWidth: 520,
           maxHeight: 'calc(100vh - 2rem)',
@@ -611,7 +672,7 @@ export function SettingsModal() {
           top: `${position.y}px`,
           cursor: isDragging ? 'grabbing' : 'default',
           fontFamily: "'Montserrat', sans-serif",
-        }}
+        } as React.CSSProperties}
       >
         {/* ── Header (draggable) ── */}
         <div
@@ -770,7 +831,7 @@ export function SettingsModal() {
                           cursor: 'pointer',
                           background: switchUserFlow === flow ? 'var(--card)' : 'transparent',
                           color: switchUserFlow === flow ? 'var(--primary)' : 'var(--muted-foreground)',
-                          boxShadow: switchUserFlow === flow ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                          boxShadow: switchUserFlow === flow ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
                           transition: 'all 0.15s ease-in-out',
                           zIndex: 1,
                         }}
@@ -847,7 +908,7 @@ export function SettingsModal() {
                             cursor: 'pointer',
                             background: active ? 'var(--primary)' : 'var(--card)',
                             color: active ? 'var(--primary-foreground)' : 'var(--muted-foreground)',
-                            boxShadow: active ? '0 1px 4px rgba(13,151,252,0.18)' : 'none',
+                            boxShadow: active ? '0 1px 4px rgba(255,0,255,0.35)' : 'none',
                             transition: 'all 0.15s ease-in-out',
                             lineHeight: 1.75,
                           }}
@@ -936,7 +997,7 @@ export function SettingsModal() {
                             cursor: 'pointer',
                             background: hovedordrePlacement === placement ? 'var(--card)' : 'transparent',
                             color: hovedordrePlacement === placement ? 'var(--primary)' : 'var(--muted-foreground)',
-                            boxShadow: hovedordrePlacement === placement ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                            boxShadow: hovedordrePlacement === placement ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
                             transition: 'all 0.15s ease-in-out',
                             zIndex: 1,
                           }}
@@ -1002,7 +1063,7 @@ export function SettingsModal() {
                             cursor: 'pointer',
                             background: customerSearchConcept === concept ? 'var(--card)' : 'transparent',
                             color: customerSearchConcept === concept ? 'var(--primary)' : 'var(--muted-foreground)',
-                            boxShadow: customerSearchConcept === concept ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                            boxShadow: customerSearchConcept === concept ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
                             transition: 'all 0.15s ease-in-out',
                             zIndex: 1,
                           }}
@@ -1013,6 +1074,70 @@ export function SettingsModal() {
                     </div>
                   </RowCard>
                 )}
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        lineHeight: 1.5,
+                        margin: 0,
+                      }}
+                    >
+                      {s.priceCheckLockHeading}: {priceCheckLockConcept}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {priceCheckLockDescriptions[priceCheckLockConcept]}
+                    </p>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: 'var(--secondary)',
+                      borderRadius: 999,
+                      padding: 4,
+                      width: 200,
+                      flexShrink: 0,
+                      position: 'relative',
+                    }}
+                  >
+                    {(['A', 'B', 'C'] as const).map(concept => (
+                      <button
+                        key={concept}
+                        onClick={() => setPriceCheckLockConcept(concept)}
+                        style={{
+                          flex: 1,
+                          padding: '4px 12px',
+                          fontSize: 'var(--text-sm)',
+                          fontWeight: 'var(--font-weight-semibold)',
+                          fontFamily: "'Montserrat', sans-serif",
+                          borderRadius: 999,
+                          border: 'none',
+                          cursor: 'pointer',
+                          background: priceCheckLockConcept === concept ? 'var(--card)' : 'transparent',
+                          color: priceCheckLockConcept === concept ? 'var(--primary)' : 'var(--muted-foreground)',
+                          boxShadow: priceCheckLockConcept === concept ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
+                          transition: 'all 0.15s ease-in-out',
+                          zIndex: 1,
+                        }}
+                      >
+                        {concept}
+                      </button>
+                    ))}
+                  </div>
+                </RowCard>
 
                 {/* Scan Customer Card toggle */}
                 <RowCard>
@@ -1045,6 +1170,38 @@ export function SettingsModal() {
                   </div>
                   <Toggle checked={scanCustomerCard} onChange={() => setScanCustomerCard(!scanCustomerCard)} />
                 </RowCard>
+
+                {/* PRO card (XL-BYG/Aspect4 / Prototype B) — simulated offline toggle */}
+                {erpScenario === 'Aspect4 DK' && switchUserFlow === 'B' && (
+                  <RowCard>
+                    <div>
+                      <p
+                        style={{
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontWeight: 'var(--font-weight-semibold)',
+                          fontSize: 'var(--text-base)',
+                          color: 'var(--foreground)',
+                          margin: 0,
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {s.simulateProCardOffline}
+                      </p>
+                      <p
+                        style={{
+                          fontFamily: "'Montserrat', sans-serif",
+                          fontSize: 'var(--text-sm)',
+                          color: 'var(--muted-foreground)',
+                          margin: '4px 0 0',
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {s.simulateProCardOfflineDesc}
+                      </p>
+                    </div>
+                    <Toggle checked={simulateProCardOffline} onChange={() => setSimulateProCardOffline(!simulateProCardOffline)} />
+                  </RowCard>
+                )}
               </div>
             )}
           </div>

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
+import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS } from '../utils/prototypeDescriptions';
+import { ERP_SCENARIOS } from '../utils/settingsUrl';
 
 function Group1() {
   return (
@@ -109,19 +111,75 @@ function UserIcon() {
 }
 
 function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void; isProfileOpen?: boolean; currentUser?: string }) {
-  const { switchUserFlow, showFlowIndicator, erpScenario } = useSettings();
-  
+  const { switchUserFlow, priceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
+  const [showPrototypeHint, setShowPrototypeHint] = useState(false);
+  const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
+
+  const prototypeTooltip = `${FLOW_DESCRIPTIONS[switchUserFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[priceCheckLockConcept]}.`;
+
   return (
     <div className="content-stretch flex gap-[10px] items-center relative shrink-0">
       {showFlowIndicator && (
-        <div className="flex items-center gap-2">
+        <div
+          className="flex items-center gap-2 relative"
+          onMouseEnter={() => setShowPrototypeHint(true)}
+          onMouseLeave={() => {
+            setShowPrototypeHint(false);
+            setIsErpMenuOpen(false);
+          }}
+        >
           <span className="font-['Montserrat'] font-medium text-[#FF00FF] text-[14px]">Prototype</span>
           <div className="w-[24px] h-[24px] rounded-full bg-[#FF00FF] flex items-center justify-center text-white font-['Montserrat'] font-bold text-[12px] shadow-sm border border-white">
             {switchUserFlow}
           </div>
-          <div className="bg-pink-500 text-white text-[11px] font-semibold font-['Montserrat'] px-2 py-0.5 rounded-full">
-            {erpScenario}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsErpMenuOpen(v => !v)}
+              className="bg-[#FF00FF] text-white text-[11px] font-semibold font-['Montserrat'] px-2 py-0.5 rounded-full flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              aria-haspopup="listbox"
+              aria-expanded={isErpMenuOpen}
+            >
+              {erpScenario}
+              <ChevronDown2 isOpen={isErpMenuOpen} />
+            </button>
+            {isErpMenuOpen && (
+              <div
+                role="listbox"
+                className="absolute left-0 top-[calc(100%+6px)] z-[9999] bg-white rounded-[8px] shadow-lg p-2 flex flex-wrap gap-1.5 w-[220px]"
+              >
+                {ERP_SCENARIOS.map(scenario => (
+                  <button
+                    key={scenario}
+                    type="button"
+                    role="option"
+                    aria-selected={scenario === erpScenario}
+                    onClick={() => {
+                      setErpScenario(scenario);
+                      setIsErpMenuOpen(false);
+                    }}
+                    className={`text-[11px] font-semibold font-['Montserrat'] px-2 py-1 rounded-full cursor-pointer transition-colors ${
+                      scenario === erpScenario
+                        ? 'bg-[#FF00FF] text-white'
+                        : 'bg-[#f2f2f2] text-[#22222c] hover:bg-[#e5e5e5]'
+                    }`}
+                  >
+                    {scenario}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
+          {showPrototypeHint && !isErpMenuOpen && (
+            <div
+              className="absolute left-0 top-[calc(100%+8px)] z-[9999] w-[260px] rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4]"
+              role="tooltip"
+            >
+              <div className="absolute -top-[5px] left-[20px] w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
+              <p className="font-bold mb-1">Prototype {switchUserFlow}</p>
+              <p>{prototypeTooltip}</p>
+            </div>
+          )}
         </div>
       )}
       <button 

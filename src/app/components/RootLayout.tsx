@@ -9,6 +9,9 @@ import { PickupModal } from './PickupModal';
 import { InventorySearchModal } from './InventorySearchModal';
 import { ItemConfigurationModal } from './ItemConfigurationModal';
 import { PaymentFlowModal } from './PaymentFlowModal';
+import { PackingSlipSignatureModal } from './PackingSlipSignatureModal';
+import { DeliveryNoteModal } from './DeliveryNoteModal';
+import { ProCardModal, generateFakeProScan } from './ProCardModal';
 import { FakturaModal } from './FakturaModal';
 import { HovedordreModal } from './HovedordreModal';
 import { EnvDebugBanner } from './EnvDebugBanner';
@@ -22,7 +25,13 @@ import { useModalParams } from '../hooks/useModalParams';
 import type { OrderLineState, VipCardData, VipCardStatus } from '../types/pos';
 import type { ScannedCardData } from './CustomerSelectionModal';
 import { playBarcodeBeep } from '../utils/scanSound';
+import { formatAmount } from '../utils/formatAmount';
 import type { ScannedArticleData } from './InventorySearchModal';
+import { calculateSmartPrice, getMockItemMetadata, getItemLabels, parsePriceString } from './pricingUtils';
+import { EgConfirmModal } from './EgConfirmModal';
+import { AlertCircle } from 'lucide-react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS, PROTOTYPE_TOAST_OPTS, POS_TOAST_STYLE } from '../utils/prototypeDescriptions';
 
 // ─── Mock pools for fake card scans (mirrors CustomerSelectionModal data) ──────
 const SCAN_CUSTOMERS = [
@@ -93,7 +102,17 @@ function RootLayoutInner() {
   const navigate = useNavigate();
   const location = useLocation();
   const { activeModal, openModal, closeModal, isModalOpen } = useModalParams();
-  const { switchUserFlow, setSwitchUserFlow, resetSettings, showFlowIndicator, setShowFlowIndicator, erpScenario } = useSettings();
+  const {
+    switchUserFlow,
+    setSwitchUserFlow,
+    priceCheckLockConcept,
+    setPriceCheckLockConcept,
+    resetSettings,
+    showFlowIndicator,
+    setShowFlowIndicator,
+    erpScenario,
+    simulateProCardOffline,
+  } = useSettings();
 
   const {
     addedItems,
@@ -120,18 +139,60 @@ function RootLayoutInner() {
     showUserLogoutNotification,
     paymentTotals,
     resetPOS,
+    clearCart,
     setSelectedHovedordre,
     vipCard,
     setVipCard,
     setVipAcknowledged,
     vipBlocked,
+    vipCreditExceeded,
+    proCard,
+    setProCard,
+    proCardMandatoryFields,
+    setProCardMandatoryFields,
+    proCardBlocked,
+    priceCheckCustomer,
+    setPriceCheckCustomer,
+    addPriceCheckItems,
+    priceCheckItems,
+    clearPriceCheck,
   } = usePOS();
+  const { t } = useLanguage();
 
   const isPriceCheckMode = location.pathname === '/priskontroll';
+
+  /* ── Mid-sale credit-exceeded (Aspect4 DK / Prototype C) ──────────────────
+     Open question 5 in docs/vip-pro-card-spec.md: the overrun is discovered
+     mid-sale, on the line that tips the total past the card's limit, so the
+     cashier is stopped there rather than at the payment step. Edge-triggered:
+     the effect only re-runs when the boolean itself flips, so dismissing it
+     while still over the limit does not immediately re-open it, but dropping
+     back under and crossing again does. */
+  const [showVipCreditExceeded, setShowVipCreditExceeded] = useState(false);
+  useEffect(() => {
+    if (vipCreditExceeded) setShowVipCreditExceeded(true);
+  }, [vipCreditExceeded]);
 
   /* ── Profile menu (standalone overlay) ───────────────────────────────── */
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [autoSwitchToUser, setAutoSwitchToUser] = useState<string | null>(null);
+
+  /* ── Price check close guard (EBS-11361) ──────────────────────────────── */
+  const [showPriceCheckCloseConfirm, setShowPriceCheckCloseConfirm] = useState(false);
+
+  const handlePriceCheckClose = () => {
+    if (priceCheckItems.length === 0) {
+      navigate('/salg');
+      return;
+    }
+    setShowPriceCheckCloseConfirm(true);
+  };
+
+  const confirmPriceCheckClose = () => {
+    clearPriceCheck();
+    setShowPriceCheckCloseConfirm(false);
+    navigate('/salg');
+  };
 
   /* ── Scanned card data (populated by Ctrl+- shortcut) ────────────────── */
   const [scannedCardData, setScannedCardData] = useState<ScannedCardData | null>(null);
@@ -199,6 +260,7 @@ function RootLayoutInner() {
         toast('Reset complete', {
           description: 'All state cleared, back to default page',
           duration: 2000,
+          ...PROTOTYPE_TOAST_OPTS,
         });
       }
 
@@ -207,26 +269,25 @@ function RootLayoutInner() {
         e.preventDefault();
         setShowFlowIndicator(!showFlowIndicator);
         toast(showFlowIndicator ? 'Flow indicator hidden' : 'Flow indicator shown', {
-          description: showFlowIndicator 
-            ? 'Prototype and flow info hidden from header' 
+          description: showFlowIndicator
+            ? 'Prototype and flow info hidden from header'
             : 'Prototype and flow info visible in header',
           duration: 2000,
+          ...PROTOTYPE_TOAST_OPTS,
         });
       }
 
-      // A, B, C → Switch user flow
+      // A, B, C → Switch prototype (user-switch flow + price-check lock, kept in sync)
       if (!isInput && !e.metaKey && !e.ctrlKey && !e.altKey) {
         const key = e.key.toUpperCase();
         if (key === 'A' || key === 'B' || key === 'C') {
           const newFlow = key as 'A' | 'B' | 'C';
           setSwitchUserFlow(newFlow);
-          toast(`Switched to Flow ${newFlow}`, {
-            description: newFlow === 'A'
-              ? 'In-menu PIN / Password'
-              : newFlow === 'B'
-                ? 'Modal with PIN / Password tabs'
-                : 'In-menu with navigation to login',
-            duration: 2000,
+          setPriceCheckLockConcept(newFlow);
+          toast(`Switched to Prototype ${newFlow}`, {
+            description: `${FLOW_DESCRIPTIONS[newFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[newFlow]}.`,
+            duration: 2500,
+            ...PROTOTYPE_TOAST_OPTS,
           });
         }
       }
@@ -240,7 +301,7 @@ function RootLayoutInner() {
         // Always play the scanner beep regardless of context
         playBarcodeBeep();
 
-        if (activeModal === 'inventory') {
+        if (activeModal === 'inventory' || activeModal === 'pricecheck-inventory') {
           // ── Fake article / product scan ──────────────────────────────────
           // Mock payload: ADAPTER GDE 16 PLUS FOR BORHAMMER (varenr 469650132)
           const mockArticle: ScannedArticleData = {
@@ -258,31 +319,41 @@ function RootLayoutInner() {
         }
       }
 
-      // Ctrl+< → Simulate a VIP card scan (Aspect4 DK, Prototype C only)
+      // Ctrl+< → Simulate a card scan on Aspect4 DK. Which flow it triggers
+      // depends on switchUserFlow: 'C' → VIP card (Prototype C), 'B' → PRO
+      // card (Prototype B). Same ERP scenario, same shortcut, different flow.
       if (e.ctrlKey && e.key === '<') {
         e.preventDefault();
         e.stopPropagation();
 
-        if (erpScenario !== 'Aspect4 DK' || switchUserFlow !== 'C') {
-          toast('VIP card scan unavailable', {
-            description: "Set ERP scenario to 'Aspect4 DK' and Prototype to 'C' in Settings first",
+        if (erpScenario !== 'Aspect4 DK' || (switchUserFlow !== 'C' && switchUserFlow !== 'B')) {
+          toast('Card scan unavailable', {
+            description: "Set ERP scenario to 'Aspect4 DK' and Prototype to 'B' or 'C' in Settings first",
             duration: 3000,
+            ...PROTOTYPE_TOAST_OPTS,
           });
           return;
         }
 
         playBarcodeBeep();
-        const mockVip = generateFakeVipScan();
-        setVipCard(mockVip);
-        setVipAcknowledged(false);
-        openModal('customer');
+
+        if (switchUserFlow === 'C') {
+          const mockVip = generateFakeVipScan();
+          setVipCard(mockVip);
+          setVipAcknowledged(false);
+          openModal('customer');
+        } else {
+          const mockPro = generateFakeProScan();
+          setProCard(mockPro);
+          openModal('pro-card');
+        }
       }
     };
 
     // Use capture phase (true) to intercept the event before browser shortcuts
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, [currentUser, switchUserFlow, setSwitchUserFlow, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, setVipCard, setVipAcknowledged]);
+  }, [currentUser, switchUserFlow, setSwitchUserFlow, priceCheckLockConcept, setPriceCheckLockConcept, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, setVipCard, setVipAcknowledged, setProCard]);
 
   /* ── Modals rendering (URL-addressable) ───────────���────────────────── */
   const renderModals = () => (
@@ -291,7 +362,11 @@ function RootLayoutInner() {
         <CustomerSelectionModal
           onClose={closeModal}
           onConfirm={(customer, project) => {
-            handleCustomerConfirm(customer, project);
+            if (isPriceCheckMode) {
+              setPriceCheckCustomer(customer, project);
+            } else {
+              handleCustomerConfirm(customer, project);
+            }
             closeModal();
           }}
           isPriceCheckMode={isPriceCheckMode}
@@ -301,6 +376,19 @@ function RootLayoutInner() {
           saleTotal={paymentTotals.total}
           onVipRemoved={() => setVipCard(null)}
           onVipAcknowledged={() => setVipAcknowledged(true)}
+        />
+      )}
+
+      {isModalOpen('pro-card') && (
+        <ProCardModal
+          context={isPriceCheckMode ? 'priceCheck' : 'sale'}
+          proCard={proCard}
+          setProCard={setProCard}
+          mandatoryFields={proCardMandatoryFields}
+          setMandatoryFields={setProCardMandatoryFields}
+          saleTotal={paymentTotals.total}
+          simulateOffline={simulateProCardOffline}
+          onClose={closeModal}
         />
       )}
 
@@ -355,6 +443,50 @@ function RootLayoutInner() {
                 pricingMethod: 'standard',
                 state: 'normal' as OrderLineState,
               });
+            });
+            closeModal();
+            setInventorySearchValue('');
+          }}
+          initialSearchValue={inventorySearchValue}
+          scannedArticleData={scannedArticleData}
+          onArticleDataProcessed={() => setScannedArticleData(null)}
+        />
+      )}
+
+      {isModalOpen('pricecheck-inventory') && (
+        <InventorySearchModal
+          onClose={() => {
+            closeModal();
+            setInventorySearchValue('');
+          }}
+          onAddItems={(items: any[]) => {
+            // Price check pricing: run each item through the same smart-pricing
+            // rules as the sale, but scoped to the price-check customer/project
+            // rather than the live sale's.
+            const pricingCustomer = priceCheckCustomer
+              ? { type: priceCheckCustomer.type, discount: priceCheckCustomer.discountRate }
+              : undefined;
+
+            items.forEach((item: any) => {
+              const { price, unit } = parsePriceString(item.pris);
+              const metadata = getMockItemMetadata(item.varenr);
+              const smart = calculateSmartPrice(price, 1, pricingCustomer, undefined, metadata);
+              const label = getItemLabels(metadata)[0];
+
+              addPriceCheckItems([{
+                name: item.varetekst,
+                sku: item.varenr,
+                price: smart.price,
+                priceInfo: { priceString: item.pris, numericPrice: price, formattedPrice: item.pris },
+                quantity: 1,
+                unit,
+                discount: smart.discount,
+                total: smart.price * (1 - smart.discount / 100),
+                smartPrice: smart.price,
+                pricingMethod: smart.appliedRules.join(', ') || 'standard',
+                state: 'normal' as OrderLineState,
+                label,
+              }]);
             });
             closeModal();
             setInventorySearchValue('');
@@ -432,6 +564,26 @@ function RootLayoutInner() {
         isProfileOpen={showProfileMenu}
         currentUser={currentUser}
         vipBlocked={vipBlocked}
+        vipCard={vipCard}
+        proCard={proCard}
+        proCardBlocked={proCardBlocked}
+      />
+
+      {/* ── Packing slip: signature → delivery note → sale completed ──────── */}
+      <PackingSlipSignatureModal
+        isOpen={isModalOpen('packing-slip-signature')}
+        onClose={closeModal}
+        onApprove={() => openModal('delivery-note')}
+      />
+
+      <DeliveryNoteModal
+        isOpen={isModalOpen('delivery-note')}
+        onClose={closeModal}
+        onConfirm={() => {
+          closeModal();
+          clearCart();
+          toast(t('saleCompletedToast'), { duration: 3000, style: POS_TOAST_STYLE });
+        }}
       />
 
       <SwitchUserModalFlowB
@@ -455,19 +607,17 @@ function RootLayoutInner() {
       <EnvDebugBanner />
 
       {/* ── Shared Header ────────────────────────────────────────────────── */}
-      {!isPriceCheckMode && (
-        <div className="content-stretch flex flex-col items-start relative shrink-0 w-full z-[3]">
-          <HeaderWithMenu
-            isPriceCheckMode={isPriceCheckMode}
-            onPriceCheckClick={() => navigate('/priskontroll')}
-            onPriceCheckClose={() => navigate('/salg')}
-            currentUser={currentUser}
-            onUserChange={setCurrentUser}
-            onUserLogout={showUserLogoutNotification}
-            onPreviousPurchasesClick={() => navigate('/tidligere-kjop')}
-          />
-        </div>
-      )}
+      <div className="content-stretch flex flex-col items-start relative shrink-0 w-full z-[3]">
+        <HeaderWithMenu
+          isPriceCheckMode={isPriceCheckMode}
+          onPriceCheckClick={() => navigate('/priskontroll')}
+          onPriceCheckClose={handlePriceCheckClose}
+          currentUser={currentUser}
+          onUserChange={setCurrentUser}
+          onUserLogout={showUserLogoutNotification}
+          onPreviousPurchasesClick={() => navigate('/tidligere-kjop')}
+        />
+      </div>
 
       {/* ── Profile Menu Overlay ─────────────────────────────────────────── */}
       {showProfileMenu && (
@@ -486,6 +636,58 @@ function RootLayoutInner() {
             />
           </div>
         </>
+      )}
+
+      {/* ── Mid-sale credit limit exceeded (Aspect4 DK / Prototype C) ───── */}
+      {showVipCreditExceeded && vipCard && (
+        <EgConfirmModal
+          icon={AlertCircle}
+          iconClassName="text-destructive"
+          title={t('vipCreditExceededTitle')}
+          primaryLabel={t('removeVipCard')}
+          onPrimary={() => {
+            setVipCard(null);
+            setVipAcknowledged(false);
+            setShowVipCreditExceeded(false);
+          }}
+          secondaryLabel={t('vipRemoveItems')}
+          onSecondary={() => setShowVipCreditExceeded(false)}
+          onDismiss={() => setShowVipCreditExceeded(false)}
+        >
+          <p className="text-foreground" style={{ fontSize: 'var(--text-base)' }}>
+            {t('vipCreditExceededBody')}
+          </p>
+          {/* The two figures behind the block, so the cashier can see how far over. */}
+          <div className="flex flex-col gap-[6px]">
+            <div className="flex justify-between gap-[20px]">
+              <span className="text-muted-foreground" style={{ fontSize: 'var(--text-sm)' }}>{t('vipCreditLimit')}</span>
+              <span className="text-foreground" style={{ fontSize: 'var(--text-sm)' }}>{formatAmount(vipCard.creditLimit)}</span>
+            </div>
+            <div className="flex justify-between gap-[20px]">
+              <span className="text-muted-foreground" style={{ fontSize: 'var(--text-sm)' }}>{t('vipCreditUsed')}</span>
+              <span style={{ fontSize: 'var(--text-sm)', color: 'var(--destructive)' }}>{formatAmount(paymentTotals.total)}</span>
+            </div>
+          </div>
+        </EgConfirmModal>
+      )}
+
+      {/* ── Price check close guard (EBS-11361) ──────────────────────────── */}
+      {showPriceCheckCloseConfirm && (
+        <EgConfirmModal
+          icon={AlertCircle}
+          iconClassName="text-destructive"
+          title={t('closePriceCheckTitle')}
+          primaryLabel={t('yesLabel')}
+          onPrimary={confirmPriceCheckClose}
+          secondaryLabel={t('noLabel')}
+          onSecondary={() => setShowPriceCheckCloseConfirm(false)}
+          onDismiss={() => setShowPriceCheckCloseConfirm(false)}
+        >
+          <p className="text-foreground" style={{ fontSize: 'var(--text-base)' }}>
+            {t('closePriceCheckBody')} {priceCheckItems.length}{' '}
+            {priceCheckItems.length === 1 ? t('itemSingular') : t('items')} {t('willNotBeAdded')}
+          </p>
+        </EgConfirmModal>
       )}
 
       {/* ── Page content ─────────────────────────────────────────────────── */}

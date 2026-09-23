@@ -10,13 +10,20 @@ export type HovedordrePlacement = 'A' | 'B' | 'C';
 //   A = toggle inside the search results, fetch happens automatically
 //   B = toggle in the modal header, plus an explicit "Get customer" button
 export type CustomerSearchConcept = 'A' | 'B';
+// Whether/how the price-check customer/project can be swapped once the basket has items.
+//   A = no lock, swap freely (the "Add to Cart" mismatch modal is the only warning)
+//   B = locked; the block modal adds a "Legg til varer i salg" shortcut next to "Lukk"
+//   C = locked; same block modal as B without the shortcut, just relabeled "Lukk"
+export type PriceCheckLockConcept = 'A' | 'B' | 'C';
 export type ErpScenario = 'Nexstep' | 'Trygg2000' | 'Aspect4' | 'Aspect4 DK' | 'AX' | 'IFS';
+export const ERP_SCENARIOS: ErpScenario[] = ['Nexstep', 'Trygg2000', 'Aspect4', 'Aspect4 DK', 'AX', 'IFS'];
 
 export interface SharedSettings {
   switchUserFlow: SwitchUserFlow;
   erpScenario: ErpScenario;
   hovedordrePlacement: HovedordrePlacement;
   customerSearchConcept: CustomerSearchConcept;
+  priceCheckLockConcept: PriceCheckLockConcept;
   showFlowIndicator: boolean;
   showDebugBanner: boolean;
   allowCreateProject: boolean;
@@ -31,9 +38,10 @@ export interface SharedSettings {
 
 export const DEFAULT_SETTINGS: SharedSettings = {
   switchUserFlow: 'C',
-  erpScenario: 'Nexstep',
-  hovedordrePlacement: 'A',
+  erpScenario: 'Aspect4 DK',
+  hovedordrePlacement: 'B',
   customerSearchConcept: 'A',
+  priceCheckLockConcept: 'A',
   showFlowIndicator: true,
   showDebugBanner: false,
   allowCreateProject: false,
@@ -84,7 +92,7 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'erpScenario',
     param: 'erp',
-    parse: makeEnumParser<ErpScenario>(['Nexstep', 'Trygg2000', 'Aspect4', 'Aspect4 DK', 'AX', 'IFS']),
+    parse: makeEnumParser<ErpScenario>(ERP_SCENARIOS),
     serialize: v => v,
   },
   {
@@ -97,6 +105,12 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
     key: 'customerSearchConcept',
     param: 'kundesok',
     parse: makeEnumParser<CustomerSearchConcept>(['A', 'B']),
+    serialize: v => v,
+  },
+  {
+    key: 'priceCheckLockConcept',
+    param: 'pclock',
+    parse: makeEnumParser<PriceCheckLockConcept>(['A', 'B', 'C']),
     serialize: v => v,
   },
   {

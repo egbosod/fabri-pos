@@ -10,6 +10,8 @@ import { ModalCTAFooter } from './ModalCTAFooter';
 import { Switch } from './ui/switch';
 import { playBarcodeBeep } from '../utils/scanSound';
 import type { VipCardData } from '../types/pos';
+import { formatAmount } from '../utils/formatAmount';
+import { EgList, type EgListRow, type EgListSection } from './EgList';
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -526,77 +528,56 @@ function ContactSelectList({ anchorRef, open, selected, onSelect, onClose }: {
 
 // ─── InfoCard (side panel) ────────────────────────────────────────────────────
 
-interface CardRowData { label: string; value: string; badge?: string | null; }
-interface CardSection { title?: string | null; rows: CardRowData[]; }
+/** Local aliases so callers keep the shape they already build. */
+type CardRowData = EgListRow;
+type CardSection = EgListSection;
 
-function CardRow({ label, value, badge, borderTop = true }: CardRowData & { borderTop?: boolean }) {
-  return (
-    <div style={{ borderTop: borderTop ? '1px solid var(--border)' : 'none', padding: 10, display: 'flex', gap: 10, alignItems: 'center', fontFamily: "'Montserrat', sans-serif" }}>
-      <span style={{ flex: 1, fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--card-foreground)', lineHeight: 1.4 }}>{label}</span>
-      <span style={{ flex: 1, fontWeight: 400, fontSize: 'var(--text-xs)', color: 'var(--card-foreground)', lineHeight: 1.4 }}>{value}</span>
-      {badge && (
-        <span style={{ background: 'color-mix(in srgb, var(--primary) 18%, var(--card))', borderRadius: 'var(--radius-sm)', padding: '2px 6px', fontWeight: 400, fontSize: 'var(--text-xs)', color: 'var(--foreground)', lineHeight: 1.75, whiteSpace: 'nowrap', fontFamily: "'Montserrat', sans-serif" }}>
-          {badge}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function InfoCard({ title, rows, expandLabel, expandedCard }: {
+/**
+ * An `EgList` card plus the expand/collapse toggle that reveals a second
+ * `EgList` holding the grouped detail sections.
+ */
+function InfoCard({ title, rows, expandLabel, collapseLabel, expandedCard }: {
   title: string;
   rows: CardRowData[];
   expandLabel: string;
+  collapseLabel: string;
   expandedCard: CardSection[] | null;
 }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 5, width: '100%', fontFamily: "'Montserrat', sans-serif" }}>
-      {/* Collapsed card */}
-      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-        <div style={{ borderBottom: '1px solid var(--border)', padding: 10 }}>
-          <span style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', lineHeight: 1.75 }}>
-            {title}
-          </span>
-        </div>
-        {rows.map((row, i) => (
-          <CardRow key={i} label={row.label} value={row.value} badge={row.badge} borderTop={true} />
-        ))}
-      </div>
+      <EgList title={title} rows={rows} />
 
-      {/* Expand/collapse button */}
       <button
         onClick={() => setExpanded(v => !v)}
         style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 5, alignSelf: 'flex-end', fontFamily: "'Montserrat', sans-serif" }}
       >
         <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.3px', lineHeight: 1.75, whiteSpace: 'nowrap' }}>
-          {expanded ? expandLabel.replace('Utvid', 'Skjul') : expandLabel}
+          {expanded ? collapseLabel : expandLabel}
         </span>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.18s ease-in-out', flexShrink: 0 }}>
           <path d="M2 4L6 8L10 4" stroke="var(--primary)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
 
-      {/* Expanded detail card */}
-      {expanded && expandedCard && (
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-          {expandedCard.map((section, si) => (
-            <div key={si}>
-              {section.title && (
-                <div style={{ borderBottom: '1px solid var(--border)', padding: '6px 10px', background: 'var(--background)' }}>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', lineHeight: 1.75 }}>
-                    {section.title}
-                  </span>
-                </div>
-              )}
-              {section.rows.map((row, ri) => (
-                <CardRow key={ri} label={row.label} value={row.value} borderTop={si > 0 || ri > 0 || !!section.title} />
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+      {expanded && expandedCard && <EgList sections={expandedCard} />}
+    </div>
+  );
+}
+
+/** Red triangle + label shown in a credit card footer when the limit is passed. */
+function OverLimitWarning({ label }: { label: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
+        <path d="M7 1.5L13 12.5H1L7 1.5Z" stroke="var(--destructive)" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M7 5.5V8.5" stroke="var(--destructive)" strokeWidth="1.3" strokeLinecap="round" />
+        <circle cx="7" cy="10.4" r="0.75" fill="var(--destructive)" />
+      </svg>
+      <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--destructive)', lineHeight: 1.5 }}>
+        {label}
+      </span>
     </div>
   );
 }
@@ -1023,8 +1004,12 @@ export function CustomerSelectionModal({
       setCustomerSearch(`${customer.name} (${customer.customerNumber})`);
     }
 
+    // The form's Name must read the same as "Kundenavn" in the right-hand
+    // panel, which is driven by the matched customer record — the card's own
+    // customerName is only the fallback when no record resolves.
+    setDeliveryName(prev => prev || customer?.name || vipCard.customerName);
+
     if (vipCard.address) {
-      setDeliveryName(prev => prev || vipCard.customerName);
       setDeliveryAddress1(prev => prev || vipCard.address!.line1);
       setDeliveryAddress2(prev => prev || (vipCard.address!.line2 ?? ''));
       setDeliveryPostalCode(prev => prev || vipCard.address!.postalCode);
@@ -1068,9 +1053,6 @@ export function CustomerSelectionModal({
   const vipCreditRemaining = vipCard ? vipCard.creditLimit - saleTotal : 0;
   const vipOverLimit = !!vipCard && vipCreditRemaining < 0;
 
-  const formatAmount = (n: number) =>
-    n.toLocaleString('no-NO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).replace(/,/g, ' ');
-
   // ─── Side panel data ─────────────────────────────────────────────────────────
 
   const customerCardRows: CardRowData[] = selectedCustomer ? [
@@ -1078,55 +1060,67 @@ export function CustomerSelectionModal({
     { label: t('customerName'), value: selectedCustomer.name, badge: selectedCustomer.type },
   ] : [];
 
-  const customerExpandedCard: CardSection[] | null = selectedCustomer ? (() => {
-    // Calculate available credit: Credit limit minus total balance (used credit)
-    const calculateAvailableCredit = () => {
-      if (!selectedCustomer.creditLimit || !selectedCustomer.totalBalance) return 'N/A';
-      
-      // Parse credit limit and total balance (remove spaces and convert to number)
-      const limitStr = selectedCustomer.creditLimit.replace(/\s/g, '');
-      const balanceStr = selectedCustomer.totalBalance.replace(/\s/g, '');
-      
-      const limit = parseFloat(limitStr);
-      const balance = parseFloat(balanceStr);
-      
-      if (isNaN(limit) || isNaN(balance)) return 'N/A';
-      
-      const available = limit - balance;
-      // Format with space as thousand separator
-      return available.toLocaleString('no-NO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).replace(/,/g, ' ');
+  /**
+   * Master credit data plus, when a VIP card is registered, the live sale
+   * figures. KREDITINFO and the old standalone KREDITT card duplicated each
+   * other in a 296px column, so they are one always-visible card now.
+   */
+  const customerCreditRows: CardRowData[] = selectedCustomer ? (() => {
+    // Available credit: credit limit minus total balance (used credit)
+    const parseAmount = (v?: string) => {
+      if (!v) return NaN;
+      return parseFloat(v.replace(/\s/g, ''));
     };
+    const customerLimit = parseAmount(selectedCustomer.creditLimit);
+    const balance = parseAmount(selectedCustomer.totalBalance);
+    const availableCredit = isNaN(customerLimit) || isNaN(balance)
+      ? 'N/A'
+      : formatAmount(customerLimit - balance);
 
-    const availableCredit = calculateAvailableCredit();
-
-    return [
-      {
-        title: null,
-        rows: [
-          { label: t('category'), value: selectedCustomer.category || 'N/A' },
-          { label: t('mobile'), value: selectedCustomer.mobile || 'N/A' },
-          { label: t('emailLabel'), value: selectedCustomer.email || 'N/A' },
-        ],
-      },
-      {
-        title: t('addressTitle'),
-        rows: [
-          { label: t('street'), value: selectedCustomer.street || 'N/A' },
-          { label: t('postalCodeAndCity'), value: selectedCustomer.postalCode && selectedCustomer.city ? `${selectedCustomer.postalCode} ${selectedCustomer.city}` : 'N/A' },
-        ],
-      },
-      {
-        title: t('creditTitle'),
-        rows: [
-          { label: t('creditLimit'), value: selectedCustomer.creditLimit || 'N/A' },
-          { label: t('availableCredit'), value: availableCredit },
-          { label: t('totalBalance'), value: selectedCustomer.totalBalance || 'N/A' },
-          { label: t('invoicedBalance'), value: selectedCustomer.invoicedBalance || 'N/A' },
-          { label: t('dueBalance'), value: selectedCustomer.dueBalance || 'N/A' },
-        ],
-      },
+    const rows: CardRowData[] = [
+      { label: t('creditLimit'), value: selectedCustomer.creditLimit || 'N/A' },
+      { label: t('availableCredit'), value: availableCredit },
+      { label: t('totalBalance'), value: selectedCustomer.totalBalance || 'N/A' },
+      { label: t('invoicedBalance'), value: selectedCustomer.invoicedBalance || 'N/A' },
+      { label: t('dueBalance'), value: selectedCustomer.dueBalance || 'N/A' },
     ];
-  })() : null;
+
+    if (vipCard) {
+      // The VIP card carries its own, usually lower, limit. Spell it out when
+      // it differs, otherwise "Gjenstående" looks like bad arithmetic against
+      // the customer's credit limit above.
+      if (isNaN(customerLimit) || vipCard.creditLimit !== customerLimit) {
+        rows.push({ label: t('vipCreditLimit'), value: formatAmount(vipCard.creditLimit) });
+      }
+      rows.push({ label: t('vipCreditUsed'), value: formatAmount(saleTotal) });
+      rows.push({
+        label: t('vipCreditRemaining'),
+        value: formatAmount(vipCreditRemaining),
+        emphasise: true,
+        valueColor: vipOverLimit ? 'var(--destructive)' : undefined,
+      });
+    }
+
+    return rows;
+  })() : [];
+
+  const customerExpandedCard: CardSection[] | null = selectedCustomer ? [
+    {
+      title: null,
+      rows: [
+        { label: t('category'), value: selectedCustomer.category || 'N/A' },
+        { label: t('mobile'), value: selectedCustomer.mobile || 'N/A' },
+        { label: t('emailLabel'), value: selectedCustomer.email || 'N/A' },
+      ],
+    },
+    {
+      title: t('addressTitle'),
+      rows: [
+        { label: t('street'), value: selectedCustomer.street || 'N/A' },
+        { label: t('postalCodeAndCity'), value: selectedCustomer.postalCode && selectedCustomer.city ? `${selectedCustomer.postalCode} ${selectedCustomer.city}` : 'N/A' },
+      ],
+    },
+  ] : null;
 
   const projectCardRows: CardRowData[] = selectedProject ? [
     { label: t('projectNo'), value: selectedProject.nr },
@@ -1191,7 +1185,7 @@ export function CustomerSelectionModal({
                   className="[grid-area:1_/_1]"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 'var(--text-lg)', color: 'var(--card-foreground)', lineHeight: 1.3, whiteSpace: 'nowrap', marginLeft: 35, marginTop: 3 }}
                 >
-                  {t('selectCustomer')}
+                  {vipCard ? t('tabVipCard') : t('selectCustomer')}
                 </span>
               </div>
 
@@ -1199,7 +1193,7 @@ export function CustomerSelectionModal({
               {vipCard && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                   <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-base)', color: 'var(--card-foreground)', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {vipCard.customerName} – {t('vipCardRegistered')} –
+                    {t('vipCardRegistered')}
                   </span>
                   <span style={{
                     flexShrink: 0,
@@ -1262,8 +1256,8 @@ export function CustomerSelectionModal({
             </div>
           </div>
 
-          {/* ── Tabs ── */}
-          <div style={{ background: 'var(--card)', boxShadow: '0 3px 3px rgba(107,107,114,0.06)', flexShrink: 0 }}>
+          {/* ── Tabs — hidden in VIP mode, where VIP Kort is the only tab ── */}
+          <div style={{ background: 'var(--card)', boxShadow: '0 3px 3px rgba(107,107,114,0.06)', flexShrink: 0, display: isVipMode ? 'none' : undefined }}>
             <div style={{ display: 'flex', gap: 30, padding: '10px 20px 0', alignItems: 'flex-end' }}>
               {tabs.filter(t => t.show).map(({ key, label }) => {
                 const active = activeTab === key;
@@ -1856,19 +1850,11 @@ export function CustomerSelectionModal({
                       </InputBox>
                     </div>
 
-                    <div style={{ display: 'flex', gap: 22 }}>
-                      <div style={{ flex: 1 }}>
-                        <FieldLabel>{t('address1')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
-                        </InputBox>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <FieldLabel>{t('address2')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryAddress2 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress2} placeholder={t('address2Placeholder')} onChange={e => setDeliveryAddress2(e.target.value)} />
-                        </InputBox>
-                      </div>
+                    <div>
+                      <FieldLabel>{t('address1')}</FieldLabel>
+                      <InputBox focused={false}>
+                        <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
+                      </InputBox>
                     </div>
 
                     <div style={{ display: 'flex', gap: 22 }}>
@@ -2019,6 +2005,7 @@ export function CustomerSelectionModal({
                 <InfoCard
                   title={t('customerInfoTitle')}
                   expandLabel={t('expandCustomerDetails')}
+                  collapseLabel={t('collapseCustomerDetails')}
                   rows={customerCardRows}
                   expandedCard={customerExpandedCard}
                 />
@@ -2028,60 +2015,21 @@ export function CustomerSelectionModal({
                 <InfoCard
                   title={t('projectInfoTitle')}
                   expandLabel={t('expandProjectDetails')}
+                  collapseLabel={t('collapseProjectDetails')}
                   rows={projectCardRows}
                   expandedCard={projectExpandedCard}
                 />
               )}
 
-              {/* ── VIP credit panel — Limit / Used / Remaining (live) ── */}
-              {vipCard && (
-                <div style={{
-                  background: 'var(--card)',
-                  border: `1px solid ${vipOverLimit ? 'color-mix(in srgb, var(--destructive) 50%, transparent)' : 'var(--border)'}`,
-                  borderRadius: 'var(--radius)',
-                  padding: 15,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 10,
-                }}>
-                  <FieldLabel>{t('vipCreditTitle')}</FieldLabel>
-
-                  {([
-                    [t('creditLimit'), formatAmount(vipCard.creditLimit), false],
-                    [t('vipCreditUsed'), formatAmount(saleTotal), false],
-                    [t('vipCreditRemaining'), formatAmount(vipCreditRemaining), true],
-                  ] as [string, string, boolean][]).map(([label, value, emphasise]) => (
-                    <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                      <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', lineHeight: 1.6 }}>
-                        {label}
-                      </span>
-                      <span style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontWeight: emphasise ? 700 : 400,
-                        fontSize: 'var(--text-sm)',
-                        lineHeight: 1.6,
-                        whiteSpace: 'nowrap',
-                        color: emphasise && vipOverLimit ? 'var(--destructive)' : 'var(--foreground)',
-                      }}>
-                        {value}
-                      </span>
-                    </div>
-                  ))}
-
-                  {/* Flow 2: over limit is a visible warning, never a hard stop */}
-                  {vipOverLimit && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
-                        <path d="M7 1.5L13 12.5H1L7 1.5Z" stroke="var(--destructive)" strokeWidth="1.3" strokeLinejoin="round" />
-                        <path d="M7 5.5V8.5" stroke="var(--destructive)" strokeWidth="1.3" strokeLinecap="round" />
-                        <circle cx="7" cy="10.4" r="0.75" fill="var(--destructive)" />
-                      </svg>
-                      <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--destructive)', lineHeight: 1.5 }}>
-                        {t('overCreditLimit')}
-                      </span>
-                    </div>
-                  )}
-                </div>
+              {/* ── Credit — master figures + live sale total (Flow 2) ── */}
+              {selectedCustomer && (
+                <EgList
+                  title={t('creditTitle')}
+                  rows={customerCreditRows}
+                  tone={vipOverLimit ? 'danger' : 'default'}
+                  /* Flow 2: over limit is a visible warning, never a hard stop */
+                  footer={vipOverLimit && <OverLimitWarning label={t('overCreditLimit')} />}
+                />
               )}
             </div>
 
@@ -2110,13 +2058,21 @@ export function CustomerSelectionModal({
                     <InfoCard
                       title={t('customerInfoTitle')}
                       expandLabel={t('expandCustomerDetails')}
+                      collapseLabel={t('collapseCustomerDetails')}
                       rows={customerCardRows}
                       expandedCard={customerExpandedCard}
+                    />
+                    <EgList
+                      title={t('creditTitle')}
+                      rows={customerCreditRows}
+                      tone={vipOverLimit ? 'danger' : 'default'}
+                      footer={vipOverLimit && <OverLimitWarning label={t('overCreditLimit')} />}
                     />
                     {selectedProject && (
                       <InfoCard
                         title={t('projectInfoTitle')}
                         expandLabel={t('expandProjectDetails')}
+                  collapseLabel={t('collapseProjectDetails')}
                         rows={projectCardRows}
                         expandedCard={projectExpandedCard}
                       />
@@ -2257,7 +2213,7 @@ export function CustomerSelectionModal({
               confirmText={t('confirm')}
               confirmDisabled={!selectedCustomer}
               extraAction={vipCard ? {
-                label: vipCard.status === 'open' ? t('removeVipCard') : t('continueAsNormalCustomer'),
+                label: t('removeVipCard'),
                 onClick: handleVipRemoveOrDismiss,
               } : undefined}
             />

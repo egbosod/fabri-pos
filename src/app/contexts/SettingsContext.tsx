@@ -5,11 +5,12 @@ import {
   type SwitchUserFlow,
   type HovedordrePlacement,
   type CustomerSearchConcept,
+  type PriceCheckLockConcept,
   type ErpScenario,
 } from '../utils/settingsUrl';
 
 // Re-exported for existing consumers that import these types from SettingsContext.
-export type { SwitchUserFlow, HovedordrePlacement, CustomerSearchConcept, ErpScenario };
+export type { SwitchUserFlow, HovedordrePlacement, CustomerSearchConcept, PriceCheckLockConcept, ErpScenario };
 export { DEFAULT_SETTINGS };
 
 export interface SettingsContextType {
@@ -21,6 +22,8 @@ export interface SettingsContextType {
   setHovedordrePlacement: (placement: HovedordrePlacement) => void;
   customerSearchConcept: CustomerSearchConcept;
   setCustomerSearchConcept: (concept: CustomerSearchConcept) => void;
+  priceCheckLockConcept: PriceCheckLockConcept;
+  setPriceCheckLockConcept: (concept: PriceCheckLockConcept) => void;
   showFlowIndicator: boolean;
   setShowFlowIndicator: (show: boolean) => void;
   showDebugBanner: boolean;
@@ -44,6 +47,9 @@ export interface SettingsContextType {
   setShowTwoFactorButton: (show: boolean) => void;
   showForgotPassword: boolean;
   setShowForgotPassword: (show: boolean) => void;
+  /** PRO card (XL-BYG/Aspect4 / Prototype B) demo-only offline toggle — no real network detection exists in this prototype. */
+  simulateProCardOffline: boolean;
+  setSimulateProCardOffline: (simulate: boolean) => void;
   resetSettings: () => void;
 }
 
@@ -65,6 +71,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
   const [customerSearchConcept, setCustomerSearchConcept] = useState<CustomerSearchConcept>(
     urlSettings.customerSearchConcept ?? DEFAULT_SETTINGS.customerSearchConcept,
+  );
+  const [priceCheckLockConcept, setPriceCheckLockConcept] = useState<PriceCheckLockConcept>(
+    urlSettings.priceCheckLockConcept ?? DEFAULT_SETTINGS.priceCheckLockConcept,
   );
   const [showFlowIndicator, setShowFlowIndicator] = useState(
     urlSettings.showFlowIndicator ?? DEFAULT_SETTINGS.showFlowIndicator,
@@ -97,6 +106,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [showForgotPassword, setShowForgotPassword] = useState(
     urlSettings.showForgotPassword ?? DEFAULT_SETTINGS.showForgotPassword,
   );
+  const [simulateProCardOffline, setSimulateProCardOffline] = useState(false);
 
   const openSettingsModal = useCallback(() => setIsSettingsModalOpen(true), []);
   const closeSettingsModal = useCallback(() => setIsSettingsModalOpen(false), []);
@@ -117,6 +127,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setErpScenario(DEFAULT_SETTINGS.erpScenario);
     setHovedordrePlacement(DEFAULT_SETTINGS.hovedordrePlacement);
     setCustomerSearchConcept(DEFAULT_SETTINGS.customerSearchConcept);
+    setPriceCheckLockConcept(DEFAULT_SETTINGS.priceCheckLockConcept);
     setShowFlowIndicator(DEFAULT_SETTINGS.showFlowIndicator);
     setShowDebugBanner(DEFAULT_SETTINGS.showDebugBanner);
     setIsSettingsModalOpen(false);
@@ -128,6 +139,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setShowLoginButton(DEFAULT_SETTINGS.showLoginButton);
     setShowTwoFactorButton(DEFAULT_SETTINGS.showTwoFactorButton);
     setShowForgotPassword(DEFAULT_SETTINGS.showForgotPassword);
+    setSimulateProCardOffline(false);
   }, []);
 
   // Keyboard listener for "." (settings) and "d" (debug banner)
@@ -165,6 +177,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setHovedordrePlacement,
         customerSearchConcept,
         setCustomerSearchConcept,
+        priceCheckLockConcept,
+        setPriceCheckLockConcept,
         showFlowIndicator,
         setShowFlowIndicator,
         showDebugBanner,
@@ -188,6 +202,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setShowTwoFactorButton,
         showForgotPassword,
         setShowForgotPassword,
+        simulateProCardOffline,
+        setSimulateProCardOffline,
         resetSettings,
       }}
     >
