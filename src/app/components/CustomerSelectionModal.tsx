@@ -2001,7 +2001,10 @@ export function CustomerSelectionModal({
                 </p>
               )}
 
-              {selectedCustomer && (
+              {/* Kunde card is suppressed in VIP mode (Prototype C): the card already
+                  identifies the customer in the header, so Credit is the only panel
+                  that adds information here. */}
+              {selectedCustomer && !isVipMode && (
                 <InfoCard
                   title={t('customerInfoTitle')}
                   expandLabel={t('expandCustomerDetails')}
