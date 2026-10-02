@@ -56,6 +56,7 @@ const en: Translations = {
   total: 'Total',
   vat: 'VAT',
   toPay: 'To pay',
+  totalBeforeDiscount: 'Total before discount',
   items: 'items',
   itemName: 'Item name',
   orderLines: 'order lines',

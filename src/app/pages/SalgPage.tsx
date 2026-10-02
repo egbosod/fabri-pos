@@ -774,15 +774,15 @@ export default function SalgPage() {
           </div>
         )}
 
-        {localHasItems && (
-          <PaymentSummary
-            subtotal={localPaymentTotals.subtotal}
-            discount={localPaymentTotals.discount}
-            total={localPaymentTotals.total}
-            itemCount={localPaymentTotals.itemCount}
-            returnAmount={localPaymentTotals.returnAmount || 0}
-          />
-        )}
+        {/* Always shown, so the cashier sees how the sale will be calculated
+            before the first line is added — it simply reads 0,00 until then. */}
+        <PaymentSummary
+          subtotal={localPaymentTotals.subtotal}
+          discount={localPaymentTotals.discount}
+          total={localPaymentTotals.total}
+          itemCount={localPaymentTotals.itemCount}
+          returnAmount={localPaymentTotals.returnAmount || 0}
+        />
 
         <div className="content-stretch flex flex-col gap-[10px] items-start justify-end relative shrink-0 w-full" data-name="Buttons">
           {/* Always present, so the path to a packing slip stays visible — it

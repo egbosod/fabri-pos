@@ -56,6 +56,7 @@ export interface Translations {
   total: string;
   vat: string;
   toPay: string;
+  totalBeforeDiscount: string;
   items: string;
   itemName: string;
   orderLines: string;

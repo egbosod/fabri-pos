@@ -60,6 +60,7 @@ const da: Translations = {
   total: 'Total',
   vat: 'Moms',
   toPay: 'At betale',
+  totalBeforeDiscount: 'Sum før rabat',
   items: 'varer',
   itemName: 'Varenavn',
   orderLines: 'varelinjer',

@@ -57,6 +57,7 @@ const no: Translations = {
   total: 'Totalt',
   vat: 'MVA',
   toPay: 'Å betale',
+  totalBeforeDiscount: 'Sum før rabatt',
   items: 'varer',
   itemName: 'Varenavn',
   orderLines: 'varelinjer',

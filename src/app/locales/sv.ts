@@ -57,6 +57,7 @@ const sv: Translations = {
   total: 'Totalt',
   vat: 'Moms',
   toPay: 'Att betala',
+  totalBeforeDiscount: 'Summa före rabatt',
   items: 'varor',
   itemName: 'Varunamn',
   orderLines: 'varulinjer',
