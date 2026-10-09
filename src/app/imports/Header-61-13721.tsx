@@ -12,7 +12,7 @@ function EgFabriLogoWhite1() {
   return (
     <img
       className="h-[40px] w-auto shrink-0"
-      src="/assets/EG-Fabri-Dashboard.svg"
+      src={`${import.meta.env.BASE_URL}assets/EG-Fabri-Dashboard.svg`}
       alt="EG Fabri"
       data-name="EG-Fabri-logo-white 1"
     />
