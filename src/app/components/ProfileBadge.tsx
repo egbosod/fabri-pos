@@ -542,7 +542,9 @@ function LanguageSection() {
   return (
     <div className="w-full border-t border-border/20">
       <MenuHeader 
-        title={t('language') === 'LANGUAGE' ? 'BYTT SPRÅK' : t('language')}
+        /* Outside Norwegian, the header stays Norwegian ("BYTT SPRÅK") so a
+           Norwegian user who switched by mistake can always find the way back. */
+        title={language === 'no' ? t('language') : 'BYTT SPRÅK'}
         isOpen={isExpanded}
         onClick={() => setIsExpanded(!isExpanded)}
         showCaret
