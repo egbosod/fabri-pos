@@ -4,6 +4,9 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS } from '../utils/prototypeDescriptions';
 import { ERP_SCENARIOS } from '../utils/settingsUrl';
+import { useCopyShareLink } from '../hooks/useCopyShareLink';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy, faCheck } from '@fortawesome/pro-regular-svg-icons';
 
 function EgFabriLogoWhite1() {
   return (
@@ -98,6 +101,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
   const { switchUserFlow, priceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
   const [showPrototypeHint, setShowPrototypeHint] = useState(false);
   const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
+  const { copyStatus, copyShareLink } = useCopyShareLink();
 
   const prototypeTooltip = `${FLOW_DESCRIPTIONS[switchUserFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[priceCheckLockConcept]}.`;
 
@@ -154,6 +158,15 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
               </div>
             )}
           </div>
+          <button
+            type="button"
+            onClick={copyShareLink}
+            className="bg-[#FF00FF] text-white w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Copy share link"
+            title="Copy share link"
+          >
+            <FontAwesomeIcon icon={copyStatus === 'copied' ? faCheck : faCopy} className="text-[11px]" />
+          </button>
           {showPrototypeHint && !isErpMenuOpen && (
             <div
               className="absolute left-0 top-[calc(100%+8px)] z-[9999] w-[260px] rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4]"
