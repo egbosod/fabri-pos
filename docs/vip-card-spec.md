@@ -1,10 +1,12 @@
-# VIP/PRO Card Handling — Prototype B (XL-BYG / Aspect4 DK)
+# VIP Card Handling (XL-BYG / Aspect4 DK)
 
 ## Overview
 
-XL-BYG (and similar wholesale customers) uses a physical VIP/PRO card for professional customers. The card is issued and validated by **Aspect4**, which remains the source of truth for customer, credit, and pricing data — Fabri POS never owns this data, it only reads and displays it.
+XL-BYG (and similar wholesale customers) uses a physical VIP card for professional customers. The card is issued and validated by **Aspect4**, which remains the source of truth for customer, credit, and pricing data — Fabri POS never owns this data, it only reads and displays it.
 
-This document specifies **Prototype B**'s VIP/PRO card flow. It is a **separate, parallel concept** from the VIP card handling already implemented for **Prototype C ("Aspect4 DK" fake-scan flow)** in this same repo (`POSContext.tsx` — `vipCard`/`vipAcknowledged`/`vipBlocked`; `CustomerSelectionModal.tsx` VIP tab; `RootLayout.tsx` Ctrl+< simulation). The two prototypes are alternate scenarios that can coexist, selected by the active prototype/scenario setting. **Exception (Sept 22 2026):** the delivery-note-only payment rule below was deliberately extended to Prototype C as well, so both scenarios demo the same tender restriction — see *Payment & returns*. Everything else here remains B-only.
+There is **one** VIP card concept. Prototypes B and C are two treatments of that same concept, selected by the prototype setting, and they share the scan (Ctrl+<), the card data, the modal and the payment rules. **The only difference is how a blocked card is resolved:** Prototype C lets the cashier dismiss the block and carry on without the card (Flow 1); Prototype B has no override — the sale cannot be finalized while a blocked card is attached.
+
+*(An earlier revision of this document described a second, separate "PRO card" flow with its own modal. That was a prototyping invention, not a real concept, and was removed on Sept 23 2026.)*
 
 This is a **planning artifact only**. It does not scaffold or specify code — no component names, state shapes, or file changes are prescribed here.
 
@@ -41,20 +43,22 @@ This is a **planning artifact only**. It does not scaffold or specify code — n
 
 - Aspect4's flags (project-required, requisition-required, and possibly recipient/pickup name) control **mandatory-ness only** — they do not affect what gets printed.
 - Mandatory fields, once required, must be captured from the cashier and mapped to the corresponding Aspect4 order header field.
+- **Decided (Sept 23 2026)**: on the VIP Kort tab, **Rekvisisjonsnummer** and **Mottaker / Att.** are always mandatory, in every prototype and every card concept — not conditional on the card's `requisitionRequired`/`allFieldsMandatory` flags. **Navn** is the opposite case: never mandatory, and always locked/non-editable on a VIP card.
 
 ---
 
 ## Payment & returns
 
 - VIP sales must complete as **delivery/packing note only** — cash payment is not allowed while a VIP card is active.
-  - *Implemented in the prototype for both B and C (Sept 22 2026)*: with a PRO card (B) or a VIP card (C) attached, the payment screen **hides** card/cash/Vipps/Klarna and "show more" entirely — they are not rendered, not greyed out — and shows a single locked "Delivery note" tender for the full total. The cash-withdrawal option and the numpad are hidden too (nothing to key in), and the delivery-note entry cannot be undone or discounted, so the cashier cannot reach a tender-less dead end. Wording comes from `proCardDeliveryNoteOnly` / `vipDeliveryNoteOnly`.
+  - *Implemented in the prototype for both B and C*: with a VIP card attached, the payment screen **hides** card/cash/Vipps/Klarna and "show more" entirely — they are not rendered, not greyed out — and shows a single locked "Delivery note" tender for the full total. The cash-withdrawal option and the numpad are hidden too (nothing to key in), and the delivery-note entry cannot be undone or discounted, so the cashier cannot reach a tender-less dead end. Wording comes from `vipDeliveryNoteOnly`.
 - **Returns are fully blocked** while a VIP card is active — no return lines can be added to the sale.
 
 ---
 
 ## UI direction
 
-- Proposed approach: a **detached VIP flow**. Once a card is scanned, the UI shows only VIP-relevant information, separate from the standard customer-card registration screen.
+- Approach in the prototype: once a card is scanned, the customer modal drops its ordinary tabs and shows a single **VIP Kort** tab, so only VIP-relevant information is on screen. The customer side panel stays, since the card's credit figures are read against the customer's own.
+- Card concepts under review, one per scan (rotating, `RootLayout.tsx`): card open · card blocked · address fields omitted · all fields mandatory except Navn · Navn non-editable.
 - A **persistent indicator** must show that a VIP card is currently set for the sale.
 - An explicit **"Remove VIP card"** action is required: it re-reads the standard customer record from Aspect4 and resets all overridden fields (credit limit, blocked status, mandatory flags, etc.) back to standard values.
 - **Offline mode**: VIP card sales must not be possible offline. Attempting to scan or use a VIP card while offline must surface a clear fault/error rather than silently degrading.
@@ -63,7 +67,7 @@ This is a **planning artifact only**. It does not scaffold or specify code — n
 
 ## Price check mode
 
-- When **Prototype B / Aspect4 DK** is the active scenario, VIP card scanning is also available from Price Check mode (today's `PriceCheckScreen.tsx`), which already reads a `priceCheckCustomer`/`priceCheckProject` context for pricing lookups.
+- When **Aspect4 DK** is the active scenario (prototype B or C), VIP card scanning is also available from Price Check mode (today's `PriceCheckScreen.tsx`), which already reads a `priceCheckCustomer`/`priceCheckProject` context for pricing lookups.
 - Scanning a VIP card in price check applies the card's overridden pricing/discount context to price-check results, using the same Aspect4 card-lookup contract as the sale flow.
 - Price check's VIP scan does **not** touch payment, returns, or mandatory-field capture — those rules only apply once an actual sale is started.
 - Card-not-found and card-blocked behavior mirror the sale flow (error, no silent fallback).
@@ -85,13 +89,12 @@ The following are **explicitly unresolved**. They are flagged here so implementa
 
 ---
 
-## Relationship to existing code (reference only, not to be modified)
+## Where this lives in the prototype
 
-For contrast, Prototype C's existing implementation lives in:
+The single VIP card implementation lives in:
 - `src/app/contexts/POSContext.tsx` — `vipCard`, `vipAcknowledged`, `vipBlocked`
-- `src/app/components/CustomerSelectionModal.tsx` — VIP tab, credit panel, blocked banner
+- `src/app/components/CustomerSelectionModal.tsx` — VIP tab, credit panel, blocked banner, `blockedOverridable` (B vs. C)
 - `src/app/components/RootLayout.tsx` — Ctrl+< fake-scan simulation
 - `src/app/types/pos.ts` — `VipCardStatus`, `VipCardData`
-- Locale files (`da.ts`, `en.ts`, `sv.ts`, `no.ts`, `types.ts`) — VIP strings labeled "Aspect4 DK / Prototype C"
-
-This spec describes a parallel Prototype B flow and does not require changes to any of the above.
+- `src/app/components/CustomerBadge.tsx` — persistent **VIP** indicator on the sale
+- Locale files (`da.ts`, `en.ts`, `sv.ts`, `no.ts`, `types.ts`) — VIP strings

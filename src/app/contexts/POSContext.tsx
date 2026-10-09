@@ -8,7 +8,6 @@ import type {
   OrderLineState,
   PaymentTotals,
   VipCardData,
-  ProCardData,
 } from '../types/pos';
 
 /* ─── Context value shape ──────────────────────────────────────────────────── */
@@ -60,19 +59,13 @@ interface POSContextValue {
   clearPriceCheck: () => void;
   clearPriceCheckItems: () => void;
   priceCheckLocked: boolean;
-  /* VIP card (Aspect4 DK / Prototype C) */
+  /* VIP card (Aspect4 DK / Prototypes B & C) */
   vipCard: VipCardData | null;
   setVipCard: (card: VipCardData | null) => void;
   vipAcknowledged: boolean;
   setVipAcknowledged: (ack: boolean) => void;
   vipBlocked: boolean;
   vipCreditExceeded: boolean;
-  /* PRO card (XL-BYG/Aspect4 / Prototype B) — independent from VIP card above */
-  proCard: ProCardData | null;
-  setProCard: (card: ProCardData | null) => void;
-  proCardMandatoryFields: { requisitionNumber: string; projectNumber: string; projectName: string };
-  setProCardMandatoryFields: (fields: { requisitionNumber: string; projectNumber: string; projectName: string }) => void;
-  proCardBlocked: boolean;
 }
 
 const POSContext = createContext<POSContextValue | null>(null);
@@ -249,20 +242,12 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
   const [vipCard, setVipCard] = useState<VipCardData | null>(null);
   const [vipAcknowledged, setVipAcknowledged] = useState(false);
 
-  /** A blocked-and-unacknowledged VIP card prevents finalizing the sale (Flow 1). */
+  /**
+   * A blocked-and-unacknowledged VIP card prevents finalizing the sale.
+   * Prototype C lets the cashier acknowledge and carry on (Flow 1); Prototype B
+   * never acknowledges, so there the block stands until the card is removed.
+   */
   const vipBlocked = !!vipCard && vipCard.status === 'blocked' && !vipAcknowledged;
-
-  /* ── PRO card (XL-BYG/Aspect4 / Prototype B) ───────────────────────────────
-     Independent from the VIP card state above — do not merge or share fields. */
-  const [proCard, setProCard] = useState<ProCardData | null>(null);
-  const [proCardMandatoryFields, setProCardMandatoryFields] = useState({
-    requisitionNumber: '',
-    projectNumber: '',
-    projectName: '',
-  });
-
-  /** A blocked PRO card is a hard stop — no acknowledge/override, unlike VIP's Flow 1. */
-  const proCardBlocked = !!proCard && proCard.status === 'blocked';
 
   /* ── Hovedordre (Main order) ────────────────────────────────────────────── */
   const [selectedHovedordre, setSelectedHovedordre] = useState<{ ordrenummer: string } | null>(null);
@@ -341,7 +326,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
   }, [orderGroups, addedItems]);
 
   /**
-   * Mid-sale credit-exceeded (open question 5 in docs/vip-pro-card-spec.md).
+   * Mid-sale credit-exceeded (open question 5 in docs/vip-card-spec.md).
    * The running sale total has tipped past the limit the VIP card carries —
    * the card's limit replaces the standard account's, so this is the only
    * credit figure that matters while a card is registered. Derived, not
@@ -373,8 +358,6 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setUserLogoutToast({ visible: false, username: '' });
     setVipCard(null);
     setVipAcknowledged(false);
-    setProCard(null);
-    setProCardMandatoryFields({ requisitionNumber: '', projectNumber: '', projectName: '' });
     setPriceCheckItems([]);
     setPriceCheckCustomerState(null);
     setPriceCheckProjectState(null);
@@ -421,11 +404,6 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setVipAcknowledged,
     vipBlocked,
     vipCreditExceeded,
-    proCard,
-    setProCard,
-    proCardMandatoryFields,
-    setProCardMandatoryFields,
-    proCardBlocked,
     priceCheckItems,
     addPriceCheckItems,
     removePriceCheckItem,

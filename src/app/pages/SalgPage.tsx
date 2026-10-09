@@ -636,8 +636,8 @@ export default function SalgPage() {
     handleUpdateAddedItem,
     paymentTotals,
     hasOrderItems,
-    proCard,
     vipCard,
+    setVipCard,
   } = usePOS();
 
   const [swipeableOrderLineStates, setSwipeableOrderLineStates] = useState<Record<string, SwipeableOrderLineState>>({});
@@ -731,7 +731,7 @@ export default function SalgPage() {
       />
 
       {/* Sidebar */}
-      <div className="bg-background box-border content-stretch flex flex-col gap-[30px] h-full items-start justify-end p-[20px] relative shrink-0 w-[263px]" data-name="Sidebar">
+      <div className="bg-background box-border content-stretch flex flex-col gap-[30px] h-full items-start justify-end p-[20px] relative shrink-0 w-[302px]" data-name="Sidebar">
         <div aria-hidden="true" className="absolute border-border border-[0px_0px_0px_1px] border-solid inset-0 pointer-events-none" />
 
         {!selectedCustomer ? (
@@ -765,7 +765,8 @@ export default function SalgPage() {
               onBankTerminal={() => {}}
               onExchangeSlip={() => openModal('faktura')}
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
-              proCard={proCard}
+              vipCard={vipCard}
+              onRemoveVipCard={() => setVipCard(null)}
             />
             {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') &&
               (hovedordrePlacement === 'B' || hovedordrePlacement === 'C') && (

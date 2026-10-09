@@ -61,9 +61,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scFakeCardScan: 'Falsk kortskanning',
     scFakeCardScanDesc: 'Simuler skanning av Aspect4-kundekort',
     scFakeVipScan: 'Falsk VIP-kortskanning',
-    scFakeVipScanDesc: 'Simuler skanning av VIP-/PRO-kort (krever Aspect4 DK). Flyt C gir VIP-kort, flyt B gir PRO-kort.',
-    simulateProCardOffline: 'Simuler offline for PRO-kort',
-    simulateProCardOfflineDesc: 'PRO-kortoppslag feiler med en offline-feilmelding i stedet for å kalle Aspect4.',
+    scFakeVipScanDesc: 'Simuler skanning av VIP-kort (krever Aspect4 DK og prototype B eller C). Hver skanning viser neste kortkonsept.',
     scFakeLogout: 'Falsk utlogging',
     scFakeLogoutDesc: 'Logg ut og gå til innloggingsskjermen',
     scResetAll: 'Nullstill all tilstand',
@@ -143,9 +141,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scFakeCardScan: 'Fake card scan',
     scFakeCardScanDesc: 'Simulate an Aspect4 customer card scan',
     scFakeVipScan: 'Fake VIP card scan',
-    scFakeVipScanDesc: 'Simulate a VIP/PRO card scan (requires Aspect4 DK). Flow C gives a VIP card, Flow B gives a PRO card.',
-    simulateProCardOffline: 'Simulate offline for PRO card',
-    simulateProCardOfflineDesc: 'PRO card lookups fail with an offline error instead of calling Aspect4.',
+    scFakeVipScanDesc: 'Simulate a VIP card scan (requires Aspect4 DK and prototype B or C). Each scan shows the next card concept.',
     scFakeLogout: 'Fake logout',
     scFakeLogoutDesc: 'Log out and navigate to the login screen',
     scResetAll: 'Reset all state',
@@ -262,8 +258,6 @@ export function SettingsModal() {
     showLoginButton,
     showTwoFactorButton,
     showForgotPassword,
-    simulateProCardOffline,
-    setSimulateProCardOffline,
   } = useSettings();
 
   // Panel language is deliberately independent of the product language.
@@ -1171,45 +1165,17 @@ export function SettingsModal() {
                   <Toggle checked={scanCustomerCard} onChange={() => setScanCustomerCard(!scanCustomerCard)} />
                 </RowCard>
 
-                {/* PRO card (XL-BYG/Aspect4 / Prototype B) — simulated offline toggle */}
-                {erpScenario === 'Aspect4 DK' && switchUserFlow === 'B' && (
-                  <RowCard>
-                    <div>
-                      <p
-                        style={{
-                          fontFamily: "'Montserrat', sans-serif",
-                          fontWeight: 'var(--font-weight-semibold)',
-                          fontSize: 'var(--text-base)',
-                          color: 'var(--foreground)',
-                          margin: 0,
-                          lineHeight: 1.5,
-                        }}
-                      >
-                        {s.simulateProCardOffline}
-                      </p>
-                      <p
-                        style={{
-                          fontFamily: "'Montserrat', sans-serif",
-                          fontSize: 'var(--text-sm)',
-                          color: 'var(--muted-foreground)',
-                          margin: '4px 0 0',
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {s.simulateProCardOfflineDesc}
-                      </p>
-                    </div>
-                    <Toggle checked={simulateProCardOffline} onChange={() => setSimulateProCardOffline(!simulateProCardOffline)} />
-                  </RowCard>
-                )}
               </div>
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
+          </div>
+
+          {/* ── Column 2: prototype tooling ── */}
+          <div style={columnStyle}>
 
           {/* ─ Keyboard Shortcuts ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="shortcuts">
               {s.shortcutsHeading}
             </SectionHeader>

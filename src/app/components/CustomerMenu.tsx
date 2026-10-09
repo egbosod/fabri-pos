@@ -9,6 +9,7 @@ interface CustomerMenuProps {
   onBankTerminal?: () => void;
   onExchangeSlip?: () => void;
   onPreviousPurchases?: () => void;
+  onRemoveVipCard?: () => void;
 }
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
@@ -203,6 +204,7 @@ export function CustomerMenu({
   onBankTerminal,
   onExchangeSlip,
   onPreviousPurchases,
+  onRemoveVipCard,
 }: CustomerMenuProps) {
   const { t } = useLanguage();
 
@@ -243,6 +245,15 @@ export function CustomerMenu({
           label="Rediger"
           onClick={onEdit}
         />
+
+        {onRemoveVipCard && (
+          <MenuItem
+            icon={<TrashIcon />}
+            label={t('removeVipCard')}
+            onClick={onRemoveVipCard}
+            variant="destructive"
+          />
+        )}
 
         {/* Divider before destructive action */}
         <MenuDivider />
