@@ -1,6 +1,8 @@
 # Icon mapping: lucide-react → Font Awesome Pro
 
-Font Awesome Pro 7.3 is already installed (`@fortawesome/pro-regular-svg-icons`, `pro-solid-svg-icons`, `react-fontawesome`). Use this table to swap icons one at a time as screens get touched. Every FA name below was checked against the installed `pro-regular` package.
+> **Status: on hold (2026-10-09).** Font Awesome Pro was removed so the public GitHub Pages build needs no licence token. Every icon is lucide-react again. The table below is still a complete inventory of the icons in use, so it works as a checklist for moving to Font Awesome or any other icon library later. See [Restoring Font Awesome Pro](#restoring-font-awesome-pro) at the bottom.
+
+Use this table to swap icons one at a time as screens get touched. Every FA name below was checked against the `pro-regular` 7.3 package.
 
 `@mui/icons-material` is in package.json but never imported. Figma-exported screens in `src/app/imports/` draw icons as inline SVG paths and aren't covered here.
 
@@ -59,3 +61,24 @@ Watch out for:
 - **EgConfirmModal:** changing `icon: LucideIcon` to `icon: IconDefinition` means its two callers have to switch in the same change.
 - **ui/select.tsx** is shadcn vendor code. Only swap it if the mismatch is visible.
 - Once `grep -r "lucide-react" src` comes back empty, remove `lucide-react` (and the unused `@mui/icons-material`) from package.json.
+
+## Restoring Font Awesome Pro
+
+Font Awesome Pro was last in the repo at commit `50f0d72`. Back then it drew four icons: `faCopy`/`faCheck` on the header share-link button, plus `faClipboardList` and `faUser` on the Salg page. Git history still holds a licence token in `.npmrc`. Never copy it back: get a new token from EG DevOps.
+
+1. **Token, never committed.** Add a repo secret `FA_TOKEN` (Settings → Secrets and variables → Actions), and put `export FA_TOKEN=…` in `~/.zshrc` for local installs.
+2. **`.npmrc`**: add
+   ```
+   //artifactory.eg.dk/artifactory/fontawesome-pro-remote/:_authToken=${FA_TOKEN}
+   @fortawesome:registry=https://artifactory.eg.dk/artifactory/fontawesome-pro-remote/
+   ```
+3. **`.github/workflows/deploy.yml`**: give the install step the secret:
+   ```yaml
+   - run: pnpm install
+     env:
+       FA_TOKEN: ${{ secrets.FA_TOKEN }}
+   ```
+4. **Packages:** `pnpm add @fortawesome/fontawesome-svg-core @fortawesome/pro-regular-svg-icons @fortawesome/pro-solid-svg-icons @fortawesome/react-fontawesome`
+5. Swap icons with the table and the steps under "How to swap" above.
+
+Moving to another library follows the same shape: credentials (if any) from a secret, a package install, then the table as the swap checklist.

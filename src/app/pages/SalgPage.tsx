@@ -5,8 +5,6 @@ import svgPaths from '../imports/svg-mrnj5uwtcu';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { usePOS } from '../contexts/POSContext';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClipboardList, faUser } from '@fortawesome/pro-regular-svg-icons';
 import { OrderGroup } from '../components/OrderGroup';
 import { AggregatedHandOpenOrderGroup } from '../components/AggregatedHandOpenOrderGroup';
 import { AggregatedOrderClosedGroup } from '../components/AggregatedOrderClosedGroup';
@@ -16,7 +14,7 @@ import { PriceCheckEmptyState } from '../components/PriceCheckEmptyState';
 import { PaymentSummary } from '../components/PaymentSummary';
 import { CustomerBadge } from '../components/CustomerBadge';
 import { CART_COLUMNS } from '../components/cartColumnWidths';
-import { Check, RotateCcw, Trash2, Plus } from 'lucide-react';
+import { Check, RotateCcw, Trash2, Plus, ClipboardList, User } from 'lucide-react';
 import type { CartItem, OrderGroupData, ProductItem, RowState } from '../types/pos';
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -39,7 +37,7 @@ function SearchIcon() {
 function OrdersIcon() {
   return (
     <div className="flex items-center justify-center" data-name="Orders Icon">
-      <FontAwesomeIcon icon={faClipboardList} className="text-[15px] text-foreground" />
+      <ClipboardList size={15} className="text-foreground" />
     </div>
   );
 }
@@ -47,7 +45,7 @@ function OrdersIcon() {
 function UserGroupIcon() {
   return (
     <div className="flex items-center justify-center" data-name="User Icon">
-      <FontAwesomeIcon icon={faUser} className="text-[12px] text-foreground" />
+      <User size={12} className="text-foreground" />
     </div>
   );
 }
