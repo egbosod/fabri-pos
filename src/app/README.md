@@ -73,8 +73,10 @@ All UI uses CSS variables from `/styles/globals.css`:
 /components/login/                Logon screens (ported from the Logon prototype)
 /components/ui/                   shadcn-style primitives
 /contexts/                        Language, Settings, POS
-/imports/                         Figma-generated components
-/imports/login/                   Figma-generated components for the logon screens
+/imports/                         Figma SVG path data + the few Make-generated
+                                  components still in use (MainMenu, Header-61-13721,
+                                  CustomerRelatedActions, the two Toasts)
+/imports/login/                   Logo + SVG paths for the logon screens
 /pages/                           POS pages
 /pages/login/                     Logon pages
 /utils/loginToken.ts              Username handoff between login and POS
