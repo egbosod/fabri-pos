@@ -260,7 +260,7 @@ export function SettingsModal() {
   } = useSettings();
 
   // Panel language is deliberately independent of the product language.
-  const [panelLang, setPanelLang] = useState<PanelLang>('no');
+  const [panelLang, setPanelLang] = useState<PanelLang>('en');
   const s = STRINGS[panelLang];
 
   // Dragging state
