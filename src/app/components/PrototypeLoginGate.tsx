@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import LogoFabriVersion from '../imports/login/LogoFabriVersion2';
 
 const STORAGE_KEY = 'fabri-pos-prototype-auth-v2';
-const VALID_EMAIL = 'hawkeye@eg.no';
+// Any name before the @ is accepted, as long as the domain is eg.no, eg.dk or eg.se.
+const VALID_EMAIL = /^[^\s@]+@eg\.(no|dk|se)$/;
 // The email is the only real check. Any non-empty password is accepted so a
 // colleague opening a shared link never gets stuck on a forgotten password.
 
@@ -41,8 +42,8 @@ function LoginScreen({ onSuccess }: { onSuccess: () => void }) {
     let ok = true;
     const normalizedEmail = email.trim().toLowerCase();
 
-    if (normalizedEmail !== VALID_EMAIL) {
-      setEmailError('Unrecognised email');
+    if (!VALID_EMAIL.test(normalizedEmail)) {
+      setEmailError('Use your @eg.no, @eg.dk or @eg.se email');
       ok = false;
     } else {
       setEmailError('');
