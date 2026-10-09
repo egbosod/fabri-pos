@@ -5,8 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS } from '../utils/prototypeDescriptions';
 import { ERP_SCENARIOS } from '../utils/settingsUrl';
 import { useCopyShareLink } from '../hooks/useCopyShareLink';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCopy, faCheck } from '@fortawesome/pro-regular-svg-icons';
+import { Copy, Check } from 'lucide-react';
 
 function EgFabriLogoWhite1() {
   return (
@@ -178,7 +177,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
             aria-label="Copy share link"
             title="Copy share link"
           >
-            <FontAwesomeIcon icon={copyStatus === 'copied' ? faCheck : faCopy} className="text-[11px]" />
+            {copyStatus === 'copied' ? <Check size={11} /> : <Copy size={11} />}
           </button>
         </div>
       )}
