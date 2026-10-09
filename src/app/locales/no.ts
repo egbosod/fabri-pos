@@ -349,6 +349,26 @@ const no: Translations = {
 
   deliveryNoteTender: 'Følgeseddel',
   vipDeliveryNoteOnly: 'VIP-kort aktivt — salget må fullføres som følgeseddel. Kontant og andre betalingsmåter er ikke tilgjengelige.',
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Prissjekkmodus',
+  checkPriceButton: 'Sjekk pris',
+  copyLastReceipt: 'Kopi av siste kvittering',
+  openCashDrawer: 'Åpne kasseskuff',
+  cashInOut: 'Ta inn/ut veksel',
+  versionInfo: 'Versjonsskriv',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Logg av',
+  yourPinCode: 'Din PIN-kode',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP kort sperret',
+  vipCardBlockedBody: 'Fjern VIP-kort for å gjennomføre kjøp.',
+  vipBadgeOpen: 'VIP åpen',
+  vipBadgeBlocked: 'VIP sperret',
+  invoicesForPayment: 'Faktura til betaling',
+  edit: 'Rediger',
+  removeCustomer: 'Fjern kunden',
+  noInvoicesForPayment: 'Ingen fakturaer til betaling',
+  invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunden vil vises her. Funksjonaliteten er under utvikling.',
 };
 
 export default no;

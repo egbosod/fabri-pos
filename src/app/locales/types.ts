@@ -350,4 +350,24 @@ export interface Translations {
   deliveryNoteTender: string;
   /** VIP card active — delivery-note-only rule (Aspect4 DK / Prototype C) */
   vipDeliveryNoteOnly: string;
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: string;
+  checkPriceButton: string;
+  copyLastReceipt: string;
+  openCashDrawer: string;
+  cashInOut: string;
+  versionInfo: string;
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: string;
+  yourPinCode: string;
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: string;
+  vipCardBlockedBody: string;
+  vipBadgeOpen: string;
+  vipBadgeBlocked: string;
+  invoicesForPayment: string;
+  edit: string;
+  removeCustomer: string;
+  noInvoicesForPayment: string;
+  invoicesForPaymentPlaceholder: string;
 }

@@ -150,8 +150,8 @@ export function CustomerBadge({
             border: '1px solid var(--Orange-Orange-60, #E66F04)',
           }}
         >
-          <p className="font-bold leading-[1.5] w-full" style={{ color: 'var(--Orange-Orange-60, #E66F04)' }}>VIP kort sperret</p>
-          <p className="leading-[1.5] text-foreground w-full">Fjern VIP-kort for å gjennomføre kjøp.</p>
+          <p className="font-bold leading-[1.5] w-full" style={{ color: 'var(--Orange-Orange-60, #E66F04)' }}>{t('vipCardBlockedTitle')}</p>
+          <p className="leading-[1.5] text-foreground w-full">{t('vipCardBlockedBody')}</p>
           {onRemoveVipCard && (
             <button
               type="button"
@@ -205,7 +205,7 @@ export function CustomerBadge({
                     border: `1px solid color-mix(in srgb, ${vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)'} 35%, transparent)`,
                   }}>
                     {switchUserFlow === 'B'
-                      ? (vipCard.status === 'open' ? 'VIP åpen' : 'VIP sperret')
+                      ? (vipCard.status === 'open' ? t('vipBadgeOpen') : t('vipBadgeBlocked'))
                       : 'VIP'}
                   </span>
                 )}

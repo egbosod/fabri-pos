@@ -227,7 +227,7 @@ export function CustomerMenu({
         {/* 1 · Invoice for payment — always shown, highlighted as first action */}
         <MenuItem
           icon={<AccountingDocumentIcon />}
-          label="Faktura til betaling"
+          label={t('invoicesForPayment')}
           onClick={onExchangeSlip ?? (() => {})}
           variant="highlighted"
         />
@@ -242,7 +242,7 @@ export function CustomerMenu({
         {/* 3 · Edit — always shown */}
         <MenuItem
           icon={<PencilIcon />}
-          label="Rediger"
+          label={t('edit')}
           onClick={onEdit}
         />
 
@@ -261,7 +261,7 @@ export function CustomerMenu({
         {/* 4 · Remove customer — destructive */}
         <MenuItem
           icon={<TrashIcon />}
-          label="Fjern kunden"
+          label={t('removeCustomer')}
           onClick={onRemove}
           variant="destructive"
         />

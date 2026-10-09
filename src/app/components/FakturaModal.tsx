@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface FakturaModalProps {
   onClose: () => void;
@@ -23,6 +24,7 @@ function InvoiceIcon() {
 }
 
 export function FakturaModal({ onClose, customerName }: FakturaModalProps) {
+  const { t } = useLanguage();
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -63,7 +65,7 @@ export function FakturaModal({ onClose, customerName }: FakturaModalProps) {
               color: 'var(--foreground)',
             }}
           >
-            Faktura til betaling
+            {t('invoicesForPayment')}
             {customerName && (
               <span
                 style={{
@@ -101,7 +103,7 @@ export function FakturaModal({ onClose, customerName }: FakturaModalProps) {
               e.currentTarget.style.color = 'var(--muted-foreground)';
               e.currentTarget.style.background = 'transparent';
             }}
-            aria-label="Lukk"
+            aria-label={t('close')}
           >
             <CloseIcon />
           </button>
@@ -122,7 +124,7 @@ export function FakturaModal({ onClose, customerName }: FakturaModalProps) {
               textAlign: 'center',
             }}
           >
-            Ingen fakturaer til betaling
+            {t('noInvoicesForPayment')}
           </span>
           <span
             style={{
@@ -133,7 +135,7 @@ export function FakturaModal({ onClose, customerName }: FakturaModalProps) {
               maxWidth: 320,
             }}
           >
-            Fakturaer til betaling for denne kunden vil vises her. Funksjonaliteten er under utvikling.
+            {t('invoicesForPaymentPlaceholder')}
           </span>
         </div>
 
@@ -166,7 +168,7 @@ export function FakturaModal({ onClose, customerName }: FakturaModalProps) {
               e.currentTarget.style.background = 'transparent';
             }}
           >
-            Lukk
+            {t('close')}
           </button>
         </div>
       </div>

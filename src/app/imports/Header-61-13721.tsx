@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS } from '../utils/prototypeDescriptions';
 import { ERP_SCENARIOS } from '../utils/settingsUrl';
 
@@ -37,9 +38,10 @@ function ChevronDown2({ isOpen }: { isOpen?: boolean }) {
 }
 
 function Frame32({ onClick, isOpen }: { onClick: () => void; isOpen?: boolean }) {
+  const { t } = useLanguage();
   return (
     <button onClick={onClick} className="content-stretch flex gap-[6.477px] items-center relative shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
-      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">MENY</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">{t('menu')}</p>
       <ChevronDown2 isOpen={isOpen} />
     </button>
   );
@@ -54,14 +56,15 @@ function Frame632({ onMenuClick, isMenuOpen, isDisabled }: { onMenuClick: () => 
 }
 
 function Frame633({ isDisabled, onPreviousPurchasesClick }: { isDisabled?: boolean; onPreviousPurchasesClick?: () => void }) {
+  const { t } = useLanguage();
   return (
     <div className={`content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre transition-opacity ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`}>
-      <p className="relative shrink-0">Nytt salg</p>
+      <p className="relative shrink-0">{t('newSale')}</p>
       <button
         onClick={onPreviousPurchasesClick}
         className="relative shrink-0 bg-transparent border-none cursor-pointer p-0 text-white font-['Montserrat',sans-serif] font-normal leading-[1.75] text-[15px] text-center text-nowrap whitespace-pre hover:opacity-70 transition-opacity"
-      >Tidligere kjøp</button>
-      <p className="relative shrink-0">Kasseoppgjør</p>
+      >{t('previousPurchases')}</button>
+      <p className="relative shrink-0">{t('cashSettlement')}</p>
     </div>
   );
 }
@@ -210,6 +213,7 @@ function Header({ onMenuClick, isMenuOpen, isPriceCheckMode, onProfileClick, isP
 }
 
 function TextButton({ onClick }: { onClick: () => void }) {
+  const { t } = useLanguage();
   return (
     <button onClick={onClick} className="box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center px-[9px] py-[6px] relative rounded-[5px] shrink-0 hover:bg-gray-50 transition-colors" data-name="Text button">
       <div className="overflow-clip relative shrink-0 size-[12px]" data-name="Icon / Search">
@@ -219,16 +223,17 @@ function TextButton({ onClick }: { onClick: () => void }) {
           </svg>
         </div>
       </div>
-      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">Sjekk pris</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">{t('checkPriceButton')}</p>
     </button>
   );
 }
 
 function Button() {
+  const { t } = useLanguage();
   return (
     <button className="bg-white box-border content-stretch cursor-pointer flex gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative rounded-bl-[5px] rounded-tl-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-bl-[5px] rounded-tl-[5px]" />
-      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Parker salg</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">{t('parkSale')}</p>
     </button>
   );
 }
@@ -304,9 +309,10 @@ function CloseButton({ onClick }: { onClick: () => void }) {
 }
 
 function Text({ paymentTitle }: { paymentTitle?: string }) {
+  const { t } = useLanguage();
   return (
     <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center px-[9px] py-[6px] relative rounded-[5px] shrink-0" data-name="Text">
-      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">{paymentTitle || 'Prisjekkmodus'}</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">{paymentTitle || t('priceCheckMode')}</p>
     </div>
   );
 }

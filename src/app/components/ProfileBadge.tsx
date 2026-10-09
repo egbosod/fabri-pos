@@ -246,7 +246,7 @@ function UserOption({ name, isExpanded, authMode, setAuthMode, onClick, onUserSw
                     type="password"
                     value={pin}
                     onChange={(e) => setPin(e.target.value)}
-                    placeholder="Your PIN-code"
+                    placeholder={t('yourPinCode')}
                     className="w-full font-['Montserrat',sans-serif] font-normal text-[var(--text-sm)] text-foreground outline-none bg-transparent placeholder:text-muted-foreground placeholder:opacity-60"
                   />
                 </div>
@@ -256,7 +256,7 @@ function UserOption({ name, isExpanded, authMode, setAuthMode, onClick, onUserSw
                   onClick={handleConfirmPin}
                   className="bg-primary h-[48px] rounded-[var(--radius)] w-full flex items-center justify-center hover:bg-primary/90 transition-colors"
                 >
-                  <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-lg)] text-primary-foreground">Confirm</span>
+                  <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-lg)] text-primary-foreground">{t('confirm')}</span>
                 </button>
 
                 {/* Cancel Button */}
@@ -264,7 +264,7 @@ function UserOption({ name, isExpanded, authMode, setAuthMode, onClick, onUserSw
                   onClick={handleCancel}
                   className="h-[48px] w-full flex items-center justify-center hover:bg-secondary/30 rounded-[var(--radius)] transition-colors"
                 >
-                  <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-sm)] uppercase text-primary">Cancel</span>
+                  <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-sm)] uppercase text-primary">{t('cancel')}</span>
                 </button>
               </div>
             )}
@@ -406,7 +406,7 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
             onClick={(e) => handleCurrentUserAction(e, 'lockUser')}
             className="w-full h-[44px] bg-primary text-primary-foreground rounded-[var(--radius)] font-['Montserrat',sans-serif] font-semibold text-[var(--text-sm)] hover:bg-primary/90 transition-colors flex items-center justify-center"
           >
-            <span>Logg av</span>
+            <span>{t('logOff')}</span>
           </button>
           
           {/* Edit PIN - Secondary button */}
@@ -468,7 +468,7 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
                 onClick={(e) => handleButtonClick(e, 'password')}
                 className="w-full h-[48px] bg-card border border-border rounded-[var(--radius-md)] font-['Montserrat'] font-semibold text-[var(--text-sm)] text-foreground hover:bg-muted transition-colors flex items-center justify-center"
               >
-                Passord
+                {t('password')}
               </button>
             )}
             
@@ -478,7 +478,7 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
               className="w-full h-[48px] bg-card border border-border rounded-[var(--radius-md)] font-['Montserrat'] font-semibold text-[var(--text-sm)] text-foreground hover:bg-muted transition-colors flex items-center justify-center gap-[8px]"
             >
               <CircleUserIcon />
-              <span>Logg av</span>
+              <span>{t('logOff')}</span>
             </button>
           </div>
         ) : (
@@ -493,7 +493,7 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
                 type="password"
                 value={pin}
                 onChange={(e) => setPin(e.target.value)}
-                placeholder="Your PIN-code"
+                placeholder={t('yourPinCode')}
                 className="w-full font-['Montserrat',sans-serif] font-normal text-[var(--text-sm)] text-foreground outline-none bg-transparent placeholder:text-muted-foreground placeholder:opacity-60"
               />
             </div>
@@ -503,7 +503,7 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
               onClick={handleConfirmPin}
               className="bg-primary h-[48px] rounded-[var(--radius)] w-full flex items-center justify-center hover:bg-primary/90 transition-colors"
             >
-              <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-lg)] text-primary-foreground">Confirm</span>
+              <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-lg)] text-primary-foreground">{t('confirm')}</span>
             </button>
 
             {/* Cancel Button */}
@@ -511,7 +511,7 @@ function UserOptionFlowC({ name, isExpanded, onClick, isCurrentUser = false, onU
               onClick={handleCancel}
               className="h-[48px] w-full flex items-center justify-center hover:bg-secondary/30 rounded-[var(--radius)] transition-colors"
             >
-              <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-sm)] uppercase text-primary">Cancel</span>
+              <span className="font-['Montserrat',sans-serif] font-semibold text-[var(--text-sm)] uppercase text-primary">{t('cancel')}</span>
             </button>
           </div>
         )}

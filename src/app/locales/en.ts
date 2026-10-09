@@ -348,6 +348,26 @@ const en: Translations = {
 
   deliveryNoteTender: 'Delivery note',
   vipDeliveryNoteOnly: 'VIP card active — sale must complete as a delivery/packing note. Cash and other tenders are not available.',
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Price check mode',
+  checkPriceButton: 'Check price',
+  copyLastReceipt: 'Copy of last receipt',
+  openCashDrawer: 'Open cash drawer',
+  cashInOut: 'Cash in/out',
+  versionInfo: 'Version info',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Log off',
+  yourPinCode: 'Your PIN code',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP card blocked',
+  vipCardBlockedBody: 'Remove the VIP card to complete the purchase.',
+  vipBadgeOpen: 'VIP open',
+  vipBadgeBlocked: 'VIP blocked',
+  invoicesForPayment: 'Invoices for payment',
+  edit: 'Edit',
+  removeCustomer: 'Remove customer',
+  noInvoicesForPayment: 'No invoices for payment',
+  invoicesForPaymentPlaceholder: 'Invoices for payment for this customer will appear here. This feature is in development.',
 };
 
 export default en;

@@ -342,6 +342,33 @@ const sv: Translations = {
 
   deliveryNoteTender: 'Följesedel',
   vipDeliveryNoteOnly: 'VIP-kort aktivt — försäljningen måste slutföras som följesedel. Kontant och andra betalningssätt är inte tillgängliga.',
+  // ── Hovedordre modal (DRAFT: was missing, fell back to English) ─────────
+  hovedordre: 'Huvudorder',
+  velgHovedordre: 'Välj huvudorder',
+  searchMainOrder: 'Sök huvudorder',
+  searchMainOrderPlaceholder: 'Sök på ordernummer, rekvisition eller adress',
+  fetchMainOrder: 'Hämta vald huvudorder',
+  // DRAFT: machine-drafted, needs native review (i18n PR 1)
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Priskontrolläge',
+  checkPriceButton: 'Kontrollera pris',
+  copyLastReceipt: 'Kopia av senaste kvitto',
+  openCashDrawer: 'Öppna kassalåda',
+  cashInOut: 'Växel in/ut',
+  versionInfo: 'Versionsinformation',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Logga av',
+  yourPinCode: 'Din PIN-kod',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP-kort spärrat',
+  vipCardBlockedBody: 'Ta bort VIP-kortet för att slutföra köpet.',
+  vipBadgeOpen: 'VIP öppet',
+  vipBadgeBlocked: 'VIP spärrat',
+  invoicesForPayment: 'Fakturor att betala',
+  edit: 'Redigera',
+  removeCustomer: 'Ta bort kunden',
+  noInvoicesForPayment: 'Inga fakturor att betala',
+  invoicesForPaymentPlaceholder: 'Fakturor att betala för den här kunden visas här. Funktionen är under utveckling.',
 };
 
 export default sv;

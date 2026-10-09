@@ -345,6 +345,33 @@ const da: Translations = {
 
   deliveryNoteTender: 'Følgeseddel',
   vipDeliveryNoteOnly: 'VIP-kort aktivt — salget skal afsluttes som følgeseddel. Kontant og andre betalingsformer er ikke tilgængelige.',
+  // ── Hovedordre modal (DRAFT: was missing, fell back to English) ─────────
+  hovedordre: 'Hovedordre',
+  velgHovedordre: 'Vælg hovedordre',
+  searchMainOrder: 'Søg hovedordre',
+  searchMainOrderPlaceholder: 'Søg på ordrenummer, rekvisition eller adresse',
+  fetchMainOrder: 'Hent valgt hovedordre',
+  // DRAFT: machine-drafted, needs native review (i18n PR 1)
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Pristjektilstand',
+  checkPriceButton: 'Tjek pris',
+  copyLastReceipt: 'Kopi af seneste kvittering',
+  openCashDrawer: 'Åbn kasseskuffe',
+  cashInOut: 'Byttepenge ind/ud',
+  versionInfo: 'Versionsinformation',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Log af',
+  yourPinCode: 'Din PIN-kode',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP-kort spærret',
+  vipCardBlockedBody: 'Fjern VIP-kortet for at gennemføre købet.',
+  vipBadgeOpen: 'VIP åben',
+  vipBadgeBlocked: 'VIP spærret',
+  invoicesForPayment: 'Fakturaer til betaling',
+  edit: 'Rediger',
+  removeCustomer: 'Fjern kunden',
+  noInvoicesForPayment: 'Ingen fakturaer til betaling',
+  invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunde vises her. Funktionen er under udvikling.',
 };
 
 export default da;

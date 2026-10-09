@@ -1,9 +1,11 @@
 import svgPaths from "./svg-qo1bi9f670";
+import { useLanguage } from "../contexts/LanguageContext";
 
 /**
  * @figmaAssetKey 04fa3607ca8ecee97f1a8c024cb06d41c05b3967
  */
 function MainMenu({ className }: { className?: string }) {
+  const { t } = useLanguage();
   return (
     <div className={className} data-name="Main menu">
       <div className="content-stretch flex flex-col gap-[12px] items-start relative shrink-0 w-full">
@@ -21,7 +23,7 @@ function MainMenu({ className }: { className?: string }) {
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
                   <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
-                    <p className="leading-[16px] whitespace-pre">Exchange slip</p>
+                    <p className="leading-[16px] whitespace-pre">{t('exchangeSlip')}</p>
                   </div>
                 </div>
               </div>
@@ -52,7 +54,7 @@ function MainMenu({ className }: { className?: string }) {
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
                   <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
-                    <p className="leading-[16px] whitespace-pre">Gavekort</p>
+                    <p className="leading-[16px] whitespace-pre">{t('giftCard')}</p>
                   </div>
                 </div>
               </div>
@@ -99,7 +101,7 @@ function MainMenu({ className }: { className?: string }) {
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
                   <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
-                    <p className="leading-[16px] whitespace-pre">Bankterminal</p>
+                    <p className="leading-[16px] whitespace-pre">{t('bankTerminal')}</p>
                   </div>
                 </div>
               </div>
@@ -139,7 +141,7 @@ function MainMenu({ className }: { className?: string }) {
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
                   <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
-                    <p className="leading-[16px] whitespace-pre">Kopi av siste kvittering</p>
+                    <p className="leading-[16px] whitespace-pre">{t('copyLastReceipt')}</p>
                   </div>
                 </div>
               </div>
@@ -169,7 +171,7 @@ function MainMenu({ className }: { className?: string }) {
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
                   <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
-                    <p className="leading-[16px] whitespace-pre">Åpne kasseskuff </p>
+                    <p className="leading-[16px] whitespace-pre">{t('openCashDrawer')}</p>
                   </div>
                 </div>
               </div>
@@ -206,7 +208,7 @@ function MainMenu({ className }: { className?: string }) {
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
                   <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
-                    <p className="leading-[16px] whitespace-pre">Ta inn/ut veksel </p>
+                    <p className="leading-[16px] whitespace-pre">{t('cashInOut')}</p>
                   </div>
                 </div>
               </div>
@@ -218,7 +220,7 @@ function MainMenu({ className }: { className?: string }) {
         <div aria-hidden="true" className="absolute border-[#6b6b72] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
         <div className="content-stretch flex gap-[5px] items-start relative shrink-0">
           <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#d5d5d7] text-[14px] text-nowrap">
-            <p className="leading-[16px] whitespace-pre">Versjonsskriv</p>
+            <p className="leading-[16px] whitespace-pre">{t('versionInfo')}</p>
           </div>
           <div className="overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Ex link">
             <div className="absolute left-0 size-[14px] top-0" data-name="Icon Plate" />
