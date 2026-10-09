@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Bug, ChevronDown, ChevronRight } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
-import { toast } from 'sonner@2.0.3';
-import { buildShareURL, type SharedSettings } from '../utils/settingsUrl';
-import { PROTOTYPE_PINK, PROTOTYPE_TOAST_OPTS } from '../utils/prototypeDescriptions';
+import { useCopyShareLink } from '../hooks/useCopyShareLink';
+import { PROTOTYPE_PINK } from '../utils/prototypeDescriptions';
 
 // ─── Panel language ───────────────────────────────────────────────────────────
 // This panel is an internal prototyping tool, so it keeps its own language
@@ -261,7 +260,7 @@ export function SettingsModal() {
   } = useSettings();
 
   // Panel language is deliberately independent of the product language.
-  const [panelLang, setPanelLang] = useState<PanelLang>('no');
+  const [panelLang, setPanelLang] = useState<PanelLang>('en');
   const s = STRINGS[panelLang];
 
   // Dragging state
@@ -294,64 +293,7 @@ export function SettingsModal() {
   const [wcagAll, setWcagAll] = useState(false);
 
   // "Kopier delingslenke" footer button label, temporarily swapped after a click
-  const [copyStatus, setCopyStatus] = useState<'copied' | 'failed' | null>(null);
-  const shareLinkTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (shareLinkTimeoutRef.current) clearTimeout(shareLinkTimeoutRef.current);
-    };
-  }, []);
-
-  const flashCopyStatus = (status: 'copied' | 'failed') => {
-    setCopyStatus(status);
-    if (shareLinkTimeoutRef.current) clearTimeout(shareLinkTimeoutRef.current);
-    shareLinkTimeoutRef.current = setTimeout(() => setCopyStatus(null), 2000);
-  };
-
-  const handleCopyShareLink = () => {
-    const settings: SharedSettings = {
-      switchUserFlow,
-      erpScenario,
-      hovedordrePlacement,
-      customerSearchConcept,
-      priceCheckLockConcept,
-      showFlowIndicator,
-      showDebugBanner,
-      allowCreateProject,
-      allowCreateContactPerson,
-      showPasswordOption,
-      scanCustomerCard,
-      twoFactorEnabled,
-      showLoginButton,
-      showTwoFactorButton,
-      showForgotPassword,
-    };
-
-    const url = buildShareURL(settings);
-
-    // The button label flashes *and* a pink toast fires: the label is the
-    // in-place confirmation, the toast is what a collaborator sees in a
-    // screen share. English-only, like the rest of this prototyping layer.
-    navigator.clipboard.writeText(url).then(
-      () => {
-        flashCopyStatus('copied');
-        toast('Share link copied', {
-          description: 'Your current prototype settings are encoded in the URL',
-          duration: 2500,
-          ...PROTOTYPE_TOAST_OPTS,
-        });
-      },
-      () => {
-        flashCopyStatus('failed');
-        toast('Copy failed', {
-          description: 'Copy the URL from the address bar instead',
-          duration: 3000,
-          ...PROTOTYPE_TOAST_OPTS,
-        });
-      },
-    );
-  };
+  const { copyStatus, copyShareLink: handleCopyShareLink } = useCopyShareLink();
 
   const handleWcagContrastToggle = () => {
     const newState = !wcagContrast;

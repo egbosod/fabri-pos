@@ -23,7 +23,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 // ─── Provider ─────────────────────────────────────────────────────────────────
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('no');
+  const [language, setLanguage] = useState<Language>('en');
 
   const t = (key: keyof Translations): string => {
     // Primary: current language
@@ -63,9 +63,9 @@ export function useLanguage(): LanguageContextType {
     if (process.env.NODE_ENV === 'development') {
       console.warn('useLanguage: context unavailable, likely a hot-reload hiccup. Using fallback.');
       return {
-        language: 'no',
+        language: 'en',
         setLanguage: () => {},
-        t: (key) => (translations.no[key] ?? translations.en[key] ?? key),
+        t: (key) => (translations.en[key] ?? translations.no[key] ?? key),
       };
     }
     throw new Error('useLanguage must be used within a LanguageProvider');

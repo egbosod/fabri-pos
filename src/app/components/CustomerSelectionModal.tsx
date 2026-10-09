@@ -2126,12 +2126,6 @@ export function CustomerSelectionModal({
             <div
               style={{ width: 296, borderLeft: '1px solid var(--border)', padding: 20, display: scanPanelOpen ? 'none' : 'flex', flexDirection: 'column', gap: 20, overflowY: 'auto', alignSelf: 'stretch', flexShrink: 0, background: 'var(--background)' }}
             >
-              {!selectedCustomer && !selectedProject && (
-                <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', lineHeight: 1.6 }}>
-                  {t('selectCustomerToView')}
-                </p>
-              )}
-
               {/* Kunde card is suppressed in VIP mode (Prototype C): the card already
                   identifies the customer in the header, so Credit is the only panel
                   that adds information here. */}

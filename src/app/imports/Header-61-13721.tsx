@@ -4,12 +4,15 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS } from '../utils/prototypeDescriptions';
 import { ERP_SCENARIOS } from '../utils/settingsUrl';
+import { useCopyShareLink } from '../hooks/useCopyShareLink';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCopy, faCheck } from '@fortawesome/pro-regular-svg-icons';
 
 function EgFabriLogoWhite1() {
   return (
     <img
       className="h-[40px] w-auto shrink-0"
-      src="/assets/EG-Fabri-Dashboard.svg"
+      src={`${import.meta.env.BASE_URL}assets/EG-Fabri-Dashboard.svg`}
       alt="EG Fabri"
       data-name="EG-Fabri-logo-white 1"
     />
@@ -98,6 +101,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
   const { switchUserFlow, priceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
   const [showPrototypeHint, setShowPrototypeHint] = useState(false);
   const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
+  const { copyStatus, copyShareLink } = useCopyShareLink();
 
   const prototypeTooltip = `${FLOW_DESCRIPTIONS[switchUserFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[priceCheckLockConcept]}.`;
 
@@ -106,15 +110,28 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
       {showFlowIndicator && (
         <div
           className="flex items-center gap-2 relative"
-          onMouseEnter={() => setShowPrototypeHint(true)}
-          onMouseLeave={() => {
-            setShowPrototypeHint(false);
-            setIsErpMenuOpen(false);
-          }}
+          onMouseLeave={() => setIsErpMenuOpen(false)}
         >
-          <span className="font-['Montserrat'] font-medium text-[#FF00FF] text-[14px]">Prototype</span>
-          <div className="w-[24px] h-[24px] rounded-full bg-[#FF00FF] flex items-center justify-center text-white font-['Montserrat'] font-bold text-[12px] shadow-sm border border-white">
-            {switchUserFlow}
+          {/* Label + letter badge read as one item; only they trigger the prototype tooltip. */}
+          <div
+            className="flex items-center gap-2 relative cursor-default"
+            onMouseEnter={() => setShowPrototypeHint(true)}
+            onMouseLeave={() => setShowPrototypeHint(false)}
+          >
+            <span className="font-['Montserrat'] font-medium text-[#FF00FF] text-[14px]">Prototype</span>
+            <div className="w-[24px] h-[24px] rounded-full bg-[#FF00FF] flex items-center justify-center text-white font-['Montserrat'] font-bold text-[12px] shadow-sm border border-white">
+              {switchUserFlow}
+            </div>
+            {showPrototypeHint && (
+              <div
+                className="absolute left-0 top-[calc(100%+8px)] z-[9999] w-[260px] rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4]"
+                role="tooltip"
+              >
+                <div className="absolute -top-[5px] left-[20px] w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
+                <p className="font-bold mb-1">Prototype {switchUserFlow}</p>
+                <p>{prototypeTooltip}</p>
+              </div>
+            )}
           </div>
           <div className="relative">
             <button
@@ -154,16 +171,15 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
               </div>
             )}
           </div>
-          {showPrototypeHint && !isErpMenuOpen && (
-            <div
-              className="absolute left-0 top-[calc(100%+8px)] z-[9999] w-[260px] rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4]"
-              role="tooltip"
-            >
-              <div className="absolute -top-[5px] left-[20px] w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
-              <p className="font-bold mb-1">Prototype {switchUserFlow}</p>
-              <p>{prototypeTooltip}</p>
-            </div>
-          )}
+          <button
+            type="button"
+            onClick={copyShareLink}
+            className="bg-[#FF00FF] text-white w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Copy share link"
+            title="Copy share link"
+          >
+            <FontAwesomeIcon icon={copyStatus === 'copied' ? faCheck : faCopy} className="text-[11px]" />
+          </button>
         </div>
       )}
       <button 
