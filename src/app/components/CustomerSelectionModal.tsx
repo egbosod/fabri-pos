@@ -76,7 +76,7 @@ interface CustomerSelectionModalProps {
   scannedCardData?: ScannedCardData | null;
   /** Called once the scanned data has been applied to the form */
   onCardDataProcessed?: () => void;
-  /** Active VIP card for this sale — puts the modal into VIP mode (Aspect4 DK / Prototype C) */
+  /** Active VIP card for this sale — puts the modal into VIP mode (Aspect4 DK / Prototypes B & C) */
   vipCard?: VipCardData | null;
   /** Running sale total, used as "Used" in the VIP credit panel (live per line item) */
   saleTotal?: number;
@@ -84,6 +84,28 @@ interface CustomerSelectionModalProps {
   onVipRemoved?: () => void;
   /** Marks a blocked VIP card as acknowledged by the cashier (Flow 1) */
   onVipAcknowledged?: () => void;
+  /**
+   * Prototype C (true): a blocked card can be acknowledged and the sale carries
+   * on (Flow 1). Prototype B (false): a blocked card is a hard stop — removing
+   * the card is the only way forward, so dismissing never acknowledges it.
+   */
+  blockedOverridable?: boolean;
+  /**
+   * Prototype A (true): the VIP delivery address is three free-text
+   * "Leveringsadresse" lines — the first always mandatory, the other two never.
+   * Prototypes B and C (false): Adresse plus a Postnummer / Poststed pair.
+   */
+  stackedDeliveryAddress?: boolean;
+  /**
+   * Reports whether the "Søk kundekort" scan panel is open. Prototype C gates
+   * the fake VIP card scan on it: the scan only lands if the cashier has put
+   * the till into card-search mode first, the way a real reader would.
+   */
+  onCardScanPanelChange?: (open: boolean) => void;
+  /** Customer already on the sale — reopening the modal starts from it */
+  initialCustomer?: { id: string } | null;
+  /** Project already on the sale — reopening the modal starts from it */
+  initialProject?: { id: string } | null;
 }
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -692,6 +714,11 @@ export function CustomerSelectionModal({
   saleTotal = 0,
   onVipRemoved,
   onVipAcknowledged,
+  blockedOverridable = true,
+  stackedDeliveryAddress = false,
+  onCardScanPanelChange,
+  initialCustomer = null,
+  initialProject = null,
 }: CustomerSelectionModalProps) {
   const { t } = useLanguage();
   const { erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard, customerSearchConcept } = useSettings();
@@ -706,10 +733,22 @@ export function CustomerSelectionModal({
   const [activeTab, setActiveTab] = useState<TabKey>(vipCard ? 'vipKort' : 'generelt');
 
   // Customer / Project search + selection
-  const [customerSearch, setCustomerSearch] = useState('');
-  const [projectSearch, setProjectSearch] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // Prefer the full mock record (it carries the detail-card fields); fall back
+  // to what the sale holds, e.g. a project created in this modal earlier.
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(() =>
+    initialCustomer
+      ? [...mockCustomers, ...erpOnlyCustomers].find(c => c.id === initialCustomer.id) ?? (initialCustomer as Customer)
+      : null
+  );
+  const [selectedProject, setSelectedProject] = useState<Project | null>(() =>
+    initialProject
+      ? mockProjects.find(p => p.id === initialProject.id) ?? (initialProject as Project)
+      : null
+  );
+  const [customerSearch, setCustomerSearch] = useState(() =>
+    selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.customerNumber})` : ''
+  );
+  const [projectSearch, setProjectSearch] = useState(() => selectedProject?.navn ?? '');
 
   // Dropdown open states
   const [customerOpen, setCustomerOpen] = useState(false);
@@ -743,9 +782,10 @@ export function CustomerSelectionModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const scanPanelInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus customer search input on mount
+  // Auto-focus customer search input on mount — not when reopening with a
+  // customer already chosen, or the focus would pop the dropdown open over it.
   useEffect(() => {
-    if (customerSearchInputRef.current) {
+    if (customerSearchInputRef.current && !initialCustomer) {
       customerSearchInputRef.current.focus();
     }
   }, []);
@@ -769,6 +809,8 @@ export function CustomerSelectionModal({
   const [deliveryName, setDeliveryName] = useState('');
   const [deliveryAddress1, setDeliveryAddress1] = useState('');
   const [deliveryAddress2, setDeliveryAddress2] = useState('');
+  /** Third VIP delivery-address line — Prototype A only. */
+  const [deliveryAddress3, setDeliveryAddress3] = useState('');
   const [deliveryPhone, setDeliveryPhone] = useState('');
   const [deliveryEmail, setDeliveryEmail] = useState('');
   const [deliveryPostalCode, setDeliveryPostalCode] = useState('');
@@ -837,6 +879,20 @@ export function CustomerSelectionModal({
       scanPanelInputRef.current.focus();
     }
   }, [scanPanelOpen]);
+
+  // Tell the shell whether card-search mode is active — Prototype C's fake VIP
+  // scan is only allowed from here. Closing the modal always clears it.
+  useEffect(() => {
+    onCardScanPanelChange?.(scanPanelOpen);
+  }, [scanPanelOpen, onCardScanPanelChange]);
+
+  useEffect(() => () => onCardScanPanelChange?.(false), [onCardScanPanelChange]);
+
+  // A landed VIP card takes over the modal (VIP Kort tab), so the scan panel
+  // steps aside once the scan has been read.
+  useEffect(() => {
+    if (vipCard && scanPanelOpen) closeScanPanel();
+  }, [vipCard, scanPanelOpen, closeScanPanel]);
 
   // ─── Filtering ──────────────────────────────────────────────────────────────
 
@@ -1006,8 +1062,10 @@ export function CustomerSelectionModal({
 
     // The form's Name must read the same as "Kundenavn" in the right-hand
     // panel, which is driven by the matched customer record — the card's own
-    // customerName is only the fallback when no record resolves.
-    setDeliveryName(prev => prev || customer?.name || vipCard.customerName);
+    // customerName is only the fallback when no record resolves. Locked and
+    // card-owned, so each scan overwrites it rather than keeping the previous
+    // card's name when concepts are rotated through.
+    setDeliveryName(customer?.name || vipCard.customerName);
 
     // The address block is owned by the card, so each new card overwrites it
     // outright — including clearing it when the card carries no address. Using
@@ -1044,21 +1102,45 @@ export function CustomerSelectionModal({
       setCustomerSearch(`${refreshed.name} (${refreshed.customerNumber})`);
     }
 
-    // Blocked cards must be explicitly acknowledged before the sale can finalize.
-    onVipAcknowledged?.();
+    // Prototype C: dismissing is also the acknowledgement that unblocks the
+    // sale. Prototype B has no override, so only the removal below applies.
+    if (blockedOverridable) onVipAcknowledged?.();
     onVipRemoved?.();
-  }, [vipCard, onVipAcknowledged, onVipRemoved]);
+  }, [vipCard, blockedOverridable, onVipAcknowledged, onVipRemoved]);
 
   // ─── VIP credit calculation (live — recomputed on every sale-total change) ──
   // Covers both Flow 2 Case A (already over limit at scan) and Case B (crosses
   // the limit mid-sale as line items are added).
   /**
-   * Concept "all fields mandatory except Navn": the asterisk is decoration only,
-   * matching how `requisitionRequired` already works — Confirm still only needs
-   * a customer, so the cashier is never blocked by it.
+   * Concept "all fields mandatory except Navn". Navn is never mandatory (and is
+   * never editable on a VIP card), every other shown field is.
    */
   const vipMandatory = (label: string) =>
     vipCard?.allFieldsMandatory ? `${label} *` : label;
+
+  /**
+   * Mandatory-field gate for the VIP card tab: Confirm stays disabled until
+   * every starred field holds something. Address lines only count when the card
+   * carries an address — the "address fields omitted" concept hides them.
+   */
+  const vipMandatoryFilled = (() => {
+    if (!vipCard) return true;
+    const filled = (v: string) => v.trim() !== '';
+    // Rekvisisjonsnummer and Mottaker/Att. are always mandatory on the VIP
+    // card tab, in every prototype and every card concept — not gated on
+    // vipCard.requisitionRequired / allFieldsMandatory. Navn is never
+    // mandatory here (it's locked/non-editable instead, see below).
+    if (!filled(requisitionNumber)) return false;
+    if (!filled(contactPerson)) return false;
+    // Prototype A: the first Leveringsadresse line is mandatory whatever the
+    // card concept says. Lines 2 and 3 never are.
+    if (stackedDeliveryAddress && vipCard.address && !filled(deliveryAddress1)) return false;
+    if (vipCard.allFieldsMandatory) {
+      // Postnummer / Poststed only exist in prototypes B and C.
+      if (vipCard.address && !stackedDeliveryAddress && !(filled(deliveryAddress1) && filled(deliveryPostalCode) && filled(deliveryCity))) return false;
+    }
+    return true;
+  })();
 
   const vipCreditRemaining = vipCard ? vipCard.creditLimit - saleTotal : 0;
   const vipOverLimit = !!vipCard && vipCreditRemaining < 0;
@@ -1839,31 +1921,31 @@ export function CustomerSelectionModal({
                     {vipCard.status === 'blocked' && (
                       <div style={{ background: 'color-mix(in srgb, var(--destructive) 15%, var(--card))', borderRadius: 'var(--radius-sm)', padding: 15 }}>
                         <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.75, margin: 0 }}>
-                          {t('vipBlockedInfo')}
+                          {blockedOverridable ? t('vipBlockedInfo') : t('vipBlockedHardStop')}
                         </p>
                       </div>
                     )}
 
-                    {/* Rekvisisjonsnummer */}
+                    {/* Rekvisisjonsnummer — always mandatory on the VIP card
+                        tab, regardless of card concept or prototype. */}
                     <div>
-                      <FieldLabel>{vipCard.requisitionRequired || vipCard.allFieldsMandatory ? t('requisitionRequired') : t('requisition')}</FieldLabel>
+                      <FieldLabel>{t('requisitionRequired')}</FieldLabel>
                       <InputBox focused={false}>
                         <input style={{ ...baseInputStyle, color: requisitionNumber ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={requisitionNumber} placeholder={t('requisitionPlaceholder')} onChange={e => setRequisitionNumber(e.target.value)} />
                       </InputBox>
                     </div>
 
                     {/* Leveringsadresse — 3 lines. Navn is the one field never
-                        marked mandatory, and the one that can arrive locked. */}
+                        marked mandatory, and always locked on a VIP card. */}
                     <div>
                       <FieldLabel>{t('name')}</FieldLabel>
-                      <InputBox focused={false} style={vipCard.nameReadOnly ? { background: 'var(--muted)' } : undefined}>
+                      <InputBox focused={false} style={{ background: 'var(--muted)' }}>
                         <input
-                          style={{ ...baseInputStyle, color: vipCard.nameReadOnly ? 'var(--muted-foreground)' : deliveryName ? 'var(--foreground)' : 'var(--muted-foreground)', cursor: vipCard.nameReadOnly ? 'not-allowed' : undefined }}
+                          style={{ ...baseInputStyle, color: 'var(--muted-foreground)', cursor: 'not-allowed' }}
                           value={deliveryName}
                           placeholder={t('namePlaceholder')}
-                          readOnly={vipCard.nameReadOnly}
-                          disabled={vipCard.nameReadOnly}
-                          onChange={e => setDeliveryName(e.target.value)}
+                          readOnly
+                          disabled
                         />
                       </InputBox>
                     </div>
@@ -1871,10 +1953,33 @@ export function CustomerSelectionModal({
                     {/* Concept "address fields omitted": a card with no address
                         hides Adresse / Postnummer / Poststed outright rather than
                         showing three empty boxes. */}
-                    {vipCard.address && (
+                    {vipCard.address && (stackedDeliveryAddress ? (
+                      /* Prototype A: three plain Leveringsadresse lines. The first
+                         is always mandatory, the other two never are. */
                       <>
                         <div>
-                          <FieldLabel>{vipMandatory(t('address1'))}</FieldLabel>
+                          <FieldLabel>{`${t('vipDeliveryAddress')} *`}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
+                          </InputBox>
+                        </div>
+                        <div>
+                          <FieldLabel style={{ visibility: 'hidden' }}>{t('vipDeliveryAddress')}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input aria-label={t('vipDeliveryAddress')} style={{ ...baseInputStyle, color: deliveryAddress2 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress2} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress2(e.target.value)} />
+                          </InputBox>
+                        </div>
+                        <div>
+                          <FieldLabel style={{ visibility: 'hidden' }}>{t('vipDeliveryAddress')}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input aria-label={t('vipDeliveryAddress')} style={{ ...baseInputStyle, color: deliveryAddress3 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress3} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress3(e.target.value)} />
+                          </InputBox>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <FieldLabel>{vipMandatory(t('vipAddress1'))}</FieldLabel>
                           <InputBox focused={false}>
                             <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
                           </InputBox>
@@ -1895,11 +2000,12 @@ export function CustomerSelectionModal({
                           </div>
                         </div>
                       </>
-                    )}
+                    ))}
 
-                    {/* Mottaker / Att. */}
+                    {/* Mottaker / Att. — always mandatory on the VIP card
+                        tab, regardless of card concept or prototype. */}
                     <div>
-                      <FieldLabel>{vipMandatory(t('vipRecipient'))}</FieldLabel>
+                      <FieldLabel>{`${t('vipRecipient')} *`}</FieldLabel>
                       <InputBox focused={false}>
                         <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
                       </InputBox>
@@ -2239,7 +2345,7 @@ export function CustomerSelectionModal({
               onConfirm={handleConfirm}
               cancelText={t('cancel')}
               confirmText={t('confirm')}
-              confirmDisabled={!selectedCustomer}
+              confirmDisabled={!selectedCustomer || !vipMandatoryFilled}
               extraAction={vipCard ? {
                 label: t('removeVipCard'),
                 onClick: handleVipRemoveOrDismiss,

@@ -24,7 +24,7 @@ function Text({ text, additionalClassNames = "" }: TextProps) {
   return (
     <div className={clsx("absolute bg-white content-stretch flex h-[48px] items-center justify-center left-[439px] min-w-[100px] px-[20px] py-[6px] rounded-[5px] w-[160px]", additionalClassNames)}>
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] text-nowrap">{text}</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] text-nowrap">{text}</p>
     </div>
   );
 }
@@ -36,7 +36,7 @@ function ButtonText({ text }: ButtonTextProps) {
   return (
     <div className="bg-white content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[30px] py-[6px] relative rounded-[5px] shrink-0 w-[120px]">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] text-nowrap">{text}</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] text-nowrap">{text}</p>
     </div>
   );
 }
@@ -70,7 +70,7 @@ export default function Alt() {
                 </div>
                 <div className="content-stretch flex items-start relative shrink-0">
                   <div className="content-stretch flex gap-[6.477px] items-center relative shrink-0">
-                    <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white">MENY</p>
+                    <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white">MENY</p>
                     <div className="h-[11.667px] relative shrink-0 w-[12.301px]" data-name="Chevron Down 2">
                       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12.3005 11.6667">
                         <g clipPath="url(#clip0_243_1808)" id="Chevron Down 2">
@@ -85,7 +85,7 @@ export default function Alt() {
                     </div>
                   </div>
                 </div>
-                <div className="content-stretch flex font-['Montserrat:Regular',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white">
+                <div className="content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white">
                   <p className="relative shrink-0">Nytt salg</p>
                   <p className="relative shrink-0">Tidligere kjøp</p>
                   <p className="relative shrink-0">Kasseoppgjør</p>
@@ -109,7 +109,7 @@ export default function Alt() {
                       </Wrapper>
                     </div>
                   </div>
-                  <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">Ola Nordmann</p>
+                  <p className="absolute font-['Montserrat',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">Ola Nordmann</p>
                   <div className="absolute h-[16.689px] left-[13.01px] top-[calc(50%-0.1px)] translate-y-[-50%] w-[13.563px]" data-name="user icon">
                     <div className="absolute inset-[-4.49%_-5.53%]">
                       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 15.0631 18.1892">
@@ -132,7 +132,7 @@ export default function Alt() {
             <div className="bg-white relative rounded-[5px] shrink-0 size-[24px]" data-name="Checkbox">
               <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
             </div>
-            <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[12px] text-nowrap">Ekstra uttak av kontanter</p>
+            <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[12px] text-nowrap">Ekstra uttak av kontanter</p>
           </div>
           <div className="absolute content-stretch flex gap-[12px] items-end left-[20px] top-[20px]" data-name="Customer without Santander account">
             <div className="bg-[#0d97fc] content-stretch flex flex-col h-[110px] items-center justify-center pb-[10px] pt-[20px] px-[20px] relative rounded-[5px] shrink-0 w-[120px]" data-name="Button card">
@@ -146,7 +146,7 @@ export default function Alt() {
                     </g>
                   </svg>
                 </div>
-                <p className="font-['Montserrat:Medium',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[16px] text-nowrap text-white">Kort</p>
+                <p className="font-['Montserrat',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[16px] text-nowrap text-white">Kort</p>
               </div>
             </div>
             <div className="bg-white content-stretch flex flex-col h-[110px] items-center justify-center pb-[10px] pt-[20px] px-[20px] relative rounded-[5px] shrink-0 w-[120px]" data-name="Button cash">
@@ -167,7 +167,7 @@ export default function Alt() {
                   </div>
                 </div>
               </div>
-              <p className="font-['Montserrat:Medium',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[16px] text-nowrap">Kontant</p>
+              <p className="font-['Montserrat',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[16px] text-nowrap">Kontant</p>
             </div>
             <div className="bg-white content-stretch flex flex-col h-[110px] items-center justify-center pb-[10px] pt-[20px] px-[25px] relative rounded-[5px] shrink-0 w-[120px]" data-name="Button payment small/Variant2">
               <div aria-hidden="true" className="absolute border-[#d5d5d7] border-[1.471px] border-solid inset-0 pointer-events-none rounded-[5px]" />
@@ -183,7 +183,7 @@ export default function Alt() {
                   </div>
                 </div>
               </div>
-              <p className="font-['Montserrat:Medium',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[16px] text-nowrap">Vipps</p>
+              <p className="font-['Montserrat',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[16px] text-nowrap">Vipps</p>
             </div>
             <div className="bg-white content-stretch flex flex-col h-[110px] items-center justify-center pb-[10px] pt-[20px] px-[25px] relative rounded-[5px] shrink-0 w-[120px]" data-name="Button payment small/Variant2">
               <div aria-hidden="true" className="absolute border-[#d5d5d7] border-[1.471px] border-solid inset-0 pointer-events-none rounded-[5px]" />
@@ -208,11 +208,11 @@ export default function Alt() {
                   </div>
                 </div>
               </div>
-              <p className="font-['Montserrat:Medium',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[16px] text-nowrap">Klarna</p>
+              <p className="font-['Montserrat',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[16px] text-nowrap">Klarna</p>
             </div>
             <div className="bg-white content-stretch flex gap-[10px] h-[48px] items-center px-[15px] py-[5px] relative rounded-[4px] shrink-0" data-name="Select">
               <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[4px]" />
-              <div className="flex flex-col font-['Montserrat:SemiBold',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
+              <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
                 <p className="leading-[1.75]">Vis flere</p>
               </div>
               <div className="h-[6.175px] relative shrink-0 w-[10px]" data-name="Vector">
@@ -224,7 +224,7 @@ export default function Alt() {
           </div>
           <div className="absolute bg-[#fafafa] border border-[#d5d5d7] border-solid h-[383px] left-[20px] rounded-[5px] top-[209px] w-[620px]" data-name="Numpad payment">
             <div className="absolute bg-[#0d97fc] content-stretch flex h-[48px] items-center justify-center left-[438px] min-w-[100px] px-[20px] py-[6px] rounded-[5px] top-[50px] w-[160px]" data-name="Button">
-              <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-nowrap text-white">Start betaling</p>
+              <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-nowrap text-white">Start betaling</p>
             </div>
             <div className="absolute contents left-[438px] top-[130px]">
               <Text text="+ 100 ,-" additionalClassNames="top-[131px]" />
@@ -233,7 +233,7 @@ export default function Alt() {
               <Text text="+ 200 ,-" additionalClassNames="top-[193px]" />
             </div>
             <div className="absolute contents left-[19px] top-[19px]">
-              <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold h-[29px] leading-[1.75] left-[20px] text-[#090914] text-[14px] top-[20px] tracking-[0.5px] w-[388px]">Beløp på kort</p>
+              <p className="absolute font-['Montserrat',sans-serif] font-bold h-[29px] leading-[1.75] left-[20px] text-[#090914] text-[14px] top-[20px] tracking-[0.5px] w-[388px]">Beløp på kort</p>
               <div className="absolute content-stretch flex flex-col gap-[14px] items-start left-[20px] top-[129px]">
                 <div className="content-stretch flex gap-[14px] items-start relative shrink-0">
                   <ButtonText text="1" />
@@ -272,7 +272,7 @@ export default function Alt() {
               <div className="absolute bg-white content-stretch flex gap-[10px] h-[48px] items-center left-[20px] px-[14px] py-[8px] rounded-[5px] top-[49px] w-[388px]" data-name="Textfield/Normal">
                 <div aria-hidden="true" className="absolute border-2 border-[#0d97fc] border-solid inset-0 pointer-events-none rounded-[5px]" />
                 <div className="basis-0 content-stretch flex grow items-center min-h-px min-w-px relative shrink-0">
-                  <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#42424a] text-[14px] text-nowrap">1289</p>
+                  <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#42424a] text-[14px] text-nowrap">1289</p>
                   <div className="h-[15px] relative shrink-0 w-px" data-name="blinking-caret 1">
                     <img alt="" className="absolute inset-0 max-w-none object-50%-50% object-cover pointer-events-none size-full" src={imgBlinkingCaret1} />
                   </div>
@@ -301,7 +301,7 @@ export default function Alt() {
         <div className="absolute h-[63px] left-0 top-0 w-[1024px]" data-name="Header">
           <div className="absolute bg-white border-[#e6e6e8] border-[0px_0px_1.461px] border-solid h-[63px] left-0 top-0 w-[1024px]" data-name="Module header">
             <div className="absolute contents left-[63px] top-[22px]">
-              <p className="absolute font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.2] left-[63px] text-[#22222c] text-[17px] text-nowrap top-[22px]">Betaling kort</p>
+              <p className="absolute font-['Montserrat',sans-serif] font-semibold leading-[1.2] left-[63px] text-[#22222c] text-[17px] text-nowrap top-[22px]">Betaling kort</p>
             </div>
             <div className="absolute content-stretch flex items-center justify-center left-[9px] p-[8px] size-[48px] top-[8px]" data-name="Close 48 px toch area">
               <div className="relative shrink-0 size-[27px]" data-name="Close">
@@ -330,15 +330,15 @@ export default function Alt() {
           <div className="bg-white content-stretch flex flex-col items-start justify-center overflow-clip pb-0 pt-[15px] px-[15px] relative rounded-[5px] shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] shrink-0" data-name="Payment section">
             <div className="content-stretch flex items-start justify-between relative shrink-0 w-[256px]">
               <div className="content-stretch flex flex-col items-start relative shrink-0">
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">Totalt å betale:</p>
-                <div className="content-stretch flex font-['Montserrat:Bold',sans-serif] font-bold items-baseline leading-[1.4] relative shrink-0 text-[#090914] text-nowrap">
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">Totalt å betale:</p>
+                <div className="content-stretch flex font-['Montserrat',sans-serif] font-bold items-baseline leading-[1.4] relative shrink-0 text-[#090914] text-nowrap">
                   <p className="relative shrink-0 text-[30px]">1 289</p>
                   <p className="relative shrink-0 text-[24px]">,-</p>
                 </div>
               </div>
               <div className="content-stretch flex flex-col items-end relative shrink-0">
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#6b6b72] text-[14px] text-nowrap">Gjenstående:</p>
-                <div className="content-stretch flex font-['Montserrat:Medium',sans-serif] font-medium items-baseline justify-end leading-[1.4] relative shrink-0 text-[#6b6b72] text-nowrap text-right">
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#6b6b72] text-[14px] text-nowrap">Gjenstående:</p>
+                <div className="content-stretch flex font-['Montserrat',sans-serif] font-medium items-baseline justify-end leading-[1.4] relative shrink-0 text-[#6b6b72] text-nowrap text-right">
                   <p className="relative shrink-0 text-[30px]">0</p>
                   <p className="relative shrink-0 text-[24px]">,-</p>
                 </div>
@@ -346,13 +346,13 @@ export default function Alt() {
             </div>
             <div className="content-stretch flex flex-col items-start relative shrink-0">
               <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0">
-                <div className="content-stretch flex flex-col font-['Montserrat:Regular',sans-serif] font-normal gap-[3px] items-start leading-[1.4] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+                <div className="content-stretch flex flex-col font-['Montserrat',sans-serif] font-normal gap-[3px] items-start leading-[1.4] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
                   <p className="relative shrink-0">(1 288,80)</p>
                   <p className="relative shrink-0">{`Inkl. mva: 322,20 `}</p>
                 </div>
                 <div className="content-stretch flex items-center justify-between relative shrink-0 w-[256px]">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap">Kort:</p>
-                  <div className="content-stretch flex font-['Montserrat:Regular',sans-serif] font-normal gap-[3px] items-center leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap w-[38px]">
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap">Kort:</p>
+                  <div className="content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[3px] items-center leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap w-[38px]">
                     <p className="relative shrink-0">1 289</p>
                     <p className="relative shrink-0">,-</p>
                   </div>
@@ -368,7 +368,7 @@ export default function Alt() {
                         </clipPath>
                       </defs>
                     </Wrapper>
-                    <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[12px] text-nowrap">Angre</p>
+                    <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[12px] text-nowrap">Angre</p>
                   </div>
                 </div>
                 <div className="absolute h-0 left-1/2 top-[57px] translate-x-[-50%] w-[256px]">

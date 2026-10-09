@@ -50,7 +50,7 @@ function ChevronDown2() {
 function Frame32() {
   return (
     <div className="content-stretch flex gap-[6.477px] items-center relative shrink-0">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">MENY</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">MENY</p>
       <ChevronDown2 />
     </div>
   );
@@ -66,7 +66,7 @@ function Frame632() {
 
 function Frame633() {
   return (
-    <div className="content-stretch flex font-['Montserrat:Regular',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre">
+    <div className="content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre">
       <p className="opacity-50 relative shrink-0">Nytt salg</p>
       <p className="opacity-50 relative shrink-0">Tidligere kjøp</p>
       <p className="opacity-50 relative shrink-0">Kasseoppgjør</p>
@@ -120,7 +120,7 @@ function Frame137() {
             </div>
           </div>
         </div>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">Ola Nordmann</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">Ola Nordmann</p>
         <UserIcon />
       </div>
     </div>
@@ -176,7 +176,7 @@ function Frame681({ onClick }: { onClick?: () => void }) {
 function TextButton() {
   return (
     <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center px-[9px] py-[6px] relative rounded-[5px] shrink-0" data-name="Text button">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">Prisjekkmodus</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">Prisjekkmodus</p>
     </div>
   );
 }
@@ -209,7 +209,7 @@ function Header1({ onClose }: { onClose?: () => void }) {
 function Content18() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Varenavn</p>
       </div>
     </div>
@@ -227,7 +227,7 @@ function TableCell18() {
 function Content19() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Antall</p>
       </div>
     </div>
@@ -245,7 +245,7 @@ function TableCell19() {
 function Content20() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Per enhet</p>
       </div>
     </div>
@@ -263,7 +263,7 @@ function TableCell20() {
 function Content21() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Rabatt</p>
       </div>
     </div>
@@ -281,7 +281,7 @@ function TableCell21() {
 function Content22() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Totalt</p>
       </div>
     </div>
@@ -358,7 +358,7 @@ function Ikoner() {
 function Slettinfo() {
   return (
     <div className="absolute content-stretch flex gap-[11px] items-start left-[652px] opacity-0 top-[19px]" data-name="slettinfo">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14px] text-nowrap text-white whitespace-pre">Slett</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14px] text-nowrap text-white whitespace-pre">Slett</p>
       <Ikoner />
     </div>
   );
@@ -367,9 +367,9 @@ function Slettinfo() {
 function Content23() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[0px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[0px] text-nowrap">
         <p className="leading-[19px] whitespace-pre">
-          <span className="font-['Montserrat:Medium',sans-serif] font-medium text-[14px]">Beslagsskrue 5,0x40 CS A-250 Corrseal</span>
+          <span className="font-['Montserrat',sans-serif] font-medium text-[14px]">Beslagsskrue 5,0x40 CS A-250 Corrseal</span>
           <span className="text-[14px]">
             <br aria-hidden="true" />
           </span>
@@ -391,7 +391,7 @@ function TableCell23() {
 function Frame655() {
   return (
     <div className="content-stretch flex gap-[5px] items-center relative shrink-0">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
         <p className="leading-[1.38] whitespace-pre">3,00</p>
       </div>
     </div>
@@ -409,7 +409,7 @@ function Textfield() {
 function Content24() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">PAK</p>
       </div>
     </div>
@@ -443,7 +443,7 @@ function Numpad() {
 function Frame656() {
   return (
     <div className="content-stretch flex gap-[5px] items-center relative shrink-0">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
         <p className="leading-[1.38] whitespace-pre">179,00</p>
       </div>
     </div>
@@ -484,10 +484,10 @@ function Numpad1() {
 function Frame657() {
   return (
     <div className="content-stretch flex gap-[3px] items-center leading-[0] relative shrink-0 text-nowrap">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center relative shrink-0 text-[#090914] text-[14px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center relative shrink-0 text-[#090914] text-[14px]">
         <p className="leading-[1.38] text-nowrap whitespace-pre">10</p>
       </div>
-      <div className="flex flex-col font-['Montserrat:SemiBold',sans-serif] font-semibold justify-center relative shrink-0 text-[#42424a] text-[12px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center relative shrink-0 text-[#42424a] text-[12px]">
         <p className="leading-[1.38] text-nowrap whitespace-pre">%</p>
       </div>
     </div>
@@ -528,9 +528,9 @@ function TableCell24() {
 function Content28() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[19px] relative shrink-0 text-[#22222c] text-[0px] text-nowrap text-right whitespace-pre">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[19px] relative shrink-0 text-[#22222c] text-[0px] text-nowrap text-right whitespace-pre">
         <p className="mb-0 text-[14px]">483,30</p>
-        <p className="[text-decoration-skip-ink:none] [text-underline-position:from-font] decoration-solid font-['Montserrat:Regular',sans-serif] font-normal line-through text-[#6b6b72] text-[12px]">537,00</p>
+        <p className="[text-decoration-skip-ink:none] [text-underline-position:from-font] decoration-solid font-['Montserrat',sans-serif] font-normal line-through text-[#6b6b72] text-[12px]">537,00</p>
       </div>
     </div>
   );
@@ -572,7 +572,7 @@ function Table1() {
         <TableRow3 />
         <div className="absolute content-stretch flex items-start left-[76px] top-[33px] w-[44px]" data-name="Varelabel/Farlig_gods">
           <div className="absolute bg-[#ffe4b7] box-border content-stretch flex gap-[10px] h-[17px] items-center justify-center left-0 px-[4px] py-[2px] rounded-[3px] top-0" data-name="Label">
-            <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[11px] text-nowrap whitespace-pre">Farlig gods</p>
+            <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[11px] text-nowrap whitespace-pre">Farlig gods</p>
           </div>
         </div>
       </div>
@@ -583,10 +583,10 @@ function Table1() {
 function Frame427319122() {
   return (
     <div className="h-[34px] leading-[0] relative shrink-0 text-nowrap w-[92px]">
-      <div className="absolute flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center left-0 text-[#42424a] text-[12px] top-[26.5px] translate-y-[-50%]">
+      <div className="absolute flex flex-col font-['Montserrat',sans-serif] font-normal justify-center left-0 text-[#42424a] text-[12px] top-[26.5px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">12. juni 2023</p>
       </div>
-      <div className="absolute flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center left-0 text-[#22222c] text-[14px] top-[calc(50%-8.5px)] translate-y-[-50%]">
+      <div className="absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center left-0 text-[#22222c] text-[14px] top-[calc(50%-8.5px)] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Ordre 520591</p>
       </div>
     </div>
@@ -596,10 +596,10 @@ function Frame427319122() {
 function Frame427319078() {
   return (
     <div className="content-stretch flex flex-col gap-[2px] items-start leading-[0] relative shrink-0 text-nowrap">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center relative shrink-0 text-[#22222c] text-[14px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center relative shrink-0 text-[#22222c] text-[14px]">
         <p className="leading-[normal] text-nowrap whitespace-pre">LS Bygg og Service AS</p>
       </div>
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center relative shrink-0 text-[#42424a] text-[12px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center relative shrink-0 text-[#42424a] text-[12px]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt: Brennerigata 43A, bygg B</p>
       </div>
     </div>
@@ -618,7 +618,7 @@ function Frame427319101() {
 function Sum1() {
   return (
     <div className="box-border content-stretch flex gap-[10px] items-center justify-end px-[10px] py-0 relative shrink-0 w-[165px]" data-name="sum">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap text-right">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap text-right">
         <p className="leading-[19px] whitespace-pre">483,30</p>
       </div>
     </div>
@@ -630,9 +630,9 @@ function LabelAndCounter1() {
     <div className="content-stretch flex flex-col gap-[4px] items-end justify-center relative shrink-0 w-[76px]" data-name="Label and counter">
       <div className="bg-white box-border content-stretch flex gap-[10px] h-[20px] items-center justify-center px-[6px] py-[2px] relative rounded-[3px] shrink-0" data-name="Label">
         <div aria-hidden="true" className="absolute border border-[#ff8c21] border-solid inset-0 pointer-events-none rounded-[3px]" />
-        <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] relative shrink-0 text-[#101115] text-[11px] text-nowrap whitespace-pre">Delvis betalt</p>
+        <p className="font-['Montserrat',sans-serif] font-normal leading-[1.38] relative shrink-0 text-[#101115] text-[11px] text-nowrap whitespace-pre">Delvis betalt</p>
       </div>
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">3 varelinjer</p>
       </div>
     </div>
@@ -696,7 +696,7 @@ function Button1() {
         <div className="absolute left-0 size-[48px] top-0" data-name="Icon Plate" />
         <Group7 />
       </div>
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Fjern fra salget</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Fjern fra salget</p>
     </div>
   );
 }
@@ -716,14 +716,14 @@ function Orderrows1() {
 function Group427319078() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-[4px] mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-[4px] mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <ol className="list-decimal" start="12">
           <li className="ms-[18px]">
             <span className="leading-[normal]">juni 2023</span>
           </li>
         </ol>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#22222c] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#22222c] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Håndterminal</p>
       </div>
     </div>
@@ -741,10 +741,10 @@ function Frame427319108() {
 function Frame427319080() {
   return (
     <div className="content-stretch flex flex-col gap-[2px] items-start justify-center leading-[0] relative shrink-0 text-nowrap">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center relative shrink-0 text-[#22222c] text-[14px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center relative shrink-0 text-[#22222c] text-[14px]">
         <p className="leading-[normal] text-nowrap whitespace-pre">08613290</p>
       </div>
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center relative shrink-0 text-[#42424a] text-[12px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center relative shrink-0 text-[#42424a] text-[12px]">
         <p className="leading-[normal] text-nowrap whitespace-pre"> </p>
       </div>
     </div>
@@ -763,7 +763,7 @@ function Frame427319100() {
 function Sum5() {
   return (
     <div className="box-border content-stretch flex gap-[10px] items-center justify-end px-[10px] py-0 relative shrink-0 w-[165px]" data-name="sum">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap text-right">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap text-right">
         <p className="leading-[19px] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -775,9 +775,9 @@ function LabelAndCounter3() {
     <div className="content-stretch flex flex-col gap-[4px] items-end justify-center relative shrink-0 w-[76px]" data-name="Label and counter">
       <div className="bg-white box-border content-stretch flex gap-[10px] h-[20px] items-center justify-center px-[6px] py-[2px] relative rounded-[3px] shrink-0" data-name="Label">
         <div aria-hidden="true" className="absolute border border-[#9650ee] border-solid inset-0 pointer-events-none rounded-[3px]" />
-        <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[11px] text-nowrap whitespace-pre">Håndterminal</p>
+        <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[11px] text-nowrap whitespace-pre">Håndterminal</p>
       </div>
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">3 varelinjer</p>
       </div>
     </div>
@@ -883,7 +883,7 @@ function Frame238() {
               <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
               <div className="flex flex-row items-center size-full">
                 <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center px-[14px] py-[8px] relative w-full">
-                  <p className="basis-0 font-['Montserrat:Regular',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px]">Søk etter varer</p>
+                  <p className="basis-0 font-['Montserrat',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px]">Søk etter varer</p>
                   <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                     <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                     <Group3 />
@@ -901,7 +901,7 @@ function Frame238() {
 function Frame172() {
   return (
     <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-      <p className="basis-0 font-['Montserrat:Bold',sans-serif] font-bold grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[#090914] text-[14px]">
+      <p className="basis-0 font-['Montserrat',sans-serif] font-bold grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[#090914] text-[14px]">
         {`Byggmester `}
         <br aria-hidden="true" />
         Snorre Rogne
@@ -916,7 +916,7 @@ function Buttons() {
       <a className="bg-[#efeff0] cursor-pointer h-[48px] min-w-[100px] relative rounded-[5px] shrink-0 w-full" data-name="Button - betal nå" href="https://www.figma.com/proto/8GpkqyjqWNpGX9SWbDDLf4/Point-Of-Sale-(POS)?page-id=0%3A903&type=design&node-id=914-42293&t=ztYIclHKje6ohAaS-0&scaling=min-zoom&starting-point-node-id=914%3A42293">
         <div className="flex flex-row items-center justify-center min-w-inherit size-full">
           <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
-            <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] text-nowrap whitespace-pre">Legg til varer</p>
+            <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] text-nowrap whitespace-pre">Legg til varer</p>
           </div>
         </div>
       </a>
@@ -934,7 +934,7 @@ function Body() {
           <div className="size-full">
             <div className="box-border content-stretch flex flex-col gap-[15px] items-start p-[15px] relative w-full">
               <Frame172 />
-              <p className="font-['Montserrat:Medium',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[14px] w-[179px]">Leilighetskompleks Parkgata</p>
+              <p className="font-['Montserrat',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[14px] w-[179px]">Leilighetskompleks Parkgata</p>
             </div>
           </div>
         </div>

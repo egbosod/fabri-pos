@@ -1,7 +1,7 @@
 function Button() {
   return (
     <div className="bg-[#f1f0f1] content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#46464b] text-[15px]">Confirm new PIN-code</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#46464b] text-[15px]">Confirm new PIN-code</p>
     </div>
   );
 }
@@ -10,7 +10,7 @@ function Button1() {
   return (
     <button className="bg-white content-stretch cursor-pointer flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px] text-left">Cancel</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px] text-left">Cancel</p>
     </button>
   );
 }
@@ -18,7 +18,7 @@ function Button1() {
 function TextButton() {
   return (
     <div className="content-stretch flex gap-[8px] h-[48px] items-center px-[8px] py-[6px] relative rounded-[5px] shrink-0" data-name="Text button">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0094f9] text-[12px] uppercase">Back to pin login</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0094f9] text-[12px] uppercase">Back to pin login</p>
     </div>
   );
 }

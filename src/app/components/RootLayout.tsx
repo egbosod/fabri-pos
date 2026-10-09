@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
 import { toast, Toaster } from 'sonner@2.0.3';
 import { HeaderWithMenu } from './HeaderWithMenu';
@@ -11,7 +11,6 @@ import { ItemConfigurationModal } from './ItemConfigurationModal';
 import { PaymentFlowModal } from './PaymentFlowModal';
 import { PackingSlipSignatureModal } from './PackingSlipSignatureModal';
 import { DeliveryNoteModal } from './DeliveryNoteModal';
-import { ProCardModal, generateFakeProScan } from './ProCardModal';
 import { FakturaModal } from './FakturaModal';
 import { HovedordreModal } from './HovedordreModal';
 import { EnvDebugBanner } from './EnvDebugBanner';
@@ -65,11 +64,11 @@ function generateFakeCardScan(): ScannedCardData {
   };
 }
 
-// ─── Fake VIP card scans (Aspect4 DK / Prototype C) ───────────────────────────
+// ─── Fake VIP card scans (Aspect4 DK / Prototypes B & C) ─────────────────────
 // Customer numbers mirror mockCustomers in CustomerSelectionModal so the lookup
 // by customerNumber resolves to a real record.
 //
-// The five concepts under review, one per scan. Deliberately a rotation rather
+// The six concepts under review, one per scan. Deliberately a rotation rather
 // than a random draw: random made some concepts hard to reach when testing.
 const VIP_SCAN_CONCEPTS: {
   /** Short name of the concept, surfaced in the scan toast */
@@ -79,7 +78,8 @@ const VIP_SCAN_CONCEPTS: {
   status: VipCardStatus;
   address?: { line1: string; postalCode: string; city: string };
   allFieldsMandatory?: boolean;
-  nameReadOnly?: boolean;
+  /** Prototype A's stacked three-line Leveringsadresse layout, added to C's rotation */
+  stackedDeliveryAddress?: boolean;
 }[] = [
   {
     concept: 'VIP card open',
@@ -110,12 +110,21 @@ const VIP_SCAN_CONCEPTS: {
     allFieldsMandatory: true,
   },
   {
+    /* Navn is now locked on every VIP card, so this is a second plain open card. */
     concept: 'Navn non-editable',
     customerNumber: '400003',
     name: 'Ihsahn Svartskov',
     status: 'open',
     address: { line1: 'Tronfjellgata 7', postalCode: '2400', city: 'Elverum' },
-    nameReadOnly: true,
+  },
+  {
+    /* Prototype A's three-line stacked Leveringsadresse, added to C's rotation. */
+    concept: 'Leveringsadresse (3 lines)',
+    customerNumber: '400005',
+    name: 'Gaahl Vindsval',
+    status: 'open',
+    address: { line1: 'Ravnåsveien 9', postalCode: '4630', city: 'Kristiansand' },
+    stackedDeliveryAddress: true,
   },
 ];
 
@@ -138,7 +147,7 @@ function generateFakeVipScan(): { card: VipCardData; concept: string } {
       requisitionRequired: pool.allFieldsMandatory ? true : Math.random() > 0.5,
       address:             pool.address,
       allFieldsMandatory:  pool.allFieldsMandatory,
-      nameReadOnly:        pool.nameReadOnly,
+      stackedDeliveryAddress: pool.stackedDeliveryAddress,
     },
   };
 }
@@ -153,6 +162,12 @@ export function RootLayout() {
 
 function RootLayoutInner() {
   const navigate = useNavigate();
+  /* Whether the customer modal's "Søk kundekort" panel is open. A ref, because
+     the global shortcut handler reads it without re-binding on every toggle. */
+  const cardScanPanelOpenRef = useRef(false);
+  const handleCardScanPanelChange = useCallback((open: boolean) => {
+    cardScanPanelOpenRef.current = open;
+  }, []);
   const location = useLocation();
   const { activeModal, openModal, closeModal, isModalOpen } = useModalParams();
   const {
@@ -164,7 +179,7 @@ function RootLayoutInner() {
     showFlowIndicator,
     setShowFlowIndicator,
     erpScenario,
-    simulateProCardOffline,
+    scanCustomerCard,
   } = useSettings();
 
   const {
@@ -199,12 +214,8 @@ function RootLayoutInner() {
     setVipAcknowledged,
     vipBlocked,
     vipCreditExceeded,
-    proCard,
-    setProCard,
-    proCardMandatoryFields,
-    setProCardMandatoryFields,
-    proCardBlocked,
     priceCheckCustomer,
+    priceCheckProject,
     setPriceCheckCustomer,
     addPriceCheckItems,
     priceCheckItems,
@@ -214,8 +225,8 @@ function RootLayoutInner() {
 
   const isPriceCheckMode = location.pathname === '/priskontroll';
 
-  /* ── Mid-sale credit-exceeded (Aspect4 DK / Prototype C) ──────────────────
-     Open question 5 in docs/vip-pro-card-spec.md: the overrun is discovered
+  /* ── Mid-sale credit-exceeded (Aspect4 DK / Prototypes B & C) ────────────
+     Open question 5 in docs/vip-card-spec.md: the overrun is discovered
      mid-sale, on the line that tips the total past the card's limit, so the
      cashier is stopped there rather than at the payment step. Edge-triggered:
      the effect only re-runs when the boolean itself flips, so dismissing it
@@ -372,16 +383,32 @@ function RootLayoutInner() {
         }
       }
 
-      // Ctrl+< → Simulate a card scan on Aspect4 DK. Which flow it triggers
-      // depends on switchUserFlow: 'C' → VIP card (Prototype C), 'B' → PRO
-      // card (Prototype B). Same ERP scenario, same shortcut, different flow.
+      // Ctrl+< → Simulate a VIP card scan on Aspect4 DK. Prototypes A, B and C
+      // share the scan, the card concepts and the modal; they differ only in
+      // how a blocked card can be resolved (see blockedOverridable below).
       if (e.ctrlKey && e.key === '<') {
         e.preventDefault();
         e.stopPropagation();
 
-        if (erpScenario !== 'Aspect4 DK' || (switchUserFlow !== 'C' && switchUserFlow !== 'B')) {
+        if (erpScenario !== 'Aspect4 DK' || (switchUserFlow !== 'A' && switchUserFlow !== 'C' && switchUserFlow !== 'B')) {
           toast('Card scan unavailable', {
-            description: "Set ERP scenario to 'Aspect4 DK' and Prototype to 'B' or 'C' in Settings first",
+            description: "Set ERP scenario to 'Aspect4 DK' and Prototype to 'A', 'B' or 'C' in Settings first",
+            duration: 3000,
+            ...PROTOTYPE_TOAST_OPTS,
+          });
+          return;
+        }
+
+        /* Prototype C only: the reader is "connected" to the Søk kundekort
+           field, so the FIRST card can only land while that field is open.
+           A and B keep the shortcut global. Once a card is attached, further
+           scans are allowed straight from VIP mode, so the concepts can be
+           rotated through without re-opening the scan panel each time. */
+        if (switchUserFlow === 'C' && !cardScanPanelOpenRef.current && !vipCard) {
+          toast('Card search not open', {
+            description: scanCustomerCard
+              ? 'Open the customer modal, trigger "Søk kundekort", then scan the VIP card'
+              : "Turn on 'Skann kundekort' in Settings — Søk kundekort must be open to scan",
             duration: 3000,
             ...PROTOTYPE_TOAST_OPTS,
           });
@@ -390,28 +417,22 @@ function RootLayoutInner() {
 
         playBarcodeBeep();
 
-        if (switchUserFlow === 'C') {
-          const { card, concept } = generateFakeVipScan();
-          setVipCard(card);
-          setVipAcknowledged(false);
-          openModal('customer');
-          toast(`VIP scan: ${concept}`, {
-            description: `${card.customerName} (${card.customerId}) — scan again for the next concept`,
-            duration: 3000,
-            ...PROTOTYPE_TOAST_OPTS,
-          });
-        } else {
-          const mockPro = generateFakeProScan();
-          setProCard(mockPro);
-          openModal('pro-card');
-        }
+        const { card, concept } = generateFakeVipScan();
+        setVipCard(card);
+        setVipAcknowledged(false);
+        openModal('customer');
+        toast(`VIP scan: ${concept}`, {
+          description: `${card.customerName} (${card.customerId}) — scan again for the next concept`,
+          duration: 3000,
+          ...PROTOTYPE_TOAST_OPTS,
+        });
       }
     };
 
     // Use capture phase (true) to intercept the event before browser shortcuts
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, [currentUser, switchUserFlow, setSwitchUserFlow, priceCheckLockConcept, setPriceCheckLockConcept, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, setVipCard, setVipAcknowledged, setProCard]);
+  }, [currentUser, switchUserFlow, setSwitchUserFlow, priceCheckLockConcept, setPriceCheckLockConcept, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, scanCustomerCard, vipCard, setVipCard, setVipAcknowledged]);
 
   /* ── Modals rendering (URL-addressable) ───────────���────────────────── */
   const renderModals = () => (
@@ -434,19 +455,11 @@ function RootLayoutInner() {
           saleTotal={paymentTotals.total}
           onVipRemoved={() => setVipCard(null)}
           onVipAcknowledged={() => setVipAcknowledged(true)}
-        />
-      )}
-
-      {isModalOpen('pro-card') && (
-        <ProCardModal
-          context={isPriceCheckMode ? 'priceCheck' : 'sale'}
-          proCard={proCard}
-          setProCard={setProCard}
-          mandatoryFields={proCardMandatoryFields}
-          setMandatoryFields={setProCardMandatoryFields}
-          saleTotal={paymentTotals.total}
-          simulateOffline={simulateProCardOffline}
-          onClose={closeModal}
+          blockedOverridable={switchUserFlow === 'C'}
+          stackedDeliveryAddress={switchUserFlow === 'A' || (switchUserFlow === 'C' && !!vipCard?.stackedDeliveryAddress)}
+          onCardScanPanelChange={handleCardScanPanelChange}
+          initialCustomer={isPriceCheckMode ? priceCheckCustomer : selectedCustomer}
+          initialProject={isPriceCheckMode ? priceCheckProject : selectedProject}
         />
       )}
 
@@ -623,8 +636,6 @@ function RootLayoutInner() {
         currentUser={currentUser}
         vipBlocked={vipBlocked}
         vipCard={vipCard}
-        proCard={proCard}
-        proCardBlocked={proCardBlocked}
       />
 
       {/* ── Packing slip: signature → delivery note → sale completed ──────── */}
@@ -696,7 +707,7 @@ function RootLayoutInner() {
         </>
       )}
 
-      {/* ── Mid-sale credit limit exceeded (Aspect4 DK / Prototype C) ───── */}
+      {/* ── Mid-sale credit limit exceeded (Aspect4 DK / Prototypes B & C) ───── */}
       {showVipCreditExceeded && vipCard && (
         <EgConfirmModal
           icon={AlertCircle}

@@ -551,8 +551,8 @@ function SearchAndActionsBar({
               className="bg-card border border-border box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
             >
               <MobileShoppingCartIcon />
-              <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>Hent fra håndterminal</span>
-              <div className="absolute bg-accent box-border content-stretch flex items-start left-[188px] overflow-clip px-[7px] py-0 rounded-[100px] top-[-9.5px]">
+              <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('fetchFromHandTerminal')}</span>
+              <div className="absolute bg-accent box-border content-stretch flex items-start right-0 top-0 translate-x-1/2 -translate-y-1/2 overflow-clip px-[7px] py-0 rounded-[100px]">
                 <div className="flex flex-col font-semibold justify-center leading-[0] relative shrink-0 text-center text-nowrap text-primary-foreground" style={{ fontSize: 'var(--text-sm)' }}>
                   <p className="leading-[1.75] whitespace-pre">2</p>
                 </div>
@@ -636,8 +636,8 @@ export default function SalgPage() {
     handleUpdateAddedItem,
     paymentTotals,
     hasOrderItems,
-    proCard,
     vipCard,
+    setVipCard,
   } = usePOS();
 
   const [swipeableOrderLineStates, setSwipeableOrderLineStates] = useState<Record<string, SwipeableOrderLineState>>({});
@@ -731,7 +731,7 @@ export default function SalgPage() {
       />
 
       {/* Sidebar */}
-      <div className="bg-background box-border content-stretch flex flex-col gap-[30px] h-full items-start justify-end p-[20px] relative shrink-0 w-[263px]" data-name="Sidebar">
+      <div className="bg-background box-border content-stretch flex flex-col gap-[30px] h-full items-start justify-end p-[20px] relative shrink-0 w-[302px]" data-name="Sidebar">
         <div aria-hidden="true" className="absolute border-border border-[0px_0px_0px_1px] border-solid inset-0 pointer-events-none" />
 
         {!selectedCustomer ? (
@@ -765,7 +765,8 @@ export default function SalgPage() {
               onBankTerminal={() => {}}
               onExchangeSlip={() => openModal('faktura')}
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
-              proCard={proCard}
+              vipCard={vipCard}
+              onRemoveVipCard={() => setVipCard(null)}
             />
             {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') &&
               (hovedordrePlacement === 'B' || hovedordrePlacement === 'C') && (
@@ -774,15 +775,15 @@ export default function SalgPage() {
           </div>
         )}
 
-        {localHasItems && (
-          <PaymentSummary
-            subtotal={localPaymentTotals.subtotal}
-            discount={localPaymentTotals.discount}
-            total={localPaymentTotals.total}
-            itemCount={localPaymentTotals.itemCount}
-            returnAmount={localPaymentTotals.returnAmount || 0}
-          />
-        )}
+        {/* Always shown, so the cashier sees how the sale will be calculated
+            before the first line is added — it simply reads 0,00 until then. */}
+        <PaymentSummary
+          subtotal={localPaymentTotals.subtotal}
+          discount={localPaymentTotals.discount}
+          total={localPaymentTotals.total}
+          itemCount={localPaymentTotals.itemCount}
+          returnAmount={localPaymentTotals.returnAmount || 0}
+        />
 
         <div className="content-stretch flex flex-col gap-[10px] items-start justify-end relative shrink-0 w-full" data-name="Buttons">
           {/* Always present, so the path to a packing slip stays visible — it

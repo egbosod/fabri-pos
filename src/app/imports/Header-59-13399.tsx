@@ -58,7 +58,7 @@ function Frame681({ onClose }: Frame681Props) {
 function TextButton() {
   return (
     <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center px-[9px] py-[6px] relative rounded-[5px] shrink-0" data-name="Text button">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">Prisjekkmodus</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">Prisjekkmodus</p>
     </div>
   );
 }
@@ -108,7 +108,7 @@ function TopMenu({ onClose, currentUser = 'Erik Wheeler', onProfileClick }: TopM
             </div>
           </div>
         </div>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">{currentUser}</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">{currentUser}</p>
         <UserIcon />
       </button>
     </div>

@@ -46,14 +46,14 @@ export default function KundeProsjekt() {
         <div className="absolute bg-white h-[48px] left-px right-px rounded-[3px] top-[38px]" />
         <div className="absolute bg-white h-[48px] left-[2px] right-px rounded-[3px] top-[183px]" />
         <div className="absolute bg-white h-[48px] left-[2px] right-px top-[135px]" />
-        <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold h-[18px] leading-[1.75] left-[12px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[56px]">nr</p>
-        <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold h-[18px] leading-[1.75] left-[105px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[79px]">navn</p>
-        <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold h-[18px] leading-[1.75] left-[339px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[79px]">Kategori</p>
-        <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold h-[18px] leading-[1.75] left-[500px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[96px]">adresse</p>
-        <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold h-[18px] leading-[1.75] left-[692px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[160px]">postnr, sted</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[12px] right-[813px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">310601</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[105px] right-[600px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">Snorre Rogne forbruker</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[339px] right-[433px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">Forbrukersalg</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-bold h-[18px] leading-[1.75] left-[12px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[56px]">nr</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-bold h-[18px] leading-[1.75] left-[105px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[79px]">navn</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-bold h-[18px] leading-[1.75] left-[339px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[79px]">Kategori</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-bold h-[18px] leading-[1.75] left-[500px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[96px]">adresse</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-bold h-[18px] leading-[1.75] left-[692px] text-[#6b6b72] text-[12px] top-[13px] tracking-[0.5px] uppercase w-[160px]">postnr, sted</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[12px] right-[813px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">310601</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[105px] right-[600px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">Snorre Rogne forbruker</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[339px] right-[433px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">Forbrukersalg</p>
         <div className="absolute h-0 left-0 right-0 top-[87px]">
           <div className="absolute inset-[-1px_0_0_0]">
             <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 871 1">
@@ -61,13 +61,13 @@ export default function KundeProsjekt() {
             </svg>
           </div>
         </div>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[12px] right-[808px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">399999</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[105px] right-[579px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">Byggmester Snorre Rogne</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[339px] right-[445px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">Byggmestre</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[692px] right-[38px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">2653 Vestre Gausdal</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[692px] right-[102px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">2821 Gjøvik</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[500px] right-[262px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">Veståsvegen 43</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[500px] right-[252px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">Byggerivegen 43</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[12px] right-[808px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">399999</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[105px] right-[579px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">Byggmester Snorre Rogne</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[339px] right-[445px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">Byggmestre</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[692px] right-[38px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">2653 Vestre Gausdal</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[692px] right-[102px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">2821 Gjøvik</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[500px] right-[262px] text-[#090914] text-[14px] top-[100px] whitespace-nowrap">Veståsvegen 43</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[500px] right-[252px] text-[#090914] text-[14px] top-[52px] whitespace-nowrap">Byggerivegen 43</p>
         <div className="absolute h-0 left-[0.11%] right-[0.11%] top-[183px]">
           <div className="absolute inset-[-1px_0_0_0]">
             <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 869 1">
@@ -75,12 +75,12 @@ export default function KundeProsjekt() {
             </svg>
           </div>
         </div>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[12px] right-[807px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">240209</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[105px] right-[614px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">Snorre Fredrik Gystad</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[339px] right-[433px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">Forbrukersalg</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[12px] right-[807px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">240209</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[105px] right-[600px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">Snorre Birger Pettersen</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[339px] right-[433px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">Forbrukersalg</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[12px] right-[807px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">240209</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[105px] right-[614px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">Snorre Fredrik Gystad</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[339px] right-[433px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">Forbrukersalg</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[12px] right-[807px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">240209</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[105px] right-[600px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">Snorre Birger Pettersen</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[339px] right-[433px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">Forbrukersalg</p>
         <div className="absolute h-0 left-0 right-[0.11%] top-[135px]">
           <div className="absolute inset-[-1px_0_0_0]">
             <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 870 1">
@@ -88,10 +88,10 @@ export default function KundeProsjekt() {
             </svg>
           </div>
         </div>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[500px] right-[254px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">Vestbygvegen 21</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[500px] right-[251px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">Huldrevegen 432</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[692px] right-[51px] text-[#090914] text-[14px] top-[196px] whitespace-nowrap">5698 Lillehammer</p>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal leading-[1.38] left-[692px] right-[92px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">2565 Stange</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[500px] right-[254px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">Vestbygvegen 21</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[500px] right-[251px] text-[#090914] text-[14px] top-[197px] whitespace-nowrap">Huldrevegen 432</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[692px] right-[51px] text-[#090914] text-[14px] top-[196px] whitespace-nowrap">5698 Lillehammer</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal leading-[1.38] left-[692px] right-[92px] text-[#090914] text-[14px] top-[148px] whitespace-nowrap">2565 Stange</p>
       </div>
       <div className="content-stretch flex flex-col items-center relative shrink-0 w-full z-[3]" data-name="Header">
         <div className="bg-white relative shrink-0 w-full" data-name="Module header">
@@ -117,7 +117,7 @@ export default function KundeProsjekt() {
                   </svg>
                 </div>
               </div>
-              <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Velg kunde og/eller prosjekt</p>
+              <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Velg kunde og/eller prosjekt</p>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@ export default function KundeProsjekt() {
           <div className="flex flex-row items-end overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex gap-[30px] items-end pt-[10px] px-[20px] relative size-full">
               <div className="content-stretch flex flex-col gap-[6px] h-[48px] items-center justify-end relative shrink-0">
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">Generelt</p>
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">Generelt</p>
                 <div className="h-0 relative shrink-0 w-full">
                   <div className="absolute inset-[-3px_0_0_0]">
                     <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 63 3">
@@ -135,7 +135,7 @@ export default function KundeProsjekt() {
                 </div>
               </div>
               <div className="content-stretch flex h-[48px] items-end pb-[6px] relative shrink-0">
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px] whitespace-nowrap">Leveringsadresse</p>
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px] whitespace-nowrap">Leveringsadresse</p>
               </div>
             </div>
           </div>
@@ -149,20 +149,20 @@ export default function KundeProsjekt() {
               <div className="content-stretch flex flex-col gap-[10px] items-start leading-[0] p-[20px] relative size-full">
                 <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
                   <TextfieldNormal additionalClassNames="ml-0 mt-[25.5px] w-[575px]">
-                    <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">Snorre</p>
+                    <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">Snorre</p>
                     <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                       <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                       <Helper />
                     </div>
                   </TextfieldNormal>
-                  <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">Kunde</p>
+                  <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">Kunde</p>
                 </div>
                 <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
                   <div className="bg-white col-1 h-[48px] ml-0 mt-[26px] relative rounded-[5px] row-1 w-[575px]" data-name="Textfield/Normal">
                     <div aria-hidden="true" className="absolute border-2 border-[#0d97fc] border-solid inset-0 pointer-events-none rounded-[5px]" />
                     <div className="flex flex-row items-center size-full">
                       <div className="content-stretch flex gap-[6px] items-center px-[14px] py-[8px] relative size-full">
-                        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnr eller adresse `}</p>
+                        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnr eller adresse `}</p>
                         <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                           <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                           <Helper />
@@ -174,13 +174,13 @@ export default function KundeProsjekt() {
                     </div>
                     <div className="absolute inset-0 pointer-events-none rounded-[inherit] shadow-[inset_2px_2px_3px_0px_rgba(0,0,0,0.1)]" />
                   </div>
-                  <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">Prosjekt</p>
+                  <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">Prosjekt</p>
                 </div>
                 <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
                   <TextfieldNormal additionalClassNames="ml-0 mt-[26px] w-[575px]">
-                    <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Personen som handler</p>
+                    <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Personen som handler</p>
                   </TextfieldNormal>
-                  <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">Kundens referanse</p>
+                  <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">Kundens referanse</p>
                 </div>
                 <div className="content-stretch flex gap-[21.914px] items-start relative shrink-0 w-full">
                   <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative" data-name="Input and label">
@@ -196,13 +196,13 @@ export default function KundeProsjekt() {
                         </div>
                       </div>
                     </div>
-                    <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Kontaktperson</p>
+                    <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Kontaktperson</p>
                   </div>
                   <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative" data-name="Input and label">
                     <TextfieldNormal additionalClassNames="ml-[0.05px] mt-[26px] w-[276.493px]">
-                      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">&nbsp;</p>
+                      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">&nbsp;</p>
                     </TextfieldNormal>
-                    <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Rekvisisjonsnummer</p>
+                    <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Rekvisisjonsnummer</p>
                   </div>
                 </div>
               </div>
@@ -224,13 +224,13 @@ export default function KundeProsjekt() {
                     <div className="content-stretch flex gap-[20px] items-center relative" data-name="Buttons">
                       <div className="bg-[#efeff0] h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                         <ButtonsHelper>
-                          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Bekreft</p>
+                          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Bekreft</p>
                         </ButtonsHelper>
                       </div>
                       <button className="bg-white cursor-pointer h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                         <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
                         <ButtonsHelper>
-                          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Avbryt</p>
+                          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Avbryt</p>
                         </ButtonsHelper>
                       </button>
                     </div>

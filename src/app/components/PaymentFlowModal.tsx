@@ -8,7 +8,7 @@ import svgPathsPayment from "../imports/svg-ll2p1tnd4y";
 import svgPathsSpinner from "../imports/svg-k33k9dvofh";
 import { PaymentCompletedModal } from './PaymentCompletedModal';
 import { OrderDiscountModal } from './OrderDiscountModal';
-import type { ProCardData, VipCardData } from '../types/pos';
+import type { VipCardData } from '../types/pos';
 
 type PaymentMethod = 'card' | 'cash' | 'vipps' | 'klarna' | 'deliveryNote' | null;
 
@@ -31,15 +31,11 @@ interface PaymentFlowModalProps {
   currentUser?: string;
   /** True while a blocked, unacknowledged VIP card is attached to the sale (Flow 1) */
   vipBlocked?: boolean;
-  /** VIP card (Aspect4 DK / Prototype C) — carries the same delivery-note-only rule as the PRO card */
+  /** VIP card (Aspect4 DK / Prototypes B & C) — forces the sale to a delivery note */
   vipCard?: VipCardData | null;
-  /** PRO card (XL-BYG/Aspect4 / Prototype B) — independent from the VIP card above */
-  proCard?: ProCardData | null;
-  /** Hard stop — a blocked PRO card cannot be overridden (unlike vipBlocked's Flow 1) */
-  proCardBlocked?: boolean;
 }
 
-export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComplete, onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, currentUser, vipBlocked = false, vipCard = null, proCard = null, proCardBlocked = false }: PaymentFlowModalProps) {
+export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComplete, onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, currentUser, vipBlocked = false, vipCard = null }: PaymentFlowModalProps) {
   const { t } = useLanguage();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('card');
   const [inputAmount, setInputAmount] = useState('');
@@ -52,11 +48,11 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
 
   const remainingAmount = totalAmount - payments.reduce((sum, p) => sum + p.amount, 0);
 
-  // Either card concept forces the sale to complete as a delivery/packing note:
-  // PRO card (Prototype B, docs/vip-pro-card-spec.md) and VIP card (Prototype C).
-  // Disallowed tenders are hidden outright rather than shown disabled.
-  const deliveryNoteOnly = !!proCard || !!vipCard;
-  const deliveryNoteReason = proCard ? t('proCardDeliveryNoteOnly') : t('vipDeliveryNoteOnly');
+  // A VIP card forces the sale to complete as a delivery/packing note
+  // (docs/vip-card-spec.md). Disallowed tenders are hidden outright rather
+  // than shown disabled.
+  const deliveryNoteOnly = !!vipCard;
+  const deliveryNoteReason = t('vipDeliveryNoteOnly');
 
   useEffect(() => {
     if (isOpen) {
@@ -200,11 +196,9 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
   };
 
   const handleConfirmPayment = async () => {
-    // Flow 1: a blocked VIP card must be removed/acknowledged in the customer
-    // modal before the sale can be finalized.
+    // A blocked VIP card must be removed — or, in Prototype C, acknowledged —
+    // in the customer modal before the sale can be finalized.
     if (vipBlocked) return;
-    // A blocked PRO card is a hard stop — no override, unlike the VIP flow above.
-    if (proCardBlocked) return;
     if (remainingAmount > 0) return;
     
     setIsProcessingPayment(true);
@@ -783,7 +777,7 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
             {!isProcessingPayment && (
               <button
                 onClick={handleConfirmPayment}
-                disabled={remainingAmount > 0 || vipBlocked || proCardBlocked}
+                disabled={remainingAmount > 0 || vipBlocked}
                 className="bg-primary text-primary-foreground h-[48px] px-[20px] rounded-[var(--radius)] hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed mt-[20px] w-full"
                 style={{ fontWeight: 'var(--font-weight-semibold)' }}
               >
@@ -798,16 +792,6 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
                 style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--destructive)', lineHeight: 1.6 }}
               >
                 {t('vipCannotFinalize')}
-              </p>
-            )}
-
-            {/* Blocked PRO card — hard stop, no override */}
-            {proCardBlocked && !isProcessingPayment && (
-              <p
-                className="mt-[10px] text-center"
-                style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--destructive)', lineHeight: 1.6 }}
-              >
-                {t('proCardCannotFinalize')}
               </p>
             )}
 

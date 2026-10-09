@@ -42,7 +42,7 @@ export default function UttakRegistrert() {
     <div className="bg-[#f0fcf3] content-stretch flex gap-[13px] items-start p-[13px] relative rounded-[3px] size-full" data-name="Uttak registrert">
       <div aria-hidden="true" className="absolute border border-[#30ac5a] border-solid inset-0 pointer-events-none rounded-[3px]" />
       <IconsFontAwesome />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-90 relative shrink-0 text-[#101115] text-[15px]">POS User switch success</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-90 relative shrink-0 text-[#101115] text-[15px]">POS User switch success</p>
       <Close />
     </div>
   );

@@ -56,6 +56,7 @@ export interface Translations {
   total: string;
   vat: string;
   toPay: string;
+  totalBeforeDiscount: string;
   items: string;
   itemName: string;
   orderLines: string;
@@ -291,6 +292,9 @@ export interface Translations {
   // ── Field labels ───────────────────────────────────────────────────────────
   name: string;
   address1: string;
+  vipAddress1: string;
+  /** VIP delivery-address line label — Prototype A's three stacked lines */
+  vipDeliveryAddress: string;
   phone: string;
   contactPersonReference: string;
   idControl: string;
@@ -326,6 +330,7 @@ export interface Translations {
   vipStatusOpen: string;
   vipStatusBlocked: string;
   vipBlockedInfo: string;
+  vipBlockedHardStop: string;
   removeVipCard: string;
   continueAsNormalCustomer: string;
   vipCreditTitle: string;
@@ -341,29 +346,28 @@ export interface Translations {
   vipRemoveItems: string;
 
   // PRO card (XL-BYG/Aspect4 / Prototype B) — independent from VIP card above
-  proCardScanAction: string;
-  proCardModalTitle: string;
-  proCardNumberLabel: string;
-  proCardNumberPlaceholder: string;
-  proCardNotFound: string;
-  proCardBlockedError: string;
-  proCardOfflineError: string;
-  proCardRegistered: string;
-  proCardStatusOpen: string;
-  proCardStatusBlocked: string;
-  removeProCard: string;
-  proCardCreditTitle: string;
-  proCardCreditUsed: string;
-  proCardCreditRemaining: string;
-  proCardRequisitionLabel: string;
-  proCardProjectNumberLabel: string;
-  proCardProjectNameLabel: string;
-  proCardCannotFinalize: string;
-  proCardDeliveryNoteOnly: string;
   /** Tender name for the delivery/packing note tender (Prototype B & C) */
   deliveryNoteTender: string;
   /** VIP card active — delivery-note-only rule (Aspect4 DK / Prototype C) */
   vipDeliveryNoteOnly: string;
-  proCardReturnBlocked: string;
-  proCardPricingContext: string;
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: string;
+  checkPriceButton: string;
+  copyLastReceipt: string;
+  openCashDrawer: string;
+  cashInOut: string;
+  versionInfo: string;
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: string;
+  yourPinCode: string;
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: string;
+  vipCardBlockedBody: string;
+  vipBadgeOpen: string;
+  vipBadgeBlocked: string;
+  invoicesForPayment: string;
+  edit: string;
+  removeCustomer: string;
+  noInvoicesForPayment: string;
+  invoicesForPaymentPlaceholder: string;
 }

@@ -16,7 +16,7 @@ function ButtonsButtonText({ text }: ButtonsButtonTextProps) {
     <div className="bg-[#efeff0] h-[48px] min-w-[100px] relative rounded-[5px] shrink-0">
       <div aria-hidden="true" className="absolute border border-[#f5f5f6] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <Wrapper>
-        <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[13px] whitespace-nowrap">{text}</p>
+        <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[13px] whitespace-nowrap">{text}</p>
       </Wrapper>
     </div>
   );
@@ -81,7 +81,7 @@ export default function HistorikkAlleKjop2FanerAlleKjopBongnrMedStrekUnderTekste
                     </g>
                   </svg>
                 </div>
-                <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] ml-[35px] mt-[3.09px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Find previous sales</p>
+                <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.3] ml-[35px] mt-[3.09px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Find previous sales</p>
               </div>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function HistorikkAlleKjop2FanerAlleKjopBongnrMedStrekUnderTekste
         <div className="bg-white h-[45px] relative shadow-[0px_3px_3px_0px_rgba(107,107,114,0.06)] shrink-0 w-full" data-name="Page header">
           <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex gap-[30px] items-center pb-[5px] pt-[10px] px-[20px] relative size-full">
-              <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">All sales</p>
+              <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">All sales</p>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function HistorikkAlleKjop2FanerAlleKjopBongnrMedStrekUnderTekste
                   <div className="content-stretch flex gap-[20px] items-center relative" data-name="Buttons">
                     <div className="bg-[#efeff0] h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                       <Wrapper>
-                        <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Add as return</p>
+                        <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Add as return</p>
                       </Wrapper>
                     </div>
                     <ButtonsButtonText text="Add as normal sale" />
@@ -111,7 +111,7 @@ export default function HistorikkAlleKjop2FanerAlleKjopBongnrMedStrekUnderTekste
                     <button className="bg-white cursor-pointer h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
                       <Wrapper>
-                        <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Cancel</p>
+                        <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Cancel</p>
                       </Wrapper>
                     </button>
                   </div>
@@ -128,7 +128,7 @@ export default function HistorikkAlleKjop2FanerAlleKjopBongnrMedStrekUnderTekste
             <div className="flex flex-row items-center size-full">
               <div className="content-stretch flex gap-[8px] items-center relative">
                 <Checkbox className="bg-white block cursor-pointer relative rounded-[5px] shrink-0 size-[24px]" />
-                <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[12px] whitespace-nowrap">Kunde uten konto</p>
+                <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[12px] whitespace-nowrap">Kunde uten konto</p>
               </div>
             </div>
           </div>
@@ -136,12 +136,12 @@ export default function HistorikkAlleKjop2FanerAlleKjopBongnrMedStrekUnderTekste
         <div className="absolute bg-white border border-[#e6e6e8] border-solid h-[580px] left-[15px] rounded-[5px] top-[15px] w-[994px]" data-name="Content">
           <div className="absolute contents left-[14px] top-[14px]">
             <div className="absolute contents left-[15px] top-[15px]" data-name="Input and label">
-              <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] left-[16px] text-[#22222c] text-[14px] top-[15px] w-[124px]">Bong number</p>
+              <p className="absolute font-['Montserrat',sans-serif] font-bold leading-[1.75] left-[16px] text-[#22222c] text-[14px] top-[15px] w-[124px]">Bong number</p>
               <div className="absolute bg-white h-[48px] left-[15px] rounded-[5px] top-[41px] w-[320px]" data-name="Textfield/Normal">
                 <div aria-hidden="true" className="absolute border-2 border-[#0d97fc] border-solid inset-0 pointer-events-none rounded-[5px]" />
                 <div className="flex flex-row items-center size-full">
                   <div className="content-stretch flex gap-[6px] items-center px-[14px] py-[8px] relative size-full">
-                    <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Bong number scan or search</p>
+                    <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Bong number scan or search</p>
                     <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                       <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                       <div className="absolute inset-[0_0_2.05%_0]">

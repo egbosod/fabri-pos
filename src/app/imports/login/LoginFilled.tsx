@@ -4,7 +4,7 @@ function Textfield() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[23px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[320px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#46464b] text-[13px] whitespace-pre-wrap">egtskam</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#46464b] text-[13px] whitespace-pre-wrap">egtskam</p>
     </div>
   );
 }
@@ -12,7 +12,7 @@ function Textfield() {
 function Group() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 w-full">
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.2] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[97.684px] whitespace-pre-wrap">User name</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.2] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[97.684px] whitespace-pre-wrap">User name</p>
       <Textfield />
     </div>
   );
@@ -22,7 +22,7 @@ function Textfield1() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[23px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[320px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-0 relative text-[#46464b] text-[13px] whitespace-pre-wrap">Tekst hbbie</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-0 relative text-[#46464b] text-[13px] whitespace-pre-wrap">Tekst hbbie</p>
     </div>
   );
 }
@@ -30,7 +30,7 @@ function Textfield1() {
 function Group1() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 w-full">
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.2] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[80px] whitespace-pre-wrap">Password</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.2] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[80px] whitespace-pre-wrap">Password</p>
       <Textfield1 />
     </div>
   );
@@ -106,7 +106,7 @@ function CheckboxWithLabel() {
   return (
     <div className="content-stretch flex gap-[8px] items-center overflow-clip py-[8px] relative shrink-0" data-name="Checkbox with label">
       <Checkbox />
-      <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[12px]">Remember login</p>
+      <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[12px]">Remember login</p>
     </div>
   );
 }
@@ -114,7 +114,7 @@ function CheckboxWithLabel() {
 function TextButton() {
   return (
     <div className="bg-white content-stretch flex h-[30px] items-center px-[9px] py-[6px] relative rounded-[5px] shrink-0" data-name="Text button">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0094f9] text-[12px]">Forgot password</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0094f9] text-[12px]">Forgot password</p>
     </div>
   );
 }
@@ -133,7 +133,7 @@ function Button() {
     <div className="bg-[#0094f9] h-[48px] min-w-[100px] relative rounded-[5px] shrink-0 w-full" data-name="Button">
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[20px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-white">Login</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-white">Login</p>
         </div>
       </div>
     </div>
@@ -146,7 +146,7 @@ function Button1() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[20px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Logon using PIN</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Logon using PIN</p>
         </div>
       </div>
     </div>
@@ -159,7 +159,7 @@ function Button2() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[20px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Two factor method</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Two factor method</p>
         </div>
       </div>
     </div>
@@ -222,7 +222,7 @@ function Frame5() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[16px] items-start left-[67px] top-[40px]">
       <LogoFabriVersion />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[#1a1b1f] text-[17px]">Welcome to EG Fabri POS</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[#1a1b1f] text-[17px]">Welcome to EG Fabri POS</p>
     </div>
   );
 }
@@ -308,10 +308,10 @@ function Right() {
 function Content() {
   return (
     <div className="-translate-x-1/2 absolute h-[16px] left-[calc(50%+15.89px)] overflow-clip text-center top-[6px] w-[121px]" data-name="Content">
-      <p className="-translate-x-1/2 absolute font-['SF_Pro:Regular',sans-serif] font-normal leading-[normal] left-[calc(50%+8.5px)] text-[13px] text-[rgba(0,0,0,0.7)] top-[calc(50%-7.5px)]" style={{ fontVariationSettings: "\'wdth\' 100" }}>
+      <p className="-translate-x-1/2 absolute font-['Montserrat',sans-serif] font-normal leading-[normal] left-[calc(50%+8.5px)] text-[13px] text-[rgba(0,0,0,0.7)] top-[calc(50%-7.5px)]" style={{ fontVariationSettings: "\'wdth\' 100" }}>
         www.login-pos
       </p>
-      <p className="-translate-x-1/2 absolute font-['SF_Pro:Medium',sans-serif] font-[510] leading-[16px] left-[calc(50%-54.5px)] text-[11.5px] text-[rgba(0,0,0,0.35)] top-[calc(50%-8px)]" style={{ fontVariationSettings: "\'wdth\' 100" }}>
+      <p className="-translate-x-1/2 absolute font-['Montserrat',sans-serif] font-[510] leading-[16px] left-[calc(50%-54.5px)] text-[11.5px] text-[rgba(0,0,0,0.35)] top-[calc(50%-8px)]" style={{ fontVariationSettings: "\'wdth\' 100" }}>
         􀎡
       </p>
     </div>
@@ -399,10 +399,10 @@ function WindowControls() {
 function Left() {
   return (
     <div className="absolute h-[18px] left-[20px] overflow-clip top-[17px] w-[188px]" data-name="Left">
-      <p className="-translate-x-1/2 absolute font-['SF_Pro:Medium',sans-serif] font-[510] leading-[16px] left-[182.5px] opacity-20 text-[#808080] text-[16.5px] text-center top-0" style={{ fontVariationSettings: "\'wdth\' 100" }}>
+      <p className="-translate-x-1/2 absolute font-['Montserrat',sans-serif] font-[510] leading-[16px] left-[182.5px] opacity-20 text-[#808080] text-[16.5px] text-center top-0" style={{ fontVariationSettings: "\'wdth\' 100" }}>
         􀯻
       </p>
-      <p className="-translate-x-1/2 absolute font-['SF_Pro:Medium',sans-serif] font-[510] leading-[16px] left-[148.5px] text-[#808080] text-[16.5px] text-center top-0" style={{ fontVariationSettings: "\'wdth\' 100" }}>
+      <p className="-translate-x-1/2 absolute font-['Montserrat',sans-serif] font-[510] leading-[16px] left-[148.5px] text-[#808080] text-[16.5px] text-center top-0" style={{ fontVariationSettings: "\'wdth\' 100" }}>
         􀯶
       </p>
       <div className="absolute h-[4.246px] left-[110.32px] top-[6.68px] w-[7.156px]" data-name="Arrow">
@@ -411,7 +411,7 @@ function Left() {
         </svg>
       </div>
       <div className="absolute bg-[rgba(0,0,0,0.05)] h-[18px] left-[104px] top-0 w-px" data-name="Separator" />
-      <p className="-translate-x-1/2 absolute font-['SF_Pro:Medium',sans-serif] font-[510] leading-[16px] left-[87px] text-[#808080] text-[16.5px] text-center top-0" style={{ fontVariationSettings: "\'wdth\' 100" }}>
+      <p className="-translate-x-1/2 absolute font-['Montserrat',sans-serif] font-[510] leading-[16px] left-[87px] text-[#808080] text-[16.5px] text-center top-0" style={{ fontVariationSettings: "\'wdth\' 100" }}>
         􀏚
       </p>
       <WindowControls />

@@ -7,7 +7,7 @@ export default function InputAndLabel() {
         <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
         <div className="flex flex-row items-center size-full">
           <div className="content-stretch flex gap-[10px] items-center px-[14px] py-[8px] relative size-full">
-            <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#6b6b72] text-[14px] whitespace-pre-wrap">Search for name, project number or address</p>
+            <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#6b6b72] text-[14px] whitespace-pre-wrap">Search for name, project number or address</p>
             <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
               <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
               <div className="absolute inset-[0_0_2.05%_0]">
@@ -22,7 +22,7 @@ export default function InputAndLabel() {
           </div>
         </div>
       </div>
-      <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] left-0 text-[#22222c] text-[14px] top-0 w-[575px] whitespace-pre-wrap">Project</p>
+      <p className="absolute font-['Montserrat',sans-serif] font-bold leading-[1.75] left-0 text-[#22222c] text-[14px] top-0 w-[575px] whitespace-pre-wrap">Project</p>
     </div>
   );
 }

@@ -47,9 +47,6 @@ export interface SettingsContextType {
   setShowTwoFactorButton: (show: boolean) => void;
   showForgotPassword: boolean;
   setShowForgotPassword: (show: boolean) => void;
-  /** PRO card (XL-BYG/Aspect4 / Prototype B) demo-only offline toggle — no real network detection exists in this prototype. */
-  simulateProCardOffline: boolean;
-  setSimulateProCardOffline: (simulate: boolean) => void;
   resetSettings: () => void;
 }
 
@@ -106,7 +103,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [showForgotPassword, setShowForgotPassword] = useState(
     urlSettings.showForgotPassword ?? DEFAULT_SETTINGS.showForgotPassword,
   );
-  const [simulateProCardOffline, setSimulateProCardOffline] = useState(false);
 
   const openSettingsModal = useCallback(() => setIsSettingsModalOpen(true), []);
   const closeSettingsModal = useCallback(() => setIsSettingsModalOpen(false), []);
@@ -139,7 +135,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setShowLoginButton(DEFAULT_SETTINGS.showLoginButton);
     setShowTwoFactorButton(DEFAULT_SETTINGS.showTwoFactorButton);
     setShowForgotPassword(DEFAULT_SETTINGS.showForgotPassword);
-    setSimulateProCardOffline(false);
   }, []);
 
   // Keyboard listener for "." (settings) and "d" (debug banner)
@@ -202,8 +197,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setShowTwoFactorButton,
         showForgotPassword,
         setShowForgotPassword,
-        simulateProCardOffline,
-        setSimulateProCardOffline,
         resetSettings,
       }}
     >

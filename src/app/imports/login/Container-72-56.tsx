@@ -28,7 +28,7 @@ function Paragraph() {
   return (
     <div className="h-[40px] relative shrink-0 w-[213px]" data-name="Paragraph">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center relative size-full">
-        <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[20.4px] relative shrink-0 text-[#1a1b1f] text-[17px]">Change PIN-code</p>
+        <p className="font-['Montserrat',sans-serif] font-semibold leading-[20.4px] relative shrink-0 text-[#1a1b1f] text-[17px]">Change PIN-code</p>
       </div>
     </div>
   );
@@ -37,7 +37,7 @@ function Paragraph() {
 function Label() {
   return (
     <div className="absolute h-[21px] left-0 top-0 w-[197.484px]" data-name="Label">
-      <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">User</p>
+      <p className="absolute font-['Montserrat',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">User</p>
     </div>
   );
 }
@@ -46,7 +46,7 @@ function PrimitiveSpan() {
   return (
     <div className="h-[17.141px] relative shrink-0 w-[143.484px]" data-name="Primitive.span">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center overflow-clip relative rounded-[inherit] size-full">
-        <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[17.143px] relative shrink-0 text-[#46464b] text-[12px] text-center">Select or search for user</p>
+        <p className="font-['Montserrat',sans-serif] font-normal leading-[17.143px] relative shrink-0 text-[#46464b] text-[12px] text-center">Select or search for user</p>
       </div>
     </div>
   );
@@ -88,7 +88,7 @@ function Container2() {
 function Label1() {
   return (
     <div className="absolute h-[21px] left-0 top-0 w-[174px]" data-name="Label">
-      <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">Password</p>
+      <p className="absolute font-['Montserrat',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">Password</p>
     </div>
   );
 }
@@ -96,7 +96,7 @@ function Label1() {
 function PasswordInput() {
   return (
     <div className="absolute content-stretch flex h-[32px] items-center left-[14px] overflow-clip rounded-[5px] top-[8px] w-[289px]" data-name="Password Input">
-      <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#46464b] text-[13px]">Enter current password</p>
+      <p className="font-['Montserrat',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#46464b] text-[13px]">Enter current password</p>
     </div>
   );
 }
@@ -128,7 +128,7 @@ function Container3() {
 function Label2() {
   return (
     <div className="absolute h-[21px] left-0 top-0 w-[174px]" data-name="Label">
-      <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">PIN-code</p>
+      <p className="absolute font-['Montserrat',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">PIN-code</p>
     </div>
   );
 }
@@ -136,7 +136,7 @@ function Label2() {
 function PasswordInput1() {
   return (
     <div className="absolute content-stretch flex h-[32px] items-center left-[14px] overflow-clip rounded-[5px] top-[8.2px] w-[281px]" data-name="Password Input">
-      <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#46464b] text-[13px] text-center">Enter new PIN-code</p>
+      <p className="font-['Montserrat',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#46464b] text-[13px] text-center">Enter new PIN-code</p>
     </div>
   );
 }
@@ -168,7 +168,7 @@ function Container6() {
 function Label3() {
   return (
     <div className="absolute h-[21px] left-0 top-0 w-[174px]" data-name="Label">
-      <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">PIN-code again</p>
+      <p className="absolute font-['Montserrat',sans-serif] font-bold leading-[21px] left-0 text-[#1a1b1f] text-[12px] top-0">PIN-code again</p>
     </div>
   );
 }
@@ -176,7 +176,7 @@ function Label3() {
 function PasswordInput2() {
   return (
     <div className="absolute content-stretch flex h-[32px] items-center left-[14px] overflow-clip rounded-[5px] top-[8.39px] w-[302px]" data-name="Password Input">
-      <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#46464b] text-[13px] text-center">Enter new PIN-code again</p>
+      <p className="font-['Montserrat',sans-serif] font-normal leading-[normal] relative shrink-0 text-[#46464b] text-[13px] text-center">Enter new PIN-code again</p>
     </div>
   );
 }
@@ -225,7 +225,7 @@ function Button() {
     <div className="bg-[#f1f0f1] flex-[1_0_0] h-[48px] min-h-px min-w-px opacity-60 relative rounded-[5px]" data-name="Button">
       <div className="flex flex-row items-center justify-center size-full">
         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[20px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[26.25px] relative shrink-0 text-[#46464b] text-[15px] text-center">Confirm new PIN-code</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[26.25px] relative shrink-0 text-[#46464b] text-[15px] text-center">Confirm new PIN-code</p>
         </div>
       </div>
     </div>
@@ -237,7 +237,7 @@ function Button1() {
     <div className="bg-white h-[48px] relative rounded-[5px] shrink-0 w-[87.391px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[21px] py-[7px] relative size-full">
-        <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[22.75px] relative shrink-0 text-[#101115] text-[13px] text-center">Cancel</p>
+        <p className="font-['Montserrat',sans-serif] font-semibold leading-[22.75px] relative shrink-0 text-[#101115] text-[13px] text-center">Cancel</p>
       </div>
     </div>
   );

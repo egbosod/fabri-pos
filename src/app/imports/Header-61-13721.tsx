@@ -1,36 +1,18 @@
 import React, { useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS } from '../utils/prototypeDescriptions';
 import { ERP_SCENARIOS } from '../utils/settingsUrl';
 
-function Group1() {
-  return (
-    <div className="absolute inset-[8.41%_1.88%_8.94%_1.41%]" data-name="Group">
-      <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 96 16">
-        <g id="Group">
-          <path d={svgPaths.p276e6380} fill="var(--fill-0, #44706A)" id="Vector" />
-          <path d={svgPaths.p393724f0} fill="var(--fill-0, #44706A)" id="Vector_2" />
-          <path d={svgPaths.p22e71880} fill="var(--fill-0, white)" id="Vector_3" />
-          <path d={svgPaths.p2b004e00} fill="var(--fill-0, white)" id="Vector_4" />
-          <g id="Group_2">
-            <path d={svgPaths.p57a4000} fill="var(--fill-0, white)" id="Vector_5" />
-            <path d={svgPaths.p2f43ff80} fill="var(--fill-0, white)" id="Vector_6" />
-            <path d={svgPaths.p37c0f980} fill="var(--fill-0, white)" id="Vector_7" />
-            <path d={svgPaths.p2a743800} fill="var(--fill-0, white)" id="Vector_8" />
-            <path d={svgPaths.p20a5df00} fill="var(--fill-0, white)" id="Vector_9" />
-          </g>
-        </g>
-      </svg>
-    </div>
-  );
-}
-
 function EgFabriLogoWhite1() {
   return (
-    <div className="h-[18.54px] overflow-clip relative shrink-0 w-[99px]" data-name="EG-Fabri-logo-white 1">
-      <Group1 />
-    </div>
+    <img
+      className="h-[40px] w-auto shrink-0"
+      src="/assets/EG-Fabri-Dashboard.svg"
+      alt="EG Fabri"
+      data-name="EG-Fabri-logo-white 1"
+    />
   );
 }
 
@@ -56,9 +38,10 @@ function ChevronDown2({ isOpen }: { isOpen?: boolean }) {
 }
 
 function Frame32({ onClick, isOpen }: { onClick: () => void; isOpen?: boolean }) {
+  const { t } = useLanguage();
   return (
     <button onClick={onClick} className="content-stretch flex gap-[6.477px] items-center relative shrink-0 cursor-pointer hover:opacity-80 transition-opacity">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">MENY</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">{t('menu')}</p>
       <ChevronDown2 isOpen={isOpen} />
     </button>
   );
@@ -73,14 +56,15 @@ function Frame632({ onMenuClick, isMenuOpen, isDisabled }: { onMenuClick: () => 
 }
 
 function Frame633({ isDisabled, onPreviousPurchasesClick }: { isDisabled?: boolean; onPreviousPurchasesClick?: () => void }) {
+  const { t } = useLanguage();
   return (
-    <div className={`content-stretch flex font-['Montserrat:Regular',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre transition-opacity ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`}>
-      <p className="relative shrink-0">Nytt salg</p>
+    <div className={`content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre transition-opacity ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <p className="relative shrink-0">{t('newSale')}</p>
       <button
         onClick={onPreviousPurchasesClick}
-        className="relative shrink-0 bg-transparent border-none cursor-pointer p-0 text-white font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] text-[15px] text-center text-nowrap whitespace-pre hover:opacity-70 transition-opacity"
-      >Tidligere kjøp</button>
-      <p className="relative shrink-0">Kasseoppgjør</p>
+        className="relative shrink-0 bg-transparent border-none cursor-pointer p-0 text-white font-['Montserrat',sans-serif] font-normal leading-[1.75] text-[15px] text-center text-nowrap whitespace-pre hover:opacity-70 transition-opacity"
+      >{t('previousPurchases')}</button>
+      <p className="relative shrink-0">{t('cashSettlement')}</p>
     </div>
   );
 }
@@ -188,7 +172,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
         data-name="User menu button"
       >
         <UserIcon />
-        <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] text-[12px] text-white whitespace-nowrap">
+        <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] text-[12px] text-white whitespace-nowrap">
           {currentUser || 'Erik Wheeler'}
         </p>
         <div className="flex items-center justify-center size-[12px] ml-1">
@@ -229,6 +213,7 @@ function Header({ onMenuClick, isMenuOpen, isPriceCheckMode, onProfileClick, isP
 }
 
 function TextButton({ onClick }: { onClick: () => void }) {
+  const { t } = useLanguage();
   return (
     <button onClick={onClick} className="box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center px-[9px] py-[6px] relative rounded-[5px] shrink-0 hover:bg-gray-50 transition-colors" data-name="Text button">
       <div className="overflow-clip relative shrink-0 size-[12px]" data-name="Icon / Search">
@@ -238,16 +223,17 @@ function TextButton({ onClick }: { onClick: () => void }) {
           </svg>
         </div>
       </div>
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">Sjekk pris</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">{t('checkPriceButton')}</p>
     </button>
   );
 }
 
 function Button() {
+  const { t } = useLanguage();
   return (
     <button className="bg-white box-border content-stretch cursor-pointer flex gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative rounded-bl-[5px] rounded-tl-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-bl-[5px] rounded-tl-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Parker salg</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">{t('parkSale')}</p>
     </button>
   );
 }
@@ -255,7 +241,7 @@ function Button() {
 function Frame145() {
   return (
     <div className="bg-[#d5d5d7] box-border content-stretch flex items-center justify-center overflow-clip px-[7px] py-0 relative rounded-[100px] shrink-0 w-[22px]">
-      <div className="flex flex-col font-['Montserrat:SemiBold',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[12px] text-center text-nowrap text-white">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[12px] text-center text-nowrap text-white">
         <p className="leading-[1.75] whitespace-pre">0</p>
       </div>
     </div>
@@ -323,9 +309,10 @@ function CloseButton({ onClick }: { onClick: () => void }) {
 }
 
 function Text({ paymentTitle }: { paymentTitle?: string }) {
+  const { t } = useLanguage();
   return (
     <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center px-[9px] py-[6px] relative rounded-[5px] shrink-0" data-name="Text">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">{paymentTitle || 'Prisjekkmodus'}</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.2] relative shrink-0 text-[17px] text-nowrap text-white whitespace-pre">{paymentTitle || t('priceCheckMode')}</p>
     </div>
   );
 }

@@ -26,7 +26,7 @@ function Button() {
 function Frame172() {
   return (
     <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-      <p className="basis-0 font-['Montserrat:Bold',sans-serif] font-bold grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[#090914] text-[14px]">Byggmester Snorre Rogne</p>
+      <p className="basis-0 font-['Montserrat',sans-serif] font-bold grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[#090914] text-[14px]">Byggmester Snorre Rogne</p>
       <Button />
     </div>
   );
@@ -38,7 +38,7 @@ function Buttons() {
       <a className="bg-[#efeff0] cursor-pointer h-[48px] min-w-[100px] relative rounded-[5px] shrink-0 w-full" data-name="Button - betal nå" href="https://www.figma.com/proto/8GpkqyjqWNpGX9SWbDDLf4/Point-Of-Sale-(POS)?page-id=0%3A903&type=design&node-id=914-42293&t=ztYIclHKje6ohAaS-0&scaling=min-zoom&starting-point-node-id=914%3A42293">
         <div className="flex flex-row items-center justify-center min-w-inherit size-full">
           <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
-            <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] text-nowrap whitespace-pre">Betal nå</p>
+            <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] text-nowrap whitespace-pre">Betal nå</p>
           </div>
         </div>
       </a>
@@ -56,7 +56,7 @@ export default function Sidebar() {
             <div className="size-full">
               <div className="box-border content-stretch flex flex-col gap-[15px] items-start p-[15px] relative w-full">
                 <Frame172 />
-                <p className="font-['Montserrat:Medium',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[14px] w-[179px]">Leilighetskompleks Parkgata</p>
+                <p className="font-['Montserrat',sans-serif] font-medium leading-[1.75] relative shrink-0 text-[#090914] text-[14px] w-[179px]">Leilighetskompleks Parkgata</p>
               </div>
             </div>
           </div>

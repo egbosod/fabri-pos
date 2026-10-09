@@ -16,7 +16,7 @@ function Frame() {
   return (
     <div className="content-stretch flex gap-[11px] items-center relative shrink-0">
       <IconClient />
-      <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] relative shrink-0 text-[#1a1b1f] text-[15px]">Change user, choose method</p>
+      <p className="font-['Montserrat',sans-serif] font-bold leading-[1.3] relative shrink-0 text-[#1a1b1f] text-[15px]">Change user, choose method</p>
     </div>
   );
 }
@@ -35,7 +35,7 @@ function ModuleHeader() {
 function Frame7() {
   return (
     <div className="content-stretch flex flex-col gap-[6px] h-[48px] items-center justify-end relative shrink-0">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">PIN-code</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">PIN-code</p>
       <div className="h-0 relative shrink-0 w-full">
         <div className="absolute inset-[-3px_0_0_0]">
           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 67 3">
@@ -50,7 +50,7 @@ function Frame7() {
 function Frame8() {
   return (
     <div className="content-stretch flex h-[48px] items-end pb-[6px] relative shrink-0">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px]">Password</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px]">Password</p>
     </div>
   );
 }
@@ -98,7 +98,7 @@ function Textfield() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Select or search for user</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Select or search for user</p>
       <IconDown />
     </div>
   );
@@ -108,7 +108,7 @@ function InputAndLabel() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <Textfield />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">User</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">User</p>
     </div>
   );
 }
@@ -117,7 +117,7 @@ function Textfield1() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter current password</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter current password</p>
     </div>
   );
 }
@@ -126,7 +126,7 @@ function InputAndLabel1() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <Textfield1 />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">Password</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">Password</p>
     </div>
   );
 }
@@ -135,7 +135,7 @@ function Textfield2() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code</p>
     </div>
   );
 }
@@ -144,7 +144,7 @@ function InputAndLabel2() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <Textfield2 />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code</p>
     </div>
   );
 }
@@ -153,7 +153,7 @@ function Textfield3() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code again</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code again</p>
     </div>
   );
 }
@@ -162,7 +162,7 @@ function InputAndLabel3() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <Textfield3 />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code again</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code again</p>
     </div>
   );
 }
@@ -197,7 +197,7 @@ function Button() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">1</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">1</p>
         </div>
       </div>
     </div>
@@ -210,7 +210,7 @@ function Button1() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">2</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">2</p>
         </div>
       </div>
     </div>
@@ -223,7 +223,7 @@ function Button2() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">3</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">3</p>
         </div>
       </div>
     </div>
@@ -246,7 +246,7 @@ function Button3() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">4</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">4</p>
         </div>
       </div>
     </div>
@@ -259,7 +259,7 @@ function Button4() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">5</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">5</p>
         </div>
       </div>
     </div>
@@ -272,7 +272,7 @@ function Button5() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">6</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">6</p>
         </div>
       </div>
     </div>
@@ -295,7 +295,7 @@ function Button6() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">7</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">7</p>
         </div>
       </div>
     </div>
@@ -308,7 +308,7 @@ function Button7() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">8</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">8</p>
         </div>
       </div>
     </div>
@@ -321,7 +321,7 @@ function Button8() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">9</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">9</p>
         </div>
       </div>
     </div>
@@ -344,7 +344,7 @@ function Button9() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">C</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">C</p>
         </div>
       </div>
     </div>
@@ -357,7 +357,7 @@ function Button10() {
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[30px] py-[6px] relative size-full">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">0</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">0</p>
         </div>
       </div>
     </div>
@@ -437,7 +437,7 @@ function Body() {
 function Button12() {
   return (
     <div className="bg-[#f1f0f1] content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#46464b] text-[15px]">Confirm new PIN-code</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#46464b] text-[15px]">Confirm new PIN-code</p>
     </div>
   );
 }
@@ -446,7 +446,7 @@ function Button13() {
   return (
     <button className="bg-white content-stretch cursor-pointer flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px] text-left">Cancel</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px] text-left">Cancel</p>
     </button>
   );
 }

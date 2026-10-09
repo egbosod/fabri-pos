@@ -7,7 +7,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#0094f9] text-[13px] tracking-[0.5px] uppercase">+ New user</p>
+                  <p className="font-['Montserrat',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#0094f9] text-[13px] tracking-[0.5px] uppercase">+ New user</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -15,7 +15,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[13px] tracking-[0.5px] uppercase">Internal users</p>
+                  <p className="font-['Montserrat',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[13px] tracking-[0.5px] uppercase">Internal users</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -23,7 +23,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Ola Nordmann</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Ola Nordmann</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -31,7 +31,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Kari Sørkvinne</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Kari Sørkvinne</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -39,7 +39,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Jens Jensen</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Jens Jensen</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -47,7 +47,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[13px] tracking-[0.5px] uppercase">External users</p>
+                  <p className="font-['Montserrat',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[13px] tracking-[0.5px] uppercase">External users</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -55,7 +55,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Jan Johansen</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Jan Johansen</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -63,7 +63,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Olga Pettersen</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Olga Pettersen</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -71,7 +71,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Lise Hansen</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Lise Hansen</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -79,7 +79,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Karl Kristiansen</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Karl Kristiansen</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -87,7 +87,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Lars Olafsen</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Lars Olafsen</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -95,7 +95,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Sara Gran</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Sara Gran</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />
@@ -103,7 +103,7 @@ export default function SelectList() {
             <div className="bg-white relative shrink-0 w-full" data-name="SelectListItem">
               <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
                 <div className="content-stretch flex items-center px-[10px] py-[8px] relative w-full">
-                  <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Olaf Martinsen</p>
+                  <p className="font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Olaf Martinsen</p>
                 </div>
               </div>
               <div aria-hidden="true" className="absolute border-[#e6e6e8] border-b border-solid inset-0 pointer-events-none" />

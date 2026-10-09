@@ -34,17 +34,16 @@ export function PaymentSummary({
       <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
         {/* Sum før rabatt */}
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-          <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">{t('total')}</p>
+          <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">{t('totalBeforeDiscount')}</p>
           <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">{formatCurrency(subtotal)}</p>
         </div>
         
-        {/* Item-level Rabatt */}
-        {discount > 0 && (
-          <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-            <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">{t('discount')}</p>
-            <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">-{formatCurrency(discount)}</p>
-          </div>
-        )}
+        {/* Item-level Rabatt — always visible, at 0,00 when there is no
+            discount, so the three-line calculation keeps its shape */}
+        <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
+          <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">{t('discount')}</p>
+          <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">{discount > 0 ? '-' : ''}{formatCurrency(discount)}</p>
+        </div>
         
         {/* Customer-level Rabatt */}
         {customerDiscount > 0 && (

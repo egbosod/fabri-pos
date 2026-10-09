@@ -42,7 +42,7 @@ export default function UttakRegistrert({ onClose, username }: { onClose?: () =>
     <div className="bg-[#f0fcf3] content-stretch flex gap-[13px] items-center p-[13px] relative rounded-[3px] w-full min-w-[300px] shadow-sm" data-name="Uttak registrert">
       <div aria-hidden="true" className="absolute border border-[#30ac5a] border-solid inset-0 pointer-events-none rounded-[3px]" />
       <IconsFontAwesome />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-90 relative shrink-0 text-[#101115] text-[15px] flex-1">
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-90 relative shrink-0 text-[#101115] text-[15px] flex-1">
         POS User switch success: {username}
       </p>
       <Close onClick={onClose} />

@@ -53,7 +53,7 @@ export default function PriceCheckScreen() {
     initPriceCheck,
     clearPriceCheckItems,
     priceCheckLocked,
-    proCard,
+    vipCard,
   } = usePOS();
 
   const [lineStates, setLineStates] = useState<Record<number, OrderLineState>>({});
@@ -253,7 +253,7 @@ export default function PriceCheckScreen() {
             mode="pricecheck"
             onEdit={handleEditCustomer}
             onRemove={handleRemovePriceCheckCustomer}
-            proCard={proCard}
+            vipCard={vipCard}
           />
         ) : (
           <button

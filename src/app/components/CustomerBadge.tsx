@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import svgPaths from "../imports/svg-lp8f0fd0qm";
 import { CustomerMenu } from './CustomerMenu';
 import { useLanguage } from '../contexts/LanguageContext';
-import type { ProCardData } from '../types/pos';
+import { useSettings } from '../contexts/SettingsContext';
+import type { VipCardData } from '../types/pos';
 
 interface Customer {
   id: string;
@@ -34,8 +35,10 @@ interface CustomerBadgeProps {
   onBankTerminal?: () => void;
   onExchangeSlip?: () => void;
   onPreviousPurchases?: () => void;
-  /** PRO card (XL-BYG/Aspect4 / Prototype B) — persistent indicator, independent from VIP */
-  proCard?: ProCardData | null;
+  /** VIP card (Aspect4 DK / Prototypes B & C) — persistent indicator on the sale */
+  vipCard?: VipCardData | null;
+  /** Aspect4 DK Proto A: remove a blocked VIP card from the sale */
+  onRemoveVipCard?: () => void;
 }
 
 function VerticalDotsIcon() {
@@ -52,7 +55,7 @@ function VerticalDotsIcon() {
   );
 }
 
-const MENU_HEIGHT = 210;
+const MENU_HEIGHT = 258;
 const MENU_WIDTH = 223;
 const MENU_GAP = 4;
 
@@ -66,9 +69,11 @@ export function CustomerBadge({
   onBankTerminal,
   onExchangeSlip,
   onPreviousPurchases,
-  proCard
+  vipCard,
+  onRemoveVipCard
 }: CustomerBadgeProps) {
   const { t } = useLanguage();
+  const { switchUserFlow } = useSettings();
   const [showMenu, setShowMenu] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [menuStyle, setMenuStyle] = useState<React.CSSProperties>({});
@@ -105,6 +110,9 @@ export function CustomerBadge({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showMenu]);
 
+  const canRemoveVip =
+    switchUserFlow === 'A' && vipCard?.status === 'blocked' && !!onRemoveVipCard;
+
   const menuPortal = showMenu
     ? createPortal(
         <>
@@ -122,6 +130,7 @@ export function CustomerBadge({
               onGiftCard={onGiftCard ? () => { closeMenu(); onGiftCard!(); } : undefined}
               onBankTerminal={onBankTerminal ? () => { closeMenu(); onBankTerminal!(); } : undefined}
               onExchangeSlip={onExchangeSlip ? () => { closeMenu(); onExchangeSlip!(); } : undefined}
+              onRemoveVipCard={canRemoveVip ? () => { closeMenu(); onRemoveVipCard!(); } : undefined}
               onPreviousPurchases={onPreviousPurchases ? () => { closeMenu(); onPreviousPurchases!(); } : undefined}
             />
           </div>
@@ -132,16 +141,56 @@ export function CustomerBadge({
 
   return (
     <div className="relative shrink-0 w-full">
-      <div className="bg-card relative rounded-[var(--radius-sm)] shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] shrink-0 w-full" data-name="Customer card">
+      {switchUserFlow === 'A' && vipCard?.status === 'blocked' && (
+        <div
+          role="alert"
+          className="box-border flex flex-col gap-[5px] items-center p-[13px] relative rounded-[3px] shrink-0 w-full mb-[15px]"
+          style={{
+            background: 'var(--Orange-Orange-98, #FFF8F3)',
+            border: '1px solid var(--Orange-Orange-60, #E66F04)',
+          }}
+        >
+          <p className="font-bold leading-[1.5] w-full" style={{ color: 'var(--Orange-Orange-60, #E66F04)' }}>{t('vipCardBlockedTitle')}</p>
+          <p className="leading-[1.5] text-foreground w-full">{t('vipCardBlockedBody')}</p>
+          {onRemoveVipCard && (
+            <button
+              type="button"
+              onClick={onRemoveVipCard}
+              className="mt-[4px] h-[40px] w-full px-[16px] rounded-[var(--radius)] font-bold cursor-pointer bg-card text-foreground border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+            >
+              {t('removeVipCard')}
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* The whole card stays a "select customer" target after a customer is
+          picked — same as live product. The kebab sits inside it, so that
+          button stops propagation to keep its own menu. */}
+      <div
+        role="button"
+        tabIndex={0}
+        onClick={onEdit}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onEdit();
+          }
+        }}
+        aria-label={t('selectCustomerButton')}
+        className="bg-card border border-border relative rounded-[var(--radius-sm)] shrink-0 w-full cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
+        data-name="Customer card"
+      >
         <div className="size-full">
           <div className="box-border content-stretch flex flex-col gap-[15px] items-start p-[15px] relative w-full">
             <div className="content-stretch flex items-center justify-between relative shrink-0 w-full">
-              <div className="basis-0 grow flex items-center gap-[8px] min-h-px min-w-px relative shrink-0">
-                <p className="leading-[1.75] text-foreground">
+              <div className="basis-0 grow flex flex-col items-start gap-[4px] min-h-px min-w-px relative shrink-0">
+                <p className="font-bold leading-[1.75] text-foreground">
                   {customer.name}
                 </p>
-                {proCard && (
+                {vipCard && switchUserFlow !== 'A' && (
                   <span style={{
+                    alignSelf: 'flex-start',
                     flexShrink: 0,
                     padding: '2px 8px',
                     borderRadius: 'var(--radius)',
@@ -149,13 +198,15 @@ export function CustomerBadge({
                     fontWeight: 700,
                     fontSize: 'var(--text-sm)',
                     whiteSpace: 'nowrap',
-                    color: proCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)',
-                    background: proCard.status === 'open'
+                    color: vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)',
+                    background: vipCard.status === 'open'
                       ? 'color-mix(in srgb, var(--chart-2) 14%, var(--card))'
                       : 'color-mix(in srgb, var(--destructive) 14%, var(--card))',
-                    border: `1px solid color-mix(in srgb, ${proCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)'} 35%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)'} 35%, transparent)`,
                   }}>
-                    PRO
+                    {switchUserFlow === 'B'
+                      ? (vipCard.status === 'open' ? t('vipBadgeOpen') : t('vipBadgeBlocked'))
+                      : 'VIP'}
                   </span>
                 )}
               </div>
@@ -163,7 +214,8 @@ export function CustomerBadge({
                 <button
                   ref={triggerRef}
                   className="bg-card border border-border box-border content-stretch flex gap-[8px] items-center justify-center px-[15px] py-[6px] relative rounded-[var(--radius)] shrink-0 size-[48px] hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
-                  onClick={() => showMenu ? closeMenu() : openMenu()}
+                  onClick={(e) => { e.stopPropagation(); showMenu ? closeMenu() : openMenu(); }}
+                  onKeyDown={(e) => e.stopPropagation()}
                   aria-expanded={showMenu}
                   aria-haspopup="menu"
                 >
@@ -172,7 +224,7 @@ export function CustomerBadge({
               </div>
             </div>
             {project && (
-              <p className="leading-[1.75] relative shrink-0 text-foreground">
+              <p className="font-normal leading-[1.75] relative shrink-0 text-foreground">
                 {project.navn}
               </p>
             )}

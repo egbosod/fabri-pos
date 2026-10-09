@@ -5,15 +5,15 @@ export default function PaymentSection() {
     <div className="bg-white content-stretch flex flex-col items-start justify-center overflow-clip pb-0 pt-[15px] px-[15px] relative rounded-[5px] shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] size-full" data-name="Payment section">
       <div className="content-stretch flex items-start justify-between relative shrink-0 w-[256px]">
         <div className="content-stretch flex flex-col items-start relative shrink-0">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">Totalt å betale:</p>
-          <div className="content-stretch flex font-['Montserrat:Bold',sans-serif] font-bold items-baseline leading-[1.4] relative shrink-0 text-[#090914] text-nowrap">
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">Totalt å betale:</p>
+          <div className="content-stretch flex font-['Montserrat',sans-serif] font-bold items-baseline leading-[1.4] relative shrink-0 text-[#090914] text-nowrap">
             <p className="relative shrink-0 text-[30px]">1 289</p>
             <p className="relative shrink-0 text-[24px]">,-</p>
           </div>
         </div>
         <div className="content-stretch flex flex-col items-end relative shrink-0">
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#6b6b72] text-[14px] text-nowrap">Gjenstående:</p>
-          <div className="content-stretch flex font-['Montserrat:Medium',sans-serif] font-medium items-baseline justify-end leading-[1.4] relative shrink-0 text-[#6b6b72] text-nowrap text-right">
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.4] relative shrink-0 text-[#6b6b72] text-[14px] text-nowrap">Gjenstående:</p>
+          <div className="content-stretch flex font-['Montserrat',sans-serif] font-medium items-baseline justify-end leading-[1.4] relative shrink-0 text-[#6b6b72] text-nowrap text-right">
             <p className="relative shrink-0 text-[30px]">0</p>
             <p className="relative shrink-0 text-[24px]">,-</p>
           </div>
@@ -21,13 +21,13 @@ export default function PaymentSection() {
       </div>
       <div className="content-stretch flex flex-col items-start relative shrink-0">
         <div className="content-stretch flex flex-col gap-[20px] items-start justify-center relative shrink-0">
-          <div className="content-stretch flex flex-col font-['Montserrat:Regular',sans-serif] font-normal gap-[3px] items-start leading-[1.4] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+          <div className="content-stretch flex flex-col font-['Montserrat',sans-serif] font-normal gap-[3px] items-start leading-[1.4] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
             <p className="relative shrink-0">(1 288,80)</p>
             <p className="relative shrink-0">{`Inkl. mva: 322,20 `}</p>
           </div>
           <div className="content-stretch flex items-center justify-between relative shrink-0 w-[256px]">
-            <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap">Kort:</p>
-            <div className="content-stretch flex font-['Montserrat:Regular',sans-serif] font-normal gap-[3px] items-center leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap w-[38px]">
+            <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap">Kort:</p>
+            <div className="content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[3px] items-center leading-[1.4] relative shrink-0 text-[#090914] text-[14px] text-nowrap w-[38px]">
               <p className="relative shrink-0">1 289</p>
               <p className="relative shrink-0">,-</p>
             </div>
@@ -45,7 +45,7 @@ export default function PaymentSection() {
                   </defs>
                 </svg>
               </div>
-              <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[12px] text-nowrap">Angre</p>
+              <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[12px] text-nowrap">Angre</p>
             </div>
           </div>
           <div className="absolute h-0 left-1/2 top-[57px] translate-x-[-50%] w-[256px]">

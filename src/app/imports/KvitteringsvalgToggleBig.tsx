@@ -6,7 +6,7 @@ type TextProps = {
 function Text({ text }: TextProps) {
   return (
     <div className="content-stretch flex items-center pl-0 pr-[15px] py-0 relative shrink-0">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
         <p className="leading-[normal]">{text}</p>
       </div>
     </div>
@@ -29,7 +29,7 @@ export default function KvitteringsvalgToggleBig() {
         </div>
         <div className="content-stretch flex flex-col items-center justify-center relative shrink-0">
           <div className="content-stretch flex flex-col items-center justify-center relative shrink-0">
-            <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] relative shrink-0 text-[#090914] text-[15px] text-center text-nowrap">Betaling fullført!</p>
+            <p className="font-['Montserrat',sans-serif] font-bold leading-[1.3] relative shrink-0 text-[#090914] text-[15px] text-center text-nowrap">Betaling fullført!</p>
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@ export default function KvitteringsvalgToggleBig() {
         <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0">
           <div className="content-stretch flex gap-[30px] items-center leading-[0] relative shrink-0">
             <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0">
-              <p className="[grid-area:1_/_1] font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-[66.5px] mt-0 relative text-[#22222c] text-[14px] text-center text-nowrap translate-x-[-50%]">Skriv ut kvittering</p>
+              <p className="[grid-area:1_/_1] font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-[66.5px] mt-0 relative text-[#22222c] text-[14px] text-center text-nowrap translate-x-[-50%]">Skriv ut kvittering</p>
               <div className="[grid-area:1_/_1] content-stretch flex flex-col gap-[12px] items-start ml-0 mt-[30.42px] relative">
                 <div className="bg-[#f0f9ff] content-stretch flex flex-col items-start justify-center px-0 py-[10px] relative rounded-[5px] shrink-0 w-[138px]" data-name="Toggle big">
                   <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
@@ -77,7 +77,7 @@ export default function KvitteringsvalgToggleBig() {
               </div>
             </div>
             <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0">
-              <p className="[grid-area:1_/_1] font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-[62.5px] mt-0 relative text-[#22222c] text-[14px] text-center text-nowrap translate-x-[-50%]">Digital kvittering</p>
+              <p className="[grid-area:1_/_1] font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-[62.5px] mt-0 relative text-[#22222c] text-[14px] text-center text-nowrap translate-x-[-50%]">Digital kvittering</p>
               <div className="[grid-area:1_/_1] content-stretch flex flex-col gap-[12px] items-start ml-[0.25px] mt-[30px] relative">
                 <div className="bg-white content-stretch flex flex-col items-start justify-center px-0 py-[10px] relative rounded-[5px] shrink-0" data-name="Toggle big">
                   <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
@@ -112,10 +112,10 @@ export default function KvitteringsvalgToggleBig() {
           </div>
           <div className="content-stretch flex flex-col gap-[28px] items-start relative shrink-0">
             <div className="content-stretch flex flex-col gap-[5px] items-start relative shrink-0">
-              <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#22222c] text-[14px] text-center w-[124px]">Selger på salget</p>
+              <p className="font-['Montserrat',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#22222c] text-[14px] text-center w-[124px]">Selger på salget</p>
               <div className="bg-white content-stretch flex gap-[10px] h-[48px] items-center px-[14px] py-[8px] relative rounded-[5px] shrink-0 w-[365px]" data-name="Textfield/Normal">
                 <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-                <p className="basis-0 font-['Montserrat:Regular',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[#42424a] text-[14px]">9988: Ola Nordmann</p>
+                <p className="basis-0 font-['Montserrat',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[#42424a] text-[14px]">9988: Ola Nordmann</p>
                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                   <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                   <div className="absolute inset-[0_0_2.05%_0]">
@@ -130,7 +130,7 @@ export default function KvitteringsvalgToggleBig() {
               </div>
             </div>
             <div className="bg-[#0d97fc] content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0 w-[365px]" data-name="Button">
-              <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white">Bekreft</p>
+              <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white">Bekreft</p>
             </div>
           </div>
         </div>

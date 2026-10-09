@@ -52,7 +52,7 @@ function ChevronDown2() {
 function Frame32() {
   return (
     <div className="content-stretch flex gap-[6.477px] items-center relative shrink-0">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">MENY</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[14.805px] text-nowrap text-white whitespace-pre">MENY</p>
       <ChevronDown2 />
     </div>
   );
@@ -68,7 +68,7 @@ function Frame632() {
 
 function Frame633() {
   return (
-    <div className="content-stretch flex font-['Montserrat:Regular',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre">
+    <div className="content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre">
       <p className="relative shrink-0">Nytt salg</p>
       <p className="relative shrink-0">Tidligere kjøp</p>
       <p className="relative shrink-0">Kasseoppgjør</p>
@@ -122,7 +122,7 @@ function Frame137() {
             </div>
           </div>
         </div>
-        <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">Ola Nordmann</p>
+        <p className="absolute font-['Montserrat',sans-serif] font-normal h-[14.767px] leading-[1.75] left-[37px] text-[12px] text-white top-[calc(50%-10px)] w-[97.5px]">Ola Nordmann</p>
         <UserIcon />
       </div>
     </div>
@@ -162,7 +162,7 @@ function TextButton() {
         <div className="absolute left-0 size-[48px] top-0" data-name="Icon Plate" />
         <Group3 />
       </div>
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">Sjekk pris</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">Sjekk pris</p>
     </button>
   );
 }
@@ -171,7 +171,7 @@ function Button() {
   return (
     <button className="bg-white box-border content-stretch cursor-pointer flex gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative rounded-bl-[5px] rounded-tl-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-bl-[5px] rounded-tl-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Parker salg</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Parker salg</p>
     </button>
   );
 }
@@ -179,7 +179,7 @@ function Button() {
 function Frame145() {
   return (
     <div className="bg-[#d5d5d7] box-border content-stretch flex items-center justify-center overflow-clip px-[7px] py-0 relative rounded-[100px] shrink-0 w-[22px]">
-      <div className="flex flex-col font-['Montserrat:SemiBold',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[12px] text-center text-nowrap text-white">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[12px] text-center text-nowrap text-white">
         <p className="leading-[1.75] whitespace-pre">0</p>
       </div>
     </div>
@@ -258,8 +258,8 @@ function Graphic() {
 function Group161() {
   return (
     <div className="absolute contents left-1/2 top-[160px] translate-x-[-50%]">
-      <p className="absolute font-['Montserrat:Regular',sans-serif] font-normal h-[34px] leading-[1.38] left-[calc(50%-9.5px)] text-[13px] text-black text-center top-[320px] translate-x-[-50%] w-[322px]">Scan/søk varer for å sjekke pris tilhørende kunde/prosjekt. Legg deretter til varene på salget dersom kunden ønsker varene.</p>
-      <p className="absolute font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] left-1/2 text-[#42424a] text-[15px] text-center top-[283px] translate-x-[-50%] w-[359px]">Sjekk pris for valgt kunde/prosjekt</p>
+      <p className="absolute font-['Montserrat',sans-serif] font-normal h-[34px] leading-[1.38] left-[calc(50%-9.5px)] text-[13px] text-black text-center top-[320px] translate-x-[-50%] w-[322px]">Scan/søk varer for å sjekke pris tilhørende kunde/prosjekt. Legg deretter til varene på salget dersom kunden ønsker varene.</p>
+      <p className="absolute font-['Montserrat',sans-serif] font-semibold leading-[1.75] left-1/2 text-[#42424a] text-[15px] text-center top-[283px] translate-x-[-50%] w-[359px]">Sjekk pris for valgt kunde/prosjekt</p>
       <div className="absolute left-[calc(50%+0.5px)] overflow-clip size-[114px] top-[160px] translate-x-[-50%]" data-name="Barcode Scan">
         <Graphic />
       </div>
@@ -315,7 +315,7 @@ function Button2() {
         <div className="absolute left-0 size-[15px] top-0" data-name="Icon Plate" />
         <Group5 />
       </div>
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Hent ordre</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Hent ordre</p>
     </div>
   );
 }
@@ -351,7 +351,7 @@ function MobileShoppingCart() {
 function Count() {
   return (
     <div className="absolute bg-[#2ea6ff] box-border content-stretch flex items-start left-[188px] overflow-clip px-[7px] py-0 rounded-[100px] top-[-9.5px]" data-name="Count">
-      <div className="flex flex-col font-['Montserrat:SemiBold',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[12px] text-center text-nowrap text-white">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[12px] text-center text-nowrap text-white">
         <p className="leading-[1.75] whitespace-pre">2</p>
       </div>
     </div>
@@ -363,7 +363,7 @@ function Button3() {
     <div className="bg-white box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <MobileShoppingCart />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Hent fra håndterminal</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Hent fra håndterminal</p>
       <Count />
     </div>
   );
@@ -380,7 +380,7 @@ function Frame238() {
               <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
               <div className="flex flex-row items-center size-full">
                 <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center px-[14px] py-[8px] relative w-full">
-                  <p className="basis-0 font-['Montserrat:Regular',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px]">Søk etter varer</p>
+                  <p className="basis-0 font-['Montserrat',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px]">Søk etter varer</p>
                   <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                     <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                     <Group4 />
@@ -416,7 +416,7 @@ function Buttons() {
       <a className="bg-[#efeff0] cursor-pointer h-[48px] min-w-[100px] relative rounded-[5px] shrink-0 w-full" data-name="Button - betal nå" href="https://www.figma.com/proto/8GpkqyjqWNpGX9SWbDDLf4/Point-Of-Sale-(POS)?page-id=0%3A903&type=design&node-id=914-42293&t=ztYIclHKje6ohAaS-0&scaling=min-zoom&starting-point-node-id=914%3A42293">
         <div className="flex flex-row items-center justify-center min-w-inherit size-full">
           <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
-            <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] text-nowrap whitespace-pre">Betal nå</p>
+            <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] text-nowrap whitespace-pre">Betal nå</p>
           </div>
         </div>
       </a>
@@ -438,7 +438,7 @@ function Body() {
                 <div className="flex items-center justify-center shrink-0" data-name="Icon / User">
                   <FontAwesomeIcon icon={faUser} className="text-[12px] text-[#090914]" />
                 </div>
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Velg kunde / prosjekt</p>
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Velg kunde / prosjekt</p>
               </div>
             </div>
           </div>
