@@ -5,12 +5,12 @@ export default function Frame() {
   return (
     <div className="content-stretch flex gap-[21.914px] items-end leading-[0] relative size-full">
       <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative" data-name="Input and label">
-        <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[443.673px]">Prosjekt</p>
+        <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[443.673px]">Prosjekt</p>
         <div className="bg-white col-1 h-[48px] ml-0 mt-[26px] relative rounded-[5px] row-1 w-[505.086px]" data-name="Textfield/Normal">
           <div aria-hidden="true" className="absolute border-2 border-[#0d97fc] border-solid inset-0 pointer-events-none rounded-[5px]" />
           <div className="flex flex-row items-center size-full">
             <div className="content-stretch flex gap-[6px] items-center px-[14px] py-[8px] relative size-full">
-              <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnr eller adresse `}</p>
+              <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnr eller adresse `}</p>
               <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                 <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                 <div className="absolute inset-[0_0_2.05%_0]">

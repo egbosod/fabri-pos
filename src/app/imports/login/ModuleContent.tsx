@@ -5,7 +5,7 @@ function InputAndLabel() {
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 w-full" data-name="Input and label">
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
         <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Select or search for user</p>
+        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Select or search for user</p>
         <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Down">
           <div className="absolute inset-[28.57%_2.93%_22.48%_2.94%]" data-name="Vector">
             <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13.1783 6.85421">
@@ -14,7 +14,7 @@ function InputAndLabel() {
           </div>
         </div>
       </div>
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">User</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">User</p>
     </div>
   );
 }
@@ -24,9 +24,9 @@ function InputAndLabel1() {
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 w-full" data-name="Input and label">
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
         <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter current password</p>
+        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter current password</p>
       </div>
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">Password</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">Password</p>
     </div>
   );
 }
@@ -36,9 +36,9 @@ function InputAndLabel2() {
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 w-full" data-name="Input and label">
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
         <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code</p>
+        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code</p>
       </div>
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code</p>
     </div>
   );
 }
@@ -48,9 +48,9 @@ function InputAndLabel3() {
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 w-full" data-name="Input and label">
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
         <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code again</p>
+        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter new PIN-code again</p>
       </div>
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code again</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">PIN-code again</p>
     </div>
   );
 }

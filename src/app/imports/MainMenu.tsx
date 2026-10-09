@@ -20,7 +20,7 @@ function MainMenu({ className }: { className?: string }) {
                   </svg>
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
-                  <div className="capitalize flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
+                  <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
                     <p className="leading-[16px] whitespace-pre">Exchange slip</p>
                   </div>
                 </div>
@@ -51,7 +51,7 @@ function MainMenu({ className }: { className?: string }) {
                   </svg>
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
-                  <div className="capitalize flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
+                  <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
                     <p className="leading-[16px] whitespace-pre">Gavekort</p>
                   </div>
                 </div>
@@ -98,7 +98,7 @@ function MainMenu({ className }: { className?: string }) {
                   </svg>
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
-                  <div className="capitalize flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
+                  <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
                     <p className="leading-[16px] whitespace-pre">Bankterminal</p>
                   </div>
                 </div>
@@ -138,7 +138,7 @@ function MainMenu({ className }: { className?: string }) {
                   </svg>
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
-                  <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
+                  <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
                     <p className="leading-[16px] whitespace-pre">Kopi av siste kvittering</p>
                   </div>
                 </div>
@@ -168,7 +168,7 @@ function MainMenu({ className }: { className?: string }) {
                   </div>
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
-                  <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
+                  <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
                     <p className="leading-[16px] whitespace-pre">Åpne kasseskuff </p>
                   </div>
                 </div>
@@ -205,7 +205,7 @@ function MainMenu({ className }: { className?: string }) {
                   </svg>
                 </div>
                 <div className="box-border content-stretch flex gap-[8px] items-start px-[2px] py-0 relative shrink-0">
-                  <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
+                  <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[14px] text-nowrap text-white">
                     <p className="leading-[16px] whitespace-pre">Ta inn/ut veksel </p>
                   </div>
                 </div>
@@ -217,7 +217,7 @@ function MainMenu({ className }: { className?: string }) {
       <div className="content-stretch flex gap-[8px] h-[48px] items-center justify-center relative shrink-0 w-full">
         <div aria-hidden="true" className="absolute border-[#6b6b72] border-[1px_0px_0px] border-solid inset-0 pointer-events-none" />
         <div className="content-stretch flex gap-[5px] items-start relative shrink-0">
-          <div className="capitalize flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#d5d5d7] text-[14px] text-nowrap">
+          <div className="capitalize flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#d5d5d7] text-[14px] text-nowrap">
             <p className="leading-[16px] whitespace-pre">Versjonsskriv</p>
           </div>
           <div className="overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Ex link">

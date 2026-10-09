@@ -23,7 +23,7 @@ function InputAndLabelText({ text, children }: React.PropsWithChildren<InputAndL
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 w-full">
       <TextfieldNormal additionalClassNames="ml-0 mt-[25.5px] w-[575px]">{children}</TextfieldNormal>
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">{text}</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px]">{text}</p>
     </div>
   );
 }
@@ -46,7 +46,7 @@ export default function ModuleContent() {
     <div className="bg-white content-stretch flex flex-col gap-[10px] items-start p-[20px] relative rounded-[4.383px] size-full" data-name="Module content">
       <div aria-hidden="true" className="absolute border border-[#e6e6e8] border-solid inset-0 pointer-events-none rounded-[4.383px]" />
       <InputAndLabelText text="Kunde">
-        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">Snorre</p>
+        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">Snorre</p>
         <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
           <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
           <Helper />
@@ -54,12 +54,12 @@ export default function ModuleContent() {
       </InputAndLabelText>
       <div className="content-stretch flex gap-[21.914px] items-end leading-[0] relative shrink-0 w-full">
         <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative" data-name="Input and label">
-          <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[443.673px]">Prosjekt</p>
+          <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[443.673px]">Prosjekt</p>
           <div className="bg-white col-1 h-[48px] ml-0 mt-[26px] relative rounded-[5px] row-1 w-[505.086px]" data-name="Textfield/Normal">
             <div aria-hidden="true" className="absolute border-2 border-[#0d97fc] border-solid inset-0 pointer-events-none rounded-[5px]" />
             <div className="flex flex-row items-center size-full">
               <div className="content-stretch flex gap-[6px] items-center px-[14px] py-[8px] relative size-full">
-                <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnr eller adresse `}</p>
+                <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnr eller adresse `}</p>
                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                   <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                   <Helper />
@@ -93,7 +93,7 @@ export default function ModuleContent() {
         </div>
       </div>
       <InputAndLabelText text="Kundens referanse">
-        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Legg inn kundereferanse</p>
+        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Legg inn kundereferanse</p>
       </InputAndLabelText>
       <div className="content-stretch flex gap-[21.914px] items-start leading-[0] relative shrink-0 w-full">
         <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative" data-name="Input and label">
@@ -109,13 +109,13 @@ export default function ModuleContent() {
               </div>
             </div>
           </div>
-          <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Kontaktperson</p>
+          <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Kontaktperson</p>
         </div>
         <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative" data-name="Input and label">
           <TextfieldNormal additionalClassNames="ml-[0.05px] mt-[26px] w-[276.493px]">
-            <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">&nbsp;</p>
+            <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">&nbsp;</p>
           </TextfieldNormal>
-          <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Rekvisisjonsnummer</p>
+          <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px]">Rekvisisjonsnummer</p>
         </div>
       </div>
     </div>

@@ -17,7 +17,7 @@ function InputAndLabelText1({ text, additionalClassNames = "" }: InputAndLabelTe
   return (
     <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative">
       <TextfieldNormalText text="&nbsp;" additionalClassNames="ml-[0.08px] mt-[26px] w-[444.463px]" />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[444.543px]">{text}</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[444.543px]">{text}</p>
     </div>
   );
 }
@@ -43,7 +43,7 @@ function InputAndLabelText({ text }: InputAndLabelTextProps) {
   return (
     <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative">
       <Select additionalClassNames="w-[444.463px]" />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[444.543px]">{text}</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[444.543px]">{text}</p>
     </div>
   );
 }
@@ -58,7 +58,7 @@ function TextfieldNormalText({ text, additionalClassNames = "" }: TextfieldNorma
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex gap-[10px] items-center px-[14px] py-[8px] relative size-full">
-          <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">{text}</p>
+          <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">{text}</p>
         </div>
       </div>
     </div>
@@ -73,7 +73,7 @@ function InputAndLabel({ text, text1 }: InputAndLabelProps) {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full">
       <TextfieldNormalText text={text} additionalClassNames="ml-0 mt-[25.5px] w-[911px]" />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[911px]">{text1}</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[911px]">{text1}</p>
     </div>
   );
 }
@@ -105,7 +105,7 @@ export default function KundeProsjekt() {
                   </svg>
                 </div>
               </div>
-              <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Create new project assigned to the current customer</p>
+              <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Create new project assigned to the current customer</p>
             </div>
           </div>
         </div>
@@ -113,7 +113,7 @@ export default function KundeProsjekt() {
           <div className="flex flex-row items-end overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex gap-[30px] items-end pt-[10px] px-[20px] relative size-full">
               <div className="content-stretch flex flex-col gap-[6px] h-[48px] items-center justify-end relative shrink-0">
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">{`New project `}</p>
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">{`New project `}</p>
                 <div className="h-0 relative shrink-0 w-full">
                   <div className="absolute inset-[-3px_0_0_0]">
                     <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 89 3">
@@ -150,7 +150,7 @@ export default function KundeProsjekt() {
                 <div className="content-stretch flex items-start relative shrink-0 w-[444px]">
                   <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] min-h-px min-w-px place-items-start relative" data-name="Input and label">
                     <Select additionalClassNames="w-[443.92px]" />
-                    <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[444px]">Contact person</p>
+                    <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[444px]">Contact person</p>
                   </div>
                 </div>
                 <div className="content-stretch flex gap-[21.914px] h-[74.5px] items-end leading-[0] relative shrink-0 w-full">
@@ -159,7 +159,7 @@ export default function KundeProsjekt() {
                     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center justify-end ml-0 mt-[26.5px] px-[15px] py-[5px] relative rounded-[4px] row-1 w-[444.543px]" data-name="Select">
                       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[4px]" />
                     </div>
-                    <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-[3.76px] mt-0 relative row-1 text-[#22222c] text-[14px] w-[270.192px]">Phone number</p>
+                    <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-[3.76px] mt-0 relative row-1 text-[#22222c] text-[14px] w-[270.192px]">Phone number</p>
                   </div>
                 </div>
               </div>
@@ -177,13 +177,13 @@ export default function KundeProsjekt() {
                     <div className="content-stretch flex gap-[20px] items-center relative" data-name="Buttons">
                       <div className="bg-[#efeff0] h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                         <ButtonsHelper>
-                          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Save and create</p>
+                          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Save and create</p>
                         </ButtonsHelper>
                       </div>
                       <button className="bg-white cursor-pointer h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                         <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
                         <ButtonsHelper>
-                          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Cancel</p>
+                          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Cancel</p>
                         </ButtonsHelper>
                       </button>
                     </div>

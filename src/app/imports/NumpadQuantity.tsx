@@ -4,7 +4,7 @@ function Button() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">1</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">1</p>
     </div>
   );
 }
@@ -13,7 +13,7 @@ function Button1() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">2</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">2</p>
     </div>
   );
 }
@@ -22,7 +22,7 @@ function Button2() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">3</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">3</p>
     </div>
   );
 }
@@ -41,7 +41,7 @@ function Button3() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">4</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">4</p>
     </div>
   );
 }
@@ -50,7 +50,7 @@ function Button4() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">5</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">5</p>
     </div>
   );
 }
@@ -59,7 +59,7 @@ function Button5() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">6</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">6</p>
     </div>
   );
 }
@@ -78,7 +78,7 @@ function Button6() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">7</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">7</p>
     </div>
   );
 }
@@ -87,7 +87,7 @@ function Button7() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">8</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">8</p>
     </div>
   );
 }
@@ -96,7 +96,7 @@ function Button8() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">9</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">9</p>
     </div>
   );
 }
@@ -115,7 +115,7 @@ function Button9() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">,</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">,</p>
     </div>
   );
 }
@@ -124,7 +124,7 @@ function Button10() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] items-center justify-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 size-[48px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">0</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[18px] text-nowrap whitespace-pre">0</p>
     </div>
   );
 }
@@ -178,7 +178,7 @@ function Numpad() {
 function FormFieldLabel() {
   return (
     <div className="content-stretch flex gap-[5px] items-center justify-center relative shrink-0" data-name="Form field label">
-      <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#101115] text-[12px] text-nowrap whitespace-pre">Conversion</p>
+      <p className="font-['Montserrat',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#101115] text-[12px] text-nowrap whitespace-pre">Conversion</p>
     </div>
   );
 }
@@ -193,7 +193,7 @@ function InputWithLabel() {
 
 function Frame() {
   return (
-    <div className="absolute border-[#e6e6e8] border-[0px_0px_1px] border-solid font-['Montserrat:Regular',sans-serif] font-normal h-[21px] leading-[1.75] left-0 text-[14px] text-black text-nowrap top-[26px] w-[142px] whitespace-pre">
+    <div className="absolute border-[#e6e6e8] border-[0px_0px_1px] border-solid font-['Montserrat',sans-serif] font-normal h-[21px] leading-[1.75] left-0 text-[14px] text-black text-nowrap top-[26px] w-[142px] whitespace-pre">
       <p className="absolute left-0 top-0">{`STK `}</p>
       <p className="absolute left-[142px] text-right top-0 translate-x-[-100%]">9 999,00</p>
     </div>
@@ -202,7 +202,7 @@ function Frame() {
 
 function Frame1() {
   return (
-    <div className="absolute border-[#e6e6e8] border-[0px_0px_1px] border-solid font-['Montserrat:Regular',sans-serif] font-normal h-[21px] leading-[1.75] left-0 text-[14px] text-black text-nowrap top-[59px] w-[142px] whitespace-pre">
+    <div className="absolute border-[#e6e6e8] border-[0px_0px_1px] border-solid font-['Montserrat',sans-serif] font-normal h-[21px] leading-[1.75] left-0 text-[14px] text-black text-nowrap top-[59px] w-[142px] whitespace-pre">
       <p className="absolute left-0 top-0">PAL</p>
       <p className="absolute left-[142px] text-right top-0 translate-x-[-100%]">99,00</p>
     </div>
@@ -211,7 +211,7 @@ function Frame1() {
 
 function Frame2() {
   return (
-    <div className="absolute border-[#e6e6e8] border-[0px_0px_1px] border-solid font-['Montserrat:Regular',sans-serif] font-normal h-[21px] leading-[1.75] left-0 text-[14px] text-black text-nowrap top-[92px] w-[142px] whitespace-pre">
+    <div className="absolute border-[#e6e6e8] border-[0px_0px_1px] border-solid font-['Montserrat',sans-serif] font-normal h-[21px] leading-[1.75] left-0 text-[14px] text-black text-nowrap top-[92px] w-[142px] whitespace-pre">
       <p className="absolute left-0 top-0">M2</p>
       <p className="absolute left-[142px] text-right top-0 translate-x-[-100%]">4999,50</p>
     </div>
@@ -233,7 +233,7 @@ function Button12() {
   return (
     <button className="bg-white box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0 w-[142px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Save changes</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Save changes</p>
     </button>
   );
 }
@@ -252,7 +252,7 @@ function Button13() {
   return (
     <div className="bg-white box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0 w-[142px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Endre til retur</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Endre til retur</p>
     </div>
   );
 }
@@ -261,7 +261,7 @@ function Button14() {
   return (
     <button className="bg-white box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0 w-[142px]" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Del opp varelinjen</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Del opp varelinjen</p>
     </button>
   );
 }
@@ -359,7 +359,7 @@ function IconbuttonSmall() {
 function Value() {
   return (
     <div className="bg-[#cfeafe] content-stretch flex gap-[10px] items-center relative shrink-0" data-name="value">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">9 999,00</p>
       </div>
     </div>
@@ -370,7 +370,7 @@ function Content() {
   return (
     <div className="basis-0 bg-[#f2f6f9] content-stretch flex gap-[5px] grow h-full items-center justify-center min-h-px min-w-px relative shrink-0" data-name="Content">
       <Value />
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">STK</p>
       </div>
       <div className="absolute bottom-[11.5px] h-0 left-0 right-0">

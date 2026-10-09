@@ -22,7 +22,7 @@ export default function TextButton() {
             <div className="absolute left-0 size-[48px] top-0" data-name="Icon Plate" />
             <Group3 />
           </div>
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">Sjekk pris</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#22222c] text-[12px] text-nowrap uppercase whitespace-pre">Sjekk pris</p>
         </div>
       </div>
     </div>

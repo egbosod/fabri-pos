@@ -29,7 +29,7 @@ function SelectOption() {
       <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center px-[15px] py-[8px] relative w-full">
           <AccountingDocument />
-          <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap whitespace-pre">Faktura til betaling</p>
+          <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap whitespace-pre">Faktura til betaling</p>
         </div>
       </div>
     </button>
@@ -61,7 +61,7 @@ function SelectOption1() {
       <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center px-[15px] py-[8px] relative w-full">
           <ShippingLogisticEstimateTimeArrival1 />
-          <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap whitespace-pre">Tidligere kjøp</p>
+          <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap whitespace-pre">Tidligere kjøp</p>
         </div>
       </div>
     </button>
@@ -93,7 +93,7 @@ function SelectOption2() {
       <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center px-[15px] py-[8px] relative w-full">
           <Pencil />
-          <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap whitespace-pre">Rediger</p>
+          <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#22222c] text-[14px] text-nowrap whitespace-pre">Rediger</p>
         </div>
       </div>
     </button>
@@ -105,7 +105,7 @@ function SelectOption3() {
     <button className="bg-white h-[48px] relative shrink-0 w-full" data-name="Select option">
       <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center px-[15px] py-[8px] relative w-full">
-          <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#cc2a14] text-[14px] text-nowrap whitespace-pre">Fjern kunden</p>
+          <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#cc2a14] text-[14px] text-nowrap whitespace-pre">Fjern kunden</p>
         </div>
       </div>
     </button>

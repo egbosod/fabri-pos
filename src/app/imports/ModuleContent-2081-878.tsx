@@ -17,7 +17,7 @@ type ContentTextProps = {
 function ContentText({ text }: ContentTextProps) {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] whitespace-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] whitespace-nowrap">
         <p className="leading-[normal]">{text}</p>
       </div>
     </div>
@@ -69,13 +69,13 @@ export default function ModuleContent() {
   return (
     <div className="bg-white border border-[#e6e6e8] border-solid relative rounded-[4.383px] size-full" data-name="Module content">
       <div className="absolute contents left-[14px] top-[120px]">
-        <div className="-translate-y-1/2 absolute flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] left-[68px] text-[#6b6b72] text-[12px] top-[128.5px] whitespace-nowrap">
+        <div className="-translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] left-[68px] text-[#6b6b72] text-[12px] top-[128.5px] whitespace-nowrap">
           <p className="leading-[normal]">Receipt details</p>
         </div>
-        <div className="-translate-y-1/2 absolute flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] left-[229px] text-[#6b6b72] text-[12px] top-[128.5px] whitespace-nowrap">
+        <div className="-translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] left-[229px] text-[#6b6b72] text-[12px] top-[128.5px] whitespace-nowrap">
           <p className="leading-[normal]">Customer, project</p>
         </div>
-        <div className="-translate-y-1/2 absolute flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] left-[861px] text-[#6b6b72] text-[12px] top-[128.5px] w-[90px]">
+        <div className="-translate-y-1/2 absolute flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] left-[861px] text-[#6b6b72] text-[12px] top-[128.5px] w-[90px]">
           <p className="leading-[normal]">Total amount</p>
         </div>
         <div className="absolute content-stretch flex flex-col gap-[12px] items-start left-[15px] top-[146px]">
@@ -96,28 +96,28 @@ export default function ModuleContent() {
                   <div className="bg-[rgba(255,255,255,0)] h-[62px] shrink-0 w-[44px]" data-name="Table/Cell" />
                   <div className="bg-[rgba(255,255,255,0)] content-stretch flex flex-col h-[62px] items-start justify-center overflow-clip px-[10px] py-[5px] relative shrink-0 w-[160px]" data-name="Table/Cell">
                     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 whitespace-nowrap">
-                      <div className="col-1 flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[normal] ml-0 mt-[18px] relative row-1 text-[#42424a] text-[12px]">
+                      <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[normal] ml-0 mt-[18px] relative row-1 text-[#42424a] text-[12px]">
                         <p className="mb-0">12 June 2023, 15:32</p>
                         <p>Nama Namason</p>
                       </div>
-                      <div className="col-1 flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-0 relative row-1 text-[#22222c] text-[14px]">
+                      <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-0 relative row-1 text-[#22222c] text-[14px]">
                         <p className="leading-[normal]">SE1-3659</p>
                       </div>
                     </div>
                   </div>
                   <div className="bg-[rgba(255,255,255,0)] content-stretch flex flex-col h-[62px] items-start justify-center overflow-clip px-[10px] py-[5px] relative shrink-0 w-[646px]" data-name="Table/Cell">
                     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 whitespace-nowrap">
-                      <div className="col-1 flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[19px] relative row-1 text-[#42424a] text-[12px]">
+                      <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[19px] relative row-1 text-[#42424a] text-[12px]">
                         <p className="leading-[normal]">Project: Brennerigata 43A, building B</p>
                       </div>
-                      <div className="col-1 flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-0 relative row-1 text-[#22222c] text-[14px]">
+                      <div className="col-1 flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-0 relative row-1 text-[#22222c] text-[14px]">
                         <p className="leading-[normal]">Builder Snorre Rogne</p>
                       </div>
                     </div>
                   </div>
                   <div className="bg-[rgba(255,255,255,0)] content-stretch flex flex-col h-[62px] items-end justify-center overflow-clip px-[10px] py-[5px] relative shrink-0 w-[87px]" data-name="Table/Cell">
                     <div className="content-stretch flex items-center justify-end overflow-clip relative shrink-0" data-name="Content">
-                      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-right whitespace-nowrap">
+                      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] text-right whitespace-nowrap">
                         <p className="leading-[normal]">483.30</p>
                       </div>
                     </div>
@@ -164,7 +164,7 @@ export default function ModuleContent() {
                         <div className="flex flex-col justify-center overflow-clip rounded-[inherit] size-full">
                           <div className="content-stretch flex flex-col items-start justify-center px-[10px] py-[5px] relative w-full">
                             <div className="content-stretch flex items-center overflow-clip relative shrink-0" data-name="Content">
-                              <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] whitespace-nowrap">
+                              <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#22222c] text-[14px] whitespace-nowrap">
                                 <p className="leading-[19px]">Screw 5.0x40 CS A-250 Corrseal 23083603</p>
                               </div>
                             </div>
@@ -190,7 +190,7 @@ export default function ModuleContent() {
                               </div>
                               <div className="bg-white content-stretch flex flex-col gap-[8px] items-center justify-center px-[20px] py-[11px] relative shrink-0 size-[48px]" data-name="Textfield">
                                 <div aria-hidden="true" className="absolute border-[#d5d5d7] border-b border-solid border-t inset-0 pointer-events-none" />
-                                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">2</p>
+                                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">2</p>
                               </div>
                               <button className="bg-[#f5f5f6] content-stretch cursor-pointer flex h-[46px] items-center justify-center px-[13px] py-[6px] relative rounded-br-[5px] rounded-tr-[5px] shrink-0 w-[48px]" data-name="Iconbutton/small">
                                 <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-[-1px] pointer-events-none rounded-br-[6px] rounded-tr-[6px]" />
@@ -207,7 +207,7 @@ export default function ModuleContent() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">
+                        <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">
                           <p className="leading-[1.38]">PCS</p>
                         </div>
                       </div>
@@ -215,7 +215,7 @@ export default function ModuleContent() {
                         <div className="content-stretch flex h-[40px] items-center overflow-clip relative shrink-0" data-name="Content">
                           <div className="content-stretch flex flex-col gap-[4px] items-center overflow-clip relative shrink-0" data-name="Textfield">
                             <div className="content-stretch flex gap-[5px] items-center relative shrink-0">
-                              <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">
+                              <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">
                                 <p className="leading-[1.38]">179.00</p>
                               </div>
                             </div>
@@ -229,10 +229,10 @@ export default function ModuleContent() {
                         <div className="content-stretch flex h-[40px] items-center overflow-clip relative shrink-0" data-name="Content">
                           <div className="content-stretch flex flex-col gap-[4px] items-center overflow-clip relative shrink-0" data-name="Textfield">
                             <div className="content-stretch flex gap-[3px] items-center leading-[0] relative shrink-0 whitespace-nowrap">
-                              <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center relative shrink-0 text-[#090914] text-[14px]">
+                              <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center relative shrink-0 text-[#090914] text-[14px]">
                                 <p className="leading-[1.38]">10</p>
                               </div>
-                              <div className="flex flex-col font-['Montserrat:SemiBold',sans-serif] font-semibold justify-center relative shrink-0 text-[#42424a] text-[12px]">
+                              <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center relative shrink-0 text-[#42424a] text-[12px]">
                                 <p className="leading-[1.38]">%</p>
                               </div>
                             </div>
@@ -244,7 +244,7 @@ export default function ModuleContent() {
                       </div>
                       <div className="bg-[rgba(255,255,255,0)] content-stretch flex flex-col items-end justify-center overflow-clip pl-[30px] pr-[32px] py-[5px] relative shrink-0 w-[93px]" data-name="Table/Cell">
                         <div className="content-stretch flex items-center overflow-clip relative shrink-0" data-name="Content">
-                          <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[19px] relative shrink-0 text-[#22222c] text-[14px] text-right whitespace-nowrap">
+                          <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[19px] relative shrink-0 text-[#22222c] text-[14px] text-right whitespace-nowrap">
                             <p className="mb-0">483.30</p>
                             <p>537.00</p>
                           </div>
@@ -262,12 +262,12 @@ export default function ModuleContent() {
       </div>
       <div className="absolute contents left-[14px] top-[14px]">
         <div className="absolute contents left-[15px] top-[15px]" data-name="Input and label">
-          <p className="absolute font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] left-[16px] text-[#22222c] text-[14px] top-[15px] w-[124px]">Bong number</p>
+          <p className="absolute font-['Montserrat',sans-serif] font-bold leading-[1.75] left-[16px] text-[#22222c] text-[14px] top-[15px] w-[124px]">Bong number</p>
           <div className="absolute bg-white h-[48px] left-[15px] rounded-[5px] top-[41px] w-[320px]" data-name="Textfield/Normal">
             <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
             <div className="flex flex-row items-center size-full">
               <div className="content-stretch flex gap-[10px] items-center px-[14px] py-[8px] relative size-full">
-                <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">110-3</p>
+                <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px]">110-3</p>
                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                   <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                   <div className="absolute inset-[0_0_2.05%_0]">

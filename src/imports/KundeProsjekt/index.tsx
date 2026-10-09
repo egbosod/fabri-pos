@@ -29,7 +29,7 @@ function Group4() {
         <div className="absolute left-0 size-[70.124px] top-0" data-name="Icon Plate" />
         <Group />
       </div>
-      <p className="[word-break:break-word] col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Velg kunde og/eller prosjekt</p>
+      <p className="[word-break:break-word] col-1 font-['Montserrat',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px] whitespace-nowrap">Velg kunde og/eller prosjekt</p>
     </div>
   );
 }
@@ -48,7 +48,7 @@ function ModuleHeader() {
 function Frame6() {
   return (
     <div className="content-stretch flex flex-col gap-[6px] h-[48px] items-center justify-end relative shrink-0">
-      <p className="[word-break:break-word] font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">Generelt</p>
+      <p className="[word-break:break-word] font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px] whitespace-nowrap">Generelt</p>
       <div className="h-0 relative shrink-0 w-full">
         <div className="absolute inset-[-3px_0_0_0]">
           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 63 3">
@@ -63,7 +63,7 @@ function Frame6() {
 function Frame7() {
   return (
     <div className="content-stretch flex h-[48px] items-end pb-[6px] relative shrink-0">
-      <p className="[word-break:break-word] font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px] whitespace-nowrap">Leveringsadresse</p>
+      <p className="[word-break:break-word] font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px] whitespace-nowrap">Leveringsadresse</p>
     </div>
   );
 }
@@ -100,10 +100,10 @@ function Group1() {
 function InputAndLabel() {
   return (
     <div className="flex-[1_0_0] grid-rows-[max-content] inline-grid min-w-px place-items-start relative" data-name="Input and label">
-      <p className="[word-break:break-word] col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[87.84%]">Kunde</p>
+      <p className="[word-break:break-word] col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[87.84%]">Kunde</p>
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-full" data-name="Textfield/Normal">
         <div aria-hidden className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Søk etter kunde</p>
+        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Søk etter kunde</p>
         <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
           <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
           <Group1 />
@@ -157,13 +157,13 @@ function InputAndLabel2() {
     <div className="grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[25.5px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-full" data-name="Textfield/Normal">
         <div aria-hidden className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-w-px relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnummer eller adresse `}</p>
+        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-w-px relative text-[#6b6b72] text-[14px]">{`Søk på navn, prosjektnummer eller adresse `}</p>
         <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
           <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
           <Group2 />
         </div>
       </div>
-      <p className="[word-break:break-word] col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Prosjekt</p>
+      <p className="[word-break:break-word] col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Prosjekt</p>
     </div>
   );
 }
@@ -173,9 +173,9 @@ function InputAndLabel3() {
     <div className="grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[25.5px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-full" data-name="Textfield/Normal">
         <div aria-hidden className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Legg inn kundereferanse</p>
+        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-w-px opacity-60 relative text-[#6b6b72] text-[14px]">Legg inn kundereferanse</p>
       </div>
-      <p className="[word-break:break-word] col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Kundens referanse</p>
+      <p className="[word-break:break-word] col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Kundens referanse</p>
     </div>
   );
 }
@@ -191,7 +191,7 @@ function InputAndLabel4() {
           </svg>
         </div>
       </div>
-      <p className="[word-break:break-word] col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Kontaktperson</p>
+      <p className="[word-break:break-word] col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Kontaktperson</p>
     </div>
   );
 }
@@ -201,9 +201,9 @@ function InputAndLabel5() {
     <div className="flex-[1_0_0] grid-rows-[max-content] inline-grid min-w-px place-items-start relative" data-name="Input and label">
       <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-[0.02%] mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[99.98%]" data-name="Textfield/Normal">
         <div aria-hidden className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-w-px relative text-[#42424a] text-[14px]">​</p>
+        <p className="[word-break:break-word] flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-w-px relative text-[#42424a] text-[14px]">​</p>
       </div>
-      <p className="[word-break:break-word] col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Rekvisisjonsnummer</p>
+      <p className="[word-break:break-word] col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-full">Rekvisisjonsnummer</p>
     </div>
   );
 }
@@ -244,7 +244,7 @@ function Frame5() {
 function Frame3() {
   return (
     <div className="content-stretch flex flex-[1_0_0] items-center min-w-px relative">
-      <p className="[word-break:break-word] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#42424a] text-[14px] whitespace-nowrap">Scan card or type to search</p>
+      <p className="[word-break:break-word] font-['Montserrat',sans-serif] font-normal leading-[1.75] relative shrink-0 text-[#42424a] text-[14px] whitespace-nowrap">Scan card or type to search</p>
       <div className="h-[15px] relative shrink-0 w-px" data-name="blinking-caret 1">
         <img alt="" className="absolute inset-0 max-w-none object-cover pointer-events-none size-full" src={imgBlinkingCaret1} />
       </div>
@@ -268,7 +268,7 @@ function Group3() {
 function InputAndLabel6() {
   return (
     <div className="flex-[1_0_0] grid-rows-[max-content] inline-grid leading-[0] min-w-px place-items-start relative" data-name="Input and label">
-      <p className="[word-break:break-word] col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[87.84%]">Søk kundekort</p>
+      <p className="[word-break:break-word] col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[87.84%]">Søk kundekort</p>
       <div className="col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-full" data-name="Textfield/Normal">
         <div aria-hidden className="absolute bg-white inset-0 pointer-events-none rounded-[5px]" />
         <div aria-hidden className="absolute border-2 border-[#0d97fc] border-solid inset-0 pointer-events-none rounded-[5px]" />
@@ -295,7 +295,7 @@ function Buttons1() {
   return (
     <div className="content-stretch flex gap-[20px] items-center relative shrink-0" data-name="Buttons">
       <div className="bg-[#0d97fc] content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
-        <p className="[word-break:break-word] font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-white whitespace-nowrap">Søk</p>
+        <p className="[word-break:break-word] font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-white whitespace-nowrap">Søk</p>
       </div>
     </div>
   );
@@ -306,7 +306,7 @@ function Buttons2() {
     <div className="content-stretch flex items-center relative shrink-0" data-name="Buttons">
       <button className="bg-white content-stretch cursor-pointer flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
         <div aria-hidden className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="[word-break:break-word] font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Avbryt</p>
+        <p className="[word-break:break-word] font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Avbryt</p>
       </button>
     </div>
   );
@@ -359,11 +359,11 @@ function Buttons3() {
   return (
     <div className="content-stretch flex gap-[20px] items-center relative" data-name="Buttons">
       <div className="bg-[#efeff0] content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
-        <p className="[word-break:break-word] font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Bekreft</p>
+        <p className="[word-break:break-word] font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px] whitespace-nowrap">Bekreft</p>
       </div>
       <button className="bg-white content-stretch cursor-pointer flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
         <div aria-hidden className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="[word-break:break-word] font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Avbryt</p>
+        <p className="[word-break:break-word] font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left whitespace-nowrap">Avbryt</p>
       </button>
     </div>
   );

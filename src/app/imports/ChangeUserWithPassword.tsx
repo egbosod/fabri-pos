@@ -16,7 +16,7 @@ function Frame() {
   return (
     <div className="content-stretch flex gap-[11px] items-center relative shrink-0">
       <IconClient />
-      <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] relative shrink-0 text-[#1a1b1f] text-[15px]">Change user</p>
+      <p className="font-['Montserrat',sans-serif] font-bold leading-[1.3] relative shrink-0 text-[#1a1b1f] text-[15px]">Change user</p>
     </div>
   );
 }
@@ -35,7 +35,7 @@ function ModuleHeader() {
 function Frame3() {
   return (
     <div className="content-stretch flex flex-col gap-[6px] h-[48px] items-center justify-end relative shrink-0">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0094f9] text-[14px]">PIN-code</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0094f9] text-[14px]">PIN-code</p>
       <div className="h-0 relative shrink-0 w-full">
         <div className="absolute inset-[-3px_0_0_0]">
           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 67 3">
@@ -50,7 +50,7 @@ function Frame3() {
 function Frame5() {
   return (
     <div className="content-stretch flex flex-col gap-[6px] h-[48px] items-center justify-end relative shrink-0">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">Password</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[14px]">Password</p>
       <div className="h-0 relative shrink-0 w-full">
         <div className="absolute inset-[-3px_0_0_0]">
           <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 70 3">
@@ -105,7 +105,7 @@ function Textfield() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Select or search for user</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Select or search for user</p>
       <IconDown />
     </div>
   );
@@ -115,7 +115,7 @@ function InputAndLabel() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <Textfield />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">User</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">User</p>
     </div>
   );
 }
@@ -124,7 +124,7 @@ function Textfield1() {
   return (
     <div className="bg-white col-1 content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] row-1 w-[541px]" data-name="Textfield">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter current password</p>
+      <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px opacity-60 relative text-[#5d5e63] text-[13px] whitespace-pre-wrap">Enter current password</p>
     </div>
   );
 }
@@ -133,7 +133,7 @@ function InputAndLabel1() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
       <Textfield1 />
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">Password</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#1a1b1f] text-[14px] w-[541px] whitespace-pre-wrap">Password</p>
     </div>
   );
 }
@@ -181,7 +181,7 @@ function Body() {
 function Button() {
   return (
     <div className="bg-[#f1f0f1] content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#46464b] text-[15px]">Confirm</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#46464b] text-[15px]">Confirm</p>
     </div>
   );
 }
@@ -190,7 +190,7 @@ function Button1() {
   return (
     <button className="bg-white content-stretch cursor-pointer flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-      <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px] text-left">Cancel</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px] text-left">Cancel</p>
     </button>
   );
 }

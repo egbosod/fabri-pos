@@ -5,7 +5,7 @@ function SelectOption() {
     <div className="bg-white h-[53px] relative shrink-0 w-full" data-name="Select option">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex items-center px-[15px] py-[8px] relative size-full">
-          <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[14px] tracking-[0.5px] uppercase">Bytt bruker</p>
+          <p className="font-['Montserrat',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[14px] tracking-[0.5px] uppercase">Bytt bruker</p>
         </div>
       </div>
     </div>
@@ -29,7 +29,7 @@ function SelectOption1() {
     <div className="bg-white h-[48px] relative shrink-0 w-full" data-name="Select option">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex gap-[8px] items-center px-[15px] py-[8px] relative size-full">
-          <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">{`Lise Arntsen `}</p>
+          <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">{`Lise Arntsen `}</p>
           <div className="h-[14.222px] overflow-clip relative shrink-0 w-[16px]" data-name="Icon / Check">
             <div className="absolute left-0 size-[64px] top-0" data-name="Icon Plate" />
             <Group />
@@ -43,7 +43,7 @@ function SelectOption1() {
 function Frame2() {
   return (
     <div className="content-stretch flex gap-[10px] items-center relative shrink-0 w-full">
-      <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">Per Gunnersen</p>
+      <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">Per Gunnersen</p>
     </div>
   );
 }
@@ -67,7 +67,7 @@ function Button() {
       <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
         <div className="content-stretch flex gap-[8px] items-center justify-center min-w-[inherit] px-[20px] py-[6px] relative size-full">
           <CircleUserCircleUser />
-          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Logg av</p>
+          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Logg av</p>
         </div>
       </div>
     </div>
@@ -80,7 +80,7 @@ function Frame() {
       <div className="bg-[#0094f9] h-[48px] min-w-[100px] relative rounded-[5px] shrink-0 w-full" data-name="Button">
         <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
           <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[20px] py-[6px] relative size-full">
-            <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-white">PIN</p>
+            <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-white">PIN</p>
           </div>
         </div>
       </div>
@@ -88,7 +88,7 @@ function Frame() {
         <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
         <div className="flex flex-row items-center justify-center min-w-[inherit] size-full">
           <div className="content-stretch flex items-center justify-center min-w-[inherit] px-[20px] py-[6px] relative size-full">
-            <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Passord</p>
+            <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Passord</p>
           </div>
         </div>
       </div>
@@ -113,7 +113,7 @@ function SelectOption3() {
     <div className="bg-white h-[48px] relative shrink-0 w-full" data-name="Select option">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex items-center px-[15px] py-[8px] relative size-full">
-          <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">Ole Gunnar Damstuen</p>
+          <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">Ole Gunnar Damstuen</p>
         </div>
       </div>
     </div>
@@ -125,7 +125,7 @@ function SelectOption4() {
     <div className="bg-white h-[48px] relative shrink-0 w-full" data-name="Select option">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex items-center px-[15px] py-[8px] relative size-full">
-          <p className="font-['Montserrat:Regular',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">Mari Kristine Gullerud</p>
+          <p className="font-['Montserrat',sans-serif] font-normal leading-[1.4] relative shrink-0 text-[#1a1b1f] text-[14px]">Mari Kristine Gullerud</p>
         </div>
       </div>
     </div>
@@ -137,7 +137,7 @@ function Frame1() {
     <div className="flex-[1_0_0] h-[48px] min-h-px min-w-px relative">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex gap-[8px] items-center px-[15px] relative size-full">
-          <p className="font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[14px] tracking-[0.5px] uppercase">bytt språk</p>
+          <p className="font-['Montserrat',sans-serif] font-bold leading-[1.75] relative shrink-0 text-[#5d5e63] text-[14px] tracking-[0.5px] uppercase">bytt språk</p>
           <div className="overflow-clip relative shrink-0 size-[12px]" data-name="Icon / Down">
             <div className="absolute inset-[28.57%_2.93%_22.48%_2.94%]" data-name="Vector">
               <svg className="absolute block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 11.2957 5.87504">
@@ -166,7 +166,7 @@ function SelectOption6() {
         <div className="content-stretch flex items-end pb-[15px] pt-[25px] px-[15px] relative w-full">
           <div className="bg-white content-stretch flex h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
             <div aria-hidden="true" className="absolute border border-[#c7c7c8] border-solid inset-0 pointer-events-none rounded-[5px]" />
-            <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Logg ut</p>
+            <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#101115] text-[13px]">Logg ut</p>
           </div>
         </div>
       </div>

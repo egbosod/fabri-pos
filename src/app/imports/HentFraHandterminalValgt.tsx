@@ -17,10 +17,10 @@ function Group3() {
 function InputAndLabel() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0" data-name="Input and label">
-      <p className="[grid-area:1_/_1] font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-px mt-0 relative text-[#22222c] text-[14px] w-[124px]">Ekspedisjon</p>
+      <p className="[grid-area:1_/_1] font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-px mt-0 relative text-[#22222c] text-[14px] w-[124px]">Ekspedisjon</p>
       <div className="[grid-area:1_/_1] bg-white box-border content-stretch flex gap-[6px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] w-[300px]" data-name="Textfield/Normal">
         <div aria-hidden="true" className="absolute border-2 border-[#0d97fc] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="basis-0 font-['Montserrat:Regular',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px]">Søk på mobilnr, navn eller kundenr</p>
+        <p className="basis-0 font-['Montserrat',sans-serif] font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px]">Søk på mobilnr, navn eller kundenr</p>
         <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
           <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
           <Group3 />
@@ -70,7 +70,7 @@ function TableCell() {
 function Content1() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Selger</p>
       </div>
     </div>
@@ -88,7 +88,7 @@ function TableCell1() {
 function Content2() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Kunde</p>
       </div>
     </div>
@@ -106,7 +106,7 @@ function TableCell2() {
 function Content3() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Referanse</p>
       </div>
     </div>
@@ -124,7 +124,7 @@ function TableCell3() {
 function Content4() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap text-right">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap text-right">
         <p className="leading-[normal] whitespace-pre">Sum</p>
       </div>
     </div>
@@ -187,7 +187,7 @@ function TableCell5() {
 
 function Group427319078() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -225,10 +225,10 @@ function TableCell6() {
 function Group427319079() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -262,7 +262,7 @@ function TableCell7() {
 function Content7() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -280,7 +280,7 @@ function TableCell8() {
 function Content8() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -298,7 +298,7 @@ function TableCell9() {
 function Content9() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -357,7 +357,7 @@ function TableCell11() {
 
 function Group427319080() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -395,10 +395,10 @@ function TableCell12() {
 function Group427319081() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Brennerigata 43A, bygg B</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#909095] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#909095] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -444,7 +444,7 @@ function TableCell14() {
 function Content13() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#909095] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#909095] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -474,7 +474,7 @@ function Columns1() {
 function Content14() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Varenavn</p>
       </div>
     </div>
@@ -496,7 +496,7 @@ function TableCell16() {
 function Content15() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Antall</p>
       </div>
     </div>
@@ -514,7 +514,7 @@ function TableCell17() {
 function Content16() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Per enhet</p>
       </div>
     </div>
@@ -532,7 +532,7 @@ function TableCell18() {
 function Content17() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Rabatt</p>
       </div>
     </div>
@@ -550,7 +550,7 @@ function TableCell19() {
 function Content18() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Totalt</p>
       </div>
     </div>
@@ -583,9 +583,9 @@ function TableRow1() {
 function Content19() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[0px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[0px] text-nowrap">
         <p className="leading-[19px] whitespace-pre">
-          <span className="font-['Montserrat:Medium',sans-serif] font-medium text-[14px]">Beslagsskrue 5,0x40 CS A-250 Corrseal</span>
+          <span className="font-['Montserrat',sans-serif] font-medium text-[14px]">Beslagsskrue 5,0x40 CS A-250 Corrseal</span>
           <span className="text-[14px]">
             <br aria-hidden="true" />
           </span>
@@ -611,7 +611,7 @@ function TableCell21() {
 function Frame655() {
   return (
     <div className="content-stretch flex gap-[5px] items-center relative shrink-0">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
         <p className="leading-[1.38] whitespace-pre">3,00</p>
       </div>
     </div>
@@ -629,7 +629,7 @@ function Textfield() {
 function Content20() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">PAK</p>
       </div>
     </div>
@@ -661,7 +661,7 @@ function Numpad() {
 function Frame656() {
   return (
     <div className="content-stretch flex gap-[5px] items-center relative shrink-0">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#090914] text-[14px] text-nowrap">
         <p className="leading-[1.38] whitespace-pre">179,00</p>
       </div>
     </div>
@@ -700,10 +700,10 @@ function Numpad1() {
 function Frame657() {
   return (
     <div className="content-stretch flex gap-[3px] items-center leading-[0] relative shrink-0 text-nowrap">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center relative shrink-0 text-[#090914] text-[14px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center relative shrink-0 text-[#090914] text-[14px]">
         <p className="leading-[1.38] text-nowrap whitespace-pre">10</p>
       </div>
-      <div className="flex flex-col font-['Montserrat:SemiBold',sans-serif] font-semibold justify-center relative shrink-0 text-[#42424a] text-[12px]">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center relative shrink-0 text-[#42424a] text-[12px]">
         <p className="leading-[1.38] text-nowrap whitespace-pre">%</p>
       </div>
     </div>
@@ -742,9 +742,9 @@ function TableCell22() {
 function Content24() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[19px] relative shrink-0 text-[#1a1b1f] text-[0px] text-nowrap text-right whitespace-pre">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[19px] relative shrink-0 text-[#1a1b1f] text-[0px] text-nowrap text-right whitespace-pre">
         <p className="mb-0 text-[14px]">483,30</p>
-        <p className="[text-decoration-skip-ink:none] [text-underline-position:from-font] decoration-solid font-['Montserrat:Regular',sans-serif] font-normal line-through text-[#6b6b72] text-[12px]">537,00</p>
+        <p className="[text-decoration-skip-ink:none] [text-underline-position:from-font] decoration-solid font-['Montserrat',sans-serif] font-normal line-through text-[#6b6b72] text-[12px]">537,00</p>
       </div>
     </div>
   );
@@ -854,7 +854,7 @@ function TableCell30() {
 
 function Group427319082() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -892,10 +892,10 @@ function TableCell31() {
 function Group427319083() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -929,7 +929,7 @@ function TableCell32() {
 function Content39() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -947,7 +947,7 @@ function TableCell33() {
 function Content40() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -965,7 +965,7 @@ function TableCell34() {
 function Content41() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -1029,7 +1029,7 @@ function TableCell36() {
 
 function Group427319084() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -1067,7 +1067,7 @@ function TableCell37() {
 function Group427319085() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] text-nowrap translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] text-nowrap translate-y-[-50%]">
         <p className="leading-[normal] whitespace-pre">Kunde uten konto</p>
       </div>
     </div>
@@ -1101,7 +1101,7 @@ function TableCell38() {
 function Content44() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">KJ12312</p>
       </div>
     </div>
@@ -1119,7 +1119,7 @@ function TableCell39() {
 function Content45() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -1137,7 +1137,7 @@ function TableCell40() {
 function Content46() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -1201,7 +1201,7 @@ function TableCell42() {
 
 function Group427319086() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -1239,10 +1239,10 @@ function TableCell43() {
 function Group427319087() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -1276,7 +1276,7 @@ function TableCell44() {
 function Content49() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -1294,7 +1294,7 @@ function TableCell45() {
 function Content50() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -1312,7 +1312,7 @@ function TableCell46() {
 function Content51() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -1376,7 +1376,7 @@ function TableCell48() {
 
 function Group427319088() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -1414,10 +1414,10 @@ function TableCell49() {
 function Group427319089() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -1451,7 +1451,7 @@ function TableCell50() {
 function Content54() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -1469,7 +1469,7 @@ function TableCell51() {
 function Content55() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -1487,7 +1487,7 @@ function TableCell52() {
 function Content56() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -1551,7 +1551,7 @@ function TableCell54() {
 
 function Group427319090() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -1589,10 +1589,10 @@ function TableCell55() {
 function Group427319091() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -1626,7 +1626,7 @@ function TableCell56() {
 function Content59() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -1644,7 +1644,7 @@ function TableCell57() {
 function Content60() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -1662,7 +1662,7 @@ function TableCell58() {
 function Content61() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -1726,7 +1726,7 @@ function TableCell60() {
 
 function Group427319092() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -1764,10 +1764,10 @@ function TableCell61() {
 function Group427319093() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -1801,7 +1801,7 @@ function TableCell62() {
 function Content64() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -1819,7 +1819,7 @@ function TableCell63() {
 function Content65() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -1837,7 +1837,7 @@ function TableCell64() {
 function Content66() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -1901,7 +1901,7 @@ function TableCell66() {
 
 function Group427319094() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -1939,10 +1939,10 @@ function TableCell67() {
 function Group427319095() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -1976,7 +1976,7 @@ function TableCell68() {
 function Content69() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -1994,7 +1994,7 @@ function TableCell69() {
 function Content70() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -2012,7 +2012,7 @@ function TableCell70() {
 function Content71() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -2076,7 +2076,7 @@ function TableCell72() {
 
 function Group427319096() {
   return (
-    <div className="font-['Montserrat:Regular',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
+    <div className="font-['Montserrat',sans-serif] font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
       <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">I dag, 14:56</p>
       </div>
@@ -2114,10 +2114,10 @@ function TableCell73() {
 function Group427319097() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-normal justify-center ml-0 mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Prosjekt A</p>
       </div>
-      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
+      <div className="[grid-area:1_/_1] flex flex-col font-['Montserrat',sans-serif] font-medium justify-center ml-0 mt-[8.5px] relative text-[#1a1b1f] text-[14px] translate-y-[-50%]">
         <p className="leading-[normal] text-nowrap whitespace-pre">Eventyrslottet AS</p>
       </div>
     </div>
@@ -2151,7 +2151,7 @@ function TableCell74() {
 function Content74() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">Tor</p>
       </div>
     </div>
@@ -2169,7 +2169,7 @@ function TableCell75() {
 function Content75() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Regular',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-normal justify-center leading-[0] relative shrink-0 text-[#42424a] text-[12px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">5 varelinjer</p>
       </div>
     </div>
@@ -2187,7 +2187,7 @@ function TableCell76() {
 function Content76() {
   return (
     <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0" data-name="Content">
-      <div className="flex flex-col font-['Montserrat:Medium',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
+      <div className="flex flex-col font-['Montserrat',sans-serif] font-medium justify-center leading-[0] relative shrink-0 text-[#1a1b1f] text-[14px] text-nowrap">
         <p className="leading-[normal] whitespace-pre">1 449,00</p>
       </div>
     </div>
@@ -2331,7 +2331,7 @@ function Group32() {
   return (
     <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0">
       <MobileShoppingCart />
-      <p className="[grid-area:1_/_1] font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] ml-[35px] mt-[3.086px] relative text-[#22222c] text-[15px] text-nowrap whitespace-pre">Hent ekspedisjon fra håndterminal</p>
+      <p className="[grid-area:1_/_1] font-['Montserrat',sans-serif] font-bold leading-[1.3] ml-[35px] mt-[3.086px] relative text-[#22222c] text-[15px] text-nowrap whitespace-pre">Hent ekspedisjon fra håndterminal</p>
     </div>
   );
 }
@@ -2361,11 +2361,11 @@ function Buttons() {
   return (
     <div className="content-stretch flex gap-[15px] items-center relative" data-name="Buttons">
       <div className="bg-[#0d97fc] box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-[100px] px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
-        <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-nowrap text-white whitespace-pre">Hent for betaling</p>
+        <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[15px] text-nowrap text-white whitespace-pre">Hent for betaling</p>
       </div>
       <button className="bg-white box-border content-stretch cursor-pointer flex gap-[8px] h-[48px] items-center justify-center min-w-[100px] overflow-visible px-[20px] py-[6px] relative rounded-[5px] shrink-0" data-name="Button">
         <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
-        <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Avbryt</p>
+        <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">Avbryt</p>
       </button>
     </div>
   );

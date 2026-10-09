@@ -31,9 +31,9 @@ function InputAndLabel({ text, text1 }: InputAndLabelProps) {
   return (
     <div className="flex-[1_0_0] grid-cols-[max-content] grid-rows-[max-content] inline-grid min-h-px min-w-px place-items-start relative">
       <TextfieldNormal additionalClassNames="ml-[0.05px] mt-[26px] w-[276.493px]">
-        <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px] whitespace-pre-wrap">{text}</p>
+        <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px] whitespace-pre-wrap">{text}</p>
       </TextfieldNormal>
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px] whitespace-pre-wrap">{text1}</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px] whitespace-pre-wrap">{text1}</p>
     </div>
   );
 }
@@ -50,7 +50,7 @@ function InputAndLabelText({ text }: InputAndLabelTextProps) {
           <div className="content-stretch flex gap-[10px] items-center justify-end px-[15px] py-[5px] size-full" />
         </div>
       </div>
-      <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px] whitespace-pre-wrap">{text}</p>
+      <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[276.543px] whitespace-pre-wrap">{text}</p>
     </div>
   );
 }
@@ -82,7 +82,7 @@ export default function KundeProsjekt() {
                   </svg>
                 </div>
               </div>
-              <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px]">Velg kunde og/eller prosjekt</p>
+              <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.3] ml-[35.09px] mt-[3.29px] relative row-1 text-[#22222c] text-[15px]">Velg kunde og/eller prosjekt</p>
             </div>
           </div>
         </div>
@@ -90,7 +90,7 @@ export default function KundeProsjekt() {
           <div className="flex flex-row items-end overflow-clip rounded-[inherit] size-full">
             <div className="content-stretch flex gap-[30px] items-end pt-[10px] px-[20px] relative size-full">
               <div className="content-stretch flex flex-col gap-[6px] h-[48px] items-center justify-end relative shrink-0">
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">Generelt</p>
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[14px]">Generelt</p>
                 <div className="h-0 relative shrink-0 w-full">
                   <div className="absolute inset-[-3px_0_0_0]">
                     <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 63 3">
@@ -100,7 +100,7 @@ export default function KundeProsjekt() {
                 </div>
               </div>
               <div className="content-stretch flex h-[48px] items-end pb-[6px] relative shrink-0">
-                <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px]">Leveringsadresse</p>
+                <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#0d97fc] text-[14px]">Leveringsadresse</p>
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default function KundeProsjekt() {
               <div className="content-stretch flex flex-col gap-[10px] items-start leading-[0] p-[20px] relative size-full">
                 <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0 w-full" data-name="Input and label">
                   <TextfieldNormal additionalClassNames="ml-0 mt-[25.5px] w-[575px]">
-                    <p className="flex-[1_0_0] font-['Montserrat:Regular',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px] whitespace-pre-wrap">Select customer</p>
+                    <p className="flex-[1_0_0] font-['Montserrat',sans-serif] font-normal leading-[1.75] min-h-px min-w-px relative text-[#42424a] text-[14px] whitespace-pre-wrap">Select customer</p>
                     <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]" data-name="Icon / Search">
                       <div className="absolute left-0 size-[57.6px] top-0" data-name="Icon Plate" />
                       <div className="absolute inset-[0_0_2.05%_0]">
@@ -127,7 +127,7 @@ export default function KundeProsjekt() {
                       </div>
                     </div>
                   </TextfieldNormal>
-                  <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px] whitespace-pre-wrap">Customer</p>
+                  <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-0 mt-0 relative row-1 text-[#22222c] text-[14px] w-[575px] whitespace-pre-wrap">Customer</p>
                 </div>
                 <div className="content-stretch flex gap-[21.914px] items-start relative shrink-0 w-full">
                   <InputAndLabelText text="Customer reference" />
@@ -144,7 +144,7 @@ export default function KundeProsjekt() {
                         </svg>
                       </div>
                     </div>
-                    <p className="col-1 font-['Montserrat:Bold',sans-serif] font-bold leading-[1.75] ml-[1.84px] mt-0 relative row-1 text-[#22222c] text-[14px] w-[132.106px] whitespace-pre-wrap">Contact person</p>
+                    <p className="col-1 font-['Montserrat',sans-serif] font-bold leading-[1.75] ml-[1.84px] mt-0 relative row-1 text-[#22222c] text-[14px] w-[132.106px] whitespace-pre-wrap">Contact person</p>
                     <div className="col-1 grid-cols-[max-content] grid-rows-[max-content] inline-grid ml-[228.54px] mt-[26.5px] place-items-start relative row-1" data-name="Input and label">
                       <div className="bg-white col-1 ml-0 mt-0 relative rounded-[5px] row-1 size-[48px]" data-name="Iconbutton">
                         <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
@@ -189,13 +189,13 @@ export default function KundeProsjekt() {
                     <div className="content-stretch flex gap-[20px] items-center relative" data-name="Buttons">
                       <div className="bg-[#efeff0] h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                         <ButtonsHelper>
-                          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px]">Bekreft</p>
+                          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] opacity-60 relative shrink-0 text-[#42424a] text-[15px]">Bekreft</p>
                         </ButtonsHelper>
                       </div>
                       <button className="bg-white cursor-pointer h-[48px] min-w-[100px] relative rounded-[5px] shrink-0" data-name="Button">
                         <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-[5px]" />
                         <ButtonsHelper>
-                          <p className="font-['Montserrat:SemiBold',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left">Avbryt</p>
+                          <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-left">Avbryt</p>
                         </ButtonsHelper>
                       </button>
                     </div>
