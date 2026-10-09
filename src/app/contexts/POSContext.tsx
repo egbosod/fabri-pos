@@ -16,6 +16,7 @@ interface POSContextValue {
   addedItems: CartItem[];
   handleAddToSale: (item: CartItem) => void;
   handleRemoveAddedItem: (index: number) => void;
+  handleUpdateAddedItem: (index: number, patch: Partial<CartItem>) => void;
   orderGroups: OrderGroupData[];
   handlePickupOrder: (orders: any[]) => void;
   handleFetchExpedition: (expeditionData: any) => void;
@@ -42,14 +43,29 @@ interface POSContextValue {
   paymentTotals: PaymentTotals;
   hasOrderItems: boolean;
   resetPOS: () => void;
+  /** Empties the sale (order groups + added lines) but keeps customer, project and user. */
+  clearCart: () => void;
   selectedHovedordre: { ordrenummer: string } | null;
   setSelectedHovedordre: (order: { ordrenummer: string } | null) => void;
-  /* VIP card (Aspect4 DK / Prototype C) */
+  /* Price check (Prissjekkmodus) — separate basket, kept off the live sale */
+  priceCheckItems: CartItem[];
+  addPriceCheckItems: (items: CartItem[]) => void;
+  removePriceCheckItem: (index: number) => void;
+  updatePriceCheckItem: (index: number, patch: Partial<CartItem>) => void;
+  priceCheckCustomer: Customer | null;
+  priceCheckProject: Project | null;
+  setPriceCheckCustomer: (customer: Customer | null, project?: Project) => void;
+  initPriceCheck: () => void;
+  clearPriceCheck: () => void;
+  clearPriceCheckItems: () => void;
+  priceCheckLocked: boolean;
+  /* VIP card (Aspect4 DK / Prototypes B & C) */
   vipCard: VipCardData | null;
   setVipCard: (card: VipCardData | null) => void;
   vipAcknowledged: boolean;
   setVipAcknowledged: (ack: boolean) => void;
   vipBlocked: boolean;
+  vipCreditExceeded: boolean;
 }
 
 const POSContext = createContext<POSContextValue | null>(null);
@@ -74,6 +90,10 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
 
   const handleRemoveAddedItem = useCallback((index: number) => {
     setAddedItems((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const handleUpdateAddedItem = useCallback((index: number, patch: Partial<CartItem>) => {
+    setAddedItems((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
   }, []);
 
   /* ── Order groups ───────────────────────────────────────────────────────── */
@@ -175,12 +195,58 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setSelectedHovedordre(null);
   }, []);
 
+  /* ── Price check (Prissjekkmodus) ───────────────────────────────────────── */
+  const [priceCheckItems, setPriceCheckItems] = useState<CartItem[]>([]);
+  const [priceCheckCustomer, setPriceCheckCustomerState] = useState<Customer | null>(null);
+  const [priceCheckProject, setPriceCheckProjectState] = useState<Project | null>(null);
+
+  const addPriceCheckItems = useCallback((items: CartItem[]) => {
+    setPriceCheckItems((prev) => [...prev, ...items]);
+  }, []);
+
+  const removePriceCheckItem = useCallback((index: number) => {
+    setPriceCheckItems((prev) => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const updatePriceCheckItem = useCallback((index: number, patch: Partial<CartItem>) => {
+    setPriceCheckItems((prev) => prev.map((item, i) => (i === index ? { ...item, ...patch } : item)));
+  }, []);
+
+  const setPriceCheckCustomer = useCallback((customer: Customer | null, project?: Project) => {
+    setPriceCheckCustomerState(customer);
+    setPriceCheckProjectState(project || null);
+  }, []);
+
+  /** Pre-load rule: when price check opens with nothing chosen yet, mirror the live sale's customer/project. */
+  const initPriceCheck = useCallback(() => {
+    setPriceCheckCustomerState((prev) => prev ?? selectedCustomer);
+    setPriceCheckProjectState((prev) => prev ?? selectedProject);
+  }, [selectedCustomer, selectedProject]);
+
+  const clearPriceCheck = useCallback(() => {
+    setPriceCheckItems([]);
+    setPriceCheckCustomerState(null);
+    setPriceCheckProjectState(null);
+  }, []);
+
+  /** Clears just the basket — keeps the chosen customer/project (used after "add to cart"). */
+  const clearPriceCheckItems = useCallback(() => {
+    setPriceCheckItems([]);
+  }, []);
+
+  /** EBS-11395: customer/project can't be swapped once the price-check basket has items. */
+  const priceCheckLocked = priceCheckItems.length > 0;
+
   /* ── VIP card ───────────────────────────────────────────────────────────── */
   // Sale-scoped: must outlive the customer modal so PaymentFlowModal can read it.
   const [vipCard, setVipCard] = useState<VipCardData | null>(null);
   const [vipAcknowledged, setVipAcknowledged] = useState(false);
 
-  /** A blocked-and-unacknowledged VIP card prevents finalizing the sale (Flow 1). */
+  /**
+   * A blocked-and-unacknowledged VIP card prevents finalizing the sale.
+   * Prototype C lets the cashier acknowledge and carry on (Flow 1); Prototype B
+   * never acknowledges, so there the block stands until the card is removed.
+   */
   const vipBlocked = !!vipCard && vipCard.status === 'blocked' && !vipAcknowledged;
 
   /* ── Hovedordre (Main order) ────────────────────────────────────────────── */
@@ -259,7 +325,22 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     };
   }, [orderGroups, addedItems]);
 
+  /**
+   * Mid-sale credit-exceeded (open question 5 in docs/vip-card-spec.md).
+   * The running sale total has tipped past the limit the VIP card carries —
+   * the card's limit replaces the standard account's, so this is the only
+   * credit figure that matters while a card is registered. Derived, not
+   * stored, so removing lines or removing the card clears it on its own.
+   */
+  const vipCreditExceeded = !!vipCard && paymentTotals.total > vipCard.creditLimit;
+
   const hasOrderItems = paymentTotals.itemCount > 0;
+
+  /* ── Clear the cart only ───────────────────────────────────────────────── */
+  const clearCart = useCallback(() => {
+    setAddedItems([]);
+    setOrderGroups([]);
+  }, []);
 
   /* ── Reset POS ──────────────────────────────────────────────────────────── */
   const resetPOS = useCallback(() => {
@@ -277,6 +358,9 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setUserLogoutToast({ visible: false, username: '' });
     setVipCard(null);
     setVipAcknowledged(false);
+    setPriceCheckItems([]);
+    setPriceCheckCustomerState(null);
+    setPriceCheckProjectState(null);
   }, []);
 
   /* ── Context value ──────────────────────────────────────────────────────── */
@@ -284,6 +368,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     addedItems,
     handleAddToSale,
     handleRemoveAddedItem,
+    handleUpdateAddedItem,
     orderGroups,
     handlePickupOrder,
     handleFetchExpedition,
@@ -310,6 +395,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     paymentTotals,
     hasOrderItems,
     resetPOS,
+    clearCart,
     selectedHovedordre,
     setSelectedHovedordre,
     vipCard,
@@ -317,6 +403,18 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     vipAcknowledged,
     setVipAcknowledged,
     vipBlocked,
+    vipCreditExceeded,
+    priceCheckItems,
+    addPriceCheckItems,
+    removePriceCheckItem,
+    updatePriceCheckItem,
+    priceCheckCustomer,
+    priceCheckProject,
+    setPriceCheckCustomer,
+    initPriceCheck,
+    clearPriceCheck,
+    clearPriceCheckItems,
+    priceCheckLocked,
   };
 
   return <POSContext.Provider value={value}>{children}</POSContext.Provider>;

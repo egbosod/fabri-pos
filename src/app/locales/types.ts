@@ -56,10 +56,24 @@ export interface Translations {
   total: string;
   vat: string;
   toPay: string;
+  totalBeforeDiscount: string;
   items: string;
   itemName: string;
   orderLines: string;
   createPackingSlip: string;
+  packingSlip: string;
+  packingSlipSignature: string;
+  signatureRequiredNotice: string;
+  signaturePlaceholder: string;
+  approveSignature: string;
+  clearSignature: string;
+  deliveryNote: string;
+  regularReceipt: string;
+  a4Receipt: string;
+  noReceipt: string;
+  sendEmail: string;
+  salesperson: string;
+  saleCompletedToast: string;
   selectCustomerButton: string;
 
   // ── Actions ────────────────────────────────────────────────────────────────
@@ -173,6 +187,27 @@ export interface Translations {
   splitOrderLine: string;
   changeUnitCode: string;
 
+  // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
+  addItemsToCart: string;
+  itemsAddedToSale: string;
+  priceCheckLockedTitle: string;
+  priceCheckLockedDescription: string;
+  priceCheckMismatchTitle: string;
+  priceCheckMismatchNotificationTitle: string;
+  priceCheckMismatchBodyPrefix: string;
+  priceCheckMismatchBodyMiddle: string;
+  customerLabel: string;
+  projectLabel: string;
+  noCustomerOnSale: string;
+  ok: string;
+  closePriceCheckTitle: string;
+  closePriceCheckBody: string;
+  willNotBeAdded: string;
+  itemSingular: string;
+  yesLabel: string;
+  noLabel: string;
+  closeLabel: string;
+
   // ── Settings modal ─────────────────────────────────────────────────────────
   allowCreateProject: string;
   allowCreateContactPerson: string;
@@ -238,6 +273,8 @@ export interface Translations {
   expirationDate: string;
   expandCustomerDetails: string;
   expandProjectDetails: string;
+  collapseCustomerDetails: string;
+  collapseProjectDetails: string;
   selectCustomerToView: string;
 
   // ── Table headers ──────────────────────────────────────────────────────────
@@ -255,6 +292,9 @@ export interface Translations {
   // ── Field labels ───────────────────────────────────────────────────────────
   name: string;
   address1: string;
+  vipAddress1: string;
+  /** VIP delivery-address line label — Prototype A's three stacked lines */
+  vipDeliveryAddress: string;
   phone: string;
   contactPersonReference: string;
   idControl: string;
@@ -290,13 +330,44 @@ export interface Translations {
   vipStatusOpen: string;
   vipStatusBlocked: string;
   vipBlockedInfo: string;
+  vipBlockedHardStop: string;
   removeVipCard: string;
   continueAsNormalCustomer: string;
   vipCreditTitle: string;
+  vipCreditLimit: string;
   vipCreditUsed: string;
   vipCreditRemaining: string;
   overCreditLimit: string;
   vipRecipient: string;
   vipRecipientPlaceholder: string;
   vipCannotFinalize: string;
+  vipCreditExceededTitle: string;
+  vipCreditExceededBody: string;
+  vipRemoveItems: string;
+
+  // PRO card (XL-BYG/Aspect4 / Prototype B) — independent from VIP card above
+  /** Tender name for the delivery/packing note tender (Prototype B & C) */
+  deliveryNoteTender: string;
+  /** VIP card active — delivery-note-only rule (Aspect4 DK / Prototype C) */
+  vipDeliveryNoteOnly: string;
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: string;
+  checkPriceButton: string;
+  copyLastReceipt: string;
+  openCashDrawer: string;
+  cashInOut: string;
+  versionInfo: string;
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: string;
+  yourPinCode: string;
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: string;
+  vipCardBlockedBody: string;
+  vipBadgeOpen: string;
+  vipBadgeBlocked: string;
+  invoicesForPayment: string;
+  edit: string;
+  removeCustomer: string;
+  noInvoicesForPayment: string;
+  invoicesForPaymentPlaceholder: string;
 }

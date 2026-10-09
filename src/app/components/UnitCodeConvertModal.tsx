@@ -43,6 +43,15 @@ export function UnitCodeConvertModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
 
+  // The modal stays mounted between openings, so re-seed the keypad from the
+  // line it is about to edit rather than showing the previous line's input.
+  useEffect(() => {
+    if (isOpen) {
+      setInputValue(currentQuantity.toFixed(2).replace('.', ','));
+      setSelectedUnit(currentUnit);
+    }
+  }, [isOpen, currentQuantity, currentUnit]);
+
   // Mock unit conversions - in a real app, this would come from product data
   const unitConversions: UnitConversion[] = [
     { unit: 'STK', conversionFactor: 1, price: pricePerUnit },

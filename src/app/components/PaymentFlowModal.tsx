@@ -8,8 +8,9 @@ import svgPathsPayment from "../imports/svg-ll2p1tnd4y";
 import svgPathsSpinner from "../imports/svg-k33k9dvofh";
 import { PaymentCompletedModal } from './PaymentCompletedModal';
 import { OrderDiscountModal } from './OrderDiscountModal';
+import type { VipCardData } from '../types/pos';
 
-type PaymentMethod = 'card' | 'cash' | 'vipps' | 'klarna' | null;
+type PaymentMethod = 'card' | 'cash' | 'vipps' | 'klarna' | 'deliveryNote' | null;
 
 interface PaymentEntry {
   id: string;
@@ -30,9 +31,11 @@ interface PaymentFlowModalProps {
   currentUser?: string;
   /** True while a blocked, unacknowledged VIP card is attached to the sale (Flow 1) */
   vipBlocked?: boolean;
+  /** VIP card (Aspect4 DK / Prototypes B & C) — forces the sale to a delivery note */
+  vipCard?: VipCardData | null;
 }
 
-export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComplete, onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, currentUser, vipBlocked = false }: PaymentFlowModalProps) {
+export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComplete, onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, currentUser, vipBlocked = false, vipCard = null }: PaymentFlowModalProps) {
   const { t } = useLanguage();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('card');
   const [inputAmount, setInputAmount] = useState('');
@@ -45,17 +48,31 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
 
   const remainingAmount = totalAmount - payments.reduce((sum, p) => sum + p.amount, 0);
 
+  // A VIP card forces the sale to complete as a delivery/packing note
+  // (docs/vip-card-spec.md). Disallowed tenders are hidden outright rather
+  // than shown disabled.
+  const deliveryNoteOnly = !!vipCard;
+  const deliveryNoteReason = t('vipDeliveryNoteOnly');
+
   useEffect(() => {
     if (isOpen) {
       // Reset state when modal opens
-      setSelectedMethod('card');
-      setInputAmount(Math.round(remainingAmount).toString());
-      setPayments([]);
+      if (deliveryNoteOnly) {
+        // Card active: no cash/card/vipps/klarna tender — completes as a
+        // delivery note for the full amount instead.
+        setSelectedMethod('deliveryNote');
+        setPayments([{ id: 'delivery-note', method: 'deliveryNote', amount: totalAmount, methodLabel: t('deliveryNoteTender') }]);
+        setInputAmount('');
+      } else {
+        setSelectedMethod('card');
+        setInputAmount(Math.round(remainingAmount).toString());
+        setPayments([]);
+      }
       setExtraCashWithdrawal(false);
       setIsPaymentCompleted(false);
       setIsProcessingPayment(false);
     }
-  }, [isOpen]);
+  }, [isOpen, deliveryNoteOnly]);
 
   useEffect(() => {
     // Update input amount when remaining amount changes
@@ -113,6 +130,7 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
       case 'cash': return t('cash');
       case 'vipps': return t('vipps');
       case 'klarna': return t('klarna');
+      case 'deliveryNote': return t('deliveryNoteTender');
       default: return '';
     }
   };
@@ -123,11 +141,13 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
       case 'cash': return t('paymentCash');
       case 'vipps': return t('paymentVipps');
       case 'klarna': return t('paymentKlarna');
+      case 'deliveryNote': return t('deliveryNoteTender');
       default: return t('paymentCard');
     }
   };
 
   const getAmountLabel = () => {
+    if (selectedMethod === 'deliveryNote') return t('deliveryNoteTender');
     return selectedMethod === 'card' ? t('amountOnCard') : t('amountInCash');
   };
 
@@ -176,8 +196,8 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
   };
 
   const handleConfirmPayment = async () => {
-    // Flow 1: a blocked VIP card must be removed/acknowledged in the customer
-    // modal before the sale can be finalized.
+    // A blocked VIP card must be removed — or, in Prototype C, acknowledged —
+    // in the customer modal before the sale can be finalized.
     if (vipBlocked) return;
     if (remainingAmount > 0) return;
     
@@ -222,6 +242,43 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
         <div className="flex-1 bg-card overflow-y-auto">
           <div className="p-[20px]">
             {/* Payment method selection */}
+            {deliveryNoteOnly && (
+              <>
+                <p
+                  className="mb-[12px]"
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}
+                >
+                  {deliveryNoteReason}
+                </p>
+                {/* Only tender available — the disallowed ones are not rendered at all */}
+                <div className="flex gap-[12px] items-end mb-[20px] flex-wrap">
+                  <div
+                    className="flex flex-col items-center justify-center pb-[10px] pt-[20px] px-[20px] h-[110px] w-[120px] rounded-[var(--radius)]"
+                    style={{
+                      backgroundColor: 'var(--color-primary)',
+                      border: '1.74px solid var(--color-primary)'
+                    }}
+                  >
+                    <div className="mb-[-7px] relative shrink-0 size-[48px] flex items-center justify-center">
+                      <svg className="size-[32px]" fill="none" viewBox="0 0 24 24">
+                        <path
+                          d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"
+                          stroke="white"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                        <path d="M14 3v5h5M9 13h6M9 17h4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                    <p style={{ color: 'white', fontWeight: 'var(--font-weight-medium)' }}>
+                      {t('deliveryNoteTender')}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
+            {!deliveryNoteOnly && (
             <div className="flex gap-[12px] items-end mb-[20px] flex-wrap">
               {/* Card */}
               <button
@@ -366,8 +423,10 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
                 </svg>
               </button>
             </div>
+            )}
 
-            {/* Extra cash withdrawal checkbox - always visible */}
+            {/* Extra cash withdrawal checkbox — hidden when no cash tender is allowed */}
+            {!deliveryNoteOnly && (
             <div className="mb-[20px]">
               <div className="flex gap-[8px] items-center mb-[15px]">
                 <button
@@ -419,8 +478,11 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
                 </div>
               )}
             </div>
+            )}
 
-            {/* Numpad section */}
+            {/* Numpad section — hidden for delivery-note-only sales: the note
+                always covers the full total, so there is nothing to key in */}
+            {!deliveryNoteOnly && (
             <div 
               className="bg-background border rounded-[var(--radius)] p-[20px] max-w-[620px]"
               style={{ borderColor: 'var(--color-border)' }}
@@ -560,6 +622,7 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
                 </div>
               </div>
             </div>
+            )}
           </div>
         </div>
 
@@ -640,7 +703,9 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
                       <p>,-</p>
                     </div>
                     
-                    {/* Undo button */}
+                    {/* Undo button — the locked delivery note cannot be undone or
+                        discounted: it is the only tender the card allows */}
+                    {payment.id !== 'delivery-note' && (
                     <div className="absolute flex gap-[6px] h-[48px] items-center justify-center left-[131px] px-[10px] py-0 top-0">
                       <button
                         onClick={() => handleUndoPayment(payment.id)}
@@ -668,8 +733,10 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
                         </p>
                       </button>
                     </div>
+                    )}
                     
                     {/* Three-dot vertical menu */}
+                    {payment.id !== 'delivery-note' && (
                     <div className="absolute flex h-[48px] items-center justify-end left-[219px] px-[10px] py-0 top-0">
                       <button 
                         onClick={() => {
@@ -689,6 +756,7 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
                         </div>
                       </button>
                     </div>
+                    )}
                   </div>
                 ))}
 

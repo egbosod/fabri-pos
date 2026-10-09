@@ -56,10 +56,24 @@ const en: Translations = {
   total: 'Total',
   vat: 'VAT',
   toPay: 'To pay',
+  totalBeforeDiscount: 'Total before discount',
   items: 'items',
   itemName: 'Item name',
   orderLines: 'order lines',
   createPackingSlip: 'Create packing slip',
+  packingSlip: 'Packing slip',
+  packingSlipSignature: 'Packing slip - signature',
+  signatureRequiredNotice: 'The customer must sign before the packing slip can be issued.',
+  signaturePlaceholder: 'The signature goes here',
+  approveSignature: 'Approve signature',
+  clearSignature: 'Clear signature field',
+  deliveryNote: 'Delivery note',
+  regularReceipt: 'Regular receipt',
+  a4Receipt: 'A4 receipt',
+  noReceipt: 'No receipt',
+  sendEmail: 'Send e-mail',
+  salesperson: 'Salesperson',
+  saleCompletedToast: 'Thank you for your business. The sale is completed',
   selectCustomerButton: 'Select customer',
 
   // ── Actions ────────────────────────────────────────────────────────────────
@@ -174,6 +188,27 @@ const en: Translations = {
   splitOrderLine: 'Split order line',
   changeUnitCode: 'Change unit code',
 
+  // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
+  addItemsToCart: 'Add items to cart',
+  itemsAddedToSale: 'Items added to the sale',
+  priceCheckLockedTitle: 'Customer/project is locked',
+  priceCheckLockedDescription: 'You have already selected a customer/project in price check mode. You cannot change to a different customer without adding the current items to the cart first or closing price check.',
+  priceCheckMismatchTitle: 'Add to Cart',
+  priceCheckMismatchNotificationTitle: 'Customer or Project does not match',
+  priceCheckMismatchBodyPrefix: 'Customer from price check',
+  priceCheckMismatchBodyMiddle: 'will overwrite existing customer in cart',
+  customerLabel: 'Customer:',
+  projectLabel: 'Project:',
+  noCustomerOnSale: 'None',
+  ok: 'OK',
+  closePriceCheckTitle: 'Close Price Check',
+  closePriceCheckBody: 'Are you sure you want to close price check without adding items to the cart?',
+  willNotBeAdded: 'will not be added',
+  itemSingular: 'item',
+  yesLabel: 'Yes',
+  noLabel: 'No',
+  closeLabel: 'Close',
+
   // ── Settings modal ─────────────────────────────────────────────────────────
   allowCreateProject: 'Allow creating new project',
   allowCreateContactPerson: 'Allow creating new contact person',
@@ -194,7 +229,7 @@ const en: Translations = {
 
   // ── Customer selection modal ───────────────────────────────────────────────
   customerReference: 'Customer reference',
-  requisition: 'Requisition',
+  requisition: 'Requisition number',
   customerReferencePlaceholder: 'Enter customer reference',
   customerSearchPlaceholder: 'Search for customer',
   specificCustomerNumber: 'Specific customer number',
@@ -239,6 +274,8 @@ const en: Translations = {
   expirationDate: 'Expiration date',
   expandCustomerDetails: 'Expand customer details',
   expandProjectDetails: 'Expand project details',
+  collapseCustomerDetails: 'Hide customer details',
+  collapseProjectDetails: 'Hide project details',
   selectCustomerToView: 'Search and select a customer to view information here.',
 
   // ── Table headers ──────────────────────────────────────────────────────────
@@ -256,6 +293,8 @@ const en: Translations = {
   // ── Field labels ───────────────────────────────────────────────────────────
   name: 'Name',
   address1: 'Address 1',
+  vipAddress1: 'Address',
+  vipDeliveryAddress: 'Delivery address',
   phone: 'Phone',
   contactPersonReference: 'Contact person reference',
   idControl: 'ID control (Name)*',
@@ -263,7 +302,7 @@ const en: Translations = {
   oioEan: 'OIO EAN *',
   oioReference: 'OIO Reference',
   oioAccounting: 'OIO Accounting',
-  requisitionRequired: 'Requisition *',
+  requisitionRequired: 'Requisition number *',
   contactPersonReferenceRequired: 'Contact person reference *',
 
   // ── Misc text ──────────────────────────────────────────────────────────────
@@ -287,20 +326,48 @@ const en: Translations = {
   fetchMainOrder: 'Fetch selected main order',
 
   // VIP card (Aspect4 DK / Prototype C)
-  tabVipCard: 'VIP CARD',
+  tabVipCard: 'VIP card',
   vipCardRegistered: 'VIP card registered',
   vipStatusOpen: 'Open',
   vipStatusBlocked: 'Blocked',
   vipBlockedInfo: 'This VIP card is blocked. The sale cannot be completed until the card is removed.',
+  vipBlockedHardStop: 'This VIP card is blocked. The sale cannot be completed with it, and the block cannot be overridden at the till.',
   removeVipCard: 'Remove VIP card',
   continueAsNormalCustomer: 'Continue as normal customer',
   vipCreditTitle: 'CREDIT',
+  vipCreditLimit: 'VIP card limit',
   vipCreditUsed: 'Used',
   vipCreditRemaining: 'Remaining',
   overCreditLimit: 'Over credit limit',
   vipRecipient: 'Recipient / Attention',
   vipRecipientPlaceholder: 'Recipient name',
   vipCannotFinalize: 'The sale cannot be completed while the VIP card is blocked.',
+  vipCreditExceededTitle: 'Credit limit exceeded',
+  vipCreditExceededBody: 'Your credit max is exceeded. Remove items or remove VIP-card',
+  vipRemoveItems: 'Remove items',
+
+  deliveryNoteTender: 'Delivery note',
+  vipDeliveryNoteOnly: 'VIP card active — sale must complete as a delivery/packing note. Cash and other tenders are not available.',
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Price check mode',
+  checkPriceButton: 'Check price',
+  copyLastReceipt: 'Copy of last receipt',
+  openCashDrawer: 'Open cash drawer',
+  cashInOut: 'Cash in/out',
+  versionInfo: 'Version info',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Log off',
+  yourPinCode: 'Your PIN code',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP card blocked',
+  vipCardBlockedBody: 'Remove the VIP card to complete the purchase.',
+  vipBadgeOpen: 'VIP open',
+  vipBadgeBlocked: 'VIP blocked',
+  invoicesForPayment: 'Invoices for payment',
+  edit: 'Edit',
+  removeCustomer: 'Remove customer',
+  noInvoicesForPayment: 'No invoices for payment',
+  invoicesForPaymentPlaceholder: 'Invoices for payment for this customer will appear here. This feature is in development.',
 };
 
 export default en;

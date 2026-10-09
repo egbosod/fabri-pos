@@ -57,10 +57,24 @@ const no: Translations = {
   total: 'Totalt',
   vat: 'MVA',
   toPay: 'Å betale',
+  totalBeforeDiscount: 'Sum før rabatt',
   items: 'varer',
   itemName: 'Varenavn',
   orderLines: 'varelinjer',
   createPackingSlip: 'Opprett pakkseddel',
+  packingSlip: 'Pakkseddel',
+  packingSlipSignature: 'Pakkseddel - signatur',
+  signatureRequiredNotice: 'Kunden må signere før pakkseddel kan utstedes.',
+  signaturePlaceholder: 'Signaturen kommer her',
+  approveSignature: 'Godkjenn signaturen',
+  clearSignature: 'Tøm signaturfeltet',
+  deliveryNote: 'Pakkseddel',
+  regularReceipt: 'Vanlig kvittering',
+  a4Receipt: 'A4-kvittering',
+  noReceipt: 'Ingen kvittering',
+  sendEmail: 'Send e-post',
+  salesperson: 'Selger',
+  saleCompletedToast: 'Takk for handelen. Salget er gjennomført',
   selectCustomerButton: 'Velg kunde',
 
   // ── Actions ────────────────────────────────────────────────────────────────
@@ -175,6 +189,27 @@ const no: Translations = {
   splitOrderLine: 'Del opp varelinjen',
   changeUnitCode: 'Endre enhetskode',
 
+  // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
+  addItemsToCart: 'Legg til varer i salg',
+  itemsAddedToSale: 'Varer lagt til salget',
+  priceCheckLockedTitle: 'Kunde/prosjekt er låst',
+  priceCheckLockedDescription: 'Du har allerede valgt kunde/prosjekt i prissjekkmodus. Du kan ikke bytte kunde uten å først legge varene i handlekurven eller lukke prissjekk.',
+  priceCheckMismatchTitle: 'Legg til i handlekurv',
+  priceCheckMismatchNotificationTitle: 'Kunde eller prosjekt stemmer ikke',
+  priceCheckMismatchBodyPrefix: 'Kunde fra prissjekk',
+  priceCheckMismatchBodyMiddle: 'vil overskrive eksisterende kunde i salget',
+  customerLabel: 'Kunde:',
+  projectLabel: 'Prosjekt:',
+  noCustomerOnSale: 'Ingen',
+  ok: 'OK',
+  closePriceCheckTitle: 'Lukk prissjekk',
+  closePriceCheckBody: 'Er du sikker på at du vil lukke prissjekk uten å legge varene til i handlekurven?',
+  willNotBeAdded: 'vil ikke bli lagt til',
+  itemSingular: 'vare',
+  yesLabel: 'Ja',
+  noLabel: 'Nei',
+  closeLabel: 'Lukk',
+
   // ── Settings modal ─────────────────────────────────────────────────────────
   allowCreateProject: 'Tillat oppretting av nytt prosjekt',
   allowCreateContactPerson: 'Tillat oppretting av ny kontaktperson',
@@ -240,6 +275,8 @@ const no: Translations = {
   expirationDate: 'Utløpsdato',
   expandCustomerDetails: 'Utvid kundedetaljer',
   expandProjectDetails: 'Utvid prosjektdetaljer',
+  collapseCustomerDetails: 'Skjul kundedetaljer',
+  collapseProjectDetails: 'Skjul prosjektdetaljer',
   selectCustomerToView: 'Søk og velg en kunde for å se informasjon her.',
 
   // ── Table headers ──────────────────────────────────────────────────────────
@@ -257,6 +294,8 @@ const no: Translations = {
   // ── Field labels ───────────────────────────────────────────────────────────
   name: 'Navn',
   address1: 'Adresse 1',
+  vipAddress1: 'Adresse',
+  vipDeliveryAddress: 'Leveringsadresse',
   phone: 'Telefon',
   contactPersonReference: 'Kontaktpersonreferanse',
   idControl: 'ID-kontroll (Navn)*',
@@ -264,7 +303,7 @@ const no: Translations = {
   oioEan: 'OIO EAN *',
   oioReference: 'OIO Referanse',
   oioAccounting: 'OIO Regnskap',
-  requisitionRequired: 'Rekvisisjon *',
+  requisitionRequired: 'Rekvisisjonsnummer *',
   contactPersonReferenceRequired: 'Kontaktpersonreferanse *',
 
   // ── Misc text ──────────────────────────────────────────────────────────────
@@ -288,20 +327,48 @@ const no: Translations = {
   fetchMainOrder: 'Hent valgte hovedordre',
 
   // VIP card (Aspect4 DK / Prototype C)
-  tabVipCard: 'VIP KORT',
+  tabVipCard: 'VIP-kort',
   vipCardRegistered: 'VIP-kort registrert',
   vipStatusOpen: 'Åpent',
   vipStatusBlocked: 'Sperret',
   vipBlockedInfo: 'VIP-kortet er sperret. Salget kan ikke fullføres før kortet fjernes.',
+  vipBlockedHardStop: 'VIP-kortet er sperret. Salget kan ikke fullføres med dette kortet, og sperren kan ikke overstyres på kassen.',
   removeVipCard: 'Fjern VIP-kort',
   continueAsNormalCustomer: 'Fortsett som vanlig kunde',
   vipCreditTitle: 'KREDITT',
+  vipCreditLimit: 'VIP-kortets grense',
   vipCreditUsed: 'Brukt',
   vipCreditRemaining: 'Gjenstående',
   overCreditLimit: 'Over kredittgrense',
   vipRecipient: 'Mottaker / Att.',
   vipRecipientPlaceholder: 'Navn på mottaker',
   vipCannotFinalize: 'Salget kan ikke fullføres mens VIP-kortet er sperret.',
+  vipCreditExceededTitle: 'Kredittgrense overskredet',
+  vipCreditExceededBody: 'Kredittgrensen din er overskredet. Fjern varer eller fjern VIP-kort',
+  vipRemoveItems: 'Fjern varer',
+
+  deliveryNoteTender: 'Følgeseddel',
+  vipDeliveryNoteOnly: 'VIP-kort aktivt — salget må fullføres som følgeseddel. Kontant og andre betalingsmåter er ikke tilgjengelige.',
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Prissjekkmodus',
+  checkPriceButton: 'Sjekk pris',
+  copyLastReceipt: 'Kopi av siste kvittering',
+  openCashDrawer: 'Åpne kasseskuff',
+  cashInOut: 'Ta inn/ut veksel',
+  versionInfo: 'Versjonsskriv',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Logg av',
+  yourPinCode: 'Din PIN-kode',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP kort sperret',
+  vipCardBlockedBody: 'Fjern VIP-kort for å gjennomføre kjøp.',
+  vipBadgeOpen: 'VIP åpen',
+  vipBadgeBlocked: 'VIP sperret',
+  invoicesForPayment: 'Faktura til betaling',
+  edit: 'Rediger',
+  removeCustomer: 'Fjern kunden',
+  noInvoicesForPayment: 'Ingen fakturaer til betaling',
+  invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunden vil vises her. Funksjonaliteten er under utvikling.',
 };
 
 export default no;

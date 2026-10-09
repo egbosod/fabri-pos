@@ -107,11 +107,14 @@ export type ModalName =
   | 'pda'
   | 'pickup'
   | 'inventory'
+  | 'pricecheck-inventory'
   | 'payment'
   | 'config'
   | 'faktura'
   | 'switch-user'
-  | 'hovedordre';
+  | 'hovedordre'
+  | 'packing-slip-signature'
+  | 'delivery-note';
 
 export interface PaymentTotals {
   subtotal: number;
@@ -120,7 +123,8 @@ export interface PaymentTotals {
   itemCount: number;
   returnAmount: number;
 }
-/* ─── VIP card (Aspect4 DK / Prototype C) ──────────────────────────────────── */
+
+/* ─── VIP card (Aspect4 DK / Prototypes B & C) ─────────────────────────────── */
 
 export type VipCardStatus = 'open' | 'blocked';
 
@@ -140,4 +144,8 @@ export interface VipCardData {
   projectRequired: boolean;
   requisitionRequired: boolean;
   address?: { line1: string; line2?: string; postalCode: string; city: string };
+  /** Every VIP field except Navn is marked mandatory (asterisk) */
+  allFieldsMandatory?: boolean;
+  /** Prototype A's stacked three-line "Leveringsadresse" layout, on rotation for C too */
+  stackedDeliveryAddress?: boolean;
 }

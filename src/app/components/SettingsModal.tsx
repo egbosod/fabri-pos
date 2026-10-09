@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { X, Bug, ChevronDown, ChevronRight } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
+import { toast } from 'sonner@2.0.3';
 import { buildShareURL, type SharedSettings } from '../utils/settingsUrl';
+import { PROTOTYPE_PINK, PROTOTYPE_TOAST_OPTS } from '../utils/prototypeDescriptions';
 
 // ─── Panel language ───────────────────────────────────────────────────────────
 // This panel is an internal prototyping tool, so it keeps its own language
@@ -44,6 +46,11 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     customerSearchA: 'A: Bryteren ligger i søkeresultatet, ERP-oppslaget kjøres automatisk.',
     customerSearchB: 'B: Bryteren ligger øverst til høyre i toppen, med en egen «Hent kunde»-knapp.',
 
+    priceCheckLockHeading: 'Prissjekk – kundelås',
+    priceCheckLockA: 'A: Ingen lås. Kunde/prosjekt kan byttes fritt i prissjekk; kun varselet ved «Legg til varer i salg» vises ved avvik.',
+    priceCheckLockB: 'B: Låst som i dag, men den sperrende modalen har også en «Legg til varer i salg»-knapp ved siden av «Lukk».',
+    priceCheckLockC: 'C: Låst som i dag. Kun knappeteksten er endret fra «Ok» til «Lukk».',
+
     scanCustomerCard: 'Skann kundekort',
     scanCustomerCardAspect4: 'Aktivert som standard for Aspect4-kilder. Viser skanneknapp ved Kunde-feltet.',
     scanCustomerCardDesc: 'Vis skanneknapp ved Kunde-feltet i kundevalgmodalen.',
@@ -54,7 +61,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scFakeCardScan: 'Falsk kortskanning',
     scFakeCardScanDesc: 'Simuler skanning av Aspect4-kundekort',
     scFakeVipScan: 'Falsk VIP-kortskanning',
-    scFakeVipScanDesc: 'Simuler skanning av VIP-kort (krever Aspect4 DK og flyt C)',
+    scFakeVipScanDesc: 'Simuler skanning av VIP-kort (krever Aspect4 DK og prototype B eller C). Hver skanning viser neste kortkonsept.',
     scFakeLogout: 'Falsk utlogging',
     scFakeLogoutDesc: 'Logg ut og gå til innloggingsskjermen',
     scResetAll: 'Nullstill all tilstand',
@@ -119,6 +126,11 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     customerSearchA: 'A: Toggle sits in the search results; the ERP lookup runs automatically.',
     customerSearchB: 'B: Toggle sits top right in the header, with an explicit "Get customer" button.',
 
+    priceCheckLockHeading: 'Price check – customer lock',
+    priceCheckLockA: 'A: No lock. Customer/project can be swapped freely in price check; only the "Add to Cart" mismatch warning fires on a difference.',
+    priceCheckLockB: 'B: Locked as today, but the blocking modal also has an "Legg til varer i salg" button next to "Lukk".',
+    priceCheckLockC: 'C: Locked as today. Only the button label changed from "Ok" to "Lukk".',
+
     scanCustomerCard: 'Scan customer card',
     scanCustomerCardAspect4: 'Enabled by default for Aspect4 sources. Shows a scan button by the Customer field.',
     scanCustomerCardDesc: 'Show a scan button by the Customer field in the customer selection modal.',
@@ -129,7 +141,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scFakeCardScan: 'Fake card scan',
     scFakeCardScanDesc: 'Simulate an Aspect4 customer card scan',
     scFakeVipScan: 'Fake VIP card scan',
-    scFakeVipScanDesc: 'Simulate a VIP card scan (requires Aspect4 DK and Flow C)',
+    scFakeVipScanDesc: 'Simulate a VIP card scan (requires Aspect4 DK and prototype B or C). Each scan shows the next card concept.',
     scFakeLogout: 'Fake logout',
     scFakeLogoutDesc: 'Log out and navigate to the login screen',
     scResetAll: 'Reset all state',
@@ -226,6 +238,8 @@ export function SettingsModal() {
     setHovedordrePlacement,
     customerSearchConcept,
     setCustomerSearchConcept,
+    priceCheckLockConcept,
+    setPriceCheckLockConcept,
     isSettingsModalOpen,
     closeSettingsModal,
     showFlowIndicator,
@@ -251,9 +265,19 @@ export function SettingsModal() {
   const s = STRINGS[panelLang];
 
   // Dragging state
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
+  // The modal is centred by its flex overlay; dragging only adds a translate
+  // offset on top. Centring therefore stays correct when the content grows
+  // (e.g. picking Aspect4 adds rows) or the window is resized.
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const dragStartRef = useRef<{
+    mouseX: number;
+    mouseY: number;
+    baseX: number;
+    baseY: number;
+    rect: DOMRect;
+  } | null>(null);
 
   // Collapsible sections — all expanded by default
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -291,6 +315,7 @@ export function SettingsModal() {
       erpScenario,
       hovedordrePlacement,
       customerSearchConcept,
+      priceCheckLockConcept,
       showFlowIndicator,
       showDebugBanner,
       allowCreateProject,
@@ -305,9 +330,26 @@ export function SettingsModal() {
 
     const url = buildShareURL(settings);
 
+    // The button label flashes *and* a pink toast fires: the label is the
+    // in-place confirmation, the toast is what a collaborator sees in a
+    // screen share. English-only, like the rest of this prototyping layer.
     navigator.clipboard.writeText(url).then(
-      () => flashCopyStatus('copied'),
-      () => flashCopyStatus('failed'),
+      () => {
+        flashCopyStatus('copied');
+        toast('Share link copied', {
+          description: 'Your current prototype settings are encoded in the URL',
+          duration: 2500,
+          ...PROTOTYPE_TOAST_OPTS,
+        });
+      },
+      () => {
+        flashCopyStatus('failed');
+        toast('Copy failed', {
+          description: 'Copy the URL from the address bar instead',
+          duration: 3000,
+          ...PROTOTYPE_TOAST_OPTS,
+        });
+      },
     );
   };
 
@@ -336,33 +378,54 @@ export function SettingsModal() {
     setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // Center the modal on first open
+  // Re-centre every time the modal opens
   useEffect(() => {
-    if (isSettingsModalOpen) {
-      const centerX = window.innerWidth / 2 - 250;
-      const centerY = window.innerHeight / 2 - 300;
-      setPosition({ x: centerX, y: centerY });
-    }
+    if (isSettingsModalOpen) setDragOffset({ x: 0, y: 0 });
   }, [isSettingsModalOpen]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!modalRef.current) return;
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      baseX: dragOffset.x,
+      baseY: dragOffset.y,
+      rect: modalRef.current.getBoundingClientRect(),
+    };
     setIsDragging(true);
-    setDragOffset({ x: e.clientX - position.x, y: e.clientY - position.y });
   };
 
   useEffect(() => {
     if (!isDragging) return;
+    const KEEP_VISIBLE = 96; // px of header that must stay on screen
+    const HEADER_H = 56;
     const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX - dragOffset.x, y: e.clientY - dragOffset.y });
+      const start = dragStartRef.current;
+      if (!start) return;
+      let dx = start.baseX + (e.clientX - start.mouseX);
+      let dy = start.baseY + (e.clientY - start.mouseY);
+
+      // Clamp so the header can never be dragged out of reach.
+      const left = start.rect.left + (dx - start.baseX);
+      const top = start.rect.top + (dy - start.baseY);
+      if (left + start.rect.width < KEEP_VISIBLE) dx += KEEP_VISIBLE - (left + start.rect.width);
+      if (left > window.innerWidth - KEEP_VISIBLE) dx -= left - (window.innerWidth - KEEP_VISIBLE);
+      if (top < 0) dy -= top;
+      if (top > window.innerHeight - HEADER_H) dy -= top - (window.innerHeight - HEADER_H);
+
+      setDragOffset({ x: dx, y: dy });
     };
-    const handleMouseUp = () => setIsDragging(false);
+    const handleMouseUp = () => {
+      dragStartRef.current = null;
+      setIsDragging(false);
+    };
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [isDragging]);
 
   useEffect(() => {
     if (!isSettingsModalOpen) return;
@@ -445,15 +508,17 @@ export function SettingsModal() {
 
   const RowCard = ({ children }: { children: React.ReactNode }) => (
     <div
+      className="sm-row"
       style={{
         display: 'flex',
+        flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: 16,
+        gap: 12,
         background: 'var(--background)',
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius)',
-        padding: 16,
+        padding: '10px 14px',
       }}
     >
       {children}
@@ -499,7 +564,7 @@ export function SettingsModal() {
         background: 'var(--card)',
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius-sm)',
-        fontFamily: 'monospace',
+        fontFamily: "'Montserrat', sans-serif",
         fontWeight: 'var(--font-weight-medium)',
         fontSize: 'var(--text-sm)',
         color: 'var(--secondary-foreground)',
@@ -578,6 +643,12 @@ export function SettingsModal() {
 
   const customerSearchDescriptions: Record<string, string> = { A: s.customerSearchA, B: s.customerSearchB };
 
+  const priceCheckLockDescriptions: Record<string, string> = {
+    A: s.priceCheckLockA,
+    B: s.priceCheckLockB,
+    C: s.priceCheckLockC,
+  };
+
   const hovedordreDescriptions: Record<string, string> = {
     A: s.hovedordreA,
     B: s.hovedordreB,
@@ -586,6 +657,24 @@ export function SettingsModal() {
 
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
 
+  // One card per category. The body is a grid of two column stacks that
+  // collapses to a single column when there is no room for two.
+  const sectionCardStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 0,
+    background: 'var(--card)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-card)',
+    padding: 14,
+  };
+  const columnStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    minWidth: 0,
+  };
+
   return (
     <div
       style={{
@@ -593,25 +682,48 @@ export function SettingsModal() {
         inset: 0,
         zIndex: 100,
         background: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16,
       }}
     >
+      {/* Wrap the control under its text when a settings card gets narrow.
+          !important because some rows set an inline flex on their text block. */}
+      <style>{`.sm-row > :first-child { flex: 1 1 200px !important; min-width: 0; }`}</style>
       <div
+        ref={modalRef}
         style={{
+          // ── Settings-modal-only palette ──────────────────────────────────
+          // This panel is a prototyping tool, not the Fabri POS product, so
+          // it deliberately breaks from the app's light/blue theme: near-
+          // black/brown surfaces, near-white text, and the same pink already
+          // used for the "Prototype {letter}" badge/toasts as the one accent.
+          // Every var(--card)/var(--border)/etc. below inherits these local
+          // overrides — nothing outside this subtree is affected.
+          '--card': '#1F1512',
+          '--secondary': '#382722',
+          '--secondary-foreground': '#EDE3DE',
+          '--background': '#170F0D',
+          '--muted': '#2C1F1A',
+          '--muted-foreground': '#C9B7AF',
+          '--foreground': '#F5EFEC',
+          '--border': '#4A3830',
+          '--primary': PROTOTYPE_PINK,
+          '--primary-foreground': '#140D0B',
           background: 'var(--card)',
-          borderRadius: 'var(--radius)',
-          boxShadow: '2px 2px 4px rgba(107,107,114,0.06), 4px 12px 20px rgba(107,107,114,0.16)',
+          borderRadius: 'var(--radius-card)',
+          boxShadow: '2px 2px 4px rgba(0,0,0,0.3), 4px 12px 20px rgba(0,0,0,0.45)',
           width: '100%',
-          maxWidth: 520,
+          maxWidth: 1040,
           maxHeight: 'calc(100vh - 2rem)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          position: 'absolute',
-          left: `${position.x}px`,
-          top: `${position.y}px`,
+          transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
           cursor: isDragging ? 'grabbing' : 'default',
           fontFamily: "'Montserrat', sans-serif",
-        }}
+        } as React.CSSProperties}
       >
         {/* ── Header (draggable) ── */}
         <div
@@ -703,15 +815,31 @@ export function SettingsModal() {
         </div>
 
         {/* ── Body (scrollable) ── */}
-        <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 0, overflowY: 'auto', flex: 1 }}>
+        <div
+          style={{
+            padding: 12,
+            display: 'grid',
+            // Two columns when each can be >= 400px wide, otherwise one.
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+            gap: 12,
+            alignItems: 'start',
+            alignContent: 'start',
+            overflowY: 'auto',
+            flex: 1,
+            minHeight: 0,
+            background: 'var(--background)',
+          }}
+        >
+          {/* ── Column 1: how the prototype behaves ── */}
+          <div style={columnStyle}>
 
           {/* ─ Switch User Flow ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="userFlow">
               {s.userFlowHeading}
             </SectionHeader>
             {expandedSections.userFlow && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <DescText>
                   {s.userFlowDesc}
                 </DescText>
@@ -770,7 +898,7 @@ export function SettingsModal() {
                           cursor: 'pointer',
                           background: switchUserFlow === flow ? 'var(--card)' : 'transparent',
                           color: switchUserFlow === flow ? 'var(--primary)' : 'var(--muted-foreground)',
-                          boxShadow: switchUserFlow === flow ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                          boxShadow: switchUserFlow === flow ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
                           transition: 'all 0.15s ease-in-out',
                           zIndex: 1,
                         }}
@@ -813,13 +941,12 @@ export function SettingsModal() {
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
 
           {/* ─ ERP System Selection ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="erp">{s.erpHeading}</SectionHeader>
             {expandedSections.erp && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <DescText>{s.erpDesc}</DescText>
 
                 <div
@@ -847,7 +974,7 @@ export function SettingsModal() {
                             cursor: 'pointer',
                             background: active ? 'var(--primary)' : 'var(--card)',
                             color: active ? 'var(--primary-foreground)' : 'var(--muted-foreground)',
-                            boxShadow: active ? '0 1px 4px rgba(13,151,252,0.18)' : 'none',
+                            boxShadow: active ? '0 1px 4px rgba(255,0,255,0.35)' : 'none',
                             transition: 'all 0.15s ease-in-out',
                             lineHeight: 1.75,
                           }}
@@ -936,7 +1063,7 @@ export function SettingsModal() {
                             cursor: 'pointer',
                             background: hovedordrePlacement === placement ? 'var(--card)' : 'transparent',
                             color: hovedordrePlacement === placement ? 'var(--primary)' : 'var(--muted-foreground)',
-                            boxShadow: hovedordrePlacement === placement ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                            boxShadow: hovedordrePlacement === placement ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
                             transition: 'all 0.15s ease-in-out',
                             zIndex: 1,
                           }}
@@ -1002,7 +1129,7 @@ export function SettingsModal() {
                             cursor: 'pointer',
                             background: customerSearchConcept === concept ? 'var(--card)' : 'transparent',
                             color: customerSearchConcept === concept ? 'var(--primary)' : 'var(--muted-foreground)',
-                            boxShadow: customerSearchConcept === concept ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
+                            boxShadow: customerSearchConcept === concept ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
                             transition: 'all 0.15s ease-in-out',
                             zIndex: 1,
                           }}
@@ -1013,6 +1140,70 @@ export function SettingsModal() {
                     </div>
                   </RowCard>
                 )}
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        lineHeight: 1.5,
+                        margin: 0,
+                      }}
+                    >
+                      {s.priceCheckLockHeading}: {priceCheckLockConcept}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {priceCheckLockDescriptions[priceCheckLockConcept]}
+                    </p>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: 'var(--secondary)',
+                      borderRadius: 999,
+                      padding: 4,
+                      width: 200,
+                      flexShrink: 0,
+                      position: 'relative',
+                    }}
+                  >
+                    {(['A', 'B', 'C'] as const).map(concept => (
+                      <button
+                        key={concept}
+                        onClick={() => setPriceCheckLockConcept(concept)}
+                        style={{
+                          flex: 1,
+                          padding: '4px 12px',
+                          fontSize: 'var(--text-sm)',
+                          fontWeight: 'var(--font-weight-semibold)',
+                          fontFamily: "'Montserrat', sans-serif",
+                          borderRadius: 999,
+                          border: 'none',
+                          cursor: 'pointer',
+                          background: priceCheckLockConcept === concept ? 'var(--card)' : 'transparent',
+                          color: priceCheckLockConcept === concept ? 'var(--primary)' : 'var(--muted-foreground)',
+                          boxShadow: priceCheckLockConcept === concept ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
+                          transition: 'all 0.15s ease-in-out',
+                          zIndex: 1,
+                        }}
+                      >
+                        {concept}
+                      </button>
+                    ))}
+                  </div>
+                </RowCard>
 
                 {/* Scan Customer Card toggle */}
                 <RowCard>
@@ -1045,14 +1236,18 @@ export function SettingsModal() {
                   </div>
                   <Toggle checked={scanCustomerCard} onChange={() => setScanCustomerCard(!scanCustomerCard)} />
                 </RowCard>
+
               </div>
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
+          </div>
+
+          {/* ── Column 2: prototype tooling ── */}
+          <div style={columnStyle}>
 
           {/* ─ Keyboard Shortcuts ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="shortcuts">
               {s.shortcutsHeading}
             </SectionHeader>
@@ -1062,11 +1257,11 @@ export function SettingsModal() {
                   background: 'var(--background)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius)',
-                  padding: 16,
+                  padding: '10px 14px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 12,
-                  marginTop: 12,
+                  gap: 8,
+                  marginTop: 10,
                 }}
               >
                 <KbdRow
@@ -1121,15 +1316,14 @@ export function SettingsModal() {
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
 
           {/* ─ Developer ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="developer" icon={<Bug size={16} />}>
               {s.developerHeading}
             </SectionHeader>
             {expandedSections.developer && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <RowCard>
                   <div>
                     <p
@@ -1258,15 +1452,14 @@ export function SettingsModal() {
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
 
           {/* ─ WCAG Accessibility ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="wcag">
               {s.wcagHeading}
             </SectionHeader>
             {expandedSections.wcag && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <DescText>
                   {s.wcagDesc}
                 </DescText>
@@ -1361,8 +1554,7 @@ export function SettingsModal() {
             )}
           </div>
 
-          {/* bottom padding */}
-          <div style={{ height: 8 }} />
+          </div>
         </div>
 
         {/* ── Footer ── */}

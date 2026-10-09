@@ -57,10 +57,24 @@ const sv: Translations = {
   total: 'Totalt',
   vat: 'Moms',
   toPay: 'Att betala',
+  totalBeforeDiscount: 'Summa före rabatt',
   items: 'varor',
   itemName: 'Varunamn',
   orderLines: 'varulinjer',
   createPackingSlip: 'Skapa följesedel',
+  packingSlip: 'Följesedel',
+  packingSlipSignature: 'Följesedel - signatur',
+  signatureRequiredNotice: 'Kunden måste signera innan följesedeln kan utfärdas.',
+  signaturePlaceholder: 'Signaturen kommer här',
+  approveSignature: 'Godkänn signaturen',
+  clearSignature: 'Rensa signaturfältet',
+  deliveryNote: 'Följesedel',
+  regularReceipt: 'Vanligt kvitto',
+  a4Receipt: 'A4-kvitto',
+  noReceipt: 'Inget kvitto',
+  sendEmail: 'Skicka e-post',
+  salesperson: 'Säljare',
+  saleCompletedToast: 'Tack för affären. Försäljningen är genomförd',
   selectCustomerButton: 'Välj kund',
 
   // ── Actions ────────────────────────────────────────────────────────────────
@@ -175,6 +189,27 @@ const sv: Translations = {
   splitOrderLine: 'Dela orderrad',
   changeUnitCode: 'Ändra enhetskod',
 
+  // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
+  addItemsToCart: 'Lägg till varor i försäljningen',
+  itemsAddedToSale: 'Varor tillagda i försäljningen',
+  priceCheckLockedTitle: 'Kund/projekt är låst',
+  priceCheckLockedDescription: 'Du har redan valt kund/projekt i prischeckläge. Du kan inte byta till en annan kund utan att först lägga till aktuella varor i varukorgen eller stänga priskontrollen.',
+  priceCheckMismatchTitle: 'Lägg till i kundvagn',
+  priceCheckMismatchNotificationTitle: 'Kund eller projekt matchar inte',
+  priceCheckMismatchBodyPrefix: 'Kund från priskontroll',
+  priceCheckMismatchBodyMiddle: 'kommer att skriva över befintlig kund i försäljningen',
+  customerLabel: 'Kund:',
+  projectLabel: 'Projekt:',
+  noCustomerOnSale: 'Ingen',
+  ok: 'OK',
+  closePriceCheckTitle: 'Stäng priskontroll',
+  closePriceCheckBody: 'Är du säker på att du vill stänga priskontrollen utan att lägga till varorna i kundvagnen?',
+  willNotBeAdded: 'kommer inte att läggas till',
+  itemSingular: 'vara',
+  yesLabel: 'Ja',
+  noLabel: 'Nej',
+  closeLabel: 'Stäng',
+
   // ── Settings modal ─────────────────────────────────────────────────────────
   allowCreateProject: 'Tillåt skapande av nytt projekt',
   allowCreateContactPerson: 'Tillåt skapande av ny kontaktperson',
@@ -240,6 +275,8 @@ const sv: Translations = {
   expirationDate: 'Utgångsdatum',
   expandCustomerDetails: 'Expandera kunddetaljer',
   expandProjectDetails: 'Expandera projektdetaljer',
+  collapseCustomerDetails: 'Dölj kunddetaljer',
+  collapseProjectDetails: 'Dölj projektdetaljer',
   selectCustomerToView: 'Sök och välj en kund för att se information här.',
 
   // ── Table headers ─────────────────────────────────────────────────────────
@@ -257,6 +294,8 @@ const sv: Translations = {
   // ── Field labels ───────────────────────────────────────────────────────────
   name: 'Namn',
   address1: 'Adress 1',
+  vipAddress1: 'Adress',
+  vipDeliveryAddress: 'Leveransadress',
   phone: 'Telefon',
   contactPersonReference: 'Kontaktpersonreferens',
   idControl: 'ID-kontroll (Namn)*',
@@ -264,7 +303,7 @@ const sv: Translations = {
   oioEan: 'OIO EAN *',
   oioReference: 'OIO Referens',
   oioAccounting: 'OIO Redovisning',
-  requisitionRequired: 'Rekvisition *',
+  requisitionRequired: 'Rekvisitionsnummer *',
   contactPersonReferenceRequired: 'Kontaktpersonreferens *',
 
   // ── Misc text ──────────────────────────────────────────────────────────────
@@ -281,20 +320,55 @@ const sv: Translations = {
   scannedFieldLabel: 'skannat',
 
   // VIP card (Aspect4 DK / Prototype C)
-  tabVipCard: 'VIP-KORT',
+  tabVipCard: 'VIP-kort',
   vipCardRegistered: 'VIP-kort registrerat',
   vipStatusOpen: 'Öppet',
   vipStatusBlocked: 'Spärrat',
   vipBlockedInfo: 'VIP-kortet är spärrat. Försäljningen kan inte slutföras förrän kortet tas bort.',
+  vipBlockedHardStop: 'VIP-kortet är spärrat. Försäljningen kan inte slutföras med detta kort, och spärren kan inte åsidosättas i kassan.',
   removeVipCard: 'Ta bort VIP-kort',
   continueAsNormalCustomer: 'Fortsätt som vanlig kund',
   vipCreditTitle: 'KREDIT',
+  vipCreditLimit: 'VIP-kortets gräns',
   vipCreditUsed: 'Använt',
   vipCreditRemaining: 'Återstående',
   overCreditLimit: 'Över kreditgräns',
   vipRecipient: 'Mottagare / Att.',
   vipRecipientPlaceholder: 'Mottagarens namn',
   vipCannotFinalize: 'Försäljningen kan inte slutföras medan VIP-kortet är spärrat.',
+  vipCreditExceededTitle: 'Kreditgräns överskriden',
+  vipCreditExceededBody: 'Din kreditgräns är överskriden. Ta bort varor eller ta bort VIP-kort',
+  vipRemoveItems: 'Ta bort varor',
+
+  deliveryNoteTender: 'Följesedel',
+  vipDeliveryNoteOnly: 'VIP-kort aktivt — försäljningen måste slutföras som följesedel. Kontant och andra betalningssätt är inte tillgängliga.',
+  // ── Hovedordre modal (DRAFT: was missing, fell back to English) ─────────
+  hovedordre: 'Huvudorder',
+  velgHovedordre: 'Välj huvudorder',
+  searchMainOrder: 'Sök huvudorder',
+  searchMainOrderPlaceholder: 'Sök på ordernummer, rekvisition eller adress',
+  fetchMainOrder: 'Hämta vald huvudorder',
+  // DRAFT: machine-drafted, needs native review (i18n PR 1)
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Priskontrolläge',
+  checkPriceButton: 'Kontrollera pris',
+  copyLastReceipt: 'Kopia av senaste kvitto',
+  openCashDrawer: 'Öppna kassalåda',
+  cashInOut: 'Växel in/ut',
+  versionInfo: 'Versionsinformation',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Logga av',
+  yourPinCode: 'Din PIN-kod',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP-kort spärrat',
+  vipCardBlockedBody: 'Ta bort VIP-kortet för att slutföra köpet.',
+  vipBadgeOpen: 'VIP öppet',
+  vipBadgeBlocked: 'VIP spärrat',
+  invoicesForPayment: 'Fakturor att betala',
+  edit: 'Redigera',
+  removeCustomer: 'Ta bort kunden',
+  noInvoicesForPayment: 'Inga fakturor att betala',
+  invoicesForPaymentPlaceholder: 'Fakturor att betala för den här kunden visas här. Funktionen är under utveckling.',
 };
 
 export default sv;

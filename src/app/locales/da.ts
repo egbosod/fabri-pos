@@ -60,10 +60,24 @@ const da: Translations = {
   total: 'Total',
   vat: 'Moms',
   toPay: 'At betale',
+  totalBeforeDiscount: 'Sum før rabat',
   items: 'varer',
   itemName: 'Varenavn',
   orderLines: 'varelinjer',
   createPackingSlip: 'Opret pakkeseddel',
+  packingSlip: 'Pakkeseddel',
+  packingSlipSignature: 'Pakkeseddel - signatur',
+  signatureRequiredNotice: 'Kunden skal underskrive, før pakkesedlen kan udstedes.',
+  signaturePlaceholder: 'Underskriften kommer her',
+  approveSignature: 'Godkend underskriften',
+  clearSignature: 'Ryd underskriftsfeltet',
+  deliveryNote: 'Følgeseddel',
+  regularReceipt: 'Almindelig kvittering',
+  a4Receipt: 'A4-kvittering',
+  noReceipt: 'Ingen kvittering',
+  sendEmail: 'Send e-mail',
+  salesperson: 'Sælger',
+  saleCompletedToast: 'Tak for handlen. Salget er gennemført',
   selectCustomerButton: 'Vælg kunde',
 
   // ── Actions ────────────────────────────────────────────────────────────────
@@ -178,6 +192,27 @@ const da: Translations = {
   splitOrderLine: 'Del varelinjen',
   changeUnitCode: 'Skift enhedskode',
 
+  // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
+  addItemsToCart: 'Tilføj varer til salg',
+  itemsAddedToSale: 'Varer tilføjet til salget',
+  priceCheckLockedTitle: 'Kunde/projekt er låst',
+  priceCheckLockedDescription: 'Du har allerede valgt kunde/projekt i prischecktilstand. Du kan ikke skifte til en anden kunde uden først at tilføje de aktuelle varer til kurven eller lukke priskontrol.',
+  priceCheckMismatchTitle: 'Tilføj til kurv',
+  priceCheckMismatchNotificationTitle: 'Kunde eller projekt stemmer ikke',
+  priceCheckMismatchBodyPrefix: 'Kunde fra priskontrol',
+  priceCheckMismatchBodyMiddle: 'vil overskrive eksisterende kunde i salget',
+  customerLabel: 'Kunde:',
+  projectLabel: 'Projekt:',
+  noCustomerOnSale: 'Ingen',
+  ok: 'OK',
+  closePriceCheckTitle: 'Luk priskontrol',
+  closePriceCheckBody: 'Er du sikker på, at du vil lukke priskontrol uden at tilføje varerne til kurven?',
+  willNotBeAdded: 'vil ikke blive tilføjet',
+  itemSingular: 'vare',
+  yesLabel: 'Ja',
+  noLabel: 'Nej',
+  closeLabel: 'Luk',
+
   // ── Settings modal ─────────────────────────────────────────────────────────
   allowCreateProject: 'Tillad oprettelse af nyt projekt',
   allowCreateContactPerson: 'Tillad oprettelse af ny kontaktperson',
@@ -243,6 +278,8 @@ const da: Translations = {
   expirationDate: 'Udløbsdato',
   expandCustomerDetails: 'Udvid kundedetaljer',
   expandProjectDetails: 'Udvid projektdetaljer',
+  collapseCustomerDetails: 'Skjul kundedetaljer',
+  collapseProjectDetails: 'Skjul projektdetaljer',
   selectCustomerToView: 'Søg og vælg en kunde for at se information her.',
 
   // ── Table headers ──────────────────────────────────────────────────────────
@@ -260,6 +297,8 @@ const da: Translations = {
   // ── Field labels ───────────────────────────────────────────────────────────
   name: 'Navn',
   address1: 'Adresse 1',
+  vipAddress1: 'Adresse',
+  vipDeliveryAddress: 'Leveringsadresse',
   phone: 'Telefon',
   contactPersonReference: 'Kontaktpersonreference',
   idControl: 'ID-kontrol (Navn)*',
@@ -267,7 +306,7 @@ const da: Translations = {
   oioEan: 'OIO EAN *',
   oioReference: 'OIO Reference',
   oioAccounting: 'OIO Regnskab',
-  requisitionRequired: 'Rekvisition *',
+  requisitionRequired: 'Rekvisitionsnummer *',
   contactPersonReferenceRequired: 'Kontaktpersonreference *',
 
   // ── Misc text ──────────────────────────────────────────────────────────────
@@ -284,20 +323,55 @@ const da: Translations = {
   scannedFieldLabel: 'skannet',
 
   // VIP card (Aspect4 DK / Prototype C)
-  tabVipCard: 'VIP-KORT',
+  tabVipCard: 'VIP-kort',
   vipCardRegistered: 'VIP-kort registreret',
   vipStatusOpen: 'Åben',
   vipStatusBlocked: 'Spærret',
   vipBlockedInfo: 'VIP-kortet er spærret. Salget kan ikke afsluttes, før kortet fjernes.',
+  vipBlockedHardStop: 'VIP-kortet er spærret. Salget kan ikke afsluttes med dette kort, og spærringen kan ikke tilsidesættes i kassen.',
   removeVipCard: 'Fjern VIP-kort',
   continueAsNormalCustomer: 'Fortsæt som normal kunde',
   vipCreditTitle: 'KREDIT',
+  vipCreditLimit: 'VIP-kortets grænse',
   vipCreditUsed: 'Brugt',
   vipCreditRemaining: 'Resterende',
   overCreditLimit: 'Over kreditgrænse',
   vipRecipient: 'Modtager / Att.',
   vipRecipientPlaceholder: 'Modtagerens navn',
   vipCannotFinalize: 'Salget kan ikke afsluttes, mens VIP-kortet er spærret.',
+  vipCreditExceededTitle: 'Kreditmaks overskredet',
+  vipCreditExceededBody: 'Dit kreditmaks er overskredet. Fjern varer eller fjern VIP-kort',
+  vipRemoveItems: 'Fjern varer',
+
+  deliveryNoteTender: 'Følgeseddel',
+  vipDeliveryNoteOnly: 'VIP-kort aktivt — salget skal afsluttes som følgeseddel. Kontant og andre betalingsformer er ikke tilgængelige.',
+  // ── Hovedordre modal (DRAFT: was missing, fell back to English) ─────────
+  hovedordre: 'Hovedordre',
+  velgHovedordre: 'Vælg hovedordre',
+  searchMainOrder: 'Søg hovedordre',
+  searchMainOrderPlaceholder: 'Søg på ordrenummer, rekvisition eller adresse',
+  fetchMainOrder: 'Hent valgt hovedordre',
+  // DRAFT: machine-drafted, needs native review (i18n PR 1)
+  // ── Header & main menu ──────────────────────────────────────────────────────
+  priceCheckMode: 'Pristjektilstand',
+  checkPriceButton: 'Tjek pris',
+  copyLastReceipt: 'Kopi af seneste kvittering',
+  openCashDrawer: 'Åbn kasseskuffe',
+  cashInOut: 'Byttepenge ind/ud',
+  versionInfo: 'Versionsinformation',
+  // ── Profile menu ────────────────────────────────────────────────────────────
+  logOff: 'Log af',
+  yourPinCode: 'Din PIN-kode',
+  // ── Customer badge & menu ───────────────────────────────────────────────────
+  vipCardBlockedTitle: 'VIP-kort spærret',
+  vipCardBlockedBody: 'Fjern VIP-kortet for at gennemføre købet.',
+  vipBadgeOpen: 'VIP åben',
+  vipBadgeBlocked: 'VIP spærret',
+  invoicesForPayment: 'Fakturaer til betaling',
+  edit: 'Rediger',
+  removeCustomer: 'Fjern kunden',
+  noInvoicesForPayment: 'Ingen fakturaer til betaling',
+  invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunde vises her. Funktionen er under udvikling.',
 };
 
 export default da;

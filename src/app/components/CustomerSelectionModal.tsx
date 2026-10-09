@@ -10,6 +10,8 @@ import { ModalCTAFooter } from './ModalCTAFooter';
 import { Switch } from './ui/switch';
 import { playBarcodeBeep } from '../utils/scanSound';
 import type { VipCardData } from '../types/pos';
+import { formatAmount } from '../utils/formatAmount';
+import { EgList, type EgListRow, type EgListSection } from './EgList';
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -74,7 +76,7 @@ interface CustomerSelectionModalProps {
   scannedCardData?: ScannedCardData | null;
   /** Called once the scanned data has been applied to the form */
   onCardDataProcessed?: () => void;
-  /** Active VIP card for this sale — puts the modal into VIP mode (Aspect4 DK / Prototype C) */
+  /** Active VIP card for this sale — puts the modal into VIP mode (Aspect4 DK / Prototypes B & C) */
   vipCard?: VipCardData | null;
   /** Running sale total, used as "Used" in the VIP credit panel (live per line item) */
   saleTotal?: number;
@@ -82,6 +84,28 @@ interface CustomerSelectionModalProps {
   onVipRemoved?: () => void;
   /** Marks a blocked VIP card as acknowledged by the cashier (Flow 1) */
   onVipAcknowledged?: () => void;
+  /**
+   * Prototype C (true): a blocked card can be acknowledged and the sale carries
+   * on (Flow 1). Prototype B (false): a blocked card is a hard stop — removing
+   * the card is the only way forward, so dismissing never acknowledges it.
+   */
+  blockedOverridable?: boolean;
+  /**
+   * Prototype A (true): the VIP delivery address is three free-text
+   * "Leveringsadresse" lines — the first always mandatory, the other two never.
+   * Prototypes B and C (false): Adresse plus a Postnummer / Poststed pair.
+   */
+  stackedDeliveryAddress?: boolean;
+  /**
+   * Reports whether the "Søk kundekort" scan panel is open. Prototype C gates
+   * the fake VIP card scan on it: the scan only lands if the cashier has put
+   * the till into card-search mode first, the way a real reader would.
+   */
+  onCardScanPanelChange?: (open: boolean) => void;
+  /** Customer already on the sale — reopening the modal starts from it */
+  initialCustomer?: { id: string } | null;
+  /** Project already on the sale — reopening the modal starts from it */
+  initialProject?: { id: string } | null;
 }
 
 // ─── Mock Data ────────────────────────────────────────────────────────────────
@@ -526,77 +550,56 @@ function ContactSelectList({ anchorRef, open, selected, onSelect, onClose }: {
 
 // ─── InfoCard (side panel) ────────────────────────────────────────────────────
 
-interface CardRowData { label: string; value: string; badge?: string | null; }
-interface CardSection { title?: string | null; rows: CardRowData[]; }
+/** Local aliases so callers keep the shape they already build. */
+type CardRowData = EgListRow;
+type CardSection = EgListSection;
 
-function CardRow({ label, value, badge, borderTop = true }: CardRowData & { borderTop?: boolean }) {
-  return (
-    <div style={{ borderTop: borderTop ? '1px solid var(--border)' : 'none', padding: 10, display: 'flex', gap: 10, alignItems: 'center', fontFamily: "'Montserrat', sans-serif" }}>
-      <span style={{ flex: 1, fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--card-foreground)', lineHeight: 1.4 }}>{label}</span>
-      <span style={{ flex: 1, fontWeight: 400, fontSize: 'var(--text-xs)', color: 'var(--card-foreground)', lineHeight: 1.4 }}>{value}</span>
-      {badge && (
-        <span style={{ background: 'color-mix(in srgb, var(--primary) 18%, var(--card))', borderRadius: 'var(--radius-sm)', padding: '2px 6px', fontWeight: 400, fontSize: 'var(--text-xs)', color: 'var(--foreground)', lineHeight: 1.75, whiteSpace: 'nowrap', fontFamily: "'Montserrat', sans-serif" }}>
-          {badge}
-        </span>
-      )}
-    </div>
-  );
-}
-
-function InfoCard({ title, rows, expandLabel, expandedCard }: {
+/**
+ * An `EgList` card plus the expand/collapse toggle that reveals a second
+ * `EgList` holding the grouped detail sections.
+ */
+function InfoCard({ title, rows, expandLabel, collapseLabel, expandedCard }: {
   title: string;
   rows: CardRowData[];
   expandLabel: string;
+  collapseLabel: string;
   expandedCard: CardSection[] | null;
 }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 5, width: '100%', fontFamily: "'Montserrat', sans-serif" }}>
-      {/* Collapsed card */}
-      <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-        <div style={{ borderBottom: '1px solid var(--border)', padding: 10 }}>
-          <span style={{ fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', lineHeight: 1.75 }}>
-            {title}
-          </span>
-        </div>
-        {rows.map((row, i) => (
-          <CardRow key={i} label={row.label} value={row.value} badge={row.badge} borderTop={true} />
-        ))}
-      </div>
+      <EgList title={title} rows={rows} />
 
-      {/* Expand/collapse button */}
       <button
         onClick={() => setExpanded(v => !v)}
         style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', gap: 5, alignSelf: 'flex-end', fontFamily: "'Montserrat', sans-serif" }}
       >
         <span style={{ fontWeight: 600, fontSize: 'var(--text-sm)', color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.3px', lineHeight: 1.75, whiteSpace: 'nowrap' }}>
-          {expanded ? expandLabel.replace('Utvid', 'Skjul') : expandLabel}
+          {expanded ? collapseLabel : expandLabel}
         </span>
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.18s ease-in-out', flexShrink: 0 }}>
           <path d="M2 4L6 8L10 4" stroke="var(--primary)" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
 
-      {/* Expanded detail card */}
-      {expanded && expandedCard && (
-        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
-          {expandedCard.map((section, si) => (
-            <div key={si}>
-              {section.title && (
-                <div style={{ borderBottom: '1px solid var(--border)', padding: '6px 10px', background: 'var(--background)' }}>
-                  <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 'var(--text-xs)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', lineHeight: 1.75 }}>
-                    {section.title}
-                  </span>
-                </div>
-              )}
-              {section.rows.map((row, ri) => (
-                <CardRow key={ri} label={row.label} value={row.value} borderTop={si > 0 || ri > 0 || !!section.title} />
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+      {expanded && expandedCard && <EgList sections={expandedCard} />}
+    </div>
+  );
+}
+
+/** Red triangle + label shown in a credit card footer when the limit is passed. */
+function OverLimitWarning({ label }: { label: string }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
+        <path d="M7 1.5L13 12.5H1L7 1.5Z" stroke="var(--destructive)" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M7 5.5V8.5" stroke="var(--destructive)" strokeWidth="1.3" strokeLinecap="round" />
+        <circle cx="7" cy="10.4" r="0.75" fill="var(--destructive)" />
+      </svg>
+      <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--destructive)', lineHeight: 1.5 }}>
+        {label}
+      </span>
     </div>
   );
 }
@@ -711,6 +714,11 @@ export function CustomerSelectionModal({
   saleTotal = 0,
   onVipRemoved,
   onVipAcknowledged,
+  blockedOverridable = true,
+  stackedDeliveryAddress = false,
+  onCardScanPanelChange,
+  initialCustomer = null,
+  initialProject = null,
 }: CustomerSelectionModalProps) {
   const { t } = useLanguage();
   const { erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard, customerSearchConcept } = useSettings();
@@ -725,10 +733,22 @@ export function CustomerSelectionModal({
   const [activeTab, setActiveTab] = useState<TabKey>(vipCard ? 'vipKort' : 'generelt');
 
   // Customer / Project search + selection
-  const [customerSearch, setCustomerSearch] = useState('');
-  const [projectSearch, setProjectSearch] = useState('');
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // Prefer the full mock record (it carries the detail-card fields); fall back
+  // to what the sale holds, e.g. a project created in this modal earlier.
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(() =>
+    initialCustomer
+      ? [...mockCustomers, ...erpOnlyCustomers].find(c => c.id === initialCustomer.id) ?? (initialCustomer as Customer)
+      : null
+  );
+  const [selectedProject, setSelectedProject] = useState<Project | null>(() =>
+    initialProject
+      ? mockProjects.find(p => p.id === initialProject.id) ?? (initialProject as Project)
+      : null
+  );
+  const [customerSearch, setCustomerSearch] = useState(() =>
+    selectedCustomer ? `${selectedCustomer.name} (${selectedCustomer.customerNumber})` : ''
+  );
+  const [projectSearch, setProjectSearch] = useState(() => selectedProject?.navn ?? '');
 
   // Dropdown open states
   const [customerOpen, setCustomerOpen] = useState(false);
@@ -762,9 +782,10 @@ export function CustomerSelectionModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const scanPanelInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-focus customer search input on mount
+  // Auto-focus customer search input on mount — not when reopening with a
+  // customer already chosen, or the focus would pop the dropdown open over it.
   useEffect(() => {
-    if (customerSearchInputRef.current) {
+    if (customerSearchInputRef.current && !initialCustomer) {
       customerSearchInputRef.current.focus();
     }
   }, []);
@@ -788,6 +809,8 @@ export function CustomerSelectionModal({
   const [deliveryName, setDeliveryName] = useState('');
   const [deliveryAddress1, setDeliveryAddress1] = useState('');
   const [deliveryAddress2, setDeliveryAddress2] = useState('');
+  /** Third VIP delivery-address line — Prototype A only. */
+  const [deliveryAddress3, setDeliveryAddress3] = useState('');
   const [deliveryPhone, setDeliveryPhone] = useState('');
   const [deliveryEmail, setDeliveryEmail] = useState('');
   const [deliveryPostalCode, setDeliveryPostalCode] = useState('');
@@ -856,6 +879,20 @@ export function CustomerSelectionModal({
       scanPanelInputRef.current.focus();
     }
   }, [scanPanelOpen]);
+
+  // Tell the shell whether card-search mode is active — Prototype C's fake VIP
+  // scan is only allowed from here. Closing the modal always clears it.
+  useEffect(() => {
+    onCardScanPanelChange?.(scanPanelOpen);
+  }, [scanPanelOpen, onCardScanPanelChange]);
+
+  useEffect(() => () => onCardScanPanelChange?.(false), [onCardScanPanelChange]);
+
+  // A landed VIP card takes over the modal (VIP Kort tab), so the scan panel
+  // steps aside once the scan has been read.
+  useEffect(() => {
+    if (vipCard && scanPanelOpen) closeScanPanel();
+  }, [vipCard, scanPanelOpen, closeScanPanel]);
 
   // ─── Filtering ──────────────────────────────────────────────────────────────
 
@@ -1023,13 +1060,21 @@ export function CustomerSelectionModal({
       setCustomerSearch(`${customer.name} (${customer.customerNumber})`);
     }
 
-    if (vipCard.address) {
-      setDeliveryName(prev => prev || vipCard.customerName);
-      setDeliveryAddress1(prev => prev || vipCard.address!.line1);
-      setDeliveryAddress2(prev => prev || (vipCard.address!.line2 ?? ''));
-      setDeliveryPostalCode(prev => prev || vipCard.address!.postalCode);
-      setDeliveryCity(prev => prev || vipCard.address!.city);
-    }
+    // The form's Name must read the same as "Kundenavn" in the right-hand
+    // panel, which is driven by the matched customer record — the card's own
+    // customerName is only the fallback when no record resolves. Locked and
+    // card-owned, so each scan overwrites it rather than keeping the previous
+    // card's name when concepts are rotated through.
+    setDeliveryName(customer?.name || vipCard.customerName);
+
+    // The address block is owned by the card, so each new card overwrites it
+    // outright — including clearing it when the card carries no address. Using
+    // `prev || …` here left the previous card's address stranded in the form,
+    // because this modal's state outlives a single scan.
+    setDeliveryAddress1(vipCard.address?.line1 ?? '');
+    setDeliveryAddress2(vipCard.address?.line2 ?? '');
+    setDeliveryPostalCode(vipCard.address?.postalCode ?? '');
+    setDeliveryCity(vipCard.address?.city ?? '');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vipCard]);
 
@@ -1057,19 +1102,48 @@ export function CustomerSelectionModal({
       setCustomerSearch(`${refreshed.name} (${refreshed.customerNumber})`);
     }
 
-    // Blocked cards must be explicitly acknowledged before the sale can finalize.
-    onVipAcknowledged?.();
+    // Prototype C: dismissing is also the acknowledgement that unblocks the
+    // sale. Prototype B has no override, so only the removal below applies.
+    if (blockedOverridable) onVipAcknowledged?.();
     onVipRemoved?.();
-  }, [vipCard, onVipAcknowledged, onVipRemoved]);
+  }, [vipCard, blockedOverridable, onVipAcknowledged, onVipRemoved]);
 
   // ─── VIP credit calculation (live — recomputed on every sale-total change) ──
   // Covers both Flow 2 Case A (already over limit at scan) and Case B (crosses
   // the limit mid-sale as line items are added).
+  /**
+   * Concept "all fields mandatory except Navn". Navn is never mandatory (and is
+   * never editable on a VIP card), every other shown field is.
+   */
+  const vipMandatory = (label: string) =>
+    vipCard?.allFieldsMandatory ? `${label} *` : label;
+
+  /**
+   * Mandatory-field gate for the VIP card tab: Confirm stays disabled until
+   * every starred field holds something. Address lines only count when the card
+   * carries an address — the "address fields omitted" concept hides them.
+   */
+  const vipMandatoryFilled = (() => {
+    if (!vipCard) return true;
+    const filled = (v: string) => v.trim() !== '';
+    // Rekvisisjonsnummer and Mottaker/Att. are always mandatory on the VIP
+    // card tab, in every prototype and every card concept — not gated on
+    // vipCard.requisitionRequired / allFieldsMandatory. Navn is never
+    // mandatory here (it's locked/non-editable instead, see below).
+    if (!filled(requisitionNumber)) return false;
+    if (!filled(contactPerson)) return false;
+    // Prototype A: the first Leveringsadresse line is mandatory whatever the
+    // card concept says. Lines 2 and 3 never are.
+    if (stackedDeliveryAddress && vipCard.address && !filled(deliveryAddress1)) return false;
+    if (vipCard.allFieldsMandatory) {
+      // Postnummer / Poststed only exist in prototypes B and C.
+      if (vipCard.address && !stackedDeliveryAddress && !(filled(deliveryAddress1) && filled(deliveryPostalCode) && filled(deliveryCity))) return false;
+    }
+    return true;
+  })();
+
   const vipCreditRemaining = vipCard ? vipCard.creditLimit - saleTotal : 0;
   const vipOverLimit = !!vipCard && vipCreditRemaining < 0;
-
-  const formatAmount = (n: number) =>
-    n.toLocaleString('no-NO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).replace(/,/g, ' ');
 
   // ─── Side panel data ─────────────────────────────────────────────────────────
 
@@ -1078,55 +1152,67 @@ export function CustomerSelectionModal({
     { label: t('customerName'), value: selectedCustomer.name, badge: selectedCustomer.type },
   ] : [];
 
-  const customerExpandedCard: CardSection[] | null = selectedCustomer ? (() => {
-    // Calculate available credit: Credit limit minus total balance (used credit)
-    const calculateAvailableCredit = () => {
-      if (!selectedCustomer.creditLimit || !selectedCustomer.totalBalance) return 'N/A';
-      
-      // Parse credit limit and total balance (remove spaces and convert to number)
-      const limitStr = selectedCustomer.creditLimit.replace(/\s/g, '');
-      const balanceStr = selectedCustomer.totalBalance.replace(/\s/g, '');
-      
-      const limit = parseFloat(limitStr);
-      const balance = parseFloat(balanceStr);
-      
-      if (isNaN(limit) || isNaN(balance)) return 'N/A';
-      
-      const available = limit - balance;
-      // Format with space as thousand separator
-      return available.toLocaleString('no-NO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).replace(/,/g, ' ');
+  /**
+   * Master credit data plus, when a VIP card is registered, the live sale
+   * figures. KREDITINFO and the old standalone KREDITT card duplicated each
+   * other in a 296px column, so they are one always-visible card now.
+   */
+  const customerCreditRows: CardRowData[] = selectedCustomer ? (() => {
+    // Available credit: credit limit minus total balance (used credit)
+    const parseAmount = (v?: string) => {
+      if (!v) return NaN;
+      return parseFloat(v.replace(/\s/g, ''));
     };
+    const customerLimit = parseAmount(selectedCustomer.creditLimit);
+    const balance = parseAmount(selectedCustomer.totalBalance);
+    const availableCredit = isNaN(customerLimit) || isNaN(balance)
+      ? 'N/A'
+      : formatAmount(customerLimit - balance);
 
-    const availableCredit = calculateAvailableCredit();
-
-    return [
-      {
-        title: null,
-        rows: [
-          { label: t('category'), value: selectedCustomer.category || 'N/A' },
-          { label: t('mobile'), value: selectedCustomer.mobile || 'N/A' },
-          { label: t('emailLabel'), value: selectedCustomer.email || 'N/A' },
-        ],
-      },
-      {
-        title: t('addressTitle'),
-        rows: [
-          { label: t('street'), value: selectedCustomer.street || 'N/A' },
-          { label: t('postalCodeAndCity'), value: selectedCustomer.postalCode && selectedCustomer.city ? `${selectedCustomer.postalCode} ${selectedCustomer.city}` : 'N/A' },
-        ],
-      },
-      {
-        title: t('creditTitle'),
-        rows: [
-          { label: t('creditLimit'), value: selectedCustomer.creditLimit || 'N/A' },
-          { label: t('availableCredit'), value: availableCredit },
-          { label: t('totalBalance'), value: selectedCustomer.totalBalance || 'N/A' },
-          { label: t('invoicedBalance'), value: selectedCustomer.invoicedBalance || 'N/A' },
-          { label: t('dueBalance'), value: selectedCustomer.dueBalance || 'N/A' },
-        ],
-      },
+    const rows: CardRowData[] = [
+      { label: t('creditLimit'), value: selectedCustomer.creditLimit || 'N/A' },
+      { label: t('availableCredit'), value: availableCredit },
+      { label: t('totalBalance'), value: selectedCustomer.totalBalance || 'N/A' },
+      { label: t('invoicedBalance'), value: selectedCustomer.invoicedBalance || 'N/A' },
+      { label: t('dueBalance'), value: selectedCustomer.dueBalance || 'N/A' },
     ];
-  })() : null;
+
+    if (vipCard) {
+      // The VIP card carries its own, usually lower, limit. Spell it out when
+      // it differs, otherwise "Gjenstående" looks like bad arithmetic against
+      // the customer's credit limit above.
+      if (isNaN(customerLimit) || vipCard.creditLimit !== customerLimit) {
+        rows.push({ label: t('vipCreditLimit'), value: formatAmount(vipCard.creditLimit) });
+      }
+      rows.push({ label: t('vipCreditUsed'), value: formatAmount(saleTotal) });
+      rows.push({
+        label: t('vipCreditRemaining'),
+        value: formatAmount(vipCreditRemaining),
+        emphasise: true,
+        valueColor: vipOverLimit ? 'var(--destructive)' : undefined,
+      });
+    }
+
+    return rows;
+  })() : [];
+
+  const customerExpandedCard: CardSection[] | null = selectedCustomer ? [
+    {
+      title: null,
+      rows: [
+        { label: t('category'), value: selectedCustomer.category || 'N/A' },
+        { label: t('mobile'), value: selectedCustomer.mobile || 'N/A' },
+        { label: t('emailLabel'), value: selectedCustomer.email || 'N/A' },
+      ],
+    },
+    {
+      title: t('addressTitle'),
+      rows: [
+        { label: t('street'), value: selectedCustomer.street || 'N/A' },
+        { label: t('postalCodeAndCity'), value: selectedCustomer.postalCode && selectedCustomer.city ? `${selectedCustomer.postalCode} ${selectedCustomer.city}` : 'N/A' },
+      ],
+    },
+  ] : null;
 
   const projectCardRows: CardRowData[] = selectedProject ? [
     { label: t('projectNo'), value: selectedProject.nr },
@@ -1191,7 +1277,7 @@ export function CustomerSelectionModal({
                   className="[grid-area:1_/_1]"
                   style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 700, fontSize: 'var(--text-lg)', color: 'var(--card-foreground)', lineHeight: 1.3, whiteSpace: 'nowrap', marginLeft: 35, marginTop: 3 }}
                 >
-                  {t('selectCustomer')}
+                  {vipCard ? t('tabVipCard') : t('selectCustomer')}
                 </span>
               </div>
 
@@ -1199,7 +1285,7 @@ export function CustomerSelectionModal({
               {vipCard && (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                   <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-base)', color: 'var(--card-foreground)', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {vipCard.customerName} – {t('vipCardRegistered')} –
+                    {t('vipCardRegistered')}
                   </span>
                   <span style={{
                     flexShrink: 0,
@@ -1262,8 +1348,8 @@ export function CustomerSelectionModal({
             </div>
           </div>
 
-          {/* ── Tabs ── */}
-          <div style={{ background: 'var(--card)', boxShadow: '0 3px 3px rgba(107,107,114,0.06)', flexShrink: 0 }}>
+          {/* ── Tabs — hidden in VIP mode, where VIP Kort is the only tab ── */}
+          <div style={{ background: 'var(--card)', boxShadow: '0 3px 3px rgba(107,107,114,0.06)', flexShrink: 0, display: isVipMode ? 'none' : undefined }}>
             <div style={{ display: 'flex', gap: 30, padding: '10px 20px 0', alignItems: 'flex-end' }}>
               {tabs.filter(t => t.show).map(({ key, label }) => {
                 const active = activeTab === key;
@@ -1835,60 +1921,91 @@ export function CustomerSelectionModal({
                     {vipCard.status === 'blocked' && (
                       <div style={{ background: 'color-mix(in srgb, var(--destructive) 15%, var(--card))', borderRadius: 'var(--radius-sm)', padding: 15 }}>
                         <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.75, margin: 0 }}>
-                          {t('vipBlockedInfo')}
+                          {blockedOverridable ? t('vipBlockedInfo') : t('vipBlockedHardStop')}
                         </p>
                       </div>
                     )}
 
-                    {/* Rekvisisjonsnummer */}
+                    {/* Rekvisisjonsnummer — always mandatory on the VIP card
+                        tab, regardless of card concept or prototype. */}
                     <div>
-                      <FieldLabel>{vipCard.requisitionRequired ? t('requisitionRequired') : t('requisition')}</FieldLabel>
+                      <FieldLabel>{t('requisitionRequired')}</FieldLabel>
                       <InputBox focused={false}>
                         <input style={{ ...baseInputStyle, color: requisitionNumber ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={requisitionNumber} placeholder={t('requisitionPlaceholder')} onChange={e => setRequisitionNumber(e.target.value)} />
                       </InputBox>
                     </div>
 
-                    {/* Leveringsadresse — 3 lines */}
+                    {/* Leveringsadresse — 3 lines. Navn is the one field never
+                        marked mandatory, and always locked on a VIP card. */}
                     <div>
                       <FieldLabel>{t('name')}</FieldLabel>
-                      <InputBox focused={false}>
-                        <input style={{ ...baseInputStyle, color: deliveryName ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryName} placeholder={t('namePlaceholder')} onChange={e => setDeliveryName(e.target.value)} />
+                      <InputBox focused={false} style={{ background: 'var(--muted)' }}>
+                        <input
+                          style={{ ...baseInputStyle, color: 'var(--muted-foreground)', cursor: 'not-allowed' }}
+                          value={deliveryName}
+                          placeholder={t('namePlaceholder')}
+                          readOnly
+                          disabled
+                        />
                       </InputBox>
                     </div>
 
-                    <div style={{ display: 'flex', gap: 22 }}>
-                      <div style={{ flex: 1 }}>
-                        <FieldLabel>{t('address1')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
-                        </InputBox>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <FieldLabel>{t('address2')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryAddress2 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress2} placeholder={t('address2Placeholder')} onChange={e => setDeliveryAddress2(e.target.value)} />
-                        </InputBox>
-                      </div>
-                    </div>
+                    {/* Concept "address fields omitted": a card with no address
+                        hides Adresse / Postnummer / Poststed outright rather than
+                        showing three empty boxes. */}
+                    {vipCard.address && (stackedDeliveryAddress ? (
+                      /* Prototype A: three plain Leveringsadresse lines. The first
+                         is always mandatory, the other two never are. */
+                      <>
+                        <div>
+                          <FieldLabel>{`${t('vipDeliveryAddress')} *`}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
+                          </InputBox>
+                        </div>
+                        <div>
+                          <FieldLabel style={{ visibility: 'hidden' }}>{t('vipDeliveryAddress')}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input aria-label={t('vipDeliveryAddress')} style={{ ...baseInputStyle, color: deliveryAddress2 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress2} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress2(e.target.value)} />
+                          </InputBox>
+                        </div>
+                        <div>
+                          <FieldLabel style={{ visibility: 'hidden' }}>{t('vipDeliveryAddress')}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input aria-label={t('vipDeliveryAddress')} style={{ ...baseInputStyle, color: deliveryAddress3 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress3} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress3(e.target.value)} />
+                          </InputBox>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <FieldLabel>{vipMandatory(t('vipAddress1'))}</FieldLabel>
+                          <InputBox focused={false}>
+                            <input style={{ ...baseInputStyle, color: deliveryAddress1 ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryAddress1} placeholder={t('address1Placeholder')} onChange={e => setDeliveryAddress1(e.target.value)} />
+                          </InputBox>
+                        </div>
 
-                    <div style={{ display: 'flex', gap: 22 }}>
-                      <div style={{ width: 160 }}>
-                        <FieldLabel>{t('postalCode')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryPostalCode ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryPostalCode} placeholder={t('postalCodePlaceholder')} onChange={e => setDeliveryPostalCode(e.target.value)} />
-                        </InputBox>
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <FieldLabel>{t('city')}</FieldLabel>
-                        <InputBox focused={false}>
-                          <input style={{ ...baseInputStyle, color: deliveryCity ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryCity} placeholder={t('cityPlaceholder')} onChange={e => setDeliveryCity(e.target.value)} />
-                        </InputBox>
-                      </div>
-                    </div>
+                        <div style={{ display: 'flex', gap: 22 }}>
+                          <div style={{ width: 160 }}>
+                            <FieldLabel>{vipMandatory(t('postalCode'))}</FieldLabel>
+                            <InputBox focused={false}>
+                              <input style={{ ...baseInputStyle, color: deliveryPostalCode ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryPostalCode} placeholder={t('postalCodePlaceholder')} onChange={e => setDeliveryPostalCode(e.target.value)} />
+                            </InputBox>
+                          </div>
+                          <div style={{ flex: 1 }}>
+                            <FieldLabel>{vipMandatory(t('city'))}</FieldLabel>
+                            <InputBox focused={false}>
+                              <input style={{ ...baseInputStyle, color: deliveryCity ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={deliveryCity} placeholder={t('cityPlaceholder')} onChange={e => setDeliveryCity(e.target.value)} />
+                            </InputBox>
+                          </div>
+                        </div>
+                      </>
+                    ))}
 
-                    {/* Mottaker / Att. */}
+                    {/* Mottaker / Att. — always mandatory on the VIP card
+                        tab, regardless of card concept or prototype. */}
                     <div>
-                      <FieldLabel>{t('vipRecipient')}</FieldLabel>
+                      <FieldLabel>{`${t('vipRecipient')} *`}</FieldLabel>
                       <InputBox focused={false}>
                         <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
                       </InputBox>
@@ -2015,10 +2132,14 @@ export function CustomerSelectionModal({
                 </p>
               )}
 
-              {selectedCustomer && (
+              {/* Kunde card is suppressed in VIP mode (Prototype C): the card already
+                  identifies the customer in the header, so Credit is the only panel
+                  that adds information here. */}
+              {selectedCustomer && !isVipMode && (
                 <InfoCard
                   title={t('customerInfoTitle')}
                   expandLabel={t('expandCustomerDetails')}
+                  collapseLabel={t('collapseCustomerDetails')}
                   rows={customerCardRows}
                   expandedCard={customerExpandedCard}
                 />
@@ -2028,60 +2149,21 @@ export function CustomerSelectionModal({
                 <InfoCard
                   title={t('projectInfoTitle')}
                   expandLabel={t('expandProjectDetails')}
+                  collapseLabel={t('collapseProjectDetails')}
                   rows={projectCardRows}
                   expandedCard={projectExpandedCard}
                 />
               )}
 
-              {/* ── VIP credit panel — Limit / Used / Remaining (live) ── */}
-              {vipCard && (
-                <div style={{
-                  background: 'var(--card)',
-                  border: `1px solid ${vipOverLimit ? 'color-mix(in srgb, var(--destructive) 50%, transparent)' : 'var(--border)'}`,
-                  borderRadius: 'var(--radius)',
-                  padding: 15,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 10,
-                }}>
-                  <FieldLabel>{t('vipCreditTitle')}</FieldLabel>
-
-                  {([
-                    [t('creditLimit'), formatAmount(vipCard.creditLimit), false],
-                    [t('vipCreditUsed'), formatAmount(saleTotal), false],
-                    [t('vipCreditRemaining'), formatAmount(vipCreditRemaining), true],
-                  ] as [string, string, boolean][]).map(([label, value, emphasise]) => (
-                    <div key={label} style={{ display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                      <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', lineHeight: 1.6 }}>
-                        {label}
-                      </span>
-                      <span style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontWeight: emphasise ? 700 : 400,
-                        fontSize: 'var(--text-sm)',
-                        lineHeight: 1.6,
-                        whiteSpace: 'nowrap',
-                        color: emphasise && vipOverLimit ? 'var(--destructive)' : 'var(--foreground)',
-                      }}>
-                        {value}
-                      </span>
-                    </div>
-                  ))}
-
-                  {/* Flow 2: over limit is a visible warning, never a hard stop */}
-                  {vipOverLimit && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ flexShrink: 0 }}>
-                        <path d="M7 1.5L13 12.5H1L7 1.5Z" stroke="var(--destructive)" strokeWidth="1.3" strokeLinejoin="round" />
-                        <path d="M7 5.5V8.5" stroke="var(--destructive)" strokeWidth="1.3" strokeLinecap="round" />
-                        <circle cx="7" cy="10.4" r="0.75" fill="var(--destructive)" />
-                      </svg>
-                      <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--destructive)', lineHeight: 1.5 }}>
-                        {t('overCreditLimit')}
-                      </span>
-                    </div>
-                  )}
-                </div>
+              {/* ── Credit — master figures + live sale total (Flow 2) ── */}
+              {selectedCustomer && (
+                <EgList
+                  title={t('creditTitle')}
+                  rows={customerCreditRows}
+                  tone={vipOverLimit ? 'danger' : 'default'}
+                  /* Flow 2: over limit is a visible warning, never a hard stop */
+                  footer={vipOverLimit && <OverLimitWarning label={t('overCreditLimit')} />}
+                />
               )}
             </div>
 
@@ -2110,13 +2192,21 @@ export function CustomerSelectionModal({
                     <InfoCard
                       title={t('customerInfoTitle')}
                       expandLabel={t('expandCustomerDetails')}
+                      collapseLabel={t('collapseCustomerDetails')}
                       rows={customerCardRows}
                       expandedCard={customerExpandedCard}
+                    />
+                    <EgList
+                      title={t('creditTitle')}
+                      rows={customerCreditRows}
+                      tone={vipOverLimit ? 'danger' : 'default'}
+                      footer={vipOverLimit && <OverLimitWarning label={t('overCreditLimit')} />}
                     />
                     {selectedProject && (
                       <InfoCard
                         title={t('projectInfoTitle')}
                         expandLabel={t('expandProjectDetails')}
+                  collapseLabel={t('collapseProjectDetails')}
                         rows={projectCardRows}
                         expandedCard={projectExpandedCard}
                       />
@@ -2255,9 +2345,9 @@ export function CustomerSelectionModal({
               onConfirm={handleConfirm}
               cancelText={t('cancel')}
               confirmText={t('confirm')}
-              confirmDisabled={!selectedCustomer}
+              confirmDisabled={!selectedCustomer || !vipMandatoryFilled}
               extraAction={vipCard ? {
-                label: vipCard.status === 'open' ? t('removeVipCard') : t('continueAsNormalCustomer'),
+                label: t('removeVipCard'),
                 onClick: handleVipRemoveOrDismiss,
               } : undefined}
             />
