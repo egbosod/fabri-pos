@@ -265,9 +265,19 @@ export function SettingsModal() {
   const s = STRINGS[panelLang];
 
   // Dragging state
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [isDragging, setIsDragging] = useState(false);
+  // The modal is centred by its flex overlay; dragging only adds a translate
+  // offset on top. Centring therefore stays correct when the content grows
+  // (e.g. picking Aspect4 adds rows) or the window is resized.
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const dragStartRef = useRef<{
+    mouseX: number;
+    mouseY: number;
+    baseX: number;
+    baseY: number;
+    rect: DOMRect;
+  } | null>(null);
 
   // Collapsible sections — all expanded by default
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -368,33 +378,54 @@ export function SettingsModal() {
     setExpandedSections(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
-  // Center the modal on first open
+  // Re-centre every time the modal opens
   useEffect(() => {
-    if (isSettingsModalOpen) {
-      const centerX = window.innerWidth / 2 - 250;
-      const centerY = window.innerHeight / 2 - 300;
-      setPosition({ x: centerX, y: centerY });
-    }
+    if (isSettingsModalOpen) setDragOffset({ x: 0, y: 0 });
   }, [isSettingsModalOpen]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!modalRef.current) return;
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      baseX: dragOffset.x,
+      baseY: dragOffset.y,
+      rect: modalRef.current.getBoundingClientRect(),
+    };
     setIsDragging(true);
-    setDragOffset({ x: e.clientX - position.x, y: e.clientY - position.y });
   };
 
   useEffect(() => {
     if (!isDragging) return;
+    const KEEP_VISIBLE = 96; // px of header that must stay on screen
+    const HEADER_H = 56;
     const handleMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX - dragOffset.x, y: e.clientY - dragOffset.y });
+      const start = dragStartRef.current;
+      if (!start) return;
+      let dx = start.baseX + (e.clientX - start.mouseX);
+      let dy = start.baseY + (e.clientY - start.mouseY);
+
+      // Clamp so the header can never be dragged out of reach.
+      const left = start.rect.left + (dx - start.baseX);
+      const top = start.rect.top + (dy - start.baseY);
+      if (left + start.rect.width < KEEP_VISIBLE) dx += KEEP_VISIBLE - (left + start.rect.width);
+      if (left > window.innerWidth - KEEP_VISIBLE) dx -= left - (window.innerWidth - KEEP_VISIBLE);
+      if (top < 0) dy -= top;
+      if (top > window.innerHeight - HEADER_H) dy -= top - (window.innerHeight - HEADER_H);
+
+      setDragOffset({ x: dx, y: dy });
     };
-    const handleMouseUp = () => setIsDragging(false);
+    const handleMouseUp = () => {
+      dragStartRef.current = null;
+      setIsDragging(false);
+    };
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, dragOffset]);
+  }, [isDragging]);
 
   useEffect(() => {
     if (!isSettingsModalOpen) return;
@@ -477,15 +508,17 @@ export function SettingsModal() {
 
   const RowCard = ({ children }: { children: React.ReactNode }) => (
     <div
+      className="sm-row"
       style={{
         display: 'flex',
+        flexWrap: 'wrap',
         alignItems: 'center',
         justifyContent: 'space-between',
-        gap: 16,
+        gap: 12,
         background: 'var(--background)',
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius)',
-        padding: 16,
+        padding: '10px 14px',
       }}
     >
       {children}
@@ -531,7 +564,7 @@ export function SettingsModal() {
         background: 'var(--card)',
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius-sm)',
-        fontFamily: 'monospace',
+        fontFamily: "'Montserrat', sans-serif",
         fontWeight: 'var(--font-weight-medium)',
         fontSize: 'var(--text-sm)',
         color: 'var(--secondary-foreground)',
@@ -624,6 +657,24 @@ export function SettingsModal() {
 
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
 
+  // One card per category. The body is a grid of two column stacks that
+  // collapses to a single column when there is no room for two.
+  const sectionCardStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 0,
+    background: 'var(--card)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-card)',
+    padding: 14,
+  };
+  const columnStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 12,
+    minWidth: 0,
+  };
+
   return (
     <div
       style={{
@@ -631,9 +682,17 @@ export function SettingsModal() {
         inset: 0,
         zIndex: 100,
         background: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 16,
       }}
     >
+      {/* Wrap the control under its text when a settings card gets narrow.
+          !important because some rows set an inline flex on their text block. */}
+      <style>{`.sm-row > :first-child { flex: 1 1 200px !important; min-width: 0; }`}</style>
       <div
+        ref={modalRef}
         style={{
           // ── Settings-modal-only palette ──────────────────────────────────
           // This panel is a prototyping tool, not the Fabri POS product, so
@@ -653,17 +712,15 @@ export function SettingsModal() {
           '--primary': PROTOTYPE_PINK,
           '--primary-foreground': '#140D0B',
           background: 'var(--card)',
-          borderRadius: 'var(--radius)',
+          borderRadius: 'var(--radius-card)',
           boxShadow: '2px 2px 4px rgba(0,0,0,0.3), 4px 12px 20px rgba(0,0,0,0.45)',
           width: '100%',
-          maxWidth: 520,
+          maxWidth: 1040,
           maxHeight: 'calc(100vh - 2rem)',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          position: 'absolute',
-          left: `${position.x}px`,
-          top: `${position.y}px`,
+          transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
           cursor: isDragging ? 'grabbing' : 'default',
           fontFamily: "'Montserrat', sans-serif",
         } as React.CSSProperties}
@@ -758,15 +815,31 @@ export function SettingsModal() {
         </div>
 
         {/* ── Body (scrollable) ── */}
-        <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 0, overflowY: 'auto', flex: 1 }}>
+        <div
+          style={{
+            padding: 12,
+            display: 'grid',
+            // Two columns when each can be >= 400px wide, otherwise one.
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))',
+            gap: 12,
+            alignItems: 'start',
+            alignContent: 'start',
+            overflowY: 'auto',
+            flex: 1,
+            minHeight: 0,
+            background: 'var(--background)',
+          }}
+        >
+          {/* ── Column 1: how the prototype behaves ── */}
+          <div style={columnStyle}>
 
           {/* ─ Switch User Flow ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="userFlow">
               {s.userFlowHeading}
             </SectionHeader>
             {expandedSections.userFlow && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <DescText>
                   {s.userFlowDesc}
                 </DescText>
@@ -868,13 +941,12 @@ export function SettingsModal() {
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
 
           {/* ─ ERP System Selection ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="erp">{s.erpHeading}</SectionHeader>
             {expandedSections.erp && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <DescText>{s.erpDesc}</DescText>
 
                 <div
@@ -1185,11 +1257,11 @@ export function SettingsModal() {
                   background: 'var(--background)',
                   border: '1px solid var(--border)',
                   borderRadius: 'var(--radius)',
-                  padding: 16,
+                  padding: '10px 14px',
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: 12,
-                  marginTop: 12,
+                  gap: 8,
+                  marginTop: 10,
                 }}
               >
                 <KbdRow
@@ -1244,15 +1316,14 @@ export function SettingsModal() {
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
 
           {/* ─ Developer ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="developer" icon={<Bug size={16} />}>
               {s.developerHeading}
             </SectionHeader>
             {expandedSections.developer && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <RowCard>
                   <div>
                     <p
@@ -1381,15 +1452,14 @@ export function SettingsModal() {
             )}
           </div>
 
-          <div style={{ height: 1, background: 'var(--border)', margin: '20px 0' }} />
 
           {/* ─ WCAG Accessibility ─ */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+          <div style={sectionCardStyle}>
             <SectionHeader sectionKey="wcag">
               {s.wcagHeading}
             </SectionHeader>
             {expandedSections.wcag && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
                 <DescText>
                   {s.wcagDesc}
                 </DescText>
@@ -1484,8 +1554,7 @@ export function SettingsModal() {
             )}
           </div>
 
-          {/* bottom padding */}
-          <div style={{ height: 8 }} />
+          </div>
         </div>
 
         {/* ── Footer ── */}
