@@ -110,15 +110,28 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
       {showFlowIndicator && (
         <div
           className="flex items-center gap-2 relative"
-          onMouseEnter={() => setShowPrototypeHint(true)}
-          onMouseLeave={() => {
-            setShowPrototypeHint(false);
-            setIsErpMenuOpen(false);
-          }}
+          onMouseLeave={() => setIsErpMenuOpen(false)}
         >
-          <span className="font-['Montserrat'] font-medium text-[#FF00FF] text-[14px]">Prototype</span>
-          <div className="w-[24px] h-[24px] rounded-full bg-[#FF00FF] flex items-center justify-center text-white font-['Montserrat'] font-bold text-[12px] shadow-sm border border-white">
-            {switchUserFlow}
+          {/* Label + letter badge read as one item; only they trigger the prototype tooltip. */}
+          <div
+            className="flex items-center gap-2 relative cursor-default"
+            onMouseEnter={() => setShowPrototypeHint(true)}
+            onMouseLeave={() => setShowPrototypeHint(false)}
+          >
+            <span className="font-['Montserrat'] font-medium text-[#FF00FF] text-[14px]">Prototype</span>
+            <div className="w-[24px] h-[24px] rounded-full bg-[#FF00FF] flex items-center justify-center text-white font-['Montserrat'] font-bold text-[12px] shadow-sm border border-white">
+              {switchUserFlow}
+            </div>
+            {showPrototypeHint && (
+              <div
+                className="absolute left-0 top-[calc(100%+8px)] z-[9999] w-[260px] rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4]"
+                role="tooltip"
+              >
+                <div className="absolute -top-[5px] left-[20px] w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
+                <p className="font-bold mb-1">Prototype {switchUserFlow}</p>
+                <p>{prototypeTooltip}</p>
+              </div>
+            )}
           </div>
           <div className="relative">
             <button
@@ -167,16 +180,6 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
           >
             <FontAwesomeIcon icon={copyStatus === 'copied' ? faCheck : faCopy} className="text-[11px]" />
           </button>
-          {showPrototypeHint && !isErpMenuOpen && (
-            <div
-              className="absolute left-0 top-[calc(100%+8px)] z-[9999] w-[260px] rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4]"
-              role="tooltip"
-            >
-              <div className="absolute -top-[5px] left-[20px] w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
-              <p className="font-bold mb-1">Prototype {switchUserFlow}</p>
-              <p>{prototypeTooltip}</p>
-            </div>
-          )}
         </div>
       )}
       <button 
