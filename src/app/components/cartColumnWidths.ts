@@ -6,7 +6,9 @@ export const CART_COLUMNS = {
   VARENAVN: 310,
   ANTALL: 85,
   PER_ENHET: 82,
-  RABATT: 54,
+  // Wide enough for the English "Discount" header (54.9px of text + 2 x 10px
+  // padding); it was 54, which only fit the Norwegian "Rabatt".
+  RABATT: 76,
   TOTALT: 79,
   
   // Padding for each column
