@@ -552,7 +552,7 @@ function SearchAndActionsBar({
             >
               <MobileShoppingCartIcon />
               <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('fetchFromHandTerminal')}</span>
-              <div className="absolute bg-accent box-border content-stretch flex items-start left-[188px] overflow-clip px-[7px] py-0 rounded-[100px] top-[-9.5px]">
+              <div className="absolute bg-accent box-border content-stretch flex items-start right-0 top-0 translate-x-1/2 -translate-y-1/2 overflow-clip px-[7px] py-0 rounded-[100px]">
                 <div className="flex flex-col font-semibold justify-center leading-[0] relative shrink-0 text-center text-nowrap text-primary-foreground" style={{ fontSize: 'var(--text-sm)' }}>
                   <p className="leading-[1.75] whitespace-pre">2</p>
                 </div>
