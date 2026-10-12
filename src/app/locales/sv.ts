@@ -379,6 +379,7 @@ const sv: Translations = {
   edit: 'Redigera',
   removeCustomer: 'Ta bort kunden',
   noInvoicesForPayment: 'Inga fakturor att betala',
+  cannotChangeCustomerFetchedOrder: 'Kan inte ändra kund på försäljningen när ordern är hämtad för betalning',
   invoicesForPaymentPlaceholder: 'Fakturor att betala för den här kunden visas här. Funktionen är under utveckling.',
 };
 
