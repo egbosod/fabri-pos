@@ -201,6 +201,8 @@ const no: Translations = {
   // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
   addItemsToCart: 'Legg til varer i salg',
   itemsAddedToSale: 'Varer lagt til salget',
+  priceCheckEmptyTitle: 'Sjekk pris for valgt kunde/prosjekt',
+  priceCheckEmptyBody: 'Scan/søk varer for å sjekke pris tilhørende kunde/prosjekt. Legg deretter til varene på salget dersom kunden ønsker varene.',
   priceCheckLockedTitle: 'Kunde/prosjekt er låst',
   priceCheckLockedDescription: 'Du har allerede valgt kunde/prosjekt i prissjekkmodus. Du kan ikke bytte kunde uten å først legge varene i handlekurven eller lukke prissjekk.',
   priceCheckMismatchTitle: 'Legg til i handlekurv',

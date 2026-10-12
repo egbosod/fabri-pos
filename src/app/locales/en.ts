@@ -200,6 +200,8 @@ const en: Translations = {
   // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
   addItemsToCart: 'Add items to cart',
   itemsAddedToSale: 'Items added to the sale',
+  priceCheckEmptyTitle: 'Check price for the selected customer/project',
+  priceCheckEmptyBody: 'Scan or search for items to check the price for the customer/project. Then add the items to the sale if the customer wants them.',
   priceCheckLockedTitle: 'Customer/project is locked',
   priceCheckLockedDescription: 'You have already selected a customer/project in price check mode. You cannot change to a different customer without adding the current items to the cart first or closing price check.',
   priceCheckMismatchTitle: 'Add to Cart',

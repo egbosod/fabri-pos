@@ -199,6 +199,8 @@ export interface Translations {
   // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
   addItemsToCart: string;
   itemsAddedToSale: string;
+  priceCheckEmptyTitle: string;
+  priceCheckEmptyBody: string;
   priceCheckLockedTitle: string;
   priceCheckLockedDescription: string;
   priceCheckMismatchTitle: string;
