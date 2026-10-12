@@ -146,6 +146,8 @@ export interface VipCardData {
   address?: { line1: string; line2?: string; postalCode: string; city: string };
   /** Every VIP field except Navn is marked mandatory (asterisk) */
   allFieldsMandatory?: boolean;
-  /** Prototype A's stacked three-line "Leveringsadresse" layout, on rotation for C too */
-  stackedDeliveryAddress?: boolean;
+  /** Blocked concept variant: the notice reads "remove items or remove card"
+   * instead of the usual hard/soft block copy, and the credit panel keeps its
+   * default (non-danger) styling — no red border, no "Over credit limit" line. */
+  blockedResolvableByRemovingItems?: boolean;
 }

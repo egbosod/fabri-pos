@@ -4,7 +4,10 @@
 
 XL-BYG (and similar wholesale customers) uses a physical VIP card for professional customers. The card is issued and validated by **Aspect4**, which remains the source of truth for customer, credit, and pricing data — Fabri POS never owns this data, it only reads and displays it.
 
-There is **one** VIP card concept. Prototypes B and C are two treatments of that same concept, selected by the prototype setting, and they share the scan (Ctrl+<), the card data, the modal and the payment rules. **The only difference is how a blocked card is resolved:** Prototype C lets the cashier dismiss the block and carry on without the card (Flow 1); Prototype B has no override — the sale cannot be finalized while a blocked card is attached.
+There is **one** VIP card concept. Prototypes B and C are two treatments of that same concept, selected by the prototype setting, and they share the scan (Ctrl+<), the card data, the modal and the payment rules. They differ in two ways:
+
+- **How a blocked card is resolved:** Prototype C lets the cashier dismiss the block and carry on without the card (Flow 1); Prototype B has no override — the sale cannot be finalized while a blocked card is attached.
+- **How the delivery address is captured:** Prototype C (like A) shows three free-text "Leveringsadresse" lines, the first mandatory and the other two optional, with no Postnummer / Poststed. Prototype B keeps Adresse plus a Postnummer / Poststed pair.
 
 *(An earlier revision of this document described a second, separate "PRO card" flow with its own modal. That was a prototyping invention, not a real concept, and was removed on Sept 23 2026.)*
 
@@ -58,7 +61,8 @@ This is a **planning artifact only**. It does not scaffold or specify code — n
 ## UI direction
 
 - Approach in the prototype: once a card is scanned, the customer modal drops its ordinary tabs and shows a single **VIP Kort** tab, so only VIP-relevant information is on screen. The customer side panel stays, since the card's credit figures are read against the customer's own.
-- Card concepts under review, one per scan (rotating, `RootLayout.tsx`): card open · card blocked · address fields omitted · all fields mandatory except Navn · Navn non-editable.
+- Card concepts under review, one per scan (rotating, `RootLayout.tsx`): card open · card blocked · address fields omitted · all fields mandatory except Navn · Navn non-editable · blocked (resolvable by removing items).
+- **Blocked (resolvable by removing items)** variant: when the card is currently over its credit limit, the blocked notice reads "The sale cannot be completed. Remove items to match credit limit or remove card" (`vipBlockedRemoveItemsOrCard`) instead of the usual hard/soft block copy, and the credit panel stays in its default styling — no red border, no "Over credit limit" line — since the notice already covers it. This copy is only logically tied to being over the limit; if this concept's card isn't (yet) over limit, it falls back to the general blocked copy (`vipBlockedInfo`/`vipBlockedHardStop`) — no other reason for this concept's block is modeled yet, and the general copy is kept around for that until one is.
 - A **persistent indicator** must show that a VIP card is currently set for the sale.
 - An explicit **"Remove VIP card"** action is required: it re-reads the standard customer record from Aspect4 and resets all overridden fields (credit limit, blocked status, mandatory flags, etc.) back to standard values.
 - **Offline mode**: VIP card sales must not be possible offline. Attempting to scan or use a VIP card while offline must surface a clear fault/error rather than silently degrading.

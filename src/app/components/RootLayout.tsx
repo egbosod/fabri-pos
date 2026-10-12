@@ -68,7 +68,7 @@ function generateFakeCardScan(): ScannedCardData {
 // Customer numbers mirror mockCustomers in CustomerSelectionModal so the lookup
 // by customerNumber resolves to a real record.
 //
-// The six concepts under review, one per scan. Deliberately a rotation rather
+// The seven concepts under review, one per scan. Deliberately a rotation rather
 // than a random draw: random made some concepts hard to reach when testing.
 const VIP_SCAN_CONCEPTS: {
   /** Short name of the concept, surfaced in the scan toast */
@@ -78,8 +78,10 @@ const VIP_SCAN_CONCEPTS: {
   status: VipCardStatus;
   address?: { line1: string; postalCode: string; city: string };
   allFieldsMandatory?: boolean;
-  /** Prototype A's stacked three-line Leveringsadresse layout, added to C's rotation */
-  stackedDeliveryAddress?: boolean;
+  blockedResolvableByRemovingItems?: boolean;
+  /** Fixed credit limit, so this concept reliably renders over its limit
+   * rather than depending on the random pool in generateFakeVipScan(). */
+  fixedCreditLimit?: number;
 }[] = [
   {
     concept: 'VIP card open',
@@ -118,13 +120,27 @@ const VIP_SCAN_CONCEPTS: {
     address: { line1: 'Tronfjellgata 7', postalCode: '2400', city: 'Elverum' },
   },
   {
-    /* Prototype A's three-line stacked Leveringsadresse, added to C's rotation. */
-    concept: 'Leveringsadresse (3 lines)',
+    /* The three-line Leveringsadresse is now the layout for every card in
+       prototypes A and C, so this is simply a third plain open card. */
+    concept: 'VIP card open (third address)',
     customerNumber: '400005',
     name: 'Gaahl Vindsval',
     status: 'open',
     address: { line1: 'Ravnåsveien 9', postalCode: '4630', city: 'Kristiansand' },
-    stackedDeliveryAddress: true,
+  },
+  {
+    /* Blocked, but resolvable at the till: the notice offers "remove items
+       or remove card" instead of the usual hard/soft block copy, and the
+       credit panel stays in its default (non-danger) styling — no red
+       border, no "Over credit limit" line — since the notice already says
+       what's wrong. A low fixed limit makes it easy to tip over in testing. */
+    concept: 'Blocked — resolvable by removing items',
+    customerNumber: '400006',
+    name: 'Shagrath Dødsbann',
+    status: 'blocked',
+    address: { line1: 'Borghjemsgata 66', postalCode: '0562', city: 'Oslo' },
+    blockedResolvableByRemovingItems: true,
+    fixedCreditLimit: 500,
   },
 ];
 
@@ -142,12 +158,12 @@ function generateFakeVipScan(): { card: VipCardData; concept: string } {
       customerName:        pool.name,
       status:              pool.status,
       // Deliberately includes low limits so Flow 2 (over limit) is easy to hit.
-      creditLimit:         pickRandom([2000, 10000, 50000]),
+      creditLimit:         pool.fixedCreditLimit ?? pickRandom([2000, 10000, 50000]),
       projectRequired:     Math.random() > 0.5,
       requisitionRequired: pool.allFieldsMandatory ? true : Math.random() > 0.5,
       address:             pool.address,
       allFieldsMandatory:  pool.allFieldsMandatory,
-      stackedDeliveryAddress: pool.stackedDeliveryAddress,
+      blockedResolvableByRemovingItems: pool.blockedResolvableByRemovingItems,
     },
   };
 }
@@ -214,6 +230,7 @@ function RootLayoutInner() {
     setVipAcknowledged,
     vipBlocked,
     vipCreditExceeded,
+    markAllItemsRemoved,
     priceCheckCustomer,
     priceCheckProject,
     setPriceCheckCustomer,
@@ -451,7 +468,7 @@ function RootLayoutInner() {
           onVipRemoved={() => setVipCard(null)}
           onVipAcknowledged={() => setVipAcknowledged(true)}
           blockedOverridable={switchUserFlow === 'C'}
-          stackedDeliveryAddress={switchUserFlow === 'A' || (switchUserFlow === 'C' && !!vipCard?.stackedDeliveryAddress)}
+          stackedDeliveryAddress={switchUserFlow === 'A' || switchUserFlow === 'C'}
           onCardScanPanelChange={handleCardScanPanelChange}
           initialCustomer={isPriceCheckMode ? priceCheckCustomer : selectedCustomer}
           initialProject={isPriceCheckMode ? priceCheckProject : selectedProject}
@@ -715,7 +732,13 @@ function RootLayoutInner() {
             setShowVipCreditExceeded(false);
           }}
           secondaryLabel={t('vipRemoveItems')}
-          onSecondary={() => setShowVipCreditExceeded(false)}
+          onSecondary={() => {
+            markAllItemsRemoved();
+            // The payment flow is a full-screen overlay, so leaving it open
+            // would hide the struck-through lines the cashier just asked for.
+            if (isModalOpen('payment')) closeModal();
+            setShowVipCreditExceeded(false);
+          }}
           onDismiss={() => setShowVipCreditExceeded(false)}
         >
           <p className="text-foreground" style={{ fontSize: 'var(--text-base)' }}>

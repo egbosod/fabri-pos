@@ -348,6 +348,7 @@ const en: Translations = {
   vipCreditTitle: 'CREDIT',
   vipCreditLimit: 'VIP card limit',
   vipCreditUsed: 'Used',
+  vipBlockedRemoveItemsOrCard: 'The sale cannot be completed. Remove items to match credit limit or remove card.',
   vipCreditRemaining: 'Remaining',
   overCreditLimit: 'Over credit limit',
   vipRecipient: 'Recipient / Attention',

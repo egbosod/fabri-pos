@@ -347,6 +347,7 @@ export interface Translations {
   vipCreditTitle: string;
   vipCreditLimit: string;
   vipCreditUsed: string;
+  vipBlockedRemoveItemsOrCard: string;
   vipCreditRemaining: string;
   overCreditLimit: string;
   vipRecipient: string;
