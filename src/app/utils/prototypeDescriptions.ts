@@ -32,6 +32,11 @@ export const PRICE_CHECK_LOCK_DESCRIPTIONS: Record<'A' | 'B' | 'C', string> = {
 //     items added to a sale, PIN validation. Follows the app's own theme
 //     tokens, so it moves with dark mode / the WCAG overrides.
 //
+// The two families also live in different corners: POS toasts (and the
+// hand-built Figma ones) sit bottom-right, pink prototype toasts sit
+// bottom-left, so a prototype notification can never cover or queue behind a
+// real POS notification.
+//
 // Any new toast should spread one of the two below. Nothing should fall back to
 // sonner's bare default, because the default looks like the POS family.
 
@@ -42,6 +47,11 @@ export const PROTOTYPE_TOAST_STYLE: CSSProperties = {
   background: PROTOTYPE_PINK,
   color: '#ffffff',
   border: 'none',
+  // The shared <Toaster> in RootLayout insets every toast with right: 30px for
+  // the bottom-right POS corner. Mirror that inset on the left and release the
+  // right edge, otherwise a left-side toast would be pinned from both sides.
+  left: '30px',
+  right: 'auto',
 };
 
 /**
@@ -53,7 +63,10 @@ export const PROTOTYPE_TOAST_STYLE: CSSProperties = {
 export const PROTOTYPE_TOAST_OPTS = {
   style: PROTOTYPE_TOAST_STYLE,
   descriptionClassName: '!text-white',
+  position: 'bottom-left',
 } as const;
+
+const PROTOTYPE_TOAST_ID = 'prototype-toast';
 
 /**
  * Fire a pink prototype-layer toast.
@@ -80,6 +93,11 @@ export function prototypeToast(
   options?: { duration?: number },
 ): void {
   toast(title, {
+    // One shared id = one slot: a new pink toast replaces the previous one in
+    // place instead of stacking above it. Pressing A/B/C or scanning repeatedly
+    // would otherwise grow the stack upward (and sonner expands it on hover)
+    // until it covers the customer modal.
+    id: PROTOTYPE_TOAST_ID,
     description,
     duration: options?.duration ?? 2500,
     ...PROTOTYPE_TOAST_OPTS,
