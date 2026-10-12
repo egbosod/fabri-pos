@@ -83,6 +83,11 @@ export interface Translations {
   return: string;
   undoReturn: string;
   undoDelete: string;
+  regretReturn: string;
+  returnSuccess: string;
+  regretReturnSuccess: string;
+  deleteSuccess: string;
+  undoDeleteSuccess: string;
   actions: string;
   search: string;
   load: string;

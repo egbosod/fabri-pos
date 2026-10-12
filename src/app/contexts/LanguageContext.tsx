@@ -14,6 +14,11 @@ export interface LanguageContextType {
    * Falls back to English, then to the raw key if still missing.
    */
   t: (key: keyof Translations) => string;
+  /**
+   * Translate text that may or may not be a key (e.g. item labels stored on
+   * order lines). Known keys are translated; anything else is returned as is.
+   */
+  tLabel: (text: string) => string;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -46,8 +51,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     return key;
   };
 
+  const tLabel = (text: string): string =>
+    text in translations.en ? t(text as keyof Translations) : text;
+
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t, tLabel }}>
       {children}
     </LanguageContext.Provider>
   );

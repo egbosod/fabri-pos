@@ -97,7 +97,8 @@ export function calculateSmartPrice(
 }
 
 /**
- * Get item labels based on metadata
+ * Get item labels based on metadata. `text` is a translation key; render it
+ * with `tLabel` so the label follows the current language.
  */
 export function getItemLabels(itemMetadata?: ItemMetadata): Array<{
   text: string;
@@ -108,7 +109,7 @@ export function getItemLabels(itemMetadata?: ItemMetadata): Array<{
 
   if (itemMetadata?.isDiscontinued) {
     labels.push({
-      text: 'Utgått',
+      text: 'itemLabelDiscontinued',
       color: '#090914',
       bgColor: '#FFE5E5'
     });
@@ -116,7 +117,7 @@ export function getItemLabels(itemMetadata?: ItemMetadata): Array<{
 
   if (itemMetadata?.isDangerousGoods) {
     labels.push({
-      text: 'Farlig gods',
+      text: 'itemLabelDangerousGoods',
       color: '#ffffff',
       bgColor: '#F24C35'
     });
@@ -124,7 +125,7 @@ export function getItemLabels(itemMetadata?: ItemMetadata): Array<{
 
   if (itemMetadata?.isFragile) {
     labels.push({
-      text: 'Skjørt',
+      text: 'itemLabelFragile',
       color: '#090914',
       bgColor: '#FFF4E5'
     });
@@ -132,7 +133,7 @@ export function getItemLabels(itemMetadata?: ItemMetadata): Array<{
 
   if (itemMetadata?.isHeavy) {
     labels.push({
-      text: 'Tungt',
+      text: 'itemLabelHeavy',
       color: '#090914',
       bgColor: '#E5F4FF'
     });

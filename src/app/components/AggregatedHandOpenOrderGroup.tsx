@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { ChevronUp, RotateCcw } from 'lucide-react';
-import { CART_COLUMNS } from './cartColumnWidths';
+import { RotateCcw } from 'lucide-react';
+import { CART_COLUMNS, CART_TRAILING_WIDTH, NAME_COLUMN_STYLE } from './cartColumnWidths';
+import { CartColumnHeader } from './CartColumnHeader';
+import { GroupCell, GroupHeader } from './GroupHeader';
 
 interface OrderLine {
   id: string;
@@ -50,106 +52,44 @@ export function AggregatedHandOpenOrderGroup({
   };
 
   return (
-    <div 
-      className={`border rounded-[5px] overflow-hidden transition-opacity duration-200 ${isDeleted ? 'opacity-60' : ''}`}
-      style={{
-        borderColor: 'var(--border)',
-        backgroundColor: 'var(--card)'
-      }}
+    <div
+      className="relative w-full rounded-[5px] overflow-hidden transition-colors duration-200"
+      style={{ backgroundColor: isDeleted ? 'var(--muted)' : 'var(--card)' }}
     >
-      {/* Header */}
-      <div 
-        className="flex items-center h-[62px] cursor-pointer hover:bg-[rgba(13,151,252,0.05)] transition-colors"
-        onClick={() => setIsExpanded(!isExpanded)}
-        style={{
-          borderBottom: isExpanded ? '1px solid var(--border)' : 'none'
-        }}
-      >
-        {/* Left Section - Source and Order Number */}
-        <div className="flex items-start gap-[40px] px-[20px]" style={{ width: `${CART_COLUMNS.LEFT_SECTION_WIDTH}px` }}>
-          {/* Source and Date */}
-          <div className="flex flex-col gap-[4px]">
-            <div className={`font-medium ${isDeleted ? 'line-through' : ''}`} style={{ fontSize: 'var(--text-lg)', color: 'var(--foreground)' }}>
-              {source}
-            </div>
-            <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-              {dateTime}
-            </div>
+      <div aria-hidden="true" className="absolute inset-0 z-10 rounded-[5px] border border-solid pointer-events-none" style={{ borderColor: 'var(--border)' }} />
+      <GroupHeader
+        first={<GroupCell title={source} subtitle={dateTime} struck={isDeleted} />}
+        second={<GroupCell title={orderNumber} struck={isDeleted} />}
+        total={totalAmount}
+        lineCount={lines.length}
+        isExpanded={isExpanded}
+        onToggle={() => setIsExpanded(!isExpanded)}
+        struck={isDeleted}
+        badge={badge && (
+          <div
+            className={`px-[12px] py-[6px] rounded-[4px] font-medium ${isDeleted ? 'line-through' : ''}`}
+            style={{ backgroundColor: 'var(--secondary)', color: 'var(--secondary-foreground)', fontSize: 'var(--text-sm)' }}
+          >
+            {badge}
           </div>
-
-          {/* Order Number */}
-          <div className={`font-normal ${isDeleted ? 'line-through' : ''}`} style={{ fontSize: 'var(--text-lg)', color: 'var(--foreground)' }}>
-            {orderNumber}
-          </div>
-        </div>
-
-        {/* Total Amount - Aligned with Totalt column */}
-        <div className="px-[10px] flex items-center justify-end" style={{ width: `${CART_COLUMNS.TOTALT}px` }}>
-          <div className="font-medium text-right" style={{ fontSize: 'var(--text-lg)', color: 'var(--foreground)' }}>
-            {totalAmount.toLocaleString('nb-NO', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-          </div>
-        </div>
-
-        {/* Right Section - Item Count, Badge, and Chevron */}
-        <div className="flex items-center gap-[12px] px-[20px] flex-1 justify-end">
-          <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-            {lines.length} varelinjer
-          </div>
-          
-          {badge && (
-            <div 
-              className={`px-[12px] py-[6px] rounded-[4px] font-medium ${isDeleted ? 'line-through' : ''}`}
-              style={{
-                backgroundColor: 'var(--secondary)',
-                color: 'var(--secondary-foreground)',
-                fontSize: 'var(--text-sm)'
-              }}
-            >
-              {badge}
-            </div>
-          )}
-          
-          <ChevronUp 
-            className={`transition-transform duration-200 ${isExpanded ? '' : 'rotate-180'}`}
-            style={{ color: 'var(--foreground)' }}
-            size={20}
-          />
-        </div>
-      </div>
+        )}
+      />
 
       {/* Expanded Content */}
       {isExpanded && (
-        <div className="py-[16px]">
-          {/* Table Header */}
-          <div className="flex items-center pb-[12px] mb-[8px] px-[20px]" style={{ borderBottom: '1px solid var(--border)' }}>
-            <div className="px-[10px] font-medium" style={{ width: `${CART_COLUMNS.VARENAVN}px`, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-              Varenavn
-            </div>
-            <div className="px-[10px] font-medium text-right" style={{ width: `${CART_COLUMNS.ANTALL}px`, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-              Antall
-            </div>
-            <div className="px-[10px] font-medium text-right" style={{ width: `${CART_COLUMNS.PER_ENHET}px`, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-              Per enhet
-            </div>
-            <div className="px-[10px] font-medium text-right" style={{ width: `${CART_COLUMNS.RABATT}px`, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-              Rabatt
-            </div>
-            <div className="px-[10px] font-medium text-right" style={{ width: `${CART_COLUMNS.TOTALT}px`, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-              Totalt
-            </div>
-            <div className="flex-1"></div>
-          </div>
+        <div className="py-[16px]" style={{ borderTop: '1px solid var(--border)' }}>
+          <CartColumnHeader />
 
           {/* Order Lines */}
-          <div className="flex flex-col gap-[8px] px-[20px]">
+          <div className="flex flex-col gap-[8px]">
             {lines.map((line) => (
               <div 
                 key={line.id} 
-                className="flex items-center py-[12px] rounded-[3px]"
+                className={`flex items-center py-[12px] rounded-[3px] ${isDeleted ? 'line-through' : ''}`}
                 style={{ backgroundColor: 'var(--secondary)' }}
               >
                 {/* Product name and code */}
-                <div className="px-[10px]" style={{ width: `${CART_COLUMNS.VARENAVN}px` }}>
+                <div className="px-[10px]" style={{ ...NAME_COLUMN_STYLE }}>
                   <div className="font-medium" style={{ fontSize: 'var(--text-base)', color: 'var(--foreground)' }}>
                     {line.productName}
                   </div>
@@ -204,13 +144,13 @@ export function AggregatedHandOpenOrderGroup({
                   )}
                 </div>
                 
-                <div className="flex-1"></div>
+                <div className="shrink-0" style={{ width: `${CART_TRAILING_WIDTH}px` }} />
               </div>
             ))}
           </div>
 
           {/* Summary and Actions */}
-          <div className="flex items-end justify-between mt-[24px] pt-[16px] px-[20px]" style={{ borderTop: '1px solid var(--border)' }}>
+          <div className="flex items-end justify-between mt-[24px] pt-[16px] px-[10px]" style={{ borderTop: '1px solid var(--border)' }}>
             {/* Remove All / Undo Button */}
             <button
               onClick={handleDeleteToggle}
