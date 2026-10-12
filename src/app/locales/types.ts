@@ -88,6 +88,10 @@ export interface Translations {
   regretReturnSuccess: string;
   deleteSuccess: string;
   undoDeleteSuccess: string;
+  itemLabelDiscontinued: string;
+  itemLabelDangerousGoods: string;
+  itemLabelFragile: string;
+  itemLabelHeavy: string;
   actions: string;
   search: string;
   load: string;
