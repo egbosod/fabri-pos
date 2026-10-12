@@ -382,6 +382,7 @@ const da: Translations = {
   edit: 'Rediger',
   removeCustomer: 'Fjern kunden',
   noInvoicesForPayment: 'Ingen fakturaer til betaling',
+  cannotChangeCustomerFetchedOrder: 'Kan ikke ændre kunde på salget, når ordren er hentet til betaling',
   invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunde vises her. Funktionen er under udvikling.',
 };
 

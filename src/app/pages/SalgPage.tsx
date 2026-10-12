@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { useModalParams } from '../hooks/useModalParams';
 import svgPaths from '../imports/svg-mrnj5uwtcu';
+import { posToast } from '../utils/posToast';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import { usePOS } from '../contexts/POSContext';
@@ -740,7 +741,16 @@ export default function SalgPage() {
               project={selectedProject}
               mode="sales"
               onEdit={() => openModal('customer')}
-              onRemove={handleRemoveCustomer}
+              onRemove={() => {
+                const hasFetchedOrder = orderGroups.some(
+                  (g) => g.type === 'order' && g.items.some((i) => !i.isDeleted),
+                );
+                if (hasFetchedOrder) {
+                  posToast.error(t('cannotChangeCustomerFetchedOrder'), 4000);
+                  return;
+                }
+                handleRemoveCustomer();
+              }}
               onGiftCard={() => {}}
               onBankTerminal={() => {}}
               onExchangeSlip={() => openModal('faktura')}

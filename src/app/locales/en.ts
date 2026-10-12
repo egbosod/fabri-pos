@@ -378,6 +378,7 @@ const en: Translations = {
   edit: 'Edit',
   removeCustomer: 'Remove customer',
   noInvoicesForPayment: 'No invoices for payment',
+  cannotChangeCustomerFetchedOrder: 'Cannot change customer on the sale when the order is fetched for payment',
   invoicesForPaymentPlaceholder: 'Invoices for payment for this customer will appear here. This feature is in development.',
 };
 

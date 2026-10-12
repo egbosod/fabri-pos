@@ -380,5 +380,6 @@ export interface Translations {
   edit: string;
   removeCustomer: string;
   noInvoicesForPayment: string;
+  cannotChangeCustomerFetchedOrder: string;
   invoicesForPaymentPlaceholder: string;
 }
