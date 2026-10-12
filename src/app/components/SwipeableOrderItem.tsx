@@ -22,6 +22,7 @@ interface SwipeableOrderItemProps {
   };
   state?: OrderLineState;
   locked?: boolean;
+  commitOnRelease?: boolean;
   onStateChange?: (newState: OrderLineState) => void;
   onQuantityChange?: (value: number) => void;
   onPriceChange?: (value: number) => void;
@@ -40,13 +41,14 @@ export function SwipeableOrderItem({
   label,
   state = 'normal',
   locked,
+  commitOnRelease,
   onStateChange,
   onQuantityChange,
   onPriceChange,
   onDiscountChange
 }: SwipeableOrderItemProps) {
   const { tLabel } = useLanguage();
-  const { confirm, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange, { locked });
+  const { confirm, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange, { locked, commitOnRelease });
 
   const base = baseState(state);
   // Content is struck through from the moment a delete is armed until it is undone.

@@ -252,6 +252,7 @@ function OrderItemsView({
   orderGroups = [],
   swipeableOrderLineStates,
   onSwipeableStateChange,
+  commitOnRelease,
   onRemoveOrderGroup,
   onRemoveAllItemsFromGroup,
   addedItems = [],
@@ -263,6 +264,7 @@ function OrderItemsView({
   orderGroups?: OrderGroupData[];
   swipeableOrderLineStates: Record<string, SwipeableOrderLineState>;
   onSwipeableStateChange: (groupId: string | number, itemIndex: number, newState: SwipeableOrderLineState) => void;
+  commitOnRelease?: boolean;
   onRemoveOrderGroup: (groupId: string) => void;
   onRemoveAllItemsFromGroup: (groupId: string) => void;
   addedItems?: CartItem[];
@@ -359,6 +361,7 @@ function OrderItemsView({
                   const swipeState = swipeableOrderLineStates[key] || 'normal';
                   return (
                     <SwipeableOrderItem
+                      commitOnRelease={commitOnRelease}
                       key={index}
                       productName={item.name}
                       productCode={item.sku}
@@ -394,6 +397,7 @@ function OrderItemsView({
             const originalTotal = item.discount ? itemTotal / (1 - item.discount / 100) : itemTotal;
             return (
               <SwipeableDefaultOrderItem
+                commitOnRelease={commitOnRelease}
                 key={key}
                 productName={item.name}
                 productCode={item.sku}
@@ -436,6 +440,7 @@ function SearchAndActionsBar({
   orderGroups,
   swipeableOrderLineStates,
   onSwipeableStateChange,
+  commitOnRelease,
   onRemoveOrderGroup,
   onRemoveAllItemsFromGroup,
   addedItems,
@@ -448,6 +453,7 @@ function SearchAndActionsBar({
   orderGroups: OrderGroupData[];
   swipeableOrderLineStates: Record<string, SwipeableOrderLineState>;
   onSwipeableStateChange: (groupId: string | number, itemIndex: number, newState: SwipeableOrderLineState) => void;
+  commitOnRelease?: boolean;
   onRemoveOrderGroup: (groupId: string) => void;
   onRemoveAllItemsFromGroup: (groupId: string) => void;
   addedItems: CartItem[];
@@ -480,6 +486,7 @@ function SearchAndActionsBar({
               orderGroups={orderGroups}
               swipeableOrderLineStates={swipeableOrderLineStates}
               onSwipeableStateChange={onSwipeableStateChange}
+              commitOnRelease={commitOnRelease}
               onRemoveOrderGroup={onRemoveOrderGroup}
               onRemoveAllItemsFromGroup={onRemoveAllItemsFromGroup}
               addedItems={addedItems}
@@ -605,7 +612,7 @@ export default function SalgPage() {
   const navigate = useNavigate();
   const { openModal } = useModalParams();
   const { t } = useLanguage();
-  const { erpScenario, hovedordrePlacement } = useSettings();
+  const { erpScenario, hovedordrePlacement, switchUserFlow } = useSettings();
   const {
     selectedCustomer,
     selectedProject,
@@ -705,6 +712,8 @@ export default function SalgPage() {
         orderGroups={orderGroups}
         swipeableOrderLineStates={swipeableOrderLineStates}
         onSwipeableStateChange={handleSwipeableStateChange}
+        // Prototype A keeps the two-step swipe (arm, then tap the panel); B and C act on release.
+        commitOnRelease={switchUserFlow !== 'A'}
         onRemoveOrderGroup={handleRemoveOrderGroup}
         onRemoveAllItemsFromGroup={handleRemoveAllItemsFromGroup}
         addedItems={addedItems}

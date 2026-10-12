@@ -39,7 +39,7 @@ function SearchIcon() {
 export default function PriceCheckScreen() {
   const { t } = useLanguage();
   const { openModal } = useModalParams();
-  const { priceCheckLockConcept } = useSettings();
+  const { priceCheckLockConcept, switchUserFlow } = useSettings();
   const {
     selectedCustomer,
     selectedProject,
@@ -163,6 +163,8 @@ export default function PriceCheckScreen() {
                       const originalTotal = item.discount ? itemTotal / (1 - item.discount / 100) : itemTotal;
                       return (
                         <SwipeableDefaultOrderItem
+                          // Prototype A keeps the two-step swipe; B and C act on release.
+                          commitOnRelease={switchUserFlow !== 'A'}
                           key={index}
                           productName={item.name}
                           productCode={item.sku}

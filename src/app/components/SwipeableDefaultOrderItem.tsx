@@ -23,6 +23,7 @@ interface SwipeableDefaultOrderItemProps {
     bgColor: string;
   };
   state?: OrderLineState;
+  commitOnRelease?: boolean;
   onStateChange?: (newState: OrderLineState) => void;
   onQuantityChange?: (newQuantity: number, newUnit: string) => void;
 }
@@ -38,11 +39,12 @@ export function SwipeableDefaultOrderItem({
   originalTotal,
   label,
   state = 'normal',
+  commitOnRelease,
   onStateChange,
   onQuantityChange
 }: SwipeableDefaultOrderItemProps) {
   const { tLabel } = useLanguage();
-  const { confirm, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange);
+  const { confirm, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange, { commitOnRelease });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const quantityRef = useRef<HTMLDivElement>(null);
   const [previewQuantity, setPreviewQuantity] = useState<string | null>(null);
@@ -73,7 +75,7 @@ export function SwipeableDefaultOrderItem({
 
   const handleChangeToReturn = () => {
     if (onStateChange) {
-      onStateChange('return');
+      onStateChange(commitOnRelease ? 'return-success' : 'return');
     }
   };
 

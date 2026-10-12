@@ -29,8 +29,15 @@ const MAX_DRAG = 300;
 export function useOrderLineSwipe(
   state: OrderLineState,
   onStateChange?: (newState: OrderLineState) => void,
-  /** A locked line shows its state but cannot be swiped (its state is owned elsewhere). */
-  { locked = false }: { locked?: boolean } = {},
+  {
+    locked = false,
+    commitOnRelease = false,
+  }: {
+    /** A locked line shows its state but cannot be swiped (its state is owned elsewhere). */
+    locked?: boolean;
+    /** Releasing past the threshold performs the action; otherwise it only arms the panel, and tapping the panel confirms. */
+    commitOnRelease?: boolean;
+  } = {},
 ) {
   const [swipeOffset, setSwipeOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -93,8 +100,10 @@ export function useOrderLineSwipe(
       return;
     }
 
-    if (swipeOffset > RETURN_THRESHOLD) change(armedBySwipe(state, 'right') ?? undefined);
-    else if (swipeOffset < -DELETE_THRESHOLD) change(armedBySwipe(state, 'left') ?? undefined);
+    const armedState = swipeOffset > RETURN_THRESHOLD ? armedBySwipe(state, 'right')
+      : swipeOffset < -DELETE_THRESHOLD ? armedBySwipe(state, 'left')
+      : null;
+    if (armedState) change(commitOnRelease ? CONFIRMS_TO[armedState] : armedState);
   };
 
   // Mouse drags keep tracking after the pointer leaves the row.
