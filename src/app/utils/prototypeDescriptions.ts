@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { toast } from 'sonner@2.0.3';
 
 // Shared, English-only description strings for the A/B/C prototype shortcut.
 // Used by both the RootLayout keyboard-shortcut toast and the "Prototype
@@ -44,14 +45,46 @@ export const PROTOTYPE_TOAST_STYLE: CSSProperties = {
 };
 
 /**
- * Spread this into any prototype-layer `toast(...)` call. The
- * `descriptionClassName` is not optional: sonner renders descriptions in muted
- * grey, which is unreadable on the pink background.
+ * Base options for a pink toast. Prefer `prototypeToast()` below — this is
+ * exported only for the rare call that needs to merge in extra sonner options.
+ * The `descriptionClassName` is not optional: sonner renders descriptions in
+ * muted grey, which is unreadable on the pink background.
  */
 export const PROTOTYPE_TOAST_OPTS = {
   style: PROTOTYPE_TOAST_STYLE,
   descriptionClassName: '!text-white',
 } as const;
+
+/**
+ * Fire a pink prototype-layer toast.
+ *
+ * This is the only way a pink toast should be raised, and it is deliberately
+ * the one toast path in the app with **no access to LanguageContext**. Pink
+ * toasts are permanently English: they address the prototyper driving the demo,
+ * not the shop floor, and they must not shift when the product language or the
+ * SettingsModal panel language changes. Because this module imports no i18n and
+ * takes its text as plain string literals, there is no wire by which a language
+ * change could reach them — that is the point of routing every call through
+ * here rather than spreading the style into a bare `toast()`.
+ *
+ * Pass English literals. Quoting a Norwegian on-screen label inside an English
+ * sentence is fine — e.g. 'trigger "Søk kundekort"' — because it names a
+ * control the reader is looking at, not prose being translated.
+ *
+ * Use `POS_TOAST_STYLE` instead for real Fabri POS flows; those are translated
+ * via `t(...)` as normal.
+ */
+export function prototypeToast(
+  title: string,
+  description?: string,
+  options?: { duration?: number },
+): void {
+  toast(title, {
+    description,
+    duration: options?.duration ?? 2500,
+    ...PROTOTYPE_TOAST_OPTS,
+  });
+}
 
 /**
  * Spread this into any Fabri POS product-flow `toast(...)` call. Built from the
