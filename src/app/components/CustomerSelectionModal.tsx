@@ -91,9 +91,9 @@ interface CustomerSelectionModalProps {
    */
   blockedOverridable?: boolean;
   /**
-   * Prototype A (true): the VIP delivery address is three free-text
+   * Prototypes A and C (true): the VIP delivery address is three free-text
    * "Leveringsadresse" lines — the first always mandatory, the other two never.
-   * Prototypes B and C (false): Adresse plus a Postnummer / Poststed pair.
+   * Prototype B (false): Adresse plus a Postnummer / Poststed pair.
    */
   stackedDeliveryAddress?: boolean;
   /**
@@ -1144,6 +1144,10 @@ export function CustomerSelectionModal({
 
   const vipCreditRemaining = vipCard ? vipCard.creditLimit - saleTotal : 0;
   const vipOverLimit = !!vipCard && vipCreditRemaining < 0;
+  /* "Blocked — resolvable by removing items" concept: the credit panel keeps
+     its default styling — no red border, no "Over credit limit" warning —
+     since the blocked notice above already covers the messaging. */
+  const vipCreditDangerStyling = vipOverLimit && !vipCard?.blockedResolvableByRemovingItems;
 
   // ─── Side panel data ─────────────────────────────────────────────────────────
 
@@ -1281,8 +1285,12 @@ export function CustomerSelectionModal({
                 </span>
               </div>
 
-              {/* ── VIP status line: "{customer} – VIP card registered – {Open|Blocked}" ── */}
-              {vipCard && (
+              {/* ── VIP status line: "{customer} – VIP card registered – {Open|Blocked}" ──
+                  A card that is over its credit limit reads as Blocked here too, not just a
+                  true Aspect4-blocked card — same status chip, no separate indicator. */}
+              {vipCard && (() => {
+                const isBlocked = vipCard.status === 'blocked' || vipOverLimit;
+                return (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                   <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-base)', color: 'var(--card-foreground)', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {t('vipCardRegistered')}
@@ -1296,16 +1304,18 @@ export function CustomerSelectionModal({
                     fontSize: 'var(--text-sm)',
                     lineHeight: 1.4,
                     whiteSpace: 'nowrap',
-                    color: vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)',
-                    background: vipCard.status === 'open'
-                      ? 'color-mix(in srgb, var(--chart-2) 14%, var(--card))'
-                      : 'color-mix(in srgb, var(--destructive) 14%, var(--card))',
-                    border: `1px solid color-mix(in srgb, ${vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)'} 35%, transparent)`,
+                    // Orange "warning" theme for Blocked, not the red/destructive error theme.
+                    color: isBlocked ? 'var(--Orange-Orange-60, #E66F04)' : 'var(--chart-2)',
+                    background: isBlocked
+                      ? 'var(--Orange-Orange-98, #FFF8F3)'
+                      : 'color-mix(in srgb, var(--chart-2) 14%, var(--card))',
+                    border: `1px solid ${isBlocked ? 'var(--Orange-Orange-60, #E66F04)' : 'color-mix(in srgb, var(--chart-2) 35%, transparent)'}`,
                   }}>
-                    {vipCard.status === 'open' ? t('vipStatusOpen') : t('vipStatusBlocked')}
+                    {isBlocked ? t('vipStatusBlocked') : t('vipStatusOpen')}
                   </span>
                 </div>
-              )}
+                );
+              })()}
 
               {/* ── Card-scan badge (shown when modal was opened via Ctrl+-) ── */}
               {showScanBanner && (
@@ -1917,11 +1927,24 @@ export function CustomerSelectionModal({
                     Generelt / Leveringsadresse tabs — only relocated here. */}
                 {activeTab === 'vipKort' && vipCard && (
                   <>
-                    {/* Blocked notice — reuses the existing info-banner pattern */}
+                    {/* Blocked notice — reuses the existing orange "warning" theme
+                        (same tokens as CustomerBadge's Flow A blocked banner), not
+                        the red/destructive error theme. The "remove items or remove
+                        card" copy is only logically tied to actually being over the
+                        credit limit right now — if this concept's card isn't (yet)
+                        over limit, fall back to the general blocked copy, since no
+                        other reason for this concept's block is modeled. */}
                     {vipCard.status === 'blocked' && (
-                      <div style={{ background: 'color-mix(in srgb, var(--destructive) 15%, var(--card))', borderRadius: 'var(--radius-sm)', padding: 15 }}>
+                      <div style={{
+                        background: 'var(--Orange-Orange-98, #FFF8F3)',
+                        border: '1px solid var(--Orange-Orange-60, #E66F04)',
+                        borderRadius: 'var(--radius-sm)',
+                        padding: 15,
+                      }}>
                         <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.75, margin: 0 }}>
-                          {blockedOverridable ? t('vipBlockedInfo') : t('vipBlockedHardStop')}
+                          {vipCard.blockedResolvableByRemovingItems && vipOverLimit
+                            ? t('vipBlockedRemoveItemsOrCard')
+                            : (blockedOverridable ? t('vipBlockedInfo') : t('vipBlockedHardStop'))}
                         </p>
                       </div>
                     )}
@@ -1954,8 +1977,8 @@ export function CustomerSelectionModal({
                         hides Adresse / Postnummer / Poststed outright rather than
                         showing three empty boxes. */}
                     {vipCard.address && (stackedDeliveryAddress ? (
-                      /* Prototype A: three plain Leveringsadresse lines. The first
-                         is always mandatory, the other two never are. */
+                      /* Prototypes A and C: three plain Leveringsadresse lines. The
+                         first is always mandatory, the other two never are. */
                       <>
                         <div>
                           <FieldLabel>{`${t('vipDeliveryAddress')} *`}</FieldLabel>
@@ -2154,9 +2177,9 @@ export function CustomerSelectionModal({
                 <EgList
                   title={t('creditTitle')}
                   rows={customerCreditRows}
-                  tone={vipOverLimit ? 'danger' : 'default'}
+                  tone={vipCreditDangerStyling ? 'danger' : 'default'}
                   /* Flow 2: over limit is a visible warning, never a hard stop */
-                  footer={vipOverLimit && <OverLimitWarning label={t('overCreditLimit')} />}
+                  footer={vipCreditDangerStyling && <OverLimitWarning label={t('overCreditLimit')} />}
                 />
               )}
             </div>
@@ -2193,8 +2216,8 @@ export function CustomerSelectionModal({
                     <EgList
                       title={t('creditTitle')}
                       rows={customerCreditRows}
-                      tone={vipOverLimit ? 'danger' : 'default'}
-                      footer={vipOverLimit && <OverLimitWarning label={t('overCreditLimit')} />}
+                      tone={vipCreditDangerStyling ? 'danger' : 'default'}
+                      footer={vipCreditDangerStyling && <OverLimitWarning label={t('overCreditLimit')} />}
                     />
                     {selectedProject && (
                       <InfoCard

@@ -22,6 +22,8 @@ interface POSContextValue {
   handleFetchExpedition: (expeditionData: any) => void;
   handleRemoveOrderGroup: (groupId: string) => void;
   handleRemoveAllItemsFromGroup: (groupId: string) => void;
+  /** Strike every sale line through — the "Remove items" answer to a credit block */
+  markAllItemsRemoved: () => void;
   selectedCustomer: Customer | null;
   selectedProject: Project | null;
   handleCustomerConfirm: (customer: Customer | null, project?: Project) => void;
@@ -170,6 +172,18 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setOrderGroups((prev) => prev.filter((g) => g.id !== groupId));
   }, []);
 
+  /**
+   * Strikes every line in the sale through instead of dropping it, so the
+   * cashier can see what the "Remove items" answer to a credit block actually
+   * took out. Totals skip struck lines, so the running total falls with it.
+   */
+  const markAllItemsRemoved = useCallback(() => {
+    setOrderGroups((prev) =>
+      prev.map((group) => ({ ...group, items: group.items.map((item) => ({ ...item, isDeleted: true })) })),
+    );
+    setAddedItems((prev) => prev.map((item) => ({ ...item, state: 'deleted' as const })));
+  }, []);
+
   const handleRemoveAllItemsFromGroup = useCallback((groupId: string) => {
     setOrderGroups((prev) =>
       prev.map((group) =>
@@ -310,6 +324,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     });
 
     addedItems.forEach((item) => {
+      if (item.state === 'deleted') return;
       const lineTotal = (item.price || 0) * (item.quantity || 0);
       itemCount += 1;
       subtotal += lineTotal;
@@ -374,6 +389,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     handleFetchExpedition,
     handleRemoveOrderGroup,
     handleRemoveAllItemsFromGroup,
+    markAllItemsRemoved,
     selectedCustomer,
     selectedProject,
     handleCustomerConfirm,

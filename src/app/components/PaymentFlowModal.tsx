@@ -785,11 +785,12 @@ export function PaymentFlowModal({ isOpen, onClose, totalAmount, onPaymentComple
               </button>
             )}
 
-            {/* Blocked VIP card — reuses the existing inline info text pattern */}
+            {/* Blocked VIP card — reuses the existing inline info text pattern,
+                in the orange "warning" theme (not red/destructive error). */}
             {vipBlocked && !isProcessingPayment && (
               <p
                 className="mt-[10px] text-center"
-                style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--destructive)', lineHeight: 1.6 }}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--Orange-Orange-60, #E66F04)', lineHeight: 1.6 }}
               >
                 {t('vipCannotFinalize')}
               </p>

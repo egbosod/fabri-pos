@@ -39,6 +39,9 @@ interface CustomerBadgeProps {
   vipCard?: VipCardData | null;
   /** Aspect4 DK Proto A: remove a blocked VIP card from the sale */
   onRemoveVipCard?: () => void;
+  /** True when the sale total has crossed the VIP card's credit limit — treated
+   * as a blocked card for status display, same as a true Aspect4-blocked card. */
+  vipOverLimit?: boolean;
 }
 
 function VerticalDotsIcon() {
@@ -70,7 +73,8 @@ export function CustomerBadge({
   onExchangeSlip,
   onPreviousPurchases,
   vipCard,
-  onRemoveVipCard
+  onRemoveVipCard,
+  vipOverLimit = false
 }: CustomerBadgeProps) {
   const { t } = useLanguage();
   const { switchUserFlow } = useSettings();
@@ -110,8 +114,13 @@ export function CustomerBadge({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showMenu]);
 
+  // A card that is over its credit limit is treated as blocked for status
+  // display purposes — same badge, banner and remove-affordance as a true
+  // Aspect4-blocked card, not a separate indicator.
+  const vipEffectivelyBlocked = vipCard?.status === 'blocked' || vipOverLimit;
+
   const canRemoveVip =
-    switchUserFlow === 'A' && vipCard?.status === 'blocked' && !!onRemoveVipCard;
+    switchUserFlow === 'A' && vipEffectivelyBlocked && !!onRemoveVipCard;
 
   const menuPortal = showMenu
     ? createPortal(
@@ -141,7 +150,7 @@ export function CustomerBadge({
 
   return (
     <div className="relative shrink-0 w-full">
-      {switchUserFlow === 'A' && vipCard?.status === 'blocked' && (
+      {switchUserFlow === 'A' && vipEffectivelyBlocked && (
         <div
           role="alert"
           className="box-border flex flex-col gap-[5px] items-center p-[13px] relative rounded-[3px] shrink-0 w-full mb-[15px]"
@@ -199,14 +208,15 @@ export function CustomerBadge({
                     fontWeight: 700,
                     fontSize: 'var(--text-sm)',
                     whiteSpace: 'nowrap',
-                    color: vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)',
-                    background: vipCard.status === 'open'
-                      ? 'color-mix(in srgb, var(--chart-2) 14%, var(--card))'
-                      : 'color-mix(in srgb, var(--destructive) 14%, var(--card))',
-                    border: `1px solid color-mix(in srgb, ${vipCard.status === 'open' ? 'var(--chart-2)' : 'var(--destructive)'} 35%, transparent)`,
+                    // Orange "warning" theme for Blocked, not the red/destructive error theme.
+                    color: vipEffectivelyBlocked ? 'var(--Orange-Orange-60, #E66F04)' : 'var(--chart-2)',
+                    background: vipEffectivelyBlocked
+                      ? 'var(--Orange-Orange-98, #FFF8F3)'
+                      : 'color-mix(in srgb, var(--chart-2) 14%, var(--card))',
+                    border: `1px solid ${vipEffectivelyBlocked ? 'var(--Orange-Orange-60, #E66F04)' : 'color-mix(in srgb, var(--chart-2) 35%, transparent)'}`,
                   }}>
                     {switchUserFlow === 'B'
-                      ? (vipCard.status === 'open' ? t('vipBadgeOpen') : t('vipBadgeBlocked'))
+                      ? (vipEffectivelyBlocked ? t('vipBadgeBlocked') : t('vipBadgeOpen'))
                       : 'VIP'}
                   </span>
                 )}

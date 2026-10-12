@@ -345,6 +345,7 @@ const da: Translations = {
   vipCreditTitle: 'KREDIT',
   vipCreditLimit: 'VIP-kortets grænse',
   vipCreditUsed: 'Brugt',
+  vipBlockedRemoveItemsOrCard: 'Salget kan ikke afsluttes. Fjern varer for at overholde kreditgrænsen, eller fjern kortet.',
   vipCreditRemaining: 'Resterende',
   overCreditLimit: 'Over kreditgrænse',
   vipRecipient: 'Modtager / Att.',

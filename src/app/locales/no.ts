@@ -349,6 +349,7 @@ const no: Translations = {
   vipCreditTitle: 'KREDITT',
   vipCreditLimit: 'VIP-kortets grense',
   vipCreditUsed: 'Brukt',
+  vipBlockedRemoveItemsOrCard: 'Salget kan ikke fullføres. Fjern varer for å komme innenfor kredittgrensen, eller fjern kortet.',
   vipCreditRemaining: 'Gjenstående',
   overCreditLimit: 'Over kredittgrense',
   vipRecipient: 'Mottaker / Att.',
