@@ -177,7 +177,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
             aria-label="Copy share link"
             title="Copy share link"
           >
-            {copyStatus === 'copied' ? <Check size={11} /> : <Copy size={11} />}
+            {copyStatus === 'copied' ? <Check size={14} strokeWidth={3} /> : <Copy size={14} strokeWidth={3} />}
           </button>
         </div>
       )}
