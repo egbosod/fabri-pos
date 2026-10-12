@@ -156,7 +156,8 @@ export function CustomerBadge({
             <button
               type="button"
               onClick={onRemoveVipCard}
-              className="mt-[4px] h-[40px] w-full px-[16px] rounded-[var(--radius)] font-bold cursor-pointer bg-card text-foreground border border-border hover:border-primary hover:bg-primary/5 transition-colors"
+              style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'var(--font-weight-semibold)' as React.CSSProperties['fontWeight'], fontSize: 'var(--text-lg)', lineHeight: 1.75 }}
+              className="mt-[4px] h-[40px] w-full px-[16px] rounded-[var(--radius)] cursor-pointer bg-card text-foreground border border-border hover:border-primary hover:bg-primary/5 transition-colors"
             >
               {t('removeVipCard')}
             </button>

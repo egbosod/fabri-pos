@@ -595,7 +595,7 @@ function SidebarHovedordreButton({ disabled = false }: { disabled?: boolean }) {
         <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
           <span
             className={disabled ? 'text-secondary-foreground opacity-60' : 'text-foreground'}
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'var(--font-weight-semibold)' as React.CSSProperties['fontWeight'], fontSize: 'var(--text-lg)', lineHeight: 1.75 }}
           >
             {selectedHovedordre ? selectedHovedordre.ordrenummer : t('velgHovedordre')}
           </span>

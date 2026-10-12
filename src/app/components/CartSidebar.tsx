@@ -47,10 +47,10 @@ export function SidebarButton({
   const style =
     variant === 'primary'
       ? disabled
-        ? 'bg-muted text-muted-foreground cursor-not-allowed border border-border'
+        ? 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed border-0'
         : 'bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
       : disabled
-        ? 'bg-transparent border border-border text-muted-foreground cursor-not-allowed'
+        ? 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed border-0'
         : 'bg-transparent border border-primary text-primary cursor-pointer hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring';
   return (
     <button
@@ -61,7 +61,7 @@ export function SidebarButton({
     >
       <div className="flex flex-row items-center justify-center min-w-inherit size-full">
         <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
-          <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{children}</span>
+          <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'var(--font-weight-semibold)' as React.CSSProperties['fontWeight'], fontSize: 'var(--text-lg)', lineHeight: 1.75 }}>{children}</span>
         </div>
       </div>
     </button>
