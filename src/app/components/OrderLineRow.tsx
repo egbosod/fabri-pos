@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import svgPaths from "../imports/svg-vpcqh9x9io";
 import { CheckIcon, RotateCcwIcon, UndoIcon } from 'lucide-react';
 import { CART_COLUMNS } from './cartColumnWidths';
+import { useLanguage } from '../contexts/LanguageContext';
 
 export type OrderLineState = 
   | 'normal' 
@@ -53,6 +54,7 @@ export function OrderLineRow({
   onReturn,
   onUndoDelete
 }: OrderLineRowProps) {
+  const { tLabel } = useLanguage();
   const [swipeX, setSwipeX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -418,7 +420,7 @@ export function OrderLineRow({
       {label && !hasStateBadge && (
         <div className="absolute content-stretch flex items-start left-[76px] top-[33px]">
           <div className={`box-border content-stretch flex gap-[10px] h-[17px] items-center justify-center px-[4px] py-[2px] rounded-[3px]`} style={{ backgroundColor: label.bgColor }}>
-            <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[11px] text-nowrap whitespace-pre">{label.text}</p>
+            <p className="font-normal leading-[1.75] relative shrink-0 text-[#090914] text-[11px] text-nowrap whitespace-pre">{tLabel(label.text)}</p>
           </div>
         </div>
       )}

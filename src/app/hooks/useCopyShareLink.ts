@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner@2.0.3';
 import { useSettings } from '../contexts/SettingsContext';
 import { buildShareURL, type SharedSettings } from '../utils/settingsUrl';
-import { PROTOTYPE_TOAST_OPTS } from '../utils/prototypeDescriptions';
+import { prototypeToast } from '../utils/prototypeDescriptions';
 
 /**
  * Copies a share link encoding the current prototype settings.
@@ -66,19 +65,11 @@ export function useCopyShareLink() {
     navigator.clipboard.writeText(buildShareURL(settings)).then(
       () => {
         flashCopyStatus('copied');
-        toast('Share link copied', {
-          description: 'Your current prototype settings are encoded in the URL',
-          duration: 2500,
-          ...PROTOTYPE_TOAST_OPTS,
-        });
+        prototypeToast('Share link copied', 'Your current prototype settings are encoded in the URL');
       },
       () => {
         flashCopyStatus('failed');
-        toast('Copy failed', {
-          description: 'Copy the URL from the address bar instead',
-          duration: 3000,
-          ...PROTOTYPE_TOAST_OPTS,
-        });
+        prototypeToast('Copy failed', 'Copy the URL from the address bar instead', { duration: 3000 });
       },
     );
   };

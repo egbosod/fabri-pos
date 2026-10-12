@@ -30,7 +30,7 @@ import { calculateSmartPrice, getMockItemMetadata, getItemLabels, parsePriceStri
 import { EgConfirmModal } from './EgConfirmModal';
 import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS, PROTOTYPE_TOAST_OPTS, POS_TOAST_STYLE } from '../utils/prototypeDescriptions';
+import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS, prototypeToast, POS_TOAST_STYLE } from '../utils/prototypeDescriptions';
 
 // ─── Mock pools for fake card scans (mirrors CustomerSelectionModal data) ──────
 const SCAN_CUSTOMERS = [
@@ -321,24 +321,20 @@ function RootLayoutInner() {
         setShowProfileMenu(false);
         setAutoSwitchToUser(null);
         navigate('/salg', { replace: true });
-        toast('Reset complete', {
-          description: 'All state cleared, back to default page',
-          duration: 2000,
-          ...PROTOTYPE_TOAST_OPTS,
-        });
+        prototypeToast('Reset complete', 'All state cleared, back to default page', { duration: 2000 });
       }
 
       // I → Toggle prototype/flow indicator
       if (e.key === 'i' && !isInput && !e.metaKey && !e.ctrlKey && !e.altKey) {
         e.preventDefault();
         setShowFlowIndicator(!showFlowIndicator);
-        toast(showFlowIndicator ? 'Flow indicator hidden' : 'Flow indicator shown', {
-          description: showFlowIndicator
+        prototypeToast(
+          showFlowIndicator ? 'Flow indicator hidden' : 'Flow indicator shown',
+          showFlowIndicator
             ? 'Prototype and flow info hidden from header'
             : 'Prototype and flow info visible in header',
-          duration: 2000,
-          ...PROTOTYPE_TOAST_OPTS,
-        });
+          { duration: 2000 },
+        );
       }
 
       // A, B, C → Switch prototype (user-switch flow + price-check lock, kept in sync)
@@ -348,11 +344,10 @@ function RootLayoutInner() {
           const newFlow = key as 'A' | 'B' | 'C';
           setSwitchUserFlow(newFlow);
           setPriceCheckLockConcept(newFlow);
-          toast(`Switched to Prototype ${newFlow}`, {
-            description: `${FLOW_DESCRIPTIONS[newFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[newFlow]}.`,
-            duration: 2500,
-            ...PROTOTYPE_TOAST_OPTS,
-          });
+          prototypeToast(
+            `Switched to Prototype ${newFlow}`,
+            `${FLOW_DESCRIPTIONS[newFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[newFlow]}.`,
+          );
         }
       }
 
@@ -391,11 +386,11 @@ function RootLayoutInner() {
         e.stopPropagation();
 
         if (erpScenario !== 'Aspect4 DK' || (switchUserFlow !== 'A' && switchUserFlow !== 'C' && switchUserFlow !== 'B')) {
-          toast('Card scan unavailable', {
-            description: "Set ERP scenario to 'Aspect4 DK' and Prototype to 'A', 'B' or 'C' in Settings first",
-            duration: 3000,
-            ...PROTOTYPE_TOAST_OPTS,
-          });
+          prototypeToast(
+            'Card scan unavailable',
+            "Set ERP scenario to 'Aspect4 DK' and Prototype to 'A', 'B' or 'C' in Settings first",
+            { duration: 3000 },
+          );
           return;
         }
 
@@ -405,13 +400,13 @@ function RootLayoutInner() {
            scans are allowed straight from VIP mode, so the concepts can be
            rotated through without re-opening the scan panel each time. */
         if (switchUserFlow === 'C' && !cardScanPanelOpenRef.current && !vipCard) {
-          toast('Card search not open', {
-            description: scanCustomerCard
+          prototypeToast(
+            'Card search not open',
+            scanCustomerCard
               ? 'Open the customer modal, trigger "Søk kundekort", then scan the VIP card'
               : "Turn on 'Skann kundekort' in Settings — Søk kundekort must be open to scan",
-            duration: 3000,
-            ...PROTOTYPE_TOAST_OPTS,
-          });
+            { duration: 3000 },
+          );
           return;
         }
 
@@ -421,11 +416,11 @@ function RootLayoutInner() {
         setVipCard(card);
         setVipAcknowledged(false);
         openModal('customer');
-        toast(`VIP scan: ${concept}`, {
-          description: `${card.customerName} (${card.customerId}) — scan again for the next concept`,
-          duration: 3000,
-          ...PROTOTYPE_TOAST_OPTS,
-        });
+        prototypeToast(
+          `VIP scan: ${concept}`,
+          `${card.customerName} (${card.customerId}) — scan again for the next concept`,
+          { duration: 3000 },
+        );
       }
     };
 

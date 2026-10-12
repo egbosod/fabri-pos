@@ -3,6 +3,7 @@ import svgPaths from "../imports/svg-vpcqh9x9io";
 import { CheckIcon, RotateCcwIcon } from 'lucide-react';
 import { OrderLineState } from './OrderLineRow';
 import { CART_COLUMNS } from './cartColumnWidths';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface EditableOrderLineRowProps {
   productName: string;
@@ -47,6 +48,7 @@ export function EditableOrderLineRow({
   onUpdatePrice,
   onUpdateDiscount
 }: EditableOrderLineRowProps) {
+  const { tLabel } = useLanguage();
   const [swipeX, setSwipeX] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -522,7 +524,7 @@ export function EditableOrderLineRow({
       {label && !hasStateBadge && (
         <div className="absolute content-stretch flex items-start left-[76px] top-[33px]">
           <div className={`box-border content-stretch flex gap-[10px] h-[17px] items-center justify-center px-[4px] py-[2px]`} style={{ backgroundColor: label.bgColor, borderRadius: '3px' }}>
-            <p className="font-normal leading-[1.75] relative shrink-0 text-nowrap whitespace-pre" style={{ fontSize: 'var(--text-xs)', color: 'var(--foreground)' }}>{label.text}</p>
+            <p className="font-normal leading-[1.75] relative shrink-0 text-nowrap whitespace-pre" style={{ fontSize: 'var(--text-xs)', color: 'var(--foreground)' }}>{tLabel(label.text)}</p>
           </div>
         </div>
       )}

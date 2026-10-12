@@ -1,4 +1,5 @@
 import { CART_COLUMNS } from './cartColumnWidths';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface DefaultOrderItemProps {
   productName: string;
@@ -29,6 +30,7 @@ export function DefaultOrderItem({
   isDeleted = false,
   label
 }: DefaultOrderItemProps) {
+  const { tLabel } = useLanguage();
   return (
     <div 
       className="relative overflow-hidden h-[62px] w-full"
@@ -205,7 +207,7 @@ export function DefaultOrderItem({
                 lineHeight: '1.75'
               }}
             >
-              {label.text}
+              {tLabel(label.text)}
             </span>
           </div>
         </div>

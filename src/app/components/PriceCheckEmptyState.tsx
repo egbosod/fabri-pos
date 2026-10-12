@@ -1,4 +1,5 @@
 import svgPaths from "../imports/svg-bzympghppx";
+import { useLanguage } from "../contexts/LanguageContext";
 
 function Graphic() {
   return (
@@ -22,10 +23,11 @@ function Graphic() {
 }
 
 function Group161() {
+  const { t } = useLanguage();
   return (
     <div className="absolute left-1/2 top-[160px] translate-x-[-50%]">
-      <p className="absolute font-normal h-[34px] leading-[1.38] left-[calc(50%-9.5px)] text-[13px] text-black text-center top-[320px] translate-x-[-50%] w-[322px]">Scan/søk varer for å sjekke pris tilhørende kunde/prosjekt. Legg deretter til varene på salget dersom kunden ønsker varene.</p>
-      <p className="absolute font-semibold leading-[1.75] left-1/2 text-[#42424a] text-[15px] text-center top-[283px] translate-x-[-50%] w-[359px]">Sjekk pris for valgt kunde/prosjekt</p>
+      <p className="absolute font-normal h-[34px] leading-[1.38] left-[calc(50%-9.5px)] text-[13px] text-black text-center top-[320px] translate-x-[-50%] w-[322px]">{t('priceCheckEmptyBody')}</p>
+      <p className="absolute font-semibold leading-[1.75] left-1/2 text-[#42424a] text-[15px] text-center top-[283px] translate-x-[-50%] w-[359px]">{t('priceCheckEmptyTitle')}</p>
       <div className="absolute left-[calc(50%+0.5px)] overflow-clip size-[114px] top-[160px] translate-x-[-50%]" data-name="Barcode Scan">
         <Graphic />
       </div>

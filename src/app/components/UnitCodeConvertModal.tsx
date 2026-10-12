@@ -1,6 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import svgPaths from "../imports/svg-y2vkp7czmw";
 import { useLanguage } from '../contexts/LanguageContext';
+
+const ARROW_GAP = 10; // arrow tip to top of the anchor
+const ARROW_HEIGHT = 13.5;
+const ARROW_WIDTH = 22;
+const VIEWPORT_MARGIN = 8;
 
 interface UnitConversion {
   unit: string;
@@ -42,6 +47,7 @@ export function UnitCodeConvertModal({
   const [selectedUnit, setSelectedUnit] = useState(currentUnit);
   const modalRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [arrowX, setArrowX] = useState<number | null>(null);
 
   // The modal stays mounted between openings, so re-seed the keypad from the
   // line it is about to edit rather than showing the previous line's input.
@@ -59,37 +65,40 @@ export function UnitCodeConvertModal({
     { unit: 'M2', conversionFactor: 0.5, price: pricePerUnit * 0.5 },
   ];
 
-  // Calculate position based on anchor element
-  useEffect(() => {
-    if (isOpen && anchorElement) {
-      const rect = anchorElement.getBoundingClientRect();
-      const modalWidth = 546; // Approximate width of modal (188 + 182 + 182)
-      const modalHeight = 248; // Approximate height of modal
-      
-      // Center the modal horizontally on the anchor element's center
-      const anchorCenterX = rect.left + (rect.width / 2);
-      const left = anchorCenterX - (modalWidth / 2);
-      
-      setPosition({
-        top: rect.top - modalHeight - 4, // Position 4px above the anchor
-        left: left
-      });
-    }
-  }, [isOpen, anchorElement]);
+  // Measure the real modal, centre it on the anchor (clamped to the viewport),
+  // and sit the arrow tip ARROW_GAP above the anchor. The arrow slides so it
+  // keeps pointing at the anchor even when the modal is clamped.
+  useLayoutEffect(() => {
+    if (!isOpen || !anchorElement || !modalRef.current) return;
+    const rect = anchorElement.getBoundingClientRect();
+    const { width, height } = modalRef.current.getBoundingClientRect();
+    const anchorCenterX = rect.left + rect.width / 2;
+    const maxLeft = Math.max(VIEWPORT_MARGIN, window.innerWidth - width - VIEWPORT_MARGIN);
+    const left = Math.min(Math.max(anchorCenterX - width / 2, VIEWPORT_MARGIN), maxLeft);
+    const arrowMin = ARROW_WIDTH / 2 + 12;
+    setPosition({
+      top: rect.top - ARROW_GAP - ARROW_HEIGHT - height,
+      left,
+    });
+    setArrowX(Math.min(Math.max(anchorCenterX - left, arrowMin), width - arrowMin));
+  }, [isOpen, anchorElement, currentQuantity]);
 
   // Close on outside click
   useEffect(() => {
     if (!isOpen) return;
 
     const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      // The quantity cell (number + its +/- steppers) stays usable while open.
+      if (anchorElement?.parentElement?.contains(target)) return;
+      if (modalRef.current && !modalRef.current.contains(target)) {
         onClose();
       }
     };
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, anchorElement]);
 
   // Close on escape key
   useEffect(() => {
@@ -154,12 +163,6 @@ export function UnitCodeConvertModal({
 
   return (
     <>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/20 z-40"
-        style={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
-      />
-      
       {/* Modal */}
       <div
         ref={modalRef}
@@ -538,7 +541,8 @@ export function UnitCodeConvertModal({
           </div>
 
           {/* Arrow pointing down */}
-          <div className="absolute bottom-[-13.5px] h-[13.5px] left-[50%] translate-x-[-50%] w-[22px]">
+          <div className="absolute bottom-[-13.5px] h-[13.5px] translate-x-[-50%] w-[22px]"
+            style={{ left: arrowX !== null ? `${arrowX}px` : '50%' }}>
             <div className="absolute inset-[-2.34%_-15.4%_-50.31%_-15.4%]">
               <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 29 21">
                 <g>

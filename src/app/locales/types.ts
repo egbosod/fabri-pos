@@ -83,6 +83,15 @@ export interface Translations {
   return: string;
   undoReturn: string;
   undoDelete: string;
+  regretReturn: string;
+  returnSuccess: string;
+  regretReturnSuccess: string;
+  deleteSuccess: string;
+  undoDeleteSuccess: string;
+  itemLabelDiscontinued: string;
+  itemLabelDangerousGoods: string;
+  itemLabelFragile: string;
+  itemLabelHeavy: string;
   actions: string;
   search: string;
   load: string;
@@ -190,6 +199,8 @@ export interface Translations {
   // ── Price check mode (EBS-11361 / EBS-11395) ────────────────────────────────
   addItemsToCart: string;
   itemsAddedToSale: string;
+  priceCheckEmptyTitle: string;
+  priceCheckEmptyBody: string;
   priceCheckLockedTitle: string;
   priceCheckLockedDescription: string;
   priceCheckMismatchTitle: string;
