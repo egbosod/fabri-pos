@@ -8,7 +8,8 @@ import { CustomerBadge } from './CustomerBadge';
 import { PaymentSummary } from './PaymentSummary';
 import { SwipeableDefaultOrderItem, OrderLineState } from './SwipeableDefaultOrderItem';
 import { PriceCheckEmptyState } from './PriceCheckEmptyState';
-import { CART_COLUMNS } from './cartColumnWidths';
+import { CartColumnHeader } from './CartColumnHeader';
+import { CartSidebar, SelectCustomerButton, SidebarButton } from './CartSidebar';
 import svgPaths from '../imports/svg-v4b5vuykpy';
 import { ShoppingCart, AlertTriangle, Lock } from 'lucide-react';
 import { EgConfirmModal } from './EgConfirmModal';
@@ -147,37 +148,13 @@ export default function PriceCheckScreen() {
               <div className="basis-0 content-stretch flex flex-col grow items-start justify-end min-h-px min-w-px overflow-clip relative shrink-0 w-full">
                 <div className="content-stretch flex flex-col items-start justify-end relative size-full">
                   {/* Column headers */}
-                  <div className="content-stretch flex flex-col items-start justify-center relative rounded-[var(--radius)] shrink-0 w-full">
-                    <div className="box-border content-stretch flex items-start overflow-clip pb-[10px] pt-0 px-0 relative rounded-[var(--radius)] shrink-0 w-full">
-                      {[
-                        { label: t('itemName'), width: CART_COLUMNS.VARENAVN, align: 'items-start' },
-                        { label: t('quantity'), width: CART_COLUMNS.ANTALL, align: 'items-end' },
-                        { label: t('perUnit'), width: CART_COLUMNS.PER_ENHET, align: 'items-end' },
-                        { label: t('discount'), width: CART_COLUMNS.RABATT, align: 'items-end' },
-                        { label: t('total'), width: CART_COLUMNS.TOTALT, align: 'items-end' },
-                      ].map((col) => (
-                        <div
-                          key={col.label}
-                          className={`bg-transparent box-border content-stretch flex flex-col h-[28px] ${col.align} justify-end overflow-clip px-[10px] py-0 relative shrink-0`}
-                          style={{ width: `${col.width}px` }}
-                        >
-                          <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0">
-                            <div
-                              className="flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-nowrap"
-                              style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}
-                            >
-                              <p className="leading-[normal] whitespace-pre">{col.label}</p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      <div className="flex-1 flex items-end justify-end px-[20px] h-[28px]">
-                        <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-                          {paymentTotals.itemCount} {t('orderLines')}
-                        </div>
+                  <CartColumnHeader
+                    trailing={(
+                      <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
+                        {paymentTotals.itemCount} {t('orderLines')}
                       </div>
-                    </div>
-                  </div>
+                    )}
+                  />
 
                   {/* Rows */}
                   <div className="content-stretch flex flex-col gap-[10px] items-start justify-end relative shrink-0 w-full">
@@ -243,9 +220,7 @@ export default function PriceCheckScreen() {
       </div>
 
       {/* ── Sidebar: customer + sums + CTA ──────────────────────────────── */}
-      <div className="bg-secondary box-border content-stretch flex flex-col gap-[30px] h-full items-start justify-end p-[20px] relative shrink-0 w-[263px]" data-name="Sidebar">
-        <div aria-hidden="true" className="absolute border-border border-[0px_0px_0px_1px] border-solid inset-0 pointer-events-none" />
-
+      <CartSidebar>
         {priceCheckCustomer ? (
           <CustomerBadge
             customer={priceCheckCustomer}
@@ -256,14 +231,7 @@ export default function PriceCheckScreen() {
             vipCard={vipCard}
           />
         ) : (
-          <button
-            onClick={handleEditCustomer}
-            className="bg-card h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full cursor-pointer border border-border hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
-          >
-            <div className="flex flex-row items-center justify-center min-w-inherit size-full">
-              <span className="text-foreground">{t('selectCustomer')}</span>
-            </div>
-          </button>
+          <SelectCustomerButton onClick={handleEditCustomer} />
         )}
 
         <PaymentSummary
@@ -276,26 +244,11 @@ export default function PriceCheckScreen() {
         />
 
         <div className="content-stretch flex flex-col gap-[10px] items-start justify-end relative shrink-0 w-full" data-name="Buttons">
-          <button
-            onClick={handleAddItemsToCart}
-            disabled={!hasItems}
-            className="h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full cursor-pointer disabled:cursor-not-allowed"
-            style={{
-              backgroundColor: hasItems ? 'var(--primary)' : 'var(--secondary)',
-              opacity: hasItems ? 1 : 0.6,
-            }}
-          >
-            <div className="flex flex-row items-center justify-center min-w-inherit size-full">
-              <p
-                className="font-semibold leading-[1.75] relative shrink-0 text-nowrap whitespace-pre"
-                style={{ fontSize: 'var(--text-lg)', color: hasItems ? 'var(--primary-foreground)' : 'var(--secondary-foreground)' }}
-              >
-                {t('addItemsToCart')}
-              </p>
-            </div>
-          </button>
+          <SidebarButton variant="primary" disabled={!hasItems} onClick={handleAddItemsToCart}>
+            {t('addItemsToCart')}
+          </SidebarButton>
         </div>
-      </div>
+      </CartSidebar>
 
       {/* ── EBS-11395: customer/project locked once the basket has items ───
            Variant B adds an "Legg til varer i salg" shortcut; variant C is

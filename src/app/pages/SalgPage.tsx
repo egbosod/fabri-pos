@@ -9,11 +9,13 @@ import { OrderGroup } from '../components/OrderGroup';
 import { AggregatedHandOpenOrderGroup } from '../components/AggregatedHandOpenOrderGroup';
 import { AggregatedOrderClosedGroup } from '../components/AggregatedOrderClosedGroup';
 import { SwipeableOrderItem, OrderLineState as SwipeableOrderLineState } from '../components/SwipeableOrderItem';
+import { baseState } from '../components/orderLineState';
 import { SwipeableDefaultOrderItem } from '../components/SwipeableDefaultOrderItem';
 import { PriceCheckEmptyState } from '../components/PriceCheckEmptyState';
 import { PaymentSummary } from '../components/PaymentSummary';
 import { CustomerBadge } from '../components/CustomerBadge';
-import { CART_COLUMNS } from '../components/cartColumnWidths';
+import { CartSidebar, SelectCustomerButton, SidebarButton } from '../components/CartSidebar';
+import { CartColumnHeader } from '../components/CartColumnHeader';
 import { Check, RotateCcw, Trash2, Plus, ClipboardList, User } from 'lucide-react';
 import type { CartItem, OrderGroupData, ProductItem, RowState } from '../types/pos';
 
@@ -38,14 +40,6 @@ function OrdersIcon() {
   return (
     <div className="flex items-center justify-center" data-name="Orders Icon">
       <ClipboardList size={15} className="text-foreground" />
-    </div>
-  );
-}
-
-function UserGroupIcon() {
-  return (
-    <div className="flex items-center justify-center" data-name="User Icon">
-      <User size={12} className="text-foreground" />
     </div>
   );
 }
@@ -283,12 +277,12 @@ function OrderItemsView({
     orderGroups?.forEach((group) => {
       group.items.forEach((_, index) => {
         const key = `${group.id}-${index}`;
-        if ((swipeableOrderLineStates[key] || 'normal') !== 'deleted') count++;
+        if (baseState(swipeableOrderLineStates[key] || 'normal') !== 'deleted') count++;
       });
     });
     addedItems.forEach((_, index) => {
       const key = `added-${index}`;
-      if ((swipeableOrderLineStates[key] || 'normal') !== 'deleted') count++;
+      if (baseState(swipeableOrderLineStates[key] || 'normal') !== 'deleted') count++;
     });
     return count;
   }, [orderGroups, addedItems, swipeableOrderLineStates]);
@@ -305,30 +299,11 @@ function OrderItemsView({
     <div className="basis-0 content-stretch flex flex-col grow items-start min-h-px min-w-px relative shrink-0 w-full" data-name="Order items">
       <div className="content-stretch flex flex-col items-start relative size-full">
         {/* Column headers */}
-        <div className="content-stretch flex flex-col items-start justify-center relative rounded-[var(--radius)] shrink-0 w-full">
-          <div className="box-border content-stretch flex items-start overflow-clip pb-[10px] pt-0 px-0 relative rounded-[var(--radius)] shrink-0 w-full">
-            {[
-              { label: t('itemName'), width: CART_COLUMNS.VARENAVN, align: 'items-start' },
-              { label: t('quantity'), width: CART_COLUMNS.ANTALL, align: 'items-end' },
-              { label: t('perUnit'), width: CART_COLUMNS.PER_ENHET, align: 'items-end' },
-              { label: t('discount'), width: CART_COLUMNS.RABATT, align: 'items-end' },
-              { label: t('total'), width: CART_COLUMNS.TOTALT, align: 'items-end' },
-            ].map((col) => (
-              <div key={col.label} className={`bg-transparent box-border content-stretch flex flex-col h-[28px] ${col.align} justify-end overflow-clip px-[10px] py-0 relative shrink-0`} style={{ width: `${col.width}px` }}>
-                <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0">
-                  <div className="flex flex-col font-medium justify-center leading-[0] relative shrink-0 text-nowrap" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-                    <p className="leading-[normal] whitespace-pre">{col.label}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-            <div className="flex-1 flex items-end justify-end px-[20px] h-[28px]">
-              {totalItemCount > 0 && (
-                <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>{totalItemCount} {t('orderLines')}</div>
-              )}
-            </div>
-          </div>
-        </div>
+        <CartColumnHeader
+          trailing={totalItemCount > 0 && (
+            <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>{totalItemCount} {t('orderLines')}</div>
+          )}
+        />
 
         {/* Groups & items */}
         <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
@@ -381,6 +356,7 @@ function OrderItemsView({
               >
                 {group.items.map((item, index) => {
                   const key = `${group.id}-${index}`;
+                  const swipeState = swipeableOrderLineStates[key] || 'normal';
                   return (
                     <SwipeableOrderItem
                       key={index}
@@ -393,7 +369,8 @@ function OrderItemsView({
                       total={item.total}
                       originalTotal={item.originalTotal}
                       label={item.label}
-                      state={swipeableOrderLineStates[key] || 'normal'}
+                      state={item.isDeleted && swipeState === 'normal' ? 'deleted' : swipeState}
+                      locked={item.isDeleted}
                       onStateChange={(newState) => onSwipeableStateChange(group.id, index, newState)}
                       onQuantityChange={() => {}}
                       onPriceChange={() => {}}
@@ -407,8 +384,12 @@ function OrderItemsView({
 
           {addedItems.map((item, index) => {
             const key = `added-${index}`;
-            const itemState = swipeableOrderLineStates[key] || 'normal';
-            if (itemState === 'deleted') return null;
+            const swipeState = swipeableOrderLineStates[key] || 'normal';
+            // A deleted line stays on the list, struck through, so it can be swiped
+            // a second time to undo. A credit-block "Remove items" deletes the same
+            // way, so its lines show as deleted until a swipe state says otherwise.
+            const contextDeleted = item.state === 'deleted';
+            const itemState = contextDeleted && swipeState === 'normal' ? 'deleted' : swipeState;
             const itemTotal = item.total || item.price * item.quantity;
             const originalTotal = item.discount ? itemTotal / (1 - item.discount / 100) : itemTotal;
             return (
@@ -426,7 +407,10 @@ function OrderItemsView({
                 state={itemState}
                 onStateChange={(newState) => {
                   onSwipeableStateChange('added', index, newState);
-                  if (newState === 'deleted') onRemoveAddedItem(index);
+                  // Settling on deleted takes the line out of the sale total; settling
+                  // back on normal after an undo puts it back in.
+                  if (newState === 'deleted' && !contextDeleted) onUpdateAddedItem(index, { state: 'deleted' });
+                  if (newState === 'normal' && contextDeleted) onUpdateAddedItem(index, { state: 'normal' });
                 }}
                 onQuantityChange={(newQuantity, newUnit) => {
                   onUpdateAddedItem(index, {
@@ -662,13 +646,13 @@ export default function SalgPage() {
     orderGroups.forEach((group) => {
       const allDeleted = group.items.every((item, idx) => {
         const key = `${group.id}-${idx}`;
-        return item.isDeleted || swipeableOrderLineStates[key] === 'deleted';
+        return item.isDeleted || baseState(swipeableOrderLineStates[key] || 'normal') === 'deleted';
       });
       if (allDeleted && group.items.length > 0) return;
 
       group.items.forEach((item, idx) => {
         const key = `${group.id}-${idx}`;
-        const state = swipeableOrderLineStates[key];
+        const state = baseState(swipeableOrderLineStates[key] || 'normal');
         if (item.isDeleted || state === 'deleted') return;
         const lineTotal = (item.price || 0) * (item.quantity || 0);
 
@@ -687,7 +671,7 @@ export default function SalgPage() {
 
     addedItems.forEach((item, index) => {
       const key = `added-${index}`;
-      const state = swipeableOrderLineStates[key];
+      const state = baseState(swipeableOrderLineStates[key] || 'normal');
       if (state === 'deleted') return;
       const lineTotal = (item.price || 0) * (item.quantity || 0);
 
@@ -710,6 +694,9 @@ export default function SalgPage() {
   const canPay = localHasItems && !!selectedCustomer;
   /* A VIP-card sale settles as a packing slip — direct payment is not offered. */
   const canPayNow = canPay && !vipCard;
+  /* Over the card's credit limit is treated as a blocked card for status
+     display (badge/banner), same as a true Aspect4-blocked card. */
+  const vipOverLimit = !!vipCard && localPaymentTotals.total > vipCard.creditLimit;
 
   return (
     <div className="content-stretch flex flex-row flex-1 items-stretch relative shrink-0 w-full z-[1] min-h-0" data-name="Body">
@@ -729,24 +716,10 @@ export default function SalgPage() {
       />
 
       {/* Sidebar */}
-      <div className="bg-background box-border content-stretch flex flex-col gap-[30px] h-full items-start justify-end p-[20px] relative shrink-0 w-[302px]" data-name="Sidebar">
-        <div aria-hidden="true" className="absolute border-border border-[0px_0px_0px_1px] border-solid inset-0 pointer-events-none" />
-
+      <CartSidebar>
         {!selectedCustomer ? (
           <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full" data-name="Customer select">
-            <button
-              onClick={() => openModal('customer')}
-              className="bg-card border border-border h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring transition-colors"
-            >
-              <div className="flex flex-row items-center justify-center min-w-inherit size-full">
-                <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
-                  <div className="flex items-center justify-center shrink-0 text-foreground">
-                    <UserGroupIcon />
-                  </div>
-                  <span className="text-foreground" style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('selectCustomerButton')}</span>
-                </div>
-              </div>
-            </button>
+            <SelectCustomerButton onClick={() => openModal('customer')} />
             {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') && hovedordrePlacement === 'B' && (
               <SidebarHovedordreButton disabled />
             )}
@@ -765,6 +738,7 @@ export default function SalgPage() {
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
               vipCard={vipCard}
               onRemoveVipCard={() => setVipCard(null)}
+              vipOverLimit={vipOverLimit}
             />
             {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') &&
               (hovedordrePlacement === 'B' || hovedordrePlacement === 'C') && (
@@ -786,39 +760,19 @@ export default function SalgPage() {
         <div className="content-stretch flex flex-col gap-[10px] items-start justify-end relative shrink-0 w-full" data-name="Buttons">
           {/* Always present, so the path to a packing slip stays visible — it
               only becomes actionable once there is a customer and a line. */}
-          <button
-            onClick={() => { if (canPay) openModal('packing-slip-signature'); }}
-            disabled={!canPay}
-            className={`bg-transparent h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full transition-colors ${
-              canPay
-                ? 'border border-primary text-primary cursor-pointer hover:bg-primary/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
-                : 'border border-border text-muted-foreground cursor-not-allowed'
-            }`}
-          >
-            <div className="flex flex-row items-center justify-center min-w-inherit size-full">
-              <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
-                <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('createPackingSlip')}</span>
-              </div>
-            </div>
-          </button>
-          <button
-            onClick={() => { if (canPayNow) openModal('payment'); }}
-            title={vipCard ? t('vipDeliveryNoteOnly') : undefined}
-            className={`h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full transition-colors ${
-              canPayNow
-                ? 'bg-primary text-primary-foreground cursor-pointer hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
-                : 'bg-muted text-muted-foreground cursor-not-allowed border border-border'
-            }`}
+          <SidebarButton variant="outline" disabled={!canPay} onClick={() => { if (canPay) openModal('packing-slip-signature'); }}>
+            {t('createPackingSlip')}
+          </SidebarButton>
+          <SidebarButton
+            variant="primary"
             disabled={!canPayNow}
+            title={vipCard ? t('vipDeliveryNoteOnly') : undefined}
+            onClick={() => { if (canPayNow) openModal('payment'); }}
           >
-            <div className="flex flex-row items-center justify-center min-w-inherit size-full">
-              <div className="box-border content-stretch flex gap-[10px] h-[48px] items-center justify-center min-w-inherit px-[20px] py-[6px] relative w-full">
-                <span style={{ fontFamily: "'Montserrat', sans-serif" }}>{t('payNow')}</span>
-              </div>
-            </div>
-          </button>
+            {t('payNow')}
+          </SidebarButton>
         </div>
-      </div>
+      </CartSidebar>
     </div>
   );
 }
