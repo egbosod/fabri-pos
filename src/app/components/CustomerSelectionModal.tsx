@@ -395,7 +395,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
   panelRef?: React.Ref<HTMLDivElement>;
   awaitingInput?: boolean;
   suggestSpecificNumber?: boolean;
-  /** BrandSync table styling: semantic table, fixed header, dividers, hover row (Prototype C on AX). */
+  /** BrandSync table styling: semantic table, fixed header, dividers, hover row (Settings → BrandSync, ERP AX). */
   bsTable?: boolean;
   /** AX column content and structure in the plain list styling (Prototypes A and B). */
   axColumns?: boolean;
@@ -524,7 +524,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
   topSlot?: React.ReactNode;
   panelRef?: React.Ref<HTMLDivElement>;
   suggestSpecificNumber?: boolean;
-  /** BrandSync table styling, same as the customer list (Prototype C on AX). */
+  /** BrandSync table styling, same as the customer list (Settings → BrandSync, ERP AX). */
   bsTable?: boolean;
   /** AX column content and structure in the plain list styling (Prototypes A and B). */
   axColumns?: boolean;
@@ -900,7 +900,7 @@ export function CustomerSelectionModal({
   initialProject = null,
 }: CustomerSelectionModalProps) {
   const { t } = useLanguage();
-  const { switchUserFlow, erpScenario, allowCreateProject, allowCreateContactPerson, showExpiredProjectsToggle, scanCustomerCard, customerSearchConcept } = useSettings();
+  const { switchUserFlow, erpScenario, allowCreateProject, allowCreateContactPerson, showExpiredProjectsToggle, scanCustomerCard, customerSearchConcept, brandSyncEnabled } = useSettings();
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
   // The customer toggle is an Aspect4 concept, also applied to AX in Prototypes A, B and C.
   const hasSpecificNumber = isAspect4 || erpScenario === 'AX';
@@ -2627,7 +2627,7 @@ export function CustomerSelectionModal({
         panelRef={customerDropdownRef}
         awaitingInput={customerQuery === ''}
         suggestSpecificNumber={hasSpecificNumber && !specificNumberOn}
-        bsTable={syncWording}
+        bsTable={brandSyncEnabled && erpScenario === 'AX'}
         axColumns={erpScenario === 'AX'}
         topSlot={syncWording ? (showSyncCustomer ? (
           <SyncButton
@@ -2657,7 +2657,7 @@ export function CustomerSelectionModal({
         onSelect={handleProjectSelect}
         panelRef={projectDropdownRef}
         suggestSpecificNumber={hasSpecificProject && !specificProjectOn}
-        bsTable={syncWording}
+        bsTable={brandSyncEnabled && erpScenario === 'AX'}
         axColumns={erpScenario === 'AX' || showExpiredProjectsToggle}
         topSlot={(() => {
           const specificSlot = syncWording ? (showSyncProject ? (

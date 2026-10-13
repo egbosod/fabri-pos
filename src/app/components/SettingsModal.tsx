@@ -87,7 +87,9 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
 
     wcagHeading: 'Designsystem',
     brandSync: 'BrandSync',
-    brandSyncDesc: 'Slå BrandSync av eller på for hele prototypen. Klargjort; ikke koblet til noe ennå.',
+    brandSyncDark: 'Mørk modus',
+    brandSyncDarkDesc: 'Bruk BrandSyncs mørke palett. Krever at BrandSync er på.',
+    brandSyncDesc: 'Bruk BrandSync-farger, stil, font, knapper og tabeller i hele appen (unntatt rosa prototypelag og innstillinger).',
     wcagDesc: 'Test visuelle tilgjengelighetsfunksjoner. Slå på enkeltinnstillinger eller alt samtidig.',
     wcagContrast: 'Farger',
     wcagContrastDesc: 'Bruk WCAG AA/AAA-kontrastforhold for all tekst.',
@@ -172,7 +174,9 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
 
     wcagHeading: 'Design System',
     brandSync: 'BrandSync',
-    brandSyncDesc: 'Turn BrandSync on or off for the whole prototype. Prepared; not wired to anything yet.',
+    brandSyncDark: 'Dark mode',
+    brandSyncDarkDesc: 'Use the BrandSync dark palette. Requires BrandSync to be on.',
+    brandSyncDesc: 'Apply BrandSync colour, style, font, buttons and tables across the app (except the pink prototype layer and Settings).',
     wcagDesc: 'Test visual accessibility features. Toggle individual settings or enable all at once.',
     wcagContrast: 'Contrast',
     wcagContrastDesc: 'Enable WCAG AA/AAA contrast ratios for all text.',
@@ -263,6 +267,8 @@ export function SettingsModal() {
     setShowExpiredProjectsToggle,
     brandSyncEnabled,
     setBrandSyncEnabled,
+    brandSyncDark,
+    setBrandSyncDark,
     showPasswordOption,
     setShowPasswordOption,
     scanCustomerCard,
@@ -650,6 +656,7 @@ export function SettingsModal() {
       <style>{`.sm-row > :first-child { flex: 1 1 200px !important; min-width: 0; }`}</style>
       <div
         ref={modalRef}
+        data-bs-exempt
         style={{
           // ── Settings-modal-only palette ──────────────────────────────────
           // This panel is a prototyping tool, not the Fabri POS product, so
@@ -1223,38 +1230,6 @@ export function SettingsModal() {
                         lineHeight: 1.5,
                       }}
                     >
-                      {s.showExpiredProjectsToggle}
-                    </p>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--muted-foreground)',
-                        margin: '4px 0 0',
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {s.showExpiredProjectsToggleDesc}
-                    </p>
-                  </div>
-                  <Toggle
-                    checked={showExpiredProjectsToggle}
-                    onChange={() => setShowExpiredProjectsToggle(!showExpiredProjectsToggle)}
-                  />
-                </RowCard>
-
-                <RowCard>
-                  <div>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontWeight: 'var(--font-weight-semibold)',
-                        fontSize: 'var(--text-base)',
-                        color: 'var(--foreground)',
-                        margin: 0,
-                        lineHeight: 1.5,
-                      }}
-                    >
                       {s.allowCreateContactPerson}
                     </p>
                     <p
@@ -1272,6 +1247,38 @@ export function SettingsModal() {
                   <Toggle
                     checked={allowCreateContactPerson}
                     onChange={() => setAllowCreateContactPerson(!allowCreateContactPerson)}
+                  />
+                </RowCard>
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.showExpiredProjectsToggle}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {s.showExpiredProjectsToggleDesc}
+                    </p>
+                  </div>
+                  <Toggle
+                    checked={showExpiredProjectsToggle}
+                    onChange={() => setShowExpiredProjectsToggle(!showExpiredProjectsToggle)}
                   />
                 </RowCard>
 
@@ -1487,6 +1494,18 @@ export function SettingsModal() {
                     </p>
                   </div>
                   <Toggle checked={brandSyncEnabled} onChange={() => setBrandSyncEnabled(!brandSyncEnabled)} />
+                </RowCard>
+
+                <RowCard>
+                  <div style={{ opacity: brandSyncEnabled ? 1 : 0.5 }}>
+                    <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--text-base)', color: 'var(--foreground)', margin: 0, lineHeight: 1.5 }}>
+                      {s.brandSyncDark}
+                    </p>
+                    <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', margin: '4px 0 0', lineHeight: 1.4 }}>
+                      {s.brandSyncDarkDesc}
+                    </p>
+                  </div>
+                  <Toggle checked={brandSyncEnabled && brandSyncDark} onChange={() => { if (brandSyncEnabled) setBrandSyncDark(!brandSyncDark); }} />
                 </RowCard>
 
                 <DescText>

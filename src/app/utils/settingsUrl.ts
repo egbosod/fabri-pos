@@ -30,6 +30,7 @@ export interface SharedSettings {
   allowCreateContactPerson: boolean;
   showExpiredProjectsToggle: boolean;
   brandSyncEnabled: boolean;
+  brandSyncDark: boolean;
   showPasswordOption: boolean;
   scanCustomerCard: boolean;
   twoFactorEnabled: boolean;
@@ -50,6 +51,7 @@ export const DEFAULT_SETTINGS: SharedSettings = {
   allowCreateContactPerson: false,
   showExpiredProjectsToggle: false,
   brandSyncEnabled: false,
+  brandSyncDark: false,
   showPasswordOption: false,
   scanCustomerCard: true,
   twoFactorEnabled: true,
@@ -150,6 +152,12 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'brandSyncEnabled',
     param: 'brandsync',
+    parse: parseBoolean,
+    serialize: serializeBoolean,
+  },
+  {
+    key: 'brandSyncDark',
+    param: 'brandsyncdark',
     parse: parseBoolean,
     serialize: serializeBoolean,
   },

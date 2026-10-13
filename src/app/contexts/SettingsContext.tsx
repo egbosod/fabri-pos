@@ -39,6 +39,8 @@ export interface SettingsContextType {
   setShowExpiredProjectsToggle: (show: boolean) => void;
   brandSyncEnabled: boolean;
   setBrandSyncEnabled: (enabled: boolean) => void;
+  brandSyncDark: boolean;
+  setBrandSyncDark: (enabled: boolean) => void;
   showPasswordOption: boolean;
   setShowPasswordOption: (show: boolean) => void;
   scanCustomerCard: boolean;
@@ -95,6 +97,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [brandSyncEnabled, setBrandSyncEnabled] = useState(
     urlSettings.brandSyncEnabled ?? DEFAULT_SETTINGS.brandSyncEnabled,
   );
+  const [brandSyncDark, setBrandSyncDark] = useState(
+    urlSettings.brandSyncDark ?? DEFAULT_SETTINGS.brandSyncDark,
+  );
   const [showPasswordOption, setShowPasswordOption] = useState(
     urlSettings.showPasswordOption ?? DEFAULT_SETTINGS.showPasswordOption,
   );
@@ -116,6 +121,18 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
   const openSettingsModal = useCallback(() => setIsSettingsModalOpen(true), []);
   const closeSettingsModal = useCallback(() => setIsSettingsModalOpen(false), []);
+
+  // BrandSync mode: colour, font, style, buttons and tables (see styles/brandsync.css).
+  useEffect(() => {
+    document.documentElement.classList.toggle('brandsync', brandSyncEnabled);
+    return () => document.documentElement.classList.remove('brandsync');
+  }, [brandSyncEnabled]);
+
+  // Dark variant only takes effect together with BrandSync.
+  useEffect(() => {
+    document.documentElement.classList.toggle('brandsync-dark', brandSyncEnabled && brandSyncDark);
+    return () => document.documentElement.classList.remove('brandsync-dark');
+  }, [brandSyncEnabled, brandSyncDark]);
 
   // Auto-enable scan for Aspect4 ERP sources — but only on an actual change,
   // not on mount, so a shared `?scan=` value isn't immediately stomped.
@@ -141,6 +158,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setAllowCreateContactPerson(DEFAULT_SETTINGS.allowCreateContactPerson);
     setShowExpiredProjectsToggle(DEFAULT_SETTINGS.showExpiredProjectsToggle);
     setBrandSyncEnabled(DEFAULT_SETTINGS.brandSyncEnabled);
+    setBrandSyncDark(DEFAULT_SETTINGS.brandSyncDark);
     setShowPasswordOption(DEFAULT_SETTINGS.showPasswordOption);
     setScanCustomerCard(DEFAULT_SETTINGS.scanCustomerCard);
     setTwoFactorEnabled(DEFAULT_SETTINGS.twoFactorEnabled);
@@ -201,6 +219,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setShowExpiredProjectsToggle,
         brandSyncEnabled,
         setBrandSyncEnabled,
+        brandSyncDark,
+        setBrandSyncDark,
         showPasswordOption,
         setShowPasswordOption,
         scanCustomerCard,
