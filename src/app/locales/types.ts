@@ -253,6 +253,8 @@ export interface Translations {
   noProjectsFoundTrySpecific: string;
   syncCustomer: string;
   fetchCustomer: string;
+  fetchProject: string;
+  syncProject: string;
   syncProjects: string;
   requisitionPlaceholder: string;
   contactPersonPlaceholder: string;

@@ -258,6 +258,8 @@ const da: Translations = {
   noProjectsFoundTrySpecific: 'Intet projekt fundet. Prøv at finde projektet med et specifikt projektnummer',
   syncCustomer: 'Synkroniser kunde',
   fetchCustomer: 'Hent kunde',
+  fetchProject: 'Hent projekt',
+  syncProject: 'Synkroniser projekt',
   syncProjects: 'Synkroniser projekter',
   requisitionPlaceholder: 'Indtast rekvisitionsnummer',
   contactPersonPlaceholder: 'Vælg kontaktperson',

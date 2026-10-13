@@ -255,6 +255,8 @@ const sv: Translations = {
   noProjectsFoundTrySpecific: 'Inget projekt hittades. Prova att hitta projektet med ett specifikt projektnummer',
   syncCustomer: 'Synkronisera kund',
   fetchCustomer: 'Hämta kund',
+  fetchProject: 'Hämta projekt',
+  syncProject: 'Synkronisera projekt',
   syncProjects: 'Synkronisera projekt',
   requisitionPlaceholder: 'Ange rekvisitionsnummer',
   contactPersonPlaceholder: 'Välj kontaktperson',
