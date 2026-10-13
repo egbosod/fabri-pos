@@ -247,6 +247,11 @@ export interface Translations {
   getCustomer: string;
   noCustomersFound: string;
   noCustomersFoundTrySpecific: string;
+  specificProjectNumber: string;
+  specificProjectNumberPlaceholder: string;
+  noProjectsFoundTrySpecific: string;
+  syncCustomers: string;
+  syncProjects: string;
   requisitionPlaceholder: string;
   contactPersonPlaceholder: string;
   contactPersonReferencePlaceholder: string;
