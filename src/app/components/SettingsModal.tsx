@@ -73,6 +73,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scOpenSettingsDesc: 'Vis eller skjul dette innstillingspanelet',
 
     developerHeading: 'Utvikler',
+    selectCustomerHeading: 'Velg kunde',
     allowCreateProject: 'Tillat oppretting av nytt prosjekt',
     allowCreateProjectDesc: 'Vis en pluss-knapp ved «Prosjekt» i kundevalg for å opprette nye prosjekter.',
     allowCreateContactPerson: 'Tillat oppretting av ny kontaktperson',
@@ -82,7 +83,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     showDebugBanner: 'Vis debug-banner',
     showDebugBannerDesc: 'Vis overlegg for miljødebugging (kan også slås av og på med D).',
 
-    wcagHeading: 'WCAG tilgjengelighet',
+    wcagHeading: 'Designsystem',
     wcagDesc: 'Test visuelle tilgjengelighetsfunksjoner. Slå på enkeltinnstillinger eller alt samtidig.',
     wcagContrast: 'Farger',
     wcagContrastDesc: 'Bruk WCAG AA/AAA-kontrastforhold for all tekst.',
@@ -153,6 +154,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scOpenSettingsDesc: 'Show or hide this settings panel',
 
     developerHeading: 'Developer',
+    selectCustomerHeading: 'Select customer',
     allowCreateProject: 'Allow creating new project',
     allowCreateProjectDesc: 'Show a plus button next to "Project" in customer selection to create new projects.',
     allowCreateContactPerson: 'Allow creating new contact person',
@@ -162,7 +164,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     showDebugBanner: 'Show debug banner',
     showDebugBannerDesc: 'Display the environment debug overlay (also toggled with the D key).',
 
-    wcagHeading: 'WCAG accessibility',
+    wcagHeading: 'Design System',
     wcagDesc: 'Test visual accessibility features. Toggle individual settings or enable all at once.',
     wcagContrast: 'Contrast',
     wcagContrastDesc: 'Enable WCAG AA/AAA contrast ratios for all text.',
@@ -278,12 +280,13 @@ export function SettingsModal() {
     rect: DOMRect;
   } | null>(null);
 
-  // Collapsible sections — all expanded by default
+  // Collapsible sections — Select customer open by default; shortcuts, developer, design system collapsed
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     userFlow: true,
     erp: true,
-    shortcuts: true,
-    developer: true,
+    shortcuts: false,
+    selectCustomer: true,
+    developer: false,
     wcag: false,
   });
 
@@ -1147,6 +1150,87 @@ export function SettingsModal() {
                   </div>
                 </RowCard>
 
+              </div>
+            )}
+          </div>
+
+          </div>
+
+          {/* ── Column 2: prototype tooling ── */}
+          <div style={columnStyle}>
+
+
+          {/* ─ Select customer ─ */}
+          <div style={sectionCardStyle}>
+            <SectionHeader sectionKey="selectCustomer">
+              {s.selectCustomerHeading}
+            </SectionHeader>
+            {expandedSections.selectCustomer && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.allowCreateProject}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {s.allowCreateProjectDesc}
+                    </p>
+                  </div>
+                  <Toggle
+                    checked={allowCreateProject}
+                    onChange={() => setAllowCreateProject(!allowCreateProject)}
+                  />
+                </RowCard>
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.allowCreateContactPerson}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {s.allowCreateContactPersonDesc}
+                    </p>
+                  </div>
+                  <Toggle
+                    checked={allowCreateContactPerson}
+                    onChange={() => setAllowCreateContactPerson(!allowCreateContactPerson)}
+                  />
+                </RowCard>
+
                 {/* Scan Customer Card toggle */}
                 <RowCard>
                   <div>
@@ -1178,15 +1262,9 @@ export function SettingsModal() {
                   </div>
                   <Toggle checked={scanCustomerCard} onChange={() => setScanCustomerCard(!scanCustomerCard)} />
                 </RowCard>
-
               </div>
             )}
           </div>
-
-          </div>
-
-          {/* ── Column 2: prototype tooling ── */}
-          <div style={columnStyle}>
 
           {/* ─ Keyboard Shortcuts ─ */}
           <div style={sectionCardStyle}>
@@ -1258,7 +1336,6 @@ export function SettingsModal() {
             )}
           </div>
 
-
           {/* ─ Developer ─ */}
           <div style={sectionCardStyle}>
             <SectionHeader sectionKey="developer" icon={<Bug size={16} />}>
@@ -1266,69 +1343,6 @@ export function SettingsModal() {
             </SectionHeader>
             {expandedSections.developer && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
-                <RowCard>
-                  <div>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontWeight: 'var(--font-weight-semibold)',
-                        fontSize: 'var(--text-base)',
-                        color: 'var(--foreground)',
-                        margin: 0,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {s.allowCreateProject}
-                    </p>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--muted-foreground)',
-                        margin: '4px 0 0',
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {s.allowCreateProjectDesc}
-                    </p>
-                  </div>
-                  <Toggle
-                    checked={allowCreateProject}
-                    onChange={() => setAllowCreateProject(!allowCreateProject)}
-                  />
-                </RowCard>
-
-                <RowCard>
-                  <div>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontWeight: 'var(--font-weight-semibold)',
-                        fontSize: 'var(--text-base)',
-                        color: 'var(--foreground)',
-                        margin: 0,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {s.allowCreateContactPerson}
-                    </p>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--muted-foreground)',
-                        margin: '4px 0 0',
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {s.allowCreateContactPersonDesc}
-                    </p>
-                  </div>
-                  <Toggle
-                    checked={allowCreateContactPerson}
-                    onChange={() => setAllowCreateContactPerson(!allowCreateContactPerson)}
-                  />
-                </RowCard>
 
                 <RowCard>
                   <div>
