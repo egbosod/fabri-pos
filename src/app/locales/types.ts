@@ -250,7 +250,8 @@ export interface Translations {
   specificProjectNumber: string;
   specificProjectNumberPlaceholder: string;
   noProjectsFoundTrySpecific: string;
-  syncCustomers: string;
+  syncCustomer: string;
+  fetchCustomer: string;
   syncProjects: string;
   requisitionPlaceholder: string;
   contactPersonPlaceholder: string;
@@ -299,6 +300,9 @@ export interface Translations {
   tableHeaderCategory: string;
   tableHeaderAddress: string;
   tableHeaderPostalCodeCity: string;
+  tableHeaderPostalCode: string;
+  tableHeaderCity: string;
+  tableHeaderExtNumber: string;
 
   // ── Tab labels ─────────────────────────────────────────────────────────────
   tabGeneral: string;
@@ -348,6 +352,7 @@ export interface Translations {
   vipBlockedInfo: string;
   vipBlockedHardStop: string;
   removeVipCard: string;
+  vipCardRemovedToast: string;
   continueAsNormalCustomer: string;
   vipCreditTitle: string;
   vipCreditLimit: string;
@@ -385,7 +390,10 @@ export interface Translations {
   invoicesForPayment: string;
   edit: string;
   removeCustomer: string;
-  noInvoicesForPayment: string;
   cannotChangeCustomerFetchedOrder: string;
+  projectMandatoryToast: string;
+  fieldMandatoryToast: string;
+  vipCardAlreadyActiveToast: string;
+  noInvoicesForPayment: string;
   invoicesForPaymentPlaceholder: string;
 }

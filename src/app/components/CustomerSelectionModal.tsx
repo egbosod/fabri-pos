@@ -11,6 +11,7 @@ import { Switch } from './ui/switch';
 import { playBarcodeBeep } from '../utils/scanSound';
 import type { VipCardData } from '../types/pos';
 import { formatAmount } from '../utils/formatAmount';
+import { posToast } from '../utils/posToast';
 import { EgList, type EgListRow, type EgListSection } from './EgList';
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
@@ -78,6 +79,8 @@ interface CustomerSelectionModalProps {
   onCardDataProcessed?: () => void;
   /** Active VIP card for this sale — puts the modal into VIP mode (Aspect4 DK / Prototypes B & C) */
   vipCard?: VipCardData | null;
+  /** The card was just scanned and not confirmed yet, so it can't be removed. */
+  vipCardPending?: boolean;
   /** Running sale total, used as "Used" in the VIP credit panel (live per line item) */
   saleTotal?: number;
   /** Clears the VIP card from the sale (Flow 3) */
@@ -145,16 +148,16 @@ const erpOnlyCustomers: Customer[] = [
 ];
 
 const mockProjects: Project[] = [
-  { id: '1', nr: '399999', ekstNr: '1337', navn: 'Byggmester Snorre Rogne', kategori: 'Byggmestre', adresse: 'Byggerivegen 43', postnr: '2653', sted: 'Vestre Gausdal', utlopsdato: '31.12.2023' },
-  { id: '2', nr: '310601', ekstNr: '', navn: 'Snorre Rogne forbruker', kategori: 'Forbrukersalg', adresse: 'Veståsvegen 43', postnr: '2821', sted: 'Gjøvik', utlopsdato: '31.12.2023' },
-  { id: '3', nr: '240209', ekstNr: '2048', navn: 'Snorre Fredrik Cystad', kategori: 'Forbrukersalg', adresse: 'Vestbygvegen 21', postnr: '2565', sted: 'Stange', utlopsdato: '30.06.2024' },
-  { id: '4', nr: '240209', ekstNr: '3142', navn: 'Snorre Birger Pettersen', kategori: 'Forbrukersalg', adresse: 'Huldrevegen 432', postnr: '5698', sted: 'Lillehammer', utlopsdato: '15.09.2024' },
-  { id: '5', nr: '76589', ekstNr: '', navn: 'Tilbygg skolekjøkken', kategori: 'Byggmestre', adresse: 'Skolevegen 8', postnr: '2000', sted: 'Lillestrøm', utlopsdato: '20.08.2024' },
-  { id: '6', nr: '76712', ekstNr: '4096', navn: 'Kontorbygg Teknologiparken', kategori: 'Elektrikere', adresse: 'Innovasjonsveien 3', postnr: '7034', sted: 'Trondheim', utlopsdato: '31.12.2024' },
-  { id: '7', nr: '76845', ekstNr: '5001', navn: 'Rehabilitering gamlehjem', kategori: 'Rørleggere', adresse: 'Omsorgsveien 22', postnr: '5003', sted: 'Bergen', utlopsdato: '10.11.2024' },
-  { id: '8', nr: '76923', ekstNr: '', navn: 'Parkeringshus Vikingsenteret', kategori: 'Byggmestre', adresse: 'Vikingvegen 50', postnr: '4050', sted: 'Sola', utlopsdato: '28.02.2025' },
-  { id: '9', nr: '77014', ekstNr: '6128', navn: 'Leiligheter Fjordutsikt', kategori: 'Byggmestre', adresse: 'Strandpromenaden 7', postnr: '5200', sted: 'Os', utlopsdato: '15.05.2025' },
-  { id: '10', nr: '77156', ekstNr: '7256', navn: 'Industribygg Næringspark', kategori: 'Tømrere', adresse: 'Industriveien 18', postnr: '3611', sted: 'Kongsberg', utlopsdato: '30.04.2025' },
+  { id: '1', nr: '399999', ekstNr: '1337', navn: 'Byggmester Snorre Rogne', kategori: 'Byggmestre', adresse: 'Byggerivegen 43', postnr: '2653', sted: 'Vestre Gausdal', utlopsdato: '31.12.2026' },
+  { id: '2', nr: '310601', ekstNr: '', navn: 'Snorre Rogne forbruker', kategori: 'Forbrukersalg', adresse: 'Veståsvegen 43', postnr: '2821', sted: 'Gjøvik', utlopsdato: '31.12.2026' },
+  { id: '3', nr: '240209', ekstNr: '2048', navn: 'Snorre Fredrik Cystad', kategori: 'Forbrukersalg', adresse: 'Vestbygvegen 21', postnr: '2565', sted: 'Stange', utlopsdato: '30.06.2027' },
+  { id: '4', nr: '240210', ekstNr: '3142', navn: 'Snorre Birger Pettersen', kategori: 'Forbrukersalg', adresse: 'Huldrevegen 432', postnr: '5698', sted: 'Lillehammer', utlopsdato: '15.09.2027' },
+  { id: '5', nr: '76589', ekstNr: '', navn: 'Tilbygg skolekjøkken', kategori: 'Byggmestre', adresse: 'Skolevegen 8', postnr: '2000', sted: 'Lillestrøm', utlopsdato: '20.08.2027' },
+  { id: '6', nr: '76712', ekstNr: '4096', navn: 'Kontorbygg Teknologiparken', kategori: 'Elektrikere', adresse: 'Innovasjonsveien 3', postnr: '7034', sted: 'Trondheim', utlopsdato: '31.12.2026' },
+  { id: '7', nr: '76845', ekstNr: '5001', navn: 'Rehabilitering gamlehjem', kategori: 'Rørleggere', adresse: 'Omsorgsveien 22', postnr: '5003', sted: 'Bergen', utlopsdato: '10.11.2026' },
+  { id: '8', nr: '76923', ekstNr: '', navn: 'Parkeringshus Vikingsenteret', kategori: 'Byggmestre', adresse: 'Vikingvegen 50', postnr: '4050', sted: 'Sola', utlopsdato: '28.02.2027' },
+  { id: '9', nr: '77014', ekstNr: '6128', navn: 'Leiligheter Fjordutsikt', kategori: 'Byggmestre', adresse: 'Strandpromenaden 7', postnr: '5200', sted: 'Os', utlopsdato: '15.05.2027' },
+  { id: '10', nr: '77156', ekstNr: '7256', navn: 'Industribygg Næringspark', kategori: 'Tømrere', adresse: 'Industriveien 18', postnr: '3611', sted: 'Kongsberg', utlopsdato: '30.04.2027' },
 ];
 
 const MOCK_CONTACTS = [
@@ -179,6 +182,40 @@ function SpecificNumberToggle({ checked, onChange, label }: { checked: boolean; 
         {label ?? t('specificCustomerNumber')}
       </span>
     </label>
+  );
+}
+
+// Prototype C on AX: a one-off "Sync" action instead of a mode toggle.
+// Fabri design system: Button / Secondary / Normal (Standard, Hover, Inactive).
+function SyncButton({ label, onClick, disabled }: { label: string; onClick: () => void; disabled: boolean }) {
+  const [hover, setHover] = useState(false);
+  return (
+    <div style={{ padding: '8px 14px' }}>
+      <button
+        onClick={onClick}
+        disabled={disabled}
+        onMouseDown={e => e.preventDefault()}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{
+          // Black/Black 98, 95, 80, 30, 5 from the design system.
+          background: disabled ? '#F1F0F1' : hover ? '#F1F0F1' : '#FFFFFF',
+          color: disabled ? '#46464B' : '#101115',
+          border: `1px solid ${disabled ? '#F9FAFA' : '#C7C7C8'}`,
+          borderRadius: 5,
+          height: 40,
+          padding: '6px 13px',
+          fontFamily: "'Montserrat', sans-serif",
+          fontWeight: 600,
+          fontSize: 13,
+          lineHeight: 1.75,
+          whiteSpace: 'nowrap',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+        }}
+      >
+        <span style={{ opacity: disabled ? 0.6 : 1 }}>{label}</span>
+      </button>
+    </div>
   );
 }
 
@@ -311,8 +348,8 @@ function useAnchorRect(ref: React.RefObject<HTMLElement | null>, active: boolean
 
 // ─── Customer Dropdown Table ──────────────────────────────────────────────────
 
-const CUSTOMER_COLS = '80px 1fr 130px';
-const PROJECT_COLS = '80px 1fr 110px 1fr 110px';
+const CUSTOMER_COLS = '80px 1fr 110px 1fr 80px 110px';
+const PROJECT_COLS = '70px 100px 1.2fr 1fr 160px 110px';
 const HEADER_H = 37;
 const ROW_H = 48;
 
@@ -349,7 +386,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
       top: rect.bottom + 2,
       left: rect.left,
       width: dropWidth,
-      maxHeight: HEADER_H + ROW_H * 6.5 + (topSlot ? 48 : 0),
+      maxHeight: HEADER_H + ROW_H * 6.5 + (topSlot ? 56 : 0),
       zIndex: 2147483647,
       background: 'var(--card)',
       border: '1px solid var(--border)',
@@ -372,7 +409,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
       ) : (
       <>
       <div style={{ display: 'grid', gridTemplateColumns: CUSTOMER_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
-        {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory')].map(h => (
+        {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCode'), t('tableHeaderCity')].map(h => (
           <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
         ))}
       </div>
@@ -395,7 +432,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
             onMouseLeave={() => onHover(null)}
             onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
           >
-            {[r.customerNumber, r.name, r.category || ''].map((val, ci) => (
+            {[r.customerNumber, r.name, r.category || '', r.street || '', r.postalCode || '', (r.city || '').toUpperCase()].map((val, ci) => (
               <span key={ci} style={{ fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
             ))}
           </div>
@@ -431,7 +468,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
       top: rect.bottom + 2,
       left: rect.left,
       width: dropWidth,
-      maxHeight: HEADER_H + ROW_H * 6.5 + (topSlot ? 48 : 0),
+      maxHeight: HEADER_H + ROW_H * 6.5 + (topSlot ? 56 : 0),
       zIndex: 2147483647,
       background: 'var(--card)',
       border: '1px solid var(--border)',
@@ -456,7 +493,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
       ) : (
       <>
       <div style={{ display: 'grid', gridTemplateColumns: PROJECT_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
-        {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')].map(h => (
+        {[t('tableHeaderNumber'), t('tableHeaderExtNumber'), t('tableHeaderName'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity'), t('expirationDate')].map(h => (
           <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
         ))}
       </div>
@@ -479,7 +516,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
             onMouseLeave={() => onHover(null)}
             onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
           >
-            {[r.nr, r.navn, r.kategori, r.adresse, `${r.postnr} ${r.sted}`].map((val, ci) => (
+            {[r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, `${r.postnr}, ${r.sted.toUpperCase()}`, r.utlopsdato.replace(/\./g, '/')].map((val, ci) => (
               <span key={ci} style={{ fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
             ))}
           </div>
@@ -612,6 +649,14 @@ function InfoCard({ title, rows, expandLabel, collapseLabel, expandedCard }: {
 }
 
 /** Red triangle + label shown in a credit card footer when the limit is passed. */
+function OverLimitLabel({ label }: { label: string }) {
+  return (
+    <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-xs)', color: 'var(--destructive)', lineHeight: 1.75 }}>
+      {label}
+    </span>
+  );
+}
+
 function OverLimitWarning({ label }: { label: string }) {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -734,6 +779,7 @@ export function CustomerSelectionModal({
   scannedCardData,
   onCardDataProcessed,
   vipCard = null,
+  vipCardPending = false,
   saleTotal = 0,
   onVipRemoved,
   onVipAcknowledged,
@@ -975,6 +1021,13 @@ export function CustomerSelectionModal({
       )
     : mockProjects;
 
+  // The Sync buttons only appear on a hit: the query is exactly an ERP-only number,
+  // or the local search narrowed down to a single result. Hidden once synced.
+  const showSyncCustomer = syncWording && !specificNumberOn && customerQuery !== '' && customerQuery !== selectedCustomer?.name &&
+    (filteredCustomers.length === 1 || erpOnlyCustomers.some(c => c.customerNumber === customerQuery.trim()));
+  const showSyncProject = syncWording && !specificProjectOn && projectSearch.trim() !== '' && projectSearch !== selectedProject?.navn &&
+    (filteredProjects.length === 1 || erpOnlyProjects.some(p => p.nr === projectSearch.trim()));
+
   // ─── Handlers ───────────────────────────────────────────────────────────────
 
   const handleCustomerSelect = (c: Customer) => {
@@ -1013,6 +1066,14 @@ export function CustomerSelectionModal({
   };
 
   const handleConfirm = () => {
+    // Prototype A keeps Confirm clickable and explains what is missing in a toast.
+    if (switchUserFlow === 'A') {
+      const missing = firstMissingMandatory();
+      if (missing) {
+        posToast.error(missing);
+        return;
+      }
+    }
     onConfirm(selectedCustomer, selectedProject || undefined);
   };
 
@@ -1186,11 +1247,28 @@ export function CustomerSelectionModal({
     return true;
   })();
 
+  /** Message for the first empty mandatory field (screen order), or null when all are filled. */
+  const firstMissingMandatory = (): string | null => {
+    if (!vipCard) return null;
+    const empty = (v: string) => v.trim() === '';
+    if (empty(requisitionNumber)) return t('fieldMandatoryToast').replace('{field}', t('requisitionRequired').replace(' *', ''));
+    if (stackedDeliveryAddress && vipCard.address && empty(deliveryAddress1)) return t('fieldMandatoryToast').replace('{field}', t('vipDeliveryAddress'));
+    if (empty(contactPerson)) return t('fieldMandatoryToast').replace('{field}', t('vipRecipient'));
+    return null;
+  };
+
   const vipCreditRemaining = vipCard ? vipCard.creditLimit - saleTotal : 0;
   const vipOverLimit = !!vipCard && vipCreditRemaining < 0;
   /* "Blocked — resolvable by removing items" concept: the credit panel keeps
      its default styling — no red border, no "Over credit limit" warning —
      since the blocked notice above already covers the messaging. */
+  const protoCCreditStyle = switchUserFlow === 'C';
+  /* Prototype C: an open card that tips over its limit reads as Blocked, so it
+     gets the same "remove items or remove card" notice as the resolvable concept. */
+  /* Resolvable cards are only blocked while over the limit — removing enough
+     items lifts the block. */
+  const vipStatusBlocked = vipCard?.status === 'blocked' && !(vipCard.blockedResolvableByRemovingItems && !vipOverLimit);
+  const openCardOverLimitNotice = protoCCreditStyle && vipOverLimit && vipCard?.status === 'open';
   const vipCreditDangerStyling = vipOverLimit && !vipCard?.blockedResolvableByRemovingItems;
 
   // ─── Side panel data ─────────────────────────────────────────────────────────
@@ -1333,7 +1411,7 @@ export function CustomerSelectionModal({
                   A card that is over its credit limit reads as Blocked here too, not just a
                   true Aspect4-blocked card — same status chip, no separate indicator. */}
               {vipCard && (() => {
-                const isBlocked = vipCard.status === 'blocked' || vipOverLimit;
+                const isBlocked = vipStatusBlocked || vipOverLimit;
                 return (
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                   <span style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600, fontSize: 'var(--text-base)', color: 'var(--card-foreground)', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -1393,9 +1471,8 @@ export function CustomerSelectionModal({
                 </div>
               )}
 
-              {hasSpecificNumber && customerSearchConcept === 'B' && (
+              {hasSpecificNumber && customerSearchConcept === 'B' && !syncWording && (
                 <SpecificNumberToggle
-                  label={syncWording ? t('syncCustomers') : undefined}
                   checked={specificNumberOn}
                   onChange={v => { setSpecificNumberOn(v); setErpFetched(false); }}
                 />
@@ -1480,6 +1557,7 @@ export function CustomerSelectionModal({
                                     setCustomerSearch(e.target.value);
                                     setCustomerOpen(true);
                                     setErpFetched(false);
+                                    if (syncWording) setSpecificNumberOn(false);
                                     if (e.target.value === '') {
                                       setSelectedCustomer(null);
                                     }
@@ -1500,7 +1578,7 @@ export function CustomerSelectionModal({
                               </InputBox>
                             </div>
                             {scanCustomerCard && <ScanCardButton onClick={() => { if (scanHasResult) { setScanHasResult(false); setCardScanInput(''); } else { setScanPanelOpen(v => !v); } }} active={scanPanelOpen} />}
-                            {hasSpecificNumber && customerSearchConcept === 'B' && specificNumberOn && (
+                            {hasSpecificNumber && customerSearchConcept === 'B' && !syncWording && specificNumberOn && (
                               <GetCustomerButton
                                 onClick={() => { setErpFetched(true); cancelCustomerClose(); setCustomerOpen(true); customerSearchInputRef.current?.focus(); }}
                                 disabled={customerSearch.trim() === ''}
@@ -1520,7 +1598,7 @@ export function CustomerSelectionModal({
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
                                   placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
-                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); }}
+                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording) setSpecificProjectOn(false); }}
                                   onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
                                   onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
@@ -1661,7 +1739,7 @@ export function CustomerSelectionModal({
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
                                   placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
-                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); }}
+                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording) setSpecificProjectOn(false); }}
                                   onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
                                   onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
@@ -1794,7 +1872,7 @@ export function CustomerSelectionModal({
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
                                   placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
-                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); }}
+                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording) setSpecificProjectOn(false); }}
                                   onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
                                   onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
@@ -1982,7 +2060,7 @@ export function CustomerSelectionModal({
                         credit limit right now — if this concept's card isn't (yet)
                         over limit, fall back to the general blocked copy, since no
                         other reason for this concept's block is modeled. */}
-                    {vipCard.status === 'blocked' && (
+                    {(vipStatusBlocked || openCardOverLimitNotice) && (
                       <div style={{
                         background: 'var(--Orange-Orange-98, #FFF8F3)',
                         border: '1px solid var(--Orange-Orange-60, #E66F04)',
@@ -1990,7 +2068,7 @@ export function CustomerSelectionModal({
                         padding: 15,
                       }}>
                         <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.75, margin: 0 }}>
-                          {vipCard.blockedResolvableByRemovingItems && vipOverLimit
+                          {(vipCard.blockedResolvableByRemovingItems && vipOverLimit) || openCardOverLimitNotice
                             ? t('vipBlockedRemoveItemsOrCard')
                             : (blockedOverridable ? t('vipBlockedInfo') : t('vipBlockedHardStop'))}
                         </p>
@@ -2225,9 +2303,11 @@ export function CustomerSelectionModal({
                 <EgList
                   title={t('creditTitle')}
                   rows={customerCreditRows}
-                  tone={vipCreditDangerStyling ? 'danger' : 'default'}
-                  /* Flow 2: over limit is a visible warning, never a hard stop */
-                  footer={vipCreditDangerStyling && <OverLimitWarning label={t('overCreditLimit')} />}
+                  tone={vipCreditDangerStyling && !protoCCreditStyle ? 'danger' : 'default'}
+                  /* Flow 2: over limit is a visible warning, never a hard stop.
+                     Prototype C: grey border, label top right, no icon. */
+                  footer={vipCreditDangerStyling && !protoCCreditStyle && <OverLimitWarning label={t('overCreditLimit')} />}
+                  headerTrailing={vipCreditDangerStyling && protoCCreditStyle ? <OverLimitLabel label={t('overCreditLimit')} /> : undefined}
                 />
               )}
             </div>
@@ -2264,8 +2344,9 @@ export function CustomerSelectionModal({
                     <EgList
                       title={t('creditTitle')}
                       rows={customerCreditRows}
-                      tone={vipCreditDangerStyling ? 'danger' : 'default'}
-                      footer={vipCreditDangerStyling && <OverLimitWarning label={t('overCreditLimit')} />}
+                      tone={vipCreditDangerStyling && !protoCCreditStyle ? 'danger' : 'default'}
+                      footer={vipCreditDangerStyling && !protoCCreditStyle && <OverLimitWarning label={t('overCreditLimit')} />}
+                      headerTrailing={vipCreditDangerStyling && protoCCreditStyle ? <OverLimitLabel label={t('overCreditLimit')} /> : undefined}
                     />
                     {selectedProject && (
                       <InfoCard
@@ -2410,10 +2491,11 @@ export function CustomerSelectionModal({
               onConfirm={handleConfirm}
               cancelText={t('cancel')}
               confirmText={t('confirm')}
-              confirmDisabled={!selectedCustomer || !vipMandatoryFilled}
+              confirmDisabled={!selectedCustomer || (switchUserFlow !== 'A' && !vipMandatoryFilled)}
               extraAction={vipCard ? {
                 label: t('removeVipCard'),
                 onClick: handleVipRemoveOrDismiss,
+                disabled: vipCardPending,
               } : undefined}
             />
           </div>
@@ -2431,9 +2513,14 @@ export function CustomerSelectionModal({
         panelRef={customerDropdownRef}
         awaitingInput={customerQuery === ''}
         suggestSpecificNumber={hasSpecificNumber && !specificNumberOn}
-        topSlot={hasSpecificNumber && customerSearchConcept === 'A' ? (
+        topSlot={syncWording ? (showSyncCustomer ? (
+          <SyncButton
+            label={filteredCustomers.length === 0 ? t('fetchCustomer') : t('syncCustomer')}
+            disabled={false}
+            onClick={() => { setSpecificNumberOn(true); setErpFetched(true); cancelCustomerClose(); setCustomerOpen(true); customerSearchInputRef.current?.focus(); }}
+          />
+        ) : undefined) : hasSpecificNumber && customerSearchConcept === 'A' ? (
           <SpecificNumberToggle
-            label={syncWording ? t('syncCustomers') : undefined}
             checked={specificNumberOn}
             onChange={v => {
               setSpecificNumberOn(v);
@@ -2454,9 +2541,15 @@ export function CustomerSelectionModal({
         onSelect={handleProjectSelect}
         panelRef={projectDropdownRef}
         suggestSpecificNumber={hasSpecificProject && !specificProjectOn}
-        topSlot={hasSpecificProject ? (
+        topSlot={syncWording ? (showSyncProject ? (
+          <SyncButton
+            label={t('syncProjects')}
+            disabled={false}
+            onClick={() => { setSpecificProjectOn(true); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
+          />
+        ) : undefined) : hasSpecificProject ? (
           <SpecificNumberToggle
-            label={syncWording ? t('syncProjects') : t('specificProjectNumber')}
+            label={t('specificProjectNumber')}
             checked={specificProjectOn}
             onChange={v => { setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
           />

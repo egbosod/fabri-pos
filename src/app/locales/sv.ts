@@ -252,7 +252,8 @@ const sv: Translations = {
   specificProjectNumber: 'Specifikt projektnummer',
   specificProjectNumberPlaceholder: 'Sök efter specifikt projektnummer',
   noProjectsFoundTrySpecific: 'Inget projekt hittades. Prova att hitta projektet med ett specifikt projektnummer',
-  syncCustomers: 'Synkronisera kunder',
+  syncCustomer: 'Synkronisera kund',
+  fetchCustomer: 'Hämta kund',
   syncProjects: 'Synkronisera projekt',
   requisitionPlaceholder: 'Ange rekvisitionsnummer',
   contactPersonPlaceholder: 'Välj kontaktperson',
@@ -300,7 +301,10 @@ const sv: Translations = {
   tableHeaderName: 'NAMN',
   tableHeaderCategory: 'KATEGORI',
   tableHeaderAddress: 'ADRESS',
-  tableHeaderPostalCodeCity: 'POSTNR/STAD',
+  tableHeaderPostalCodeCity: 'POSTNR, STAD',
+  tableHeaderPostalCode: 'POSTNR',
+  tableHeaderCity: 'STAD',
+  tableHeaderExtNumber: 'EXT. NR',
 
   // ── Tab labels ─────────────────────────────────────────────────────────────
   tabGeneral: 'Allmänt',
@@ -343,6 +347,7 @@ const sv: Translations = {
   vipBlockedInfo: 'VIP-kortet är spärrat. Försäljningen kan inte slutföras förrän kortet tas bort.',
   vipBlockedHardStop: 'VIP-kortet är spärrat. Försäljningen kan inte slutföras med detta kort, och spärren kan inte åsidosättas i kassan.',
   removeVipCard: 'Ta bort VIP-kort',
+  vipCardRemovedToast: 'VIP-kortet har tagits bort',
   continueAsNormalCustomer: 'Fortsätt som vanlig kund',
   vipCreditTitle: 'KREDIT',
   vipCreditLimit: 'VIP-kortets gräns',
@@ -384,8 +389,11 @@ const sv: Translations = {
   invoicesForPayment: 'Fakturor att betala',
   edit: 'Redigera',
   removeCustomer: 'Ta bort kunden',
-  noInvoicesForPayment: 'Inga fakturor att betala',
   cannotChangeCustomerFetchedOrder: 'Kan inte ändra kund på försäljningen när ordern är hämtad för betalning',
+  projectMandatoryToast: 'Projektval är obligatoriskt för vald kund!',
+  fieldMandatoryToast: '{field} är obligatoriskt!',
+  vipCardAlreadyActiveToast: 'Ta bort det nuvarande VIP-kortet innan du skannar ett nytt',
+  noInvoicesForPayment: 'Inga fakturor att betala',
   invoicesForPaymentPlaceholder: 'Fakturor att betala för den här kunden visas här. Funktionen är under utveckling.',
 };
 
