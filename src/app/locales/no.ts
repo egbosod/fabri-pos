@@ -249,6 +249,7 @@ const no: Translations = {
   getCustomer: 'Hent kunde',
   noCustomersFound: 'Ingen kunder funnet',
   noCustomersFoundTrySpecific: 'Ingen kunde funnet. Prøv å finne kunden med et spesifikt kundenummer',
+  includeExpiredProjects: 'Inkluder utgåtte prosjekter',
   specificProjectNumber: 'Spesifikt prosjektnummer',
   specificProjectNumberPlaceholder: 'Søk etter spesifikt prosjektnummer',
   noProjectsFoundTrySpecific: 'Ingen prosjekt funnet. Prøv å finne prosjektet med et spesifikt prosjektnummer',

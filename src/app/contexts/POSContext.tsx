@@ -64,6 +64,9 @@ interface POSContextValue {
   /* VIP card (Aspect4 DK / Prototypes B & C) */
   vipCard: VipCardData | null;
   setVipCard: (card: VipCardData | null) => void;
+  /** A scanned card the cashier hasn't confirmed yet; only the modal sees it. */
+  pendingVipCard: VipCardData | null;
+  setPendingVipCard: (card: VipCardData | null) => void;
   vipAcknowledged: boolean;
   setVipAcknowledged: (ack: boolean) => void;
   vipBlocked: boolean;
@@ -254,14 +257,8 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
   /* ── VIP card ───────────────────────────────────────────────────────────── */
   // Sale-scoped: must outlive the customer modal so PaymentFlowModal can read it.
   const [vipCard, setVipCard] = useState<VipCardData | null>(null);
+  const [pendingVipCard, setPendingVipCard] = useState<VipCardData | null>(null);
   const [vipAcknowledged, setVipAcknowledged] = useState(false);
-
-  /**
-   * A blocked-and-unacknowledged VIP card prevents finalizing the sale.
-   * Prototype C lets the cashier acknowledge and carry on (Flow 1); Prototype B
-   * never acknowledges, so there the block stands until the card is removed.
-   */
-  const vipBlocked = !!vipCard && vipCard.status === 'blocked' && !vipAcknowledged;
 
   /* ── Hovedordre (Main order) ────────────────────────────────────────────── */
   const [selectedHovedordre, setSelectedHovedordre] = useState<{ ordrenummer: string } | null>(null);
@@ -349,6 +346,15 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
    */
   const vipCreditExceeded = !!vipCard && paymentTotals.total > vipCard.creditLimit;
 
+  /**
+   * A blocked-and-unacknowledged VIP card prevents finalizing the sale.
+   * Prototype C lets the cashier acknowledge and carry on (Flow 1); Prototype B
+   * never acknowledges, so there the block stands until the card is removed.
+   */
+  const vipBlocked = !!vipCard && vipCard.status === 'blocked' && !vipAcknowledged
+    // Resolvable cards are blocked only while over the limit: removing enough items lifts it.
+    && !(vipCard.blockedResolvableByRemovingItems && !vipCreditExceeded);
+
   const hasOrderItems = paymentTotals.itemCount > 0;
 
   /* ── Clear the cart only ───────────────────────────────────────────────── */
@@ -372,6 +378,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setUserSwitchToast({ visible: false, username: '' });
     setUserLogoutToast({ visible: false, username: '' });
     setVipCard(null);
+    setPendingVipCard(null);
     setVipAcknowledged(false);
     setPriceCheckItems([]);
     setPriceCheckCustomerState(null);
@@ -416,6 +423,8 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setSelectedHovedordre,
     vipCard,
     setVipCard,
+    pendingVipCard,
+    setPendingVipCard,
     vipAcknowledged,
     setVipAcknowledged,
     vipBlocked,

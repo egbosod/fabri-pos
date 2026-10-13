@@ -157,8 +157,19 @@ const mockProjects: Project[] = [
   { id: '7', nr: '76845', ekstNr: '5001', navn: 'Rehabilitering gamlehjem', kategori: 'Rørleggere', adresse: 'Omsorgsveien 22', postnr: '5003', sted: 'Bergen', utlopsdato: '10.11.2026' },
   { id: '8', nr: '76923', ekstNr: '', navn: 'Parkeringshus Vikingsenteret', kategori: 'Byggmestre', adresse: 'Vikingvegen 50', postnr: '4050', sted: 'Sola', utlopsdato: '28.02.2027' },
   { id: '9', nr: '77014', ekstNr: '6128', navn: 'Leiligheter Fjordutsikt', kategori: 'Byggmestre', adresse: 'Strandpromenaden 7', postnr: '5200', sted: 'Os', utlopsdato: '15.05.2027' },
+  { id: '11', nr: '75210', ekstNr: '', navn: 'Utbygging Havnelageret', kategori: 'Byggmestre', adresse: 'Kaiveien 5', postnr: '4006', sted: 'Stavanger', utlopsdato: '30.06.2026' },
+  { id: '12', nr: '74388', ekstNr: '3310', navn: 'Renovering Kirkegata 12', kategori: 'Tømrere', adresse: 'Kirkegata 12', postnr: '0153', sted: 'Oslo', utlopsdato: '15.03.2026' },
+  { id: '13', nr: '73950', ekstNr: '', navn: 'Nytt tak Bakkeløkka', kategori: 'Byggmestre', adresse: 'Bakkeløkka 9', postnr: '2317', sted: 'Hamar', utlopsdato: '31.12.2025' },
   { id: '10', nr: '77156', ekstNr: '7256', navn: 'Industribygg Næringspark', kategori: 'Tømrere', adresse: 'Industriveien 18', postnr: '3611', sted: 'Kongsberg', utlopsdato: '30.04.2027' },
 ];
+
+// Dates are dd.mm.yyyy. Compared against the real current date.
+function isExpired(utlopsdato: string): boolean {
+  const [d, m, y] = utlopsdato.split('.').map(Number);
+  if (!d || !m || !y) return false;
+  const end = new Date(y, m - 1, d, 23, 59, 59);
+  return end.getTime() < Date.now();
+}
 
 const MOCK_CONTACTS = [
   { id: 1, navn: 'Ariel Havmøy', tittel: 'Prosjektleder' },
@@ -350,6 +361,9 @@ function useAnchorRect(ref: React.RefObject<HTMLElement | null>, active: boolean
 
 const CUSTOMER_COLS = '80px 1fr 110px 1fr 80px 110px';
 const PROJECT_COLS = '70px 100px 1.2fr 1fr 160px 110px';
+// AX column structure, also used by the BrandSync table in Prototype C.
+const CUSTOMER_COLS_AX = '80px 1fr 110px 1fr 150px';
+const PROJECT_COLS_AX = '80px 120px 1fr 1fr 150px 140px';
 const HEADER_H = 37;
 const ROW_H = 48;
 
@@ -360,7 +374,17 @@ interface DropdownCustomer {
   category?: string;
 }
 
-function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, awaitingInput, suggestSpecificNumber }: {
+// AX shows customer categories as numeric codes, not names — mocked per category.
+const AX_CATEGORY_CODES: Record<string, string> = {
+  Forbrukersalg: '1',
+  Byggmestre: '221',
+  Elektrikere: '234',
+  Malere: '235',
+  Rørleggere: '236',
+  Tømrere: '237',
+};
+
+function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, awaitingInput, suggestSpecificNumber, bsTable = false, axColumns = false }: {
   rect: DOMRect | null;
   modalRight: number | null;
   rows: DropdownCustomer[];
@@ -371,6 +395,10 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
   panelRef?: React.Ref<HTMLDivElement>;
   awaitingInput?: boolean;
   suggestSpecificNumber?: boolean;
+  /** BrandSync table styling: semantic table, fixed header, dividers, hover row (Settings → BrandSync, ERP AX). */
+  bsTable?: boolean;
+  /** AX column content and structure in the plain list styling (Prototypes A and B). */
+  axColumns?: boolean;
 }) {
   const { t } = useLanguage();
   // Nothing renders until the user has typed — not even the topSlot, since the
@@ -406,10 +434,47 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
         <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
           {t(suggestSpecificNumber ? 'noCustomersFoundTrySpecific' : 'noCustomersFound')}
         </div>
+      ) : bsTable ? (
+      /* BrandSync Table: real <table>, header fixed while rows scroll, dividers
+         between rows, whole-row hover shade, muted uppercase header. Font is
+         deliberately left to the surrounding styles. */
+      <div style={{ overflowY: 'auto', flex: 1 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+          <colgroup>
+            <col style={{ width: 90 }} /><col /><col style={{ width: 110 }} /><col /><col style={{ width: 150 }} />
+          </colgroup>
+          <caption style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>{t('customer')}</caption>
+          <thead>
+            <tr>
+              {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')].map(h => (
+                <th key={h} scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, padding: '0 12px', textAlign: 'left', fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', background: 'var(--card)', borderBottom: '1px solid var(--border)' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr
+                key={r.id}
+                onMouseEnter={() => onHover(i)}
+                onMouseLeave={() => onHover(null)}
+                onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
+                style={{ height: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s' }}
+              >
+                {[r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()].map((val, ci) => (
+                  <td key={ci} style={{ padding: '0 12px', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       ) : (
       <>
-      <div style={{ display: 'grid', gridTemplateColumns: CUSTOMER_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
-        {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCode'), t('tableHeaderCity')].map(h => (
+      <div style={{ display: 'grid', gridTemplateColumns: axColumns ? CUSTOMER_COLS_AX : CUSTOMER_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
+        {(axColumns
+          ? [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')]
+          : [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCode'), t('tableHeaderCity')]
+        ).map(h => (
           <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
         ))}
       </div>
@@ -419,7 +484,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
             key={r.id}
             style={{
               display: 'grid',
-              gridTemplateColumns: CUSTOMER_COLS,
+              gridTemplateColumns: axColumns ? CUSTOMER_COLS_AX : CUSTOMER_COLS,
               padding: '0 12px',
               height: ROW_H,
               alignItems: 'center',
@@ -432,7 +497,10 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
             onMouseLeave={() => onHover(null)}
             onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
           >
-            {[r.customerNumber, r.name, r.category || '', r.street || '', r.postalCode || '', (r.city || '').toUpperCase()].map((val, ci) => (
+            {(axColumns
+              ? [r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()]
+              : [r.customerNumber, r.name, r.category || '', r.street || '', r.postalCode || '', (r.city || '').toUpperCase()]
+            ).map((val, ci) => (
               <span key={ci} style={{ fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
             ))}
           </div>
@@ -446,7 +514,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
 
 // ─── Project Dropdown Table ───────────────────────────────────────────────────
 
-function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, suggestSpecificNumber }: {
+function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, suggestSpecificNumber, bsTable = false, axColumns = false }: {
   rect: DOMRect | null;
   modalRight: number | null;
   rows: Project[];
@@ -456,6 +524,10 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
   topSlot?: React.ReactNode;
   panelRef?: React.Ref<HTMLDivElement>;
   suggestSpecificNumber?: boolean;
+  /** BrandSync table styling, same as the customer list (Settings → BrandSync, ERP AX). */
+  bsTable?: boolean;
+  /** AX column content and structure in the plain list styling (Prototypes A and B). */
+  axColumns?: boolean;
 }) {
   const { t } = useLanguage();
   // The toggle keeps the panel open through an empty result so it can be switched back.
@@ -490,10 +562,44 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
             {t('noProjectsFoundTrySpecific')}
           </div>
         )
+      ) : bsTable ? (
+      <div style={{ overflowY: 'auto', flex: 1 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+          <colgroup>
+            <col style={{ width: 80 }} /><col style={{ width: 120 }} /><col /><col /><col style={{ width: 150 }} /><col style={{ width: 140 }} />
+          </colgroup>
+          <caption style={{ position: 'absolute', width: 1, height: 1, overflow: 'hidden', clip: 'rect(0 0 0 0)' }}>{t('project')}</caption>
+          <thead>
+            <tr>
+              {[t('tableHeaderNumber'), t('tableHeaderExtNumber'), t('tableHeaderName'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity'), t('expirationDate')].map(h => (
+                <th key={h} scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, padding: '0 12px', textAlign: 'left', fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', background: 'var(--card)', borderBottom: '1px solid var(--border)' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr
+                key={r.id}
+                onMouseEnter={() => onHover(i)}
+                onMouseLeave={() => onHover(null)}
+                onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
+                style={{ height: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s', opacity: isExpired(r.utlopsdato) ? 0.55 : 1 }}
+              >
+                {[r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, `${r.postnr}, ${r.sted.toUpperCase()}`, r.utlopsdato.replace(/\./g, '/')].map((val, ci) => (
+                  <td key={ci} style={{ padding: '0 12px', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       ) : (
       <>
-      <div style={{ display: 'grid', gridTemplateColumns: PROJECT_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
-        {[t('tableHeaderNumber'), t('tableHeaderExtNumber'), t('tableHeaderName'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity'), t('expirationDate')].map(h => (
+      <div style={{ display: 'grid', gridTemplateColumns: axColumns ? PROJECT_COLS_AX : PROJECT_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
+        {(axColumns
+          ? [t('tableHeaderNumber'), t('tableHeaderExtNumber'), t('tableHeaderName'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity'), t('expirationDate')]
+          : [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')]
+        ).map(h => (
           <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
         ))}
       </div>
@@ -503,7 +609,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
             key={r.id}
             style={{
               display: 'grid',
-              gridTemplateColumns: PROJECT_COLS,
+              gridTemplateColumns: axColumns ? PROJECT_COLS_AX : PROJECT_COLS,
               padding: '0 12px',
               height: ROW_H,
               alignItems: 'center',
@@ -511,12 +617,16 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
               background: hoveredIdx === i ? 'color-mix(in srgb, var(--primary) 8%, transparent)' : 'var(--card)',
               cursor: 'pointer',
               transition: 'background 0.07s',
+              opacity: isExpired(r.utlopsdato) ? 0.55 : 1,
             }}
             onMouseEnter={() => onHover(i)}
             onMouseLeave={() => onHover(null)}
             onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
           >
-            {[r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, `${r.postnr}, ${r.sted.toUpperCase()}`, r.utlopsdato.replace(/\./g, '/')].map((val, ci) => (
+            {(axColumns
+              ? [r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, `${r.postnr}, ${r.sted.toUpperCase()}`, r.utlopsdato.replace(/\./g, '/')]
+              : [r.nr, r.navn, r.kategori, r.adresse, `${r.postnr} ${r.sted}`]
+            ).map((val, ci) => (
               <span key={ci} style={{ fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
             ))}
           </div>
@@ -790,7 +900,7 @@ export function CustomerSelectionModal({
   initialProject = null,
 }: CustomerSelectionModalProps) {
   const { t } = useLanguage();
-  const { switchUserFlow, erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard, customerSearchConcept } = useSettings();
+  const { switchUserFlow, erpScenario, allowCreateProject, allowCreateContactPerson, showExpiredProjectsToggle, scanCustomerCard, customerSearchConcept, brandSyncEnabled } = useSettings();
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
   // The customer toggle is an Aspect4 concept, also applied to AX in Prototypes A, B and C.
   const hasSpecificNumber = isAspect4 || erpScenario === 'AX';
@@ -1008,10 +1118,14 @@ export function CustomerSelectionModal({
 
   // Same toggle for projects: look up in the external ERP, fetched as you type.
   const projectSpecificMode = hasSpecificProject && specificProjectOn;
+  const [includeExpired, setIncludeExpired] = useState(false);
+  const localProjects = showExpiredProjectsToggle && includeExpired
+    ? [...mockProjects.filter(p => isExpired(p.utlopsdato)), ...mockProjects.filter(p => !isExpired(p.utlopsdato))]
+    : mockProjects.filter(p => !isExpired(p.utlopsdato));
   const filteredProjects = projectSpecificMode
     ? (projectSearch ? erpOnlyProjects.filter(p => p.nr.includes(projectSearch) || p.navn.toLowerCase().includes(projectSearch.toLowerCase())) : [])
     : projectSearch
-    ? mockProjects.filter(p =>
+    ? localProjects.filter(p =>
         p.navn.toLowerCase().includes(projectSearch.toLowerCase()) ||
         p.nr.includes(projectSearch) ||
         p.kategori.toLowerCase().includes(projectSearch.toLowerCase()) ||
@@ -1019,7 +1133,7 @@ export function CustomerSelectionModal({
         p.postnr.includes(projectSearch) ||
         p.sted.toLowerCase().includes(projectSearch.toLowerCase())
       )
-    : mockProjects;
+    : localProjects;
 
   // The Sync buttons only appear on a hit: the query is exactly an ERP-only number,
   // or the local search narrowed down to a single result. Hidden once synced.
@@ -2513,6 +2627,8 @@ export function CustomerSelectionModal({
         panelRef={customerDropdownRef}
         awaitingInput={customerQuery === ''}
         suggestSpecificNumber={hasSpecificNumber && !specificNumberOn}
+        bsTable={brandSyncEnabled && erpScenario === 'AX'}
+        axColumns={erpScenario === 'AX'}
         topSlot={syncWording ? (showSyncCustomer ? (
           <SyncButton
             label={filteredCustomers.length === 0 ? t('fetchCustomer') : t('syncCustomer')}
@@ -2541,19 +2657,36 @@ export function CustomerSelectionModal({
         onSelect={handleProjectSelect}
         panelRef={projectDropdownRef}
         suggestSpecificNumber={hasSpecificProject && !specificProjectOn}
-        topSlot={syncWording ? (showSyncProject ? (
-          <SyncButton
-            label={t('syncProjects')}
-            disabled={false}
-            onClick={() => { setSpecificProjectOn(true); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
-          />
-        ) : undefined) : hasSpecificProject ? (
-          <SpecificNumberToggle
-            label={t('specificProjectNumber')}
-            checked={specificProjectOn}
-            onChange={v => { setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
-          />
-        ) : undefined}
+        bsTable={brandSyncEnabled && erpScenario === 'AX'}
+        axColumns={erpScenario === 'AX' || showExpiredProjectsToggle}
+        topSlot={(() => {
+          const specificSlot = syncWording ? (showSyncProject ? (
+            <SyncButton
+              label={t('syncProjects')}
+              disabled={false}
+              onClick={() => { setSpecificProjectOn(true); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
+            />
+          ) : undefined) : hasSpecificProject ? (
+            <SpecificNumberToggle
+              label={t('specificProjectNumber')}
+              checked={specificProjectOn}
+              onChange={v => { setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
+            />
+          ) : undefined;
+          const expiredSlot = showExpiredProjectsToggle && !projectSpecificMode ? (
+            <SpecificNumberToggle
+              label={t('includeExpiredProjects')}
+              checked={includeExpired}
+              onChange={v => { setIncludeExpired(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
+            />
+          ) : undefined;
+          return specificSlot || expiredSlot ? (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+              {expiredSlot}
+              {specificSlot}
+            </div>
+          ) : undefined;
+        })()}
       />
       <ContactSelectList
         anchorRef={contactAnchorRef as React.RefObject<HTMLElement>}

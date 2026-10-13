@@ -78,12 +78,18 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     allowCreateProjectDesc: 'Vis en pluss-knapp ved «Prosjekt» i kundevalg for å opprette nye prosjekter.',
     allowCreateContactPerson: 'Tillat oppretting av ny kontaktperson',
     allowCreateContactPersonDesc: 'Vis en pluss-knapp ved «Kontaktperson» i kundevalg for å opprette nye kontakter.',
+    showExpiredProjectsToggle: 'Inkluder utgåtte prosjekter',
+    showExpiredProjectsToggleDesc: 'Vis en bryter over søkeresultatlisten for «Prosjekt» i kundevalg som tar med utgåtte prosjekter.',
     showPasswordOption: 'Vis «Endre passord»-alternativ',
     showPasswordOptionDesc: 'Vis et passordalternativ i modalen for brukerbytte.',
     showDebugBanner: 'Vis debug-banner',
     showDebugBannerDesc: 'Vis overlegg for miljødebugging (kan også slås av og på med D).',
 
     wcagHeading: 'Designsystem',
+    brandSync: 'BrandSync',
+    brandSyncDark: 'Mørk modus',
+    brandSyncDarkDesc: 'Bruk BrandSyncs mørke palett. Krever at BrandSync er på.',
+    brandSyncDesc: 'Bruk BrandSync-farger, stil, font, knapper og tabeller i hele appen (unntatt rosa prototypelag og innstillinger).',
     wcagDesc: 'Test visuelle tilgjengelighetsfunksjoner. Slå på enkeltinnstillinger eller alt samtidig.',
     wcagContrast: 'Farger',
     wcagContrastDesc: 'Bruk WCAG AA/AAA-kontrastforhold for all tekst.',
@@ -159,12 +165,18 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     allowCreateProjectDesc: 'Show a plus button next to "Project" in customer selection to create new projects.',
     allowCreateContactPerson: 'Allow creating new contact person',
     allowCreateContactPersonDesc: 'Show a plus button next to "Contact person" in customer selection to create new contacts.',
+    showExpiredProjectsToggle: 'Include expired projects',
+    showExpiredProjectsToggleDesc: 'Show a toggle above the "Project" search result list in customer selection that includes expired projects.',
     showPasswordOption: 'Show "Change password" option',
     showPasswordOptionDesc: 'Show a password option in the user switch modal.',
     showDebugBanner: 'Show debug banner',
     showDebugBannerDesc: 'Display the environment debug overlay (also toggled with the D key).',
 
     wcagHeading: 'Design System',
+    brandSync: 'BrandSync',
+    brandSyncDark: 'Dark mode',
+    brandSyncDarkDesc: 'Use the BrandSync dark palette. Requires BrandSync to be on.',
+    brandSyncDesc: 'Apply BrandSync colour, style, font, buttons and tables across the app (except the pink prototype layer and Settings).',
     wcagDesc: 'Test visual accessibility features. Toggle individual settings or enable all at once.',
     wcagContrast: 'Contrast',
     wcagContrastDesc: 'Enable WCAG AA/AAA contrast ratios for all text.',
@@ -251,6 +263,12 @@ export function SettingsModal() {
     setAllowCreateProject,
     allowCreateContactPerson,
     setAllowCreateContactPerson,
+    showExpiredProjectsToggle,
+    setShowExpiredProjectsToggle,
+    brandSyncEnabled,
+    setBrandSyncEnabled,
+    brandSyncDark,
+    setBrandSyncDark,
     showPasswordOption,
     setShowPasswordOption,
     scanCustomerCard,
@@ -638,6 +656,7 @@ export function SettingsModal() {
       <style>{`.sm-row > :first-child { flex: 1 1 200px !important; min-width: 0; }`}</style>
       <div
         ref={modalRef}
+        data-bs-exempt
         style={{
           // ── Settings-modal-only palette ──────────────────────────────────
           // This panel is a prototyping tool, not the Fabri POS product, so
@@ -1231,6 +1250,38 @@ export function SettingsModal() {
                   />
                 </RowCard>
 
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.showExpiredProjectsToggle}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {s.showExpiredProjectsToggleDesc}
+                    </p>
+                  </div>
+                  <Toggle
+                    checked={showExpiredProjectsToggle}
+                    onChange={() => setShowExpiredProjectsToggle(!showExpiredProjectsToggle)}
+                  />
+                </RowCard>
+
                 {/* Scan Customer Card toggle */}
                 <RowCard>
                   <div>
@@ -1416,6 +1467,47 @@ export function SettingsModal() {
             </SectionHeader>
             {expandedSections.wcag && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.brandSync}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {s.brandSyncDesc}
+                    </p>
+                  </div>
+                  <Toggle checked={brandSyncEnabled} onChange={() => setBrandSyncEnabled(!brandSyncEnabled)} />
+                </RowCard>
+
+                <RowCard>
+                  <div style={{ opacity: brandSyncEnabled ? 1 : 0.5 }}>
+                    <p style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'var(--font-weight-semibold)', fontSize: 'var(--text-base)', color: 'var(--foreground)', margin: 0, lineHeight: 1.5 }}>
+                      {s.brandSyncDark}
+                    </p>
+                    <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', margin: '4px 0 0', lineHeight: 1.4 }}>
+                      {s.brandSyncDarkDesc}
+                    </p>
+                  </div>
+                  <Toggle checked={brandSyncEnabled && brandSyncDark} onChange={() => { if (brandSyncEnabled) setBrandSyncDark(!brandSyncDark); }} />
+                </RowCard>
+
                 <DescText>
                   {s.wcagDesc}
                 </DescText>

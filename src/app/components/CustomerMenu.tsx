@@ -179,21 +179,6 @@ function MenuItem({ icon, label, onClick, variant = 'default' }: MenuItemProps) 
   );
 }
 
-// ─── Divider ──────────────────────────────────────────────────────────────────
-
-function MenuDivider() {
-  return (
-    <div
-      style={{
-        width: '100%',
-        height: 1,
-        background: 'var(--border)',
-        flexShrink: 0,
-      }}
-    />
-  );
-}
-
 // ─── CustomerMenu ────────────────────────────────────────────────��────────────
 
 export function CustomerMenu({
@@ -255,10 +240,9 @@ export function CustomerMenu({
           />
         )}
 
-        {/* Divider before destructive action */}
-        <MenuDivider />
-
-        {/* 4 · Remove customer — destructive */}
+        {/* 4 · Remove customer — destructive. No divider before this item —
+            the container's 1px gap is the only spacing between any two
+            choices, so every row reads evenly, all protos. */}
         <MenuItem
           icon={<TrashIcon />}
           label={t('removeCustomer')}

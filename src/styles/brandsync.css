@@ -1,0 +1,183 @@
+/* BrandSync mode (Settings → Design System → BrandSync).
+   Toggled by the `brandsync` class on <html> (see SettingsContext);
+   `brandsync-dark` adds the dark palette on top.
+
+   Every size, colour, font and shadow below is a BrandSync token (--bs-*),
+   copied verbatim from the brandsync-tokens package. Nothing is hand-picked:
+   if a value is needed, find or add its token here, don't write a raw px/hex.
+   The package's semantic surface/text tokens are dark-mode, so the light
+   mapping points the app variables at the matching neutral/brand scale steps.
+
+   Not touched: the pink prototyping layer (hard-coded PROTOTYPE_PINK) and the
+   Settings modal ([data-bs-exempt]), which keeps its own palette and font. */
+
+html.brandsync {
+  /* ── BrandSync tokens: scale / spacing / sizing / radius ── */
+  --bs-scale-0: 0px;
+  --bs-scale-10: 1px;
+  --bs-scale-25: 2px;
+  --bs-scale-50: 4px;
+  --bs-scale-75: 6px;
+  --bs-scale-100: 8px;
+  --bs-scale-150: 12px;
+  --bs-scale-200: 16px;
+  --bs-scale-500: 40px;
+  --bs-scale-550: 44px;
+  --bs-border-radius-100: var(--bs-scale-100);
+  --bs-border-radius-150: var(--bs-scale-150);
+  --bs-border-width-thin: var(--bs-scale-10);
+  --bs-border-width-medium: var(--bs-scale-25);
+  --bs-sizing-500: var(--bs-scale-500);
+
+  /* ── Typography ── */
+  --bs-typography-font-family-body: Roboto;
+  --bs-font-weight-medium: 500;
+  --bs-font-weight-semibold: 600;
+  --bs-font-weight-bold: 700;
+  --bs-font-size-xs: 12px;
+  --bs-font-size-sm: 14px;
+  --bs-letter-spacing-wider: 0.05em;
+  --bs-text-style-label-md-size: var(--bs-font-size-sm);
+  --bs-text-style-label-md-weight: 500;
+  --bs-text-style-label-sm-size: var(--bs-font-size-xs);
+
+  /* ── Shadow ── */
+  --bs-shadow-sm: 0 1px 3px rgba(33,38,46,0.08), 0 2px 6px rgba(33,38,46,0.12);
+
+  /* ── Palette steps used ── */
+  --bs-static-white: #ffffff;
+  --bs-static-black: #000000;
+  --bs-neutral-25: #f9fafb;
+  --bs-neutral-50: #eff0f8;
+  --bs-neutral-100: #dee2ed;
+  --bs-neutral-200: #c2c7d3;
+  --bs-neutral-300: #a0a5b4;
+  --bs-neutral-500: #6d7585;
+  --bs-neutral-600: #5d6472;
+  --bs-neutral-700: #4d535f;
+  --bs-neutral-800: #363c47;
+  --bs-neutral-900: #21262e;
+  --bs-neutral-950: #191c22;
+  --bs-brand-300: #7aa6f2;               /* brand = blue */
+  --bs-brand-400: #3e88ef;
+  --bs-brand-500: #0073e1;
+  --bs-error-300: #ff807a;
+  --bs-error-400: #ee5351;
+  --bs-error-500: #d93539;
+
+  /* ── App variables → BrandSync tokens (light) ── */
+  --background: var(--bs-neutral-25);
+  --foreground: var(--bs-neutral-900);
+  --card: var(--bs-static-white);
+  --card-foreground: var(--bs-neutral-900);
+  --popover: var(--bs-static-white);
+  --popover-foreground: var(--bs-neutral-900);
+  --primary: var(--bs-brand-500);
+  --primary-foreground: var(--bs-static-white);
+  --secondary: var(--bs-neutral-50);
+  --secondary-foreground: var(--bs-neutral-800);
+  --muted: var(--bs-neutral-50);
+  --muted-foreground: var(--bs-neutral-600);
+  --accent: var(--bs-neutral-50);        /* hover shade, as in BrandSync Table */
+  --accent-foreground: var(--bs-neutral-900);
+  --destructive: var(--bs-error-500);
+  --destructive-foreground: var(--bs-static-white);
+  --border: var(--bs-neutral-100);
+  --input: var(--bs-static-white);
+  --input-background: var(--bs-static-white);
+  --ring: var(--bs-brand-400);
+
+  /* Style */
+  --radius: var(--bs-border-radius-100);
+  --radius-button: var(--bs-border-radius-100);
+  --radius-input: var(--bs-border-radius-100);
+  --radius-card: var(--bs-border-radius-150);
+  --elevation-sm: var(--bs-shadow-sm);
+  --font-weight-medium: var(--bs-font-weight-medium);
+  --font-weight-semibold: var(--bs-font-weight-semibold);
+}
+
+/* Font: Roboto everywhere. Many components hard-code Montserrat inline, so the
+   attribute selector is needed to reach them. */
+html.brandsync body,
+html.brandsync :where(h1, h2, h3, h4, p, label, caption, button, input, textarea, select, table),
+html.brandsync :not([data-bs-exempt] *)[style*="Montserrat"] {
+  font-family: var(--bs-typography-font-family-body), sans-serif !important;
+}
+html.brandsync [data-bs-exempt],
+html.brandsync [data-bs-exempt] * {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
+/* Buttons: BrandSync Buttons spec (radius-100, label-md type, 44px touch
+   target, visible focus ring). */
+html.brandsync [data-slot="button"] {
+  border-radius: var(--bs-border-radius-100);
+  font-size: var(--bs-text-style-label-md-size);
+  font-weight: var(--bs-text-style-label-md-weight);
+  min-height: var(--bs-scale-550);
+}
+html.brandsync [data-slot="button"]:focus-visible {
+  outline: var(--bs-border-width-medium) solid var(--bs-brand-400);
+  outline-offset: var(--bs-scale-25);
+}
+html.brandsync [data-slot="button"]:where(.border) {
+  border-color: var(--bs-neutral-300);
+}
+
+/* Tables: BrandSync Table spec. */
+html.brandsync table { border-collapse: collapse; font-size: var(--bs-font-size-sm); }
+html.brandsync :where(thead, [data-slot="table-header"]) { background: var(--bs-neutral-50); }
+html.brandsync :where(th, [data-slot="table-head"]) {
+  font-size: var(--bs-font-size-xs);
+  font-weight: var(--bs-font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: var(--bs-letter-spacing-wider);
+  color: var(--muted-foreground);
+  border-bottom: var(--bs-border-width-thin) solid var(--border);
+}
+html.brandsync :where(td, [data-slot="table-cell"]) {
+  color: var(--foreground);
+  border-bottom: var(--bs-border-width-thin) solid var(--border);
+}
+html.brandsync :where(tbody tr:last-child) > td { border-bottom: none; }
+html.brandsync tbody tr:hover,
+html.brandsync [data-slot="table-row"]:hover { background: var(--bs-neutral-50); }
+
+/* Dark mode: BrandSync's own dark mapping (surface-base neutral-950, raised
+   neutral-900, border neutral-800, primary brand-400, text white). */
+html.brandsync.brandsync-dark {
+  color-scheme: dark;
+  --background: var(--bs-neutral-950);
+  --foreground: var(--bs-static-white);
+  --card: var(--bs-neutral-900);
+  --card-foreground: var(--bs-static-white);
+  --popover: var(--bs-neutral-900);
+  --popover-foreground: var(--bs-static-white);
+  --primary: var(--bs-brand-300);        /* brand-400 fails 4.5:1 as text on cards; see docs/brandsync-dark-wcag.md */
+  --primary-foreground: var(--bs-static-black);
+  --secondary: var(--bs-neutral-800);
+  --secondary-foreground: var(--bs-neutral-200);
+  --muted: var(--bs-neutral-800);
+  --muted-foreground: var(--bs-neutral-300);
+  --accent: var(--bs-neutral-800);
+  --accent-foreground: var(--bs-static-white);
+  --destructive: var(--bs-error-300);    /* error-400 fails as text/white-on-fill; see docs */
+  --destructive-foreground: var(--bs-static-black);
+  --border: var(--bs-neutral-800);
+  --input: var(--bs-neutral-500);        /* control borders need 3:1 (WCAG 1.4.11); neutral-800 is 1.4:1 */
+  --input-background: var(--bs-neutral-950);
+  --ring: var(--bs-brand-400);
+}
+html.brandsync.brandsync-dark :where(thead, [data-slot="table-header"]) { background: var(--bs-neutral-900); }
+html.brandsync.brandsync-dark :where(th, [data-slot="table-head"]) { color: var(--bs-neutral-300); }
+html.brandsync.brandsync-dark tbody tr:hover,
+html.brandsync.brandsync-dark [data-slot="table-row"]:hover { background: var(--bs-neutral-800); }
+html.brandsync.brandsync-dark [data-slot="button"]:where(.border),
+html.brandsync.brandsync-dark [data-slot="checkbox"],
+html.brandsync.brandsync-dark [data-slot="radio-group-item"],
+html.brandsync.brandsync-dark [data-slot="switch"] { border-color: var(--bs-neutral-500); }
+/* Destructive buttons hard-code white text, which fails on the light error fill. */
+html.brandsync.brandsync-dark [data-slot="button"].bg-destructive { color: var(--destructive-foreground); }
+/* Visible keyboard focus on every control. */
+html.brandsync.brandsync-dark :focus-visible { outline-color: var(--bs-brand-400); }

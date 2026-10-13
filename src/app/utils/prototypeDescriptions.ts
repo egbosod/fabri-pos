@@ -84,8 +84,8 @@ const PROTOTYPE_TOAST_ID = 'prototype-toast';
  * sentence is fine — e.g. 'trigger "Søk kundekort"' — because it names a
  * control the reader is looking at, not prose being translated.
  *
- * Use `POS_TOAST_STYLE` instead for real Fabri POS flows; those are translated
- * via `t(...)` as normal.
+ * Real Fabri POS flows use `posToast` (utils/posToast.tsx), translated via
+ * `t(...)` as normal.
  */
 export function prototypeToast(
   title: string,
@@ -103,14 +103,3 @@ export function prototypeToast(
     ...PROTOTYPE_TOAST_OPTS,
   });
 }
-
-/**
- * Spread this into any Fabri POS product-flow `toast(...)` call. Built from the
- * app's design tokens rather than literals so it follows the active theme.
- */
-export const POS_TOAST_STYLE: CSSProperties = {
-  background: 'var(--card)',
-  color: 'var(--foreground)',
-  border: '1px solid var(--border)',
-  borderRadius: 'var(--radius)',
-};

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -100,17 +100,28 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
   const { switchUserFlow, priceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
   const [showPrototypeHint, setShowPrototypeHint] = useState(false);
   const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
+  const erpMenuRef = useRef<HTMLDivElement>(null);
   const { copyStatus, copyShareLink } = useCopyShareLink();
+
+  // The ERP menu stays open until the user picks a scenario, toggles it, or
+  // clicks outside it. Closing on mouse-leave made it vanish whenever the
+  // pointer drifted off the pill, which is too fragile for a settings picker.
+  // Capture phase so a stopPropagation elsewhere can't swallow the click.
+  useEffect(() => {
+    if (!isErpMenuOpen) return;
+    const closeOnOutsidePress = (e: MouseEvent) => {
+      if (!erpMenuRef.current?.contains(e.target as Node)) setIsErpMenuOpen(false);
+    };
+    document.addEventListener('mousedown', closeOnOutsidePress, true);
+    return () => document.removeEventListener('mousedown', closeOnOutsidePress, true);
+  }, [isErpMenuOpen]);
 
   const prototypeTooltip = `${FLOW_DESCRIPTIONS[switchUserFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[priceCheckLockConcept]}.`;
 
   return (
     <div className="content-stretch flex gap-[10px] items-center relative shrink-0">
       {showFlowIndicator && (
-        <div
-          className="flex items-center gap-2 relative"
-          onMouseLeave={() => setIsErpMenuOpen(false)}
-        >
+        <div className="flex items-center gap-2 relative">
           {/* Label + letter badge read as one item; only they trigger the prototype tooltip. */}
           <div
             className="flex items-center gap-2 relative cursor-default"
@@ -132,7 +143,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
               </div>
             )}
           </div>
-          <div className="relative">
+          <div className="relative" ref={erpMenuRef}>
             <button
               type="button"
               onClick={() => setIsErpMenuOpen(v => !v)}

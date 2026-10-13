@@ -249,6 +249,7 @@ const sv: Translations = {
   getCustomer: 'Hämta kund',
   noCustomersFound: 'Inga kunder hittades',
   noCustomersFoundTrySpecific: 'Ingen kund hittades. Prova att hitta kunden med ett specifikt kundnummer',
+  includeExpiredProjects: 'Inkludera utgångna projekt',
   specificProjectNumber: 'Specifikt projektnummer',
   specificProjectNumberPlaceholder: 'Sök efter specifikt projektnummer',
   noProjectsFoundTrySpecific: 'Inget projekt hittades. Prova att hitta projektet med ett specifikt projektnummer',

@@ -24,6 +24,7 @@ interface SwipeableDefaultOrderItemProps {
   };
   state?: OrderLineState;
   commitOnRelease?: boolean;
+  inlineQuantity?: boolean;
   onStateChange?: (newState: OrderLineState) => void;
   onQuantityChange?: (newQuantity: number, newUnit: string) => void;
 }
@@ -40,6 +41,7 @@ export function SwipeableDefaultOrderItem({
   label,
   state = 'normal',
   commitOnRelease,
+  inlineQuantity,
   onStateChange,
   onQuantityChange
 }: SwipeableDefaultOrderItemProps) {
@@ -70,6 +72,13 @@ export function SwipeableDefaultOrderItem({
   const handleSaveQuantity = (newQuantity: number, newUnit: string) => {
     if (onQuantityChange) {
       onQuantityChange(newQuantity, newUnit);
+    }
+  };
+
+  const stepQuantity = (delta: number) => {
+    const value = quantity + delta;
+    if (value > 0 && onQuantityChange) {
+      onQuantityChange(value, unit);
     }
   };
 
@@ -111,6 +120,9 @@ export function SwipeableDefaultOrderItem({
         onChangeToReturn={handleChangeToReturn}
         onSplitLine={handleSplitLine}
         onInputChange={handleInputChange}
+        inlineQuantity={inlineQuantity}
+        onIncrement={() => stepQuantity(1)}
+        onDecrement={() => stepQuantity(-1)}
         anchorElement={quantityRef.current}
       />
       

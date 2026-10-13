@@ -247,6 +247,7 @@ export interface Translations {
   getCustomer: string;
   noCustomersFound: string;
   noCustomersFoundTrySpecific: string;
+  includeExpiredProjects: string;
   specificProjectNumber: string;
   specificProjectNumberPlaceholder: string;
   noProjectsFoundTrySpecific: string;

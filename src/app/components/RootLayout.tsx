@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router';
-import { toast, Toaster } from 'sonner@2.0.3';
+import { Toaster } from 'sonner@2.0.3';
 import { HeaderWithMenu } from './HeaderWithMenu';
 import { SwitchUserModalFlowB } from './SwitchUserModalFlowB';
 import { CustomerSelectionModal } from './CustomerSelectionModal';
@@ -30,7 +30,8 @@ import { calculateSmartPrice, getMockItemMetadata, getItemLabels, parsePriceStri
 import { EgConfirmModal } from './EgConfirmModal';
 import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS, prototypeToast, POS_TOAST_STYLE } from '../utils/prototypeDescriptions';
+import { posToast } from '../utils/posToast';
+import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS, prototypeToast } from '../utils/prototypeDescriptions';
 
 // ─── Mock pools for fake card scans (mirrors CustomerSelectionModal data) ──────
 const SCAN_CUSTOMERS = [
@@ -82,10 +83,16 @@ const VIP_SCAN_CONCEPTS: {
   /** Fixed credit limit, so this concept reliably renders over its limit
    * rather than depending on the random pool in generateFakeVipScan(). */
   fixedCreditLimit?: number;
+  /** Parked, not deleted: skipped in the scan rotation while Prototype C is
+   * active. Remove the flag to bring the concept back. */
+  hiddenInProtoC?: boolean;
+  /** Prototype C only: this concept leads the rotation. */
+  firstInProtoC?: boolean;
 }[] = [
   {
     concept: 'VIP card open',
     customerNumber: '399999',
+    hiddenInProtoC: true,
     name: 'Fenriz Nattgaard',
     status: 'open',
     address: { line1: 'Trandalsvegen 12', postalCode: '1890', city: 'Rakkestad' },
@@ -115,6 +122,7 @@ const VIP_SCAN_CONCEPTS: {
     /* Navn is now locked on every VIP card, so this is a second plain open card. */
     concept: 'Navn non-editable',
     customerNumber: '400003',
+    hiddenInProtoC: true,
     name: 'Ihsahn Svartskov',
     status: 'open',
     address: { line1: 'Tronfjellgata 7', postalCode: '2400', city: 'Elverum' },
@@ -126,6 +134,9 @@ const VIP_SCAN_CONCEPTS: {
     customerNumber: '400005',
     name: 'Gaahl Vindsval',
     status: 'open',
+    firstInProtoC: true,
+    // Comfortably above any sale total, so the first scan lands unblocked.
+    fixedCreditLimit: 100000,
     address: { line1: 'Ravnåsveien 9', postalCode: '4630', city: 'Kristiansand' },
   },
   {
@@ -145,11 +156,14 @@ const VIP_SCAN_CONCEPTS: {
 ];
 
 /** Rotation cursor — module-level so it survives re-renders within a session. */
-let vipScanCursor = 0;
+const vipScanCursors: Record<'A' | 'B' | 'C', number> = { A: 0, B: 0, C: 0 };
 
-function generateFakeVipScan(): { card: VipCardData; concept: string } {
-  const pool = VIP_SCAN_CONCEPTS[vipScanCursor % VIP_SCAN_CONCEPTS.length];
-  vipScanCursor += 1;
+function generateFakeVipScan(flow: 'A' | 'B' | 'C'): { card: VipCardData; concept: string } {
+  const concepts = flow === 'C'
+    ? [...VIP_SCAN_CONCEPTS.filter(c => !c.hiddenInProtoC)].sort((a, b) => Number(!!b.firstInProtoC) - Number(!!a.firstInProtoC))
+    : VIP_SCAN_CONCEPTS;
+  const pool = concepts[vipScanCursors[flow] % concepts.length];
+  vipScanCursors[flow] += 1;
   return {
     concept: pool.concept,
     card: {
@@ -227,6 +241,8 @@ function RootLayoutInner() {
     setSelectedHovedordre,
     vipCard,
     setVipCard,
+    pendingVipCard,
+    setPendingVipCard,
     setVipAcknowledged,
     vipBlocked,
     vipCreditExceeded,
@@ -251,7 +267,8 @@ function RootLayoutInner() {
      back under and crossing again does. */
   const [showVipCreditExceeded, setShowVipCreditExceeded] = useState(false);
   useEffect(() => {
-    if (vipCreditExceeded) setShowVipCreditExceeded(true);
+    // Closes itself too once enough items are removed to get back under the limit.
+    setShowVipCreditExceeded(vipCreditExceeded);
   }, [vipCreditExceeded]);
 
   /* ── Profile menu (standalone overlay) ───────────────────────────────── */
@@ -411,12 +428,19 @@ function RootLayoutInner() {
           return;
         }
 
+        /* The till is in card-scan state while a card is active, so a new card
+           can only be scanned after the existing one is removed. */
+        if (vipCard) {
+          posToast.warning(t('vipCardAlreadyActiveToast'), 4000);
+          return;
+        }
+
         /* Prototype C only: the reader is "connected" to the Søk kundekort
            field, so the FIRST card can only land while that field is open.
-           A and B keep the shortcut global. Once a card is attached, further
-           scans are allowed straight from VIP mode, so the concepts can be
-           rotated through without re-opening the scan panel each time. */
-        if (switchUserFlow === 'C' && !cardScanPanelOpenRef.current && !vipCard) {
+           A and B keep the shortcut global. While a scanned card is still
+           pending the panel is closed, so rescans go straight through and the
+           card concepts can be rotated before confirming. */
+        if (switchUserFlow === 'C' && !cardScanPanelOpenRef.current && !pendingVipCard) {
           prototypeToast(
             'Card search not open',
             scanCustomerCard
@@ -429,13 +453,13 @@ function RootLayoutInner() {
 
         playBarcodeBeep();
 
-        const { card, concept } = generateFakeVipScan();
-        setVipCard(card);
-        setVipAcknowledged(false);
+        const { card, concept } = generateFakeVipScan(switchUserFlow);
+        // A scan only proposes the card; it becomes the sale's VIP card on Confirm.
+        setPendingVipCard(card);
         openModal('customer');
         prototypeToast(
           `VIP scan: ${concept}`,
-          `${card.customerName} (${card.customerId}) — scan again for the next concept`,
+          `${card.customerName} (${card.customerId}) — confirm, then remove the card to try the next concept`,
           { duration: 3000 },
         );
       }
@@ -444,28 +468,34 @@ function RootLayoutInner() {
     // Use capture phase (true) to intercept the event before browser shortcuts
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, [currentUser, switchUserFlow, setSwitchUserFlow, priceCheckLockConcept, setPriceCheckLockConcept, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, scanCustomerCard, vipCard, setVipCard, setVipAcknowledged]);
+  }, [currentUser, switchUserFlow, setSwitchUserFlow, priceCheckLockConcept, setPriceCheckLockConcept, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, scanCustomerCard, vipCard, setVipCard, pendingVipCard, setPendingVipCard, setVipAcknowledged, t]);
 
   /* ── Modals rendering (URL-addressable) ───────────���────────────────── */
   const renderModals = () => (
     <>
       {isModalOpen('customer') && (
         <CustomerSelectionModal
-          onClose={closeModal}
+          onClose={() => { setPendingVipCard(null); closeModal(); }}
           onConfirm={(customer, project) => {
             if (isPriceCheckMode) {
               setPriceCheckCustomer(customer, project);
             } else {
               handleCustomerConfirm(customer, project);
+              if (pendingVipCard) {
+                setVipCard(pendingVipCard);
+                setPendingVipCard(null);
+                setVipAcknowledged(false);
+              }
             }
             closeModal();
           }}
           isPriceCheckMode={isPriceCheckMode}
           scannedCardData={scannedCardData}
           onCardDataProcessed={() => setScannedCardData(null)}
-          vipCard={vipCard}
+          vipCard={pendingVipCard ?? vipCard}
+          vipCardPending={!!pendingVipCard}
           saleTotal={paymentTotals.total}
-          onVipRemoved={() => setVipCard(null)}
+          onVipRemoved={() => { setVipCard(null); posToast.success(t('vipCardRemovedToast')); }}
           onVipAcknowledged={() => setVipAcknowledged(true)}
           blockedOverridable={switchUserFlow === 'C'}
           stackedDeliveryAddress={switchUserFlow === 'A' || switchUserFlow === 'C'}
@@ -663,7 +693,7 @@ function RootLayoutInner() {
         onConfirm={() => {
           closeModal();
           clearCart();
-          toast(t('saleCompletedToast'), { duration: 3000, style: POS_TOAST_STYLE });
+          posToast.success(t('saleCompletedToast'), 3000);
         }}
       />
 
@@ -730,6 +760,7 @@ function RootLayoutInner() {
             setVipCard(null);
             setVipAcknowledged(false);
             setShowVipCreditExceeded(false);
+            posToast.success(t('vipCardRemovedToast'));
           }}
           secondaryLabel={t('vipRemoveItems')}
           onSecondary={() => {
