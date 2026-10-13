@@ -255,6 +255,8 @@ const no: Translations = {
   noProjectsFoundTrySpecific: 'Ingen prosjekt funnet. Prøv å finne prosjektet med et spesifikt prosjektnummer',
   syncCustomer: 'Synkroniser kunde',
   fetchCustomer: 'Hent kunde',
+  fetchProject: 'Hent prosjekt',
+  syncProject: 'Synkroniser prosjekt',
   syncProjects: 'Synkroniser prosjekter',
   requisitionPlaceholder: 'Angi rekvisisjonsnummer',
   contactPersonPlaceholder: 'Velg kontaktperson',

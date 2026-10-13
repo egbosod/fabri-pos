@@ -254,6 +254,8 @@ const en: Translations = {
   noProjectsFoundTrySpecific: 'No project found. Try finding the project with a specific number',
   syncCustomer: 'Sync customer',
   fetchCustomer: 'Fetch customer',
+  fetchProject: 'Fetch project',
+  syncProject: 'Sync project',
   syncProjects: 'Sync projects',
   requisitionPlaceholder: 'Enter requisition number',
   contactPersonPlaceholder: 'Select contact person',
