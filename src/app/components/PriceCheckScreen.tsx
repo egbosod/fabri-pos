@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'sonner@2.0.3';
+import { posToast } from '../utils/posToast';
 import { usePOS } from '../contexts/POSContext';
 import { useModalParams } from '../hooks/useModalParams';
 import { useLanguage } from '../contexts/LanguageContext';
@@ -13,7 +13,6 @@ import { CartSidebar, SelectCustomerButton, SidebarButton } from './CartSidebar'
 import svgPaths from '../imports/svg-v4b5vuykpy';
 import { ShoppingCart, AlertTriangle, Lock } from 'lucide-react';
 import { EgConfirmModal } from './EgConfirmModal';
-import { POS_TOAST_STYLE } from '../utils/prototypeDescriptions';
 
 /* ─── Search icon (matches the rest of the app's search fields) ───────────── */
 function SearchIcon() {
@@ -123,7 +122,7 @@ export default function PriceCheckScreen() {
       priceCheckItems.forEach((item) => handleAddToSale(item));
       clearPriceCheckItems();
       setLineStates({});
-      toast(t('itemsAddedToSale'), { duration: 2500, style: POS_TOAST_STYLE });
+      posToast.success(t('itemsAddedToSale'));
     } else {
       setShowMismatchConfirm(true);
     }
@@ -135,7 +134,7 @@ export default function PriceCheckScreen() {
     clearPriceCheckItems();
     setLineStates({});
     setShowMismatchConfirm(false);
-    toast(t('itemsAddedToSale'), { duration: 2500, style: POS_TOAST_STYLE });
+    posToast.success(t('itemsAddedToSale'));
   };
 
   return (
@@ -165,6 +164,7 @@ export default function PriceCheckScreen() {
                         <SwipeableDefaultOrderItem
                           // Prototype A keeps the two-step swipe; B and C act on release.
                           commitOnRelease={switchUserFlow !== 'A'}
+                          inlineQuantity={switchUserFlow === 'C'}
                           key={index}
                           productName={item.name}
                           productCode={item.sku}

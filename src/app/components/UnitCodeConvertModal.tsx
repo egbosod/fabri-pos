@@ -26,6 +26,9 @@ interface UnitCodeConvertModalProps {
   onIncrement?: () => void;
   onDecrement?: () => void;
   onInputChange?: (value: string, unit: string) => void;
+  // Prototype C: the quantity is edited inline between the steppers, so the keypad
+  // commits live and the modal drops its own display field and Save button.
+  inlineQuantity?: boolean;
 }
 
 export function UnitCodeConvertModal({
@@ -40,7 +43,8 @@ export function UnitCodeConvertModal({
   anchorElement,
   onIncrement,
   onDecrement,
-  onInputChange
+  onInputChange,
+  inlineQuantity
 }: UnitCodeConvertModalProps) {
   const { t } = useLanguage();
   const [inputValue, setInputValue] = useState(currentQuantity.toFixed(2).replace('.', ','));
@@ -48,15 +52,27 @@ export function UnitCodeConvertModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
   const [arrowX, setArrowX] = useState<number | null>(null);
+  // Inline mode: the first key press replaces the highlighted quantity.
+  const freshRef = useRef(true);
 
   // The modal stays mounted between openings, so re-seed the keypad from the
   // line it is about to edit rather than showing the previous line's input.
   useEffect(() => {
     if (isOpen) {
-      setInputValue(currentQuantity.toFixed(2).replace('.', ','));
+      // Inline mode commits every key press, so keep the typed text (e.g. "5,")
+      // while it still matches the line; reseed only when a stepper moves it.
+      setInputValue((prev) =>
+        inlineQuantity && parseFloat(prev.replace(',', '.')) === currentQuantity
+          ? prev
+          : currentQuantity.toFixed(2).replace('.', ','),
+      );
       setSelectedUnit(currentUnit);
     }
-  }, [isOpen, currentQuantity, currentUnit]);
+  }, [isOpen, currentQuantity, currentUnit, inlineQuantity]);
+
+  useEffect(() => {
+    if (isOpen) freshRef.current = true;
+  }, [isOpen]);
 
   // Mock unit conversions - in a real app, this would come from product data
   const unitConversions: UnitConversion[] = [
@@ -114,30 +130,68 @@ export function UnitCodeConvertModal({
     return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
+  // Inline mode: the physical keyboard / numpad edits the quantity like the on-screen keys.
+  const keyHandlerRef = useRef<(key: string) => void>(() => {});
+  useEffect(() => {
+    if (!isOpen || !inlineQuantity) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target && (target.tagName === 'SELECT' || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+      if (/^[0-9]$/.test(event.key)) keyHandlerRef.current(event.key);
+      else if (event.key === ',' || event.key === '.') keyHandlerRef.current(',');
+      else if (event.key === 'Backspace') keyHandlerRef.current('backspace');
+      else if (event.key === '+') onIncrement?.();
+      else if (event.key === '-') onDecrement?.();
+      else if (event.key === 'Enter') onClose();
+      else return;
+      event.preventDefault();
+    };
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [isOpen, inlineQuantity, onClose, onIncrement, onDecrement]);
+
   if (!isOpen) return null;
 
+  const commitInline = (value: string, unit: string) => {
+    const parsed = parseFloat(value.replace(',', '.'));
+    onSave(Number.isNaN(parsed) ? 0 : parsed, unit);
+  };
+
+  const handleUnitChange = (unit: string) => {
+    setSelectedUnit(unit);
+    if (inlineQuantity) commitInline(inputValue, unit);
+  };
+
   const handleNumberClick = (num: string) => {
-    let newValue = inputValue;
+    const replacing = inlineQuantity && freshRef.current && num !== 'backspace';
+    const base = replacing ? '0' : inputValue;
+    freshRef.current = false;
+    let newValue = base;
     
     if (num === ',') {
-      if (!inputValue.includes(',')) {
-        newValue = inputValue + ',';
+      if (!base.includes(',')) {
+        newValue = base + ',';
       }
     } else if (num === 'backspace') {
       newValue = inputValue.slice(0, -1) || '0';
     } else {
-      if (inputValue === '0') {
+      if (base === '0') {
         newValue = num;
       } else {
-        newValue = inputValue + num;
+        newValue = base + num;
       }
     }
     
     setInputValue(newValue);
-    if (onInputChange) {
+    if (inlineQuantity) {
+      commitInline(newValue, selectedUnit);
+    } else if (onInputChange) {
       onInputChange(newValue, selectedUnit);
     }
   };
+
+  keyHandlerRef.current = handleNumberClick;
 
   const handleIncrement = () => {
     const value = parseFloat(inputValue.replace(',', '.'));
@@ -185,8 +239,8 @@ export function UnitCodeConvertModal({
           >
             {/* Numpad */}
             <div className="box-border content-stretch flex flex-col gap-[12px] items-start p-[20px] relative shrink-0">
-              {/* Display field showing current input */}
-              <div 
+              {/* Display field showing current input (not in inline mode) */}
+              {!inlineQuantity && <div 
                 className="box-border content-stretch flex gap-[8px] items-center justify-end px-[12px] py-[6px] relative shrink-0 w-[156px] h-[48px]"
                 style={{ 
                   backgroundColor: 'var(--input-background)',
@@ -205,7 +259,7 @@ export function UnitCodeConvertModal({
                 >
                   {inputValue} {selectedUnit}
                 </p>
-              </div>
+              </div>}
 
               {/* Row 1 */}
               <div className="content-stretch flex gap-[12px] items-start relative shrink-0">
@@ -364,6 +418,70 @@ export function UnitCodeConvertModal({
               </div>
             </div>
 
+            {inlineQuantity ? (
+              <>
+                {/* Unit code + line actions */}
+                <div
+                  className="box-border flex flex-col gap-[12px] w-[222px] p-[20px] relative shrink-0"
+                  style={{ backgroundColor: 'var(--secondary)', borderLeft: '1px solid var(--border)', borderRight: '1px solid var(--border)' }}
+                >
+                  <div className="flex flex-col gap-[6px]">
+                    <label style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', fontWeight: 'var(--font-weight-bold)', color: 'var(--foreground)', lineHeight: '1.75' }}>
+                      {t('changeUnitCode')}
+                    </label>
+                    <select
+                      value={selectedUnit}
+                      onChange={(e) => handleUnitChange(e.target.value)}
+                      className="box-border w-full h-[48px] px-[12px] cursor-pointer"
+                      style={{ backgroundColor: 'var(--input-background)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontSize: 'var(--text-base)', color: 'var(--foreground)', fontFamily: "'Montserrat', sans-serif" }}
+                    >
+                      {unitConversions.map((conversion) => (
+                        <option key={conversion.unit} value={conversion.unit}>{conversion.unit}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex flex-col gap-[12px] mt-auto">
+{onChangeToReturn && (
+                <button
+                  onClick={() => { onChangeToReturn(); onClose(); }}
+                  className="box-border flex h-[48px] items-center justify-center w-full px-[20px] cursor-pointer"
+                  style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--foreground)' }}
+                >
+                  {t('changeToReturn')}
+                </button>
+)}
+{onSplitLine && (
+                <button
+                  onClick={() => { onSplitLine(); onClose(); }}
+                  className="box-border flex h-[48px] items-center justify-center w-full px-[20px] cursor-pointer"
+                  style={{ backgroundColor: 'var(--card)', border: '1px solid var(--border)', borderRadius: 'var(--radius)', fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', fontWeight: 'var(--font-weight-semibold)', color: 'var(--foreground)' }}
+                >
+                  {t('splitOrderLine')}
+                </button>
+)}
+                  </div>
+                </div>
+
+                {/* Conversion */}
+                <div className="box-border flex flex-col gap-[6px] w-[222px] p-[20px] shrink-0" style={{ borderRadius: '0 var(--radius) var(--radius) 0' }}>
+                  <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)', fontWeight: 'var(--font-weight-bold)', color: 'var(--foreground)', lineHeight: '1.75' }}>
+                    {t('conversion')}
+                  </p>
+                  {unitConversions.map((conversion) => (
+                    <button
+                      key={conversion.unit}
+                      onClick={() => handleUnitChange(conversion.unit)}
+                      className="flex justify-between w-full cursor-pointer text-left"
+                      style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: selectedUnit === conversion.unit ? 'var(--primary)' : 'var(--foreground)', lineHeight: '1.75', background: 'transparent', border: 'none', borderBottom: '1px solid var(--border)', padding: 0 }}
+                    >
+                      <span>{conversion.unit}</span>
+                      <span>{(currentValue * conversion.conversionFactor * pricePerUnit).toFixed(2).replace('.', ',')}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <>
             {/* Conversion section */}
             <div 
               className="box-border content-stretch flex flex-col gap-[12px] h-full items-start justify-between px-[20px] py-[21px] relative shrink-0 w-[182px]"
@@ -389,7 +507,7 @@ export function UnitCodeConvertModal({
                 </label>
                 <select
                   value={selectedUnit}
-                  onChange={(e) => setSelectedUnit(e.target.value)}
+                  onChange={(e) => handleUnitChange(e.target.value)}
                   className="box-border w-full h-[48px] px-[12px] cursor-pointer"
                   style={{ 
                     backgroundColor: 'var(--input-background)',
@@ -429,7 +547,7 @@ export function UnitCodeConvertModal({
                 {unitConversions.map((conversion, index) => (
                   <button
                     key={conversion.unit}
-                    onClick={() => setSelectedUnit(conversion.unit)}
+                    onClick={() => handleUnitChange(conversion.unit)}
                     className="absolute font-['Montserrat',sans-serif] h-[21px] left-0 text-nowrap w-[142px] whitespace-pre cursor-pointer text-left"
                     style={{ 
                       fontSize: 'var(--text-base)',
@@ -538,6 +656,8 @@ export function UnitCodeConvertModal({
                 </button>
               )}
             </div>
+              </>
+            )}
           </div>
 
           {/* Arrow pointing down */}

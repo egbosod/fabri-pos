@@ -248,6 +248,7 @@ const en: Translations = {
   getCustomer: 'Get customer',
   noCustomersFound: 'No customers found',
   noCustomersFoundTrySpecific: 'No customer found. Try finding the customer with a specific number',
+  includeExpiredProjects: 'Include expired projects',
   specificProjectNumber: 'Specific project number',
   specificProjectNumberPlaceholder: 'Search for specific project number',
   noProjectsFoundTrySpecific: 'No project found. Try finding the project with a specific number',

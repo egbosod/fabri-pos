@@ -117,10 +117,24 @@ export function CustomerBadge({
   // A card that is over its credit limit is treated as blocked for status
   // display purposes — same badge, banner and remove-affordance as a true
   // Aspect4-blocked card, not a separate indicator.
-  const vipEffectivelyBlocked = vipCard?.status === 'blocked' || vipOverLimit;
+  // "Resolvable" cards are only blocked while over the limit: removing enough
+  // items lifts the block.
+  const vipStatusBlocked = vipCard?.status === 'blocked' && !(vipCard.blockedResolvableByRemovingItems && !vipOverLimit);
+  const vipEffectivelyBlocked = vipStatusBlocked || vipOverLimit;
 
-  const canRemoveVip =
-    switchUserFlow === 'A' && vipEffectivelyBlocked && !!onRemoveVipCard;
+  // Prototypes A and C both allow overriding a blocked card at the till
+  // (unlike B, which is a hard stop) — same banner + remove action for both.
+  const showsBlockedBanner = switchUserFlow === 'A' || switchUserFlow === 'C';
+  // Prototype C: a block that only comes from exceeding the credit limit is
+  // handled by the credit-exceeded dialog and the VIP card modal, so the
+  // sidebar banner is reserved for cards that are blocked in their own right.
+  const bannerBlocked = switchUserFlow === 'C' ? vipStatusBlocked : vipEffectivelyBlocked;
+
+  // "Remove VIP card" is always available from the kebab menu while a card is
+  // attached — open or blocked, any prototype — per the spec's explicit
+  // "Remove VIP card" requirement. The blocked banner's own button (A/C only,
+  // blocked only) is an additional, more prominent shortcut to the same action.
+  const canRemoveVip = !!vipCard && !!onRemoveVipCard;
 
   const menuPortal = showMenu
     ? createPortal(
@@ -150,7 +164,7 @@ export function CustomerBadge({
 
   return (
     <div className="relative shrink-0 w-full">
-      {switchUserFlow === 'A' && vipEffectivelyBlocked && (
+      {showsBlockedBanner && bannerBlocked && (
         <div
           role="alert"
           className="box-border flex flex-col gap-[5px] items-center p-[13px] relative rounded-[3px] shrink-0 w-full mb-[15px]"
@@ -160,7 +174,14 @@ export function CustomerBadge({
           }}
         >
           <p className="font-bold leading-[1.5] w-full" style={{ color: 'var(--Orange-Orange-60, #E66F04)' }}>{t('vipCardBlockedTitle')}</p>
-          <p className="leading-[1.5] text-foreground w-full">{t('vipCardBlockedBody')}</p>
+          {/* "Remove items or remove card" is only logically tied to actually being
+              over the credit limit right now — otherwise fall back to the general
+              blocked copy, same rule as the VIP Kort tab's own blocked notice. */}
+          <p className="leading-[1.5] text-foreground w-full">
+            {vipCard?.blockedResolvableByRemovingItems && vipOverLimit
+              ? t('vipBlockedRemoveItemsOrCard')
+              : t('vipCardBlockedBody')}
+          </p>
           {onRemoveVipCard && (
             <button
               type="button"
@@ -198,7 +219,10 @@ export function CustomerBadge({
                 <p className="font-bold leading-[1.75] text-foreground">
                   {customer.name}
                 </p>
-                {vipCard && switchUserFlow !== 'A' && (
+                {/* A never shows this chip (unchanged). C shows it only while
+                    open — once blocked, the banner above takes over. B always
+                    shows it, open or blocked, as before. */}
+                {vipCard && (switchUserFlow === 'B' || (switchUserFlow === 'C' && !bannerBlocked)) && (
                   <span style={{
                     alignSelf: 'flex-start',
                     flexShrink: 0,

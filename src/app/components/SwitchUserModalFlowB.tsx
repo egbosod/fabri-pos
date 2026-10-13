@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { toast } from 'sonner@2.0.3';
+import { posToast } from '../utils/posToast';
 import svgPathsPinIcon from "../imports/svg-pi7ybb4q4f";
 
 /* ─── SVG helpers from Figma imports ─────────────────────────────────────── */
@@ -265,36 +265,36 @@ export function SwitchUserModalFlowB({
   /* ── Confirm action ────────────────────────────────────────────────────── */
   const handleConfirm = () => {
     if (!selectedUser) {
-      toast.error('Velg en bruker');
+      posToast.error('Velg en bruker');
       return;
     }
 
     if (view === 'pin') {
       if (pin.length < 4) {
-        toast.error('PIN-kode må være minst 4 siffer');
+        posToast.error('PIN-kode må være minst 4 siffer');
         return;
       }
       onSwitchUser(selectedUser);
     } else if (view === 'password') {
       if (!password) {
-        toast.error('Skriv inn passord');
+        posToast.error('Skriv inn passord');
         return;
       }
       onSwitchUser(selectedUser);
     } else if (view === 'change-pin') {
       if (!changePinPassword) {
-        toast.error('Skriv inn nåværende passord');
+        posToast.error('Skriv inn nåværende passord');
         return;
       }
       if (changePinNew.length < 4) {
-        toast.error('Ny PIN-kode må være minst 4 siffer');
+        posToast.error('Ny PIN-kode må være minst 4 siffer');
         return;
       }
       if (changePinNew !== changePinConfirm) {
-        toast.error('PIN-kodene stemmer ikke overens');
+        posToast.error('PIN-kodene stemmer ikke overens');
         return;
       }
-      toast.success('PIN-kode endret');
+      posToast.success('PIN-kode endret');
       setView('pin');
       setChangePinPassword('');
       setChangePinNew('');

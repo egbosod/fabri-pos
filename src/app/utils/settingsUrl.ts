@@ -28,6 +28,8 @@ export interface SharedSettings {
   showDebugBanner: boolean;
   allowCreateProject: boolean;
   allowCreateContactPerson: boolean;
+  showExpiredProjectsToggle: boolean;
+  brandSyncEnabled: boolean;
   showPasswordOption: boolean;
   scanCustomerCard: boolean;
   twoFactorEnabled: boolean;
@@ -46,6 +48,8 @@ export const DEFAULT_SETTINGS: SharedSettings = {
   showDebugBanner: false,
   allowCreateProject: false,
   allowCreateContactPerson: false,
+  showExpiredProjectsToggle: false,
+  brandSyncEnabled: false,
   showPasswordOption: false,
   scanCustomerCard: true,
   twoFactorEnabled: true,
@@ -134,6 +138,18 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'allowCreateContactPerson',
     param: 'nykontakt',
+    parse: parseBoolean,
+    serialize: serializeBoolean,
+  },
+  {
+    key: 'showExpiredProjectsToggle',
+    param: 'utgatte',
+    parse: parseBoolean,
+    serialize: serializeBoolean,
+  },
+  {
+    key: 'brandSyncEnabled',
+    param: 'brandsync',
     parse: parseBoolean,
     serialize: serializeBoolean,
   },

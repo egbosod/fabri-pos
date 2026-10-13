@@ -254,6 +254,7 @@ function OrderItemsView({
   swipeableOrderLineStates,
   onSwipeableStateChange,
   commitOnRelease,
+  inlineQuantity,
   onRemoveOrderGroup,
   onRemoveAllItemsFromGroup,
   addedItems = [],
@@ -266,6 +267,7 @@ function OrderItemsView({
   swipeableOrderLineStates: Record<string, SwipeableOrderLineState>;
   onSwipeableStateChange: (groupId: string | number, itemIndex: number, newState: SwipeableOrderLineState) => void;
   commitOnRelease?: boolean;
+  inlineQuantity?: boolean;
   onRemoveOrderGroup: (groupId: string) => void;
   onRemoveAllItemsFromGroup: (groupId: string) => void;
   addedItems?: CartItem[];
@@ -399,6 +401,7 @@ function OrderItemsView({
             return (
               <SwipeableDefaultOrderItem
                 commitOnRelease={commitOnRelease}
+                inlineQuantity={inlineQuantity}
                 key={key}
                 productName={item.name}
                 productCode={item.sku}
@@ -442,6 +445,7 @@ function SearchAndActionsBar({
   swipeableOrderLineStates,
   onSwipeableStateChange,
   commitOnRelease,
+  inlineQuantity,
   onRemoveOrderGroup,
   onRemoveAllItemsFromGroup,
   addedItems,
@@ -455,6 +459,7 @@ function SearchAndActionsBar({
   swipeableOrderLineStates: Record<string, SwipeableOrderLineState>;
   onSwipeableStateChange: (groupId: string | number, itemIndex: number, newState: SwipeableOrderLineState) => void;
   commitOnRelease?: boolean;
+  inlineQuantity?: boolean;
   onRemoveOrderGroup: (groupId: string) => void;
   onRemoveAllItemsFromGroup: (groupId: string) => void;
   addedItems: CartItem[];
@@ -488,6 +493,7 @@ function SearchAndActionsBar({
               swipeableOrderLineStates={swipeableOrderLineStates}
               onSwipeableStateChange={onSwipeableStateChange}
               commitOnRelease={commitOnRelease}
+              inlineQuantity={inlineQuantity}
               onRemoveOrderGroup={onRemoveOrderGroup}
               onRemoveAllItemsFromGroup={onRemoveAllItemsFromGroup}
               addedItems={addedItems}
@@ -715,6 +721,8 @@ export default function SalgPage() {
         onSwipeableStateChange={handleSwipeableStateChange}
         // Prototype A keeps the two-step swipe (arm, then tap the panel); B and C act on release.
         commitOnRelease={switchUserFlow !== 'A'}
+        // Prototype C edits the quantity inline between the steppers.
+        inlineQuantity={switchUserFlow === 'C'}
         onRemoveOrderGroup={handleRemoveOrderGroup}
         onRemoveAllItemsFromGroup={handleRemoveAllItemsFromGroup}
         addedItems={addedItems}
@@ -756,7 +764,7 @@ export default function SalgPage() {
               onExchangeSlip={() => openModal('faktura')}
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
               vipCard={vipCard}
-              onRemoveVipCard={() => setVipCard(null)}
+              onRemoveVipCard={() => { setVipCard(null); posToast.success(t('vipCardRemovedToast')); }}
               vipOverLimit={vipOverLimit}
             />
             {(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK') &&

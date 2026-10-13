@@ -31,9 +31,13 @@ export interface EgListSection {
 const FONT = "'Montserrat', sans-serif";
 
 /** Shared styling for the header bar and any in-box section headers */
-function EgListHeader({ children, sub = false }: { children: React.ReactNode; sub?: boolean }) {
+function EgListHeader({ children, sub = false, trailing }: { children: React.ReactNode; sub?: boolean; trailing?: React.ReactNode }) {
   return (
     <div style={{
+      display: trailing ? 'flex' : undefined,
+      alignItems: trailing ? 'center' : undefined,
+      justifyContent: trailing ? 'space-between' : undefined,
+      gap: trailing ? 8 : undefined,
       borderBottom: '1px solid var(--border)',
       padding: sub ? '6px 10px' : 10,
       background: sub ? 'var(--background)' : undefined,
@@ -49,6 +53,7 @@ function EgListHeader({ children, sub = false }: { children: React.ReactNode; su
       }}>
         {children}
       </span>
+      {trailing}
     </div>
   );
 }
@@ -94,7 +99,7 @@ function EgListItem({ label, value, badge, emphasise, valueColor, borderTop }: E
   );
 }
 
-export function EgList({ title, rows, sections, tone = 'default', footer }: {
+export function EgList({ title, rows, sections, tone = 'default', footer, headerTrailing }: {
   /** Header bar text. Omit for a headerless box. */
   title?: string | null;
   /** Convenience for a single unsectioned list */
@@ -105,6 +110,8 @@ export function EgList({ title, rows, sections, tone = 'default', footer }: {
   tone?: 'default' | 'danger';
   /** Free-form content below the rows, inside the box (e.g. a warning line) */
   footer?: React.ReactNode;
+  /** Content at the right end of the header bar (e.g. a status label) */
+  headerTrailing?: React.ReactNode;
 }) {
   const resolved: EgListSection[] = sections ?? (rows ? [{ rows }] : []);
   const hasHeader = !!title;
@@ -118,7 +125,7 @@ export function EgList({ title, rows, sections, tone = 'default', footer }: {
       width: '100%',
       fontFamily: FONT,
     }}>
-      {hasHeader && <EgListHeader>{title}</EgListHeader>}
+      {hasHeader && <EgListHeader trailing={headerTrailing}>{title}</EgListHeader>}
       {resolved.map((section, si) => (
         <div key={si}>
           {section.title && <EgListHeader sub>{section.title}</EgListHeader>}
