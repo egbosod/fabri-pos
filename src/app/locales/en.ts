@@ -251,7 +251,8 @@ const en: Translations = {
   specificProjectNumber: 'Specific project number',
   specificProjectNumberPlaceholder: 'Search for specific project number',
   noProjectsFoundTrySpecific: 'No project found. Try finding the project with a specific number',
-  syncCustomers: 'Sync customers',
+  syncCustomer: 'Sync customer',
+  fetchCustomer: 'Fetch customer',
   syncProjects: 'Sync projects',
   requisitionPlaceholder: 'Enter requisition number',
   contactPersonPlaceholder: 'Select contact person',
@@ -299,7 +300,10 @@ const en: Translations = {
   tableHeaderName: 'NAME',
   tableHeaderCategory: 'CATEGORY',
   tableHeaderAddress: 'ADDRESS',
-  tableHeaderPostalCodeCity: 'POSTAL CODE / CITY',
+  tableHeaderPostalCodeCity: 'POSTAL CODE, CITY',
+  tableHeaderPostalCode: 'POSTAL CODE',
+  tableHeaderCity: 'CITY',
+  tableHeaderExtNumber: 'EXT. NO',
 
   // ── Tab labels ─────────────────────────────────────────────────────────────
   tabGeneral: 'General',
@@ -349,6 +353,7 @@ const en: Translations = {
   vipBlockedInfo: 'This VIP card is blocked. The sale cannot be completed until the card is removed.',
   vipBlockedHardStop: 'This VIP card is blocked. The sale cannot be completed with it, and the block cannot be overridden at the till.',
   removeVipCard: 'Remove VIP card',
+  vipCardRemovedToast: 'VIP card removed successfully',
   continueAsNormalCustomer: 'Continue as normal customer',
   vipCreditTitle: 'CREDIT',
   vipCreditLimit: 'VIP card limit',
@@ -383,8 +388,11 @@ const en: Translations = {
   invoicesForPayment: 'Invoices for payment',
   edit: 'Edit',
   removeCustomer: 'Remove customer',
-  noInvoicesForPayment: 'No invoices for payment',
   cannotChangeCustomerFetchedOrder: 'Cannot change customer on the sale when the order is fetched for payment',
+  projectMandatoryToast: 'Project selection is mandatory for selected customer!',
+  fieldMandatoryToast: '{field} is mandatory!',
+  vipCardAlreadyActiveToast: 'Remove the current VIP card before scanning another',
+  noInvoicesForPayment: 'No invoices for payment',
   invoicesForPaymentPlaceholder: 'Invoices for payment for this customer will appear here. This feature is in development.',
 };
 

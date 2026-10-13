@@ -255,7 +255,8 @@ const da: Translations = {
   specificProjectNumber: 'Specifikt projektnummer',
   specificProjectNumberPlaceholder: 'Søg efter specifikt projektnummer',
   noProjectsFoundTrySpecific: 'Intet projekt fundet. Prøv at finde projektet med et specifikt projektnummer',
-  syncCustomers: 'Synkroniser kunder',
+  syncCustomer: 'Synkroniser kunde',
+  fetchCustomer: 'Hent kunde',
   syncProjects: 'Synkroniser projekter',
   requisitionPlaceholder: 'Indtast rekvisitionsnummer',
   contactPersonPlaceholder: 'Vælg kontaktperson',
@@ -303,7 +304,10 @@ const da: Translations = {
   tableHeaderName: 'NAVN',
   tableHeaderCategory: 'KATEGORI',
   tableHeaderAddress: 'ADRESSE',
-  tableHeaderPostalCodeCity: 'POSTNR/BY',
+  tableHeaderPostalCodeCity: 'POSTNR, BY',
+  tableHeaderPostalCode: 'POSTNR',
+  tableHeaderCity: 'BY',
+  tableHeaderExtNumber: 'EKST. NR',
 
   // ── Tab labels ─────────────────────────────────────────────────────────────
   tabGeneral: 'Generelt',
@@ -346,6 +350,7 @@ const da: Translations = {
   vipBlockedInfo: 'VIP-kortet er spærret. Salget kan ikke afsluttes, før kortet fjernes.',
   vipBlockedHardStop: 'VIP-kortet er spærret. Salget kan ikke afsluttes med dette kort, og spærringen kan ikke tilsidesættes i kassen.',
   removeVipCard: 'Fjern VIP-kort',
+  vipCardRemovedToast: 'VIP-kortet er fjernet',
   continueAsNormalCustomer: 'Fortsæt som normal kunde',
   vipCreditTitle: 'KREDIT',
   vipCreditLimit: 'VIP-kortets grænse',
@@ -387,8 +392,11 @@ const da: Translations = {
   invoicesForPayment: 'Fakturaer til betaling',
   edit: 'Rediger',
   removeCustomer: 'Fjern kunden',
-  noInvoicesForPayment: 'Ingen fakturaer til betaling',
   cannotChangeCustomerFetchedOrder: 'Kan ikke ændre kunde på salget, når ordren er hentet til betaling',
+  projectMandatoryToast: 'Projektvalg er obligatorisk for valgt kunde!',
+  fieldMandatoryToast: '{field} er obligatorisk!',
+  vipCardAlreadyActiveToast: 'Fjern det nuværende VIP-kort, før du scanner et nyt',
+  noInvoicesForPayment: 'Ingen fakturaer til betaling',
   invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunde vises her. Funktionen er under udvikling.',
 };
 
