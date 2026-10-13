@@ -136,6 +136,10 @@ const mockCustomers: Customer[] = [
 // Customers that exist only in the external ERP, not in the local register.
 // Unreachable by normal search — searching 12345 returns nothing until
 // "Specific customer number" is switched on, which is the point of the concept.
+const erpOnlyProjects: Project[] = [
+  { id: 'erp-p1', nr: '12345', ekstNr: '', navn: 'Takrenovering Rogne gård', kategori: 'Byggmestre', adresse: 'Byggerivegen 43', postnr: '2653', sted: 'Vestre Gausdal', utlopsdato: '31.12.2026' },
+];
+
 const erpOnlyCustomers: Customer[] = [
   { id: 'erp-1', name: 'Snorre Rogne', customerNumber: '12345', type: 'Proff', discountRate: 7, category: 'Byggmestre', mobile: '+47 915 12 345', email: 'snorre@rogne.no', street: 'Byggerivegen 43', postalCode: '2653', city: 'Vestre Gausdal', creditLimit: '25 000', availableCredit: '25 000', totalBalance: '0', invoicedBalance: '0', dueBalance: '0' },
 ];
@@ -163,7 +167,7 @@ const MOCK_CONTACTS = [
 
 // ─── Scan Card Button ─────────────────────────────────────────────────────────
 
-function SpecificNumberToggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+function SpecificNumberToggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label?: string }) {
   const { t } = useLanguage();
   return (
     <label
@@ -172,7 +176,7 @@ function SpecificNumberToggle({ checked, onChange }: { checked: boolean; onChang
     >
       <Switch checked={checked} onCheckedChange={onChange} />
       <span style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--card-foreground)', whiteSpace: 'nowrap' }}>
-        {t('specificCustomerNumber')}
+        {label ?? t('specificCustomerNumber')}
       </span>
     </label>
   );
@@ -405,25 +409,29 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
 
 // ─── Project Dropdown Table ───────────────────────────────────────────────────
 
-function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect }: {
+function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, suggestSpecificNumber }: {
   rect: DOMRect | null;
   modalRight: number | null;
   rows: Project[];
   hoveredIdx: number | null;
   onHover: (i: number | null) => void;
   onSelect: (r: Project) => void;
+  topSlot?: React.ReactNode;
+  panelRef?: React.Ref<HTMLDivElement>;
+  suggestSpecificNumber?: boolean;
 }) {
   const { t } = useLanguage();
-  if (!rect || rows.length === 0) return null;
+  // The toggle keeps the panel open through an empty result so it can be switched back.
+  if (!rect || (rows.length === 0 && !topSlot)) return null;
   const dropWidth = (modalRight != null ? modalRight - 20 : rect.right) - rect.left;
 
   return (
-    <div style={{
+    <div ref={panelRef} style={{
       position: 'fixed',
       top: rect.bottom + 2,
       left: rect.left,
       width: dropWidth,
-      maxHeight: HEADER_H + ROW_H * 6.5,
+      maxHeight: HEADER_H + ROW_H * 6.5 + (topSlot ? 48 : 0),
       zIndex: 2147483647,
       background: 'var(--card)',
       border: '1px solid var(--border)',
@@ -434,6 +442,19 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
       overflow: 'hidden',
       fontFamily: "'Montserrat', sans-serif",
     }}>
+      {topSlot && (
+        <div style={{ flexShrink: 0, borderBottom: rows.length === 0 ? 'none' : '1px solid var(--border)' }}>
+          {topSlot}
+        </div>
+      )}
+      {rows.length === 0 ? (
+        suggestSpecificNumber && (
+          <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
+            {t('noProjectsFoundTrySpecific')}
+          </div>
+        )
+      ) : (
+      <>
       <div style={{ display: 'grid', gridTemplateColumns: PROJECT_COLS, padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
         {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')].map(h => (
           <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
@@ -464,6 +485,8 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
           </div>
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 }
@@ -721,13 +744,20 @@ export function CustomerSelectionModal({
   initialProject = null,
 }: CustomerSelectionModalProps) {
   const { t } = useLanguage();
-  const { erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard, customerSearchConcept } = useSettings();
+  const { switchUserFlow, erpScenario, allowCreateProject, allowCreateContactPerson, scanCustomerCard, customerSearchConcept } = useSettings();
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
+  // The customer toggle is an Aspect4 concept, also applied to AX in Prototypes A, B and C.
+  const hasSpecificNumber = isAspect4 || erpScenario === 'AX';
+  // The project toggle is AX only (Prototypes A, B and C), not Aspect4.
+  const hasSpecificProject = erpScenario === 'AX';
+  // Prototype C on AX words the toggles as "Sync" instead of "Specific number".
+  const syncWording = erpScenario === 'AX' && switchUserFlow === 'C';
   // "Specific customer number" — look the customer up in the external ERP
   // instead of the local register. erpFetched only matters for concept B,
   // where the lookup waits for an explicit "Get customer" press.
   const [specificNumberOn, setSpecificNumberOn] = useState(false);
   const [erpFetched, setErpFetched] = useState(false);
+  const [specificProjectOn, setSpecificProjectOn] = useState(false);
 
   type TabKey = 'generelt' | 'leveringsadresse' | 'oioInformation' | 'vipKort';
   const [activeTab, setActiveTab] = useState<TabKey>(vipCard ? 'vipKort' : 'generelt');
@@ -778,6 +808,16 @@ export function CustomerSelectionModal({
   // counts as "outside" and closes the panel.
   const customerDropdownRef = useRef<HTMLDivElement>(null);
   const projectAnchorRef = useRef<HTMLDivElement>(null);
+  // Same fixes as the customer dropdown, for the toggle inside the project list.
+  const projectDropdownRef = useRef<HTMLDivElement>(null);
+  const projectSearchInputRef = useRef<HTMLInputElement>(null);
+  const projectBlurTimer = useRef<number | null>(null);
+  const cancelProjectClose = () => {
+    if (projectBlurTimer.current !== null) {
+      clearTimeout(projectBlurTimer.current);
+      projectBlurTimer.current = null;
+    }
+  };
   const contactAnchorRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const scanPanelInputRef = useRef<HTMLInputElement>(null);
@@ -905,7 +945,7 @@ export function CustomerSelectionModal({
     c.customerNumber.includes(customerQuery)
   );
 
-  const specificMode = isAspect4 && specificNumberOn;
+  const specificMode = hasSpecificNumber && specificNumberOn;
 
   // Concept A fetches as soon as the toggle is on; concept B waits for an
   // explicit "Get customer" press.
@@ -920,7 +960,11 @@ export function CustomerSelectionModal({
       ? (erpLookupReady ? matchesSearch(erpOnlyCustomers) : [])
       : matchesSearch(mockCustomers);
 
-  const filteredProjects = projectSearch
+  // Same toggle for projects: look up in the external ERP, fetched as you type.
+  const projectSpecificMode = hasSpecificProject && specificProjectOn;
+  const filteredProjects = projectSpecificMode
+    ? (projectSearch ? erpOnlyProjects.filter(p => p.nr.includes(projectSearch) || p.navn.toLowerCase().includes(projectSearch.toLowerCase())) : [])
+    : projectSearch
     ? mockProjects.filter(p =>
         p.navn.toLowerCase().includes(projectSearch.toLowerCase()) ||
         p.nr.includes(projectSearch) ||
@@ -985,7 +1029,7 @@ export function CustomerSelectionModal({
         customerAnchorRef.current?.contains(target) ||
         customerDropdownRef.current?.contains(target);
       if (customerAnchorRef.current && !insideCustomer) setCustomerOpen(false);
-      if (projectAnchorRef.current && !projectAnchorRef.current.contains(e.target as Node)) setProjectOpen(false);
+      if (projectAnchorRef.current && !projectAnchorRef.current.contains(target) && !projectDropdownRef.current?.contains(target)) setProjectOpen(false);
       if (contactAnchorRef.current && !contactAnchorRef.current.contains(e.target as Node)) setContactOpen(false);
     }
     document.addEventListener('mousedown', handle);
@@ -1349,8 +1393,9 @@ export function CustomerSelectionModal({
                 </div>
               )}
 
-              {isAspect4 && customerSearchConcept === 'B' && (
+              {hasSpecificNumber && customerSearchConcept === 'B' && (
                 <SpecificNumberToggle
+                  label={syncWording ? t('syncCustomers') : undefined}
                   checked={specificNumberOn}
                   onChange={v => { setSpecificNumberOn(v); setErpFetched(false); }}
                 />
@@ -1455,7 +1500,7 @@ export function CustomerSelectionModal({
                               </InputBox>
                             </div>
                             {scanCustomerCard && <ScanCardButton onClick={() => { if (scanHasResult) { setScanHasResult(false); setCardScanInput(''); } else { setScanPanelOpen(v => !v); } }} active={scanPanelOpen} />}
-                            {isAspect4 && customerSearchConcept === 'B' && specificNumberOn && (
+                            {hasSpecificNumber && customerSearchConcept === 'B' && specificNumberOn && (
                               <GetCustomerButton
                                 onClick={() => { setErpFetched(true); cancelCustomerClose(); setCustomerOpen(true); customerSearchInputRef.current?.focus(); }}
                                 disabled={customerSearch.trim() === ''}
@@ -1471,12 +1516,13 @@ export function CustomerSelectionModal({
                             <div ref={projectAnchorRef} style={{ flex: 1 }}>
                               <InputBox focused={projectOpen}>
                                 <input
+                                  ref={projectSearchInputRef}
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
-                                  placeholder={t('projectSearchPlaceholder')}
+                                  placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
                                   onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); }}
-                                  onFocus={() => setProjectOpen(true)}
-                                  onBlur={() => setTimeout(() => setProjectOpen(false), 150)}
+                                  onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
+                                  onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
                                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
                                   <Group3 />
@@ -1611,12 +1657,13 @@ export function CustomerSelectionModal({
                             <div ref={projectAnchorRef} style={{ flex: 1 }}>
                               <InputBox focused={projectOpen}>
                                 <input
+                                  ref={projectSearchInputRef}
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
-                                  placeholder={t('projectSearchPlaceholder')}
+                                  placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
                                   onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); }}
-                                  onFocus={() => setProjectOpen(true)}
-                                  onBlur={() => setTimeout(() => setProjectOpen(false), 150)}
+                                  onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
+                                  onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
                                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
                                   <Group3 />
@@ -1743,12 +1790,13 @@ export function CustomerSelectionModal({
                             <div ref={projectAnchorRef} style={{ flex: 1 }}>
                               <InputBox focused={projectOpen}>
                                 <input
+                                  ref={projectSearchInputRef}
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
-                                  placeholder={t('projectSearchPlaceholder')}
+                                  placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
                                   onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); }}
-                                  onFocus={() => setProjectOpen(true)}
-                                  onBlur={() => setTimeout(() => setProjectOpen(false), 150)}
+                                  onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
+                                  onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
                                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
                                   <Group3 />
@@ -2382,9 +2430,10 @@ export function CustomerSelectionModal({
         onSelect={handleCustomerSelect}
         panelRef={customerDropdownRef}
         awaitingInput={customerQuery === ''}
-        suggestSpecificNumber={isAspect4 && !specificNumberOn}
-        topSlot={isAspect4 && customerSearchConcept === 'A' ? (
+        suggestSpecificNumber={hasSpecificNumber && !specificNumberOn}
+        topSlot={hasSpecificNumber && customerSearchConcept === 'A' ? (
           <SpecificNumberToggle
+            label={syncWording ? t('syncCustomers') : undefined}
             checked={specificNumberOn}
             onChange={v => {
               setSpecificNumberOn(v);
@@ -2403,6 +2452,15 @@ export function CustomerSelectionModal({
         hoveredIdx={hoveredProject}
         onHover={setHoveredProject}
         onSelect={handleProjectSelect}
+        panelRef={projectDropdownRef}
+        suggestSpecificNumber={hasSpecificProject && !specificProjectOn}
+        topSlot={hasSpecificProject ? (
+          <SpecificNumberToggle
+            label={syncWording ? t('syncProjects') : t('specificProjectNumber')}
+            checked={specificProjectOn}
+            onChange={v => { setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
+          />
+        ) : undefined}
       />
       <ContactSelectList
         anchorRef={contactAnchorRef as React.RefObject<HTMLElement>}
