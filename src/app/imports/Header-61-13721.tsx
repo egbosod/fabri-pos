@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS } from '../utils/prototypeDescriptions';
 import { ERP_SCENARIOS } from '../utils/settingsUrl';
 import { useCopyShareLink } from '../hooks/useCopyShareLink';
 import { Copy, Check } from 'lucide-react';
@@ -18,7 +17,7 @@ function EgFabriLogoWhite1() {
   );
 }
 
-function ChevronDown2({ isOpen }: { isOpen?: boolean }) {
+function ChevronDown2({ isOpen, color = 'white' }: { isOpen?: boolean; color?: string }) {
   return (
     <div 
       className="h-[11.667px] relative shrink-0 w-[12.3px] transition-transform duration-200 ease-in-out" 
@@ -27,7 +26,7 @@ function ChevronDown2({ isOpen }: { isOpen?: boolean }) {
     >
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 13 12">
         <g clipPath="url(#clip0_61_13745)" id="Chevron Down 2">
-          <path d={svgPaths.p507f400} fill="var(--fill-0, white)" id="Vector" />
+          <path d={svgPaths.p507f400} fill={color} id="Vector" />
         </g>
         <defs>
           <clipPath id="clip0_61_13745">
@@ -97,8 +96,9 @@ function UserIcon() {
 }
 
 function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void; isProfileOpen?: boolean; currentUser?: string }) {
-  const { switchUserFlow, priceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
-  const [showPrototypeHint, setShowPrototypeHint] = useState(false);
+  const { switchUserFlow, setSwitchUserFlow, setPriceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
+  const [isFlowMenuOpen, setIsFlowMenuOpen] = useState(false);
+  const flowMenuRef = useRef<HTMLDivElement>(null);
   const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
   const erpMenuRef = useRef<HTMLDivElement>(null);
   const { copyStatus, copyShareLink } = useCopyShareLink();
@@ -108,6 +108,15 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
   // pointer drifted off the pill, which is too fragile for a settings picker.
   // Capture phase so a stopPropagation elsewhere can't swallow the click.
   useEffect(() => {
+    if (!isFlowMenuOpen) return;
+    const closeOnOutsidePress = (e: MouseEvent) => {
+      if (!flowMenuRef.current?.contains(e.target as Node)) setIsFlowMenuOpen(false);
+    };
+    document.addEventListener('mousedown', closeOnOutsidePress, true);
+    return () => document.removeEventListener('mousedown', closeOnOutsidePress, true);
+  }, [isFlowMenuOpen]);
+
+  useEffect(() => {
     if (!isErpMenuOpen) return;
     const closeOnOutsidePress = (e: MouseEvent) => {
       if (!erpMenuRef.current?.contains(e.target as Node)) setIsErpMenuOpen(false);
@@ -116,30 +125,47 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
     return () => document.removeEventListener('mousedown', closeOnOutsidePress, true);
   }, [isErpMenuOpen]);
 
-  const prototypeTooltip = `${FLOW_DESCRIPTIONS[switchUserFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[priceCheckLockConcept]}.`;
-
   return (
     <div className="content-stretch flex gap-[10px] items-center relative shrink-0">
       {showFlowIndicator && (
         <div className="flex items-center gap-2 relative">
-          {/* Label + letter badge read as one item; only they trigger the prototype tooltip. */}
-          <div
-            className="flex items-center gap-2 relative cursor-default"
-            onMouseEnter={() => setShowPrototypeHint(true)}
-            onMouseLeave={() => setShowPrototypeHint(false)}
-          >
-            <span className="font-['Montserrat'] font-medium text-[#FF00FF] text-[14px]">Prototype</span>
-            <div className="w-[24px] h-[24px] rounded-full bg-[#FF00FF] flex items-center justify-center text-white font-['Montserrat'] font-bold text-[12px] shadow-sm border border-white">
-              {switchUserFlow}
-            </div>
-            {showPrototypeHint && (
+          <div className="relative" ref={flowMenuRef}>
+            <button
+              type="button"
+              onClick={() => setIsFlowMenuOpen(v => !v)}
+              className="bg-white text-[#FF00FF] border border-[#FF00FF] text-[11px] font-semibold font-['Montserrat'] px-2 py-0.5 rounded-full flex items-center gap-1 cursor-pointer hover:opacity-80 transition-opacity"
+              aria-haspopup="listbox"
+              aria-expanded={isFlowMenuOpen}
+            >
+              Prototype {switchUserFlow}
+              <ChevronDown2 isOpen={isFlowMenuOpen} color="#FF00FF" />
+            </button>
+            {isFlowMenuOpen && (
               <div
-                className="absolute left-0 top-[calc(100%+8px)] z-[9999] w-[260px] rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4]"
-                role="tooltip"
+                role="listbox"
+                className="absolute right-0 top-[calc(100%+6px)] z-[9999] bg-white rounded-[8px] shadow-lg p-2 flex flex-col gap-1.5 w-[220px]"
               >
-                <div className="absolute -top-[5px] left-[20px] w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
-                <p className="font-bold mb-1">Prototype {switchUserFlow}</p>
-                <p>{prototypeTooltip}</p>
+                {(['A', 'B', 'C'] as const).map(flow => (
+                  <button
+                    key={flow}
+                    type="button"
+                    role="option"
+                    aria-selected={flow === switchUserFlow}
+                    onClick={() => {
+                      // Same pairing as the A/B/C keyboard shortcut.
+                      setSwitchUserFlow(flow);
+                      setPriceCheckLockConcept(flow);
+                      setIsFlowMenuOpen(false);
+                    }}
+                    className={`text-right text-[11px] font-semibold font-['Montserrat'] px-2 py-1 rounded-full cursor-pointer transition-colors ${
+                      flow === switchUserFlow
+                        ? 'bg-[#FF00FF] text-white'
+                        : 'bg-[#f2f2f2] text-[#22222c] hover:bg-[#e5e5e5]'
+                    }`}
+                  >
+                    Prototype {flow}
+                  </button>
+                ))}
               </div>
             )}
           </div>
