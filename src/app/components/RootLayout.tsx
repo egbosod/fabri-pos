@@ -28,6 +28,8 @@ import { formatAmount } from '../utils/formatAmount';
 import type { ScannedArticleData } from './InventorySearchModal';
 import { calculateSmartPrice, getMockItemMetadata, getItemLabels, parsePriceString } from './pricingUtils';
 import { EgConfirmModal } from './EgConfirmModal';
+import { SaleInProgressModal } from './SaleInProgressModal';
+import { ParkedSalesPanel } from './ParkedSalesPanel';
 import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { posToast } from '../utils/posToast';
@@ -240,6 +242,11 @@ function RootLayoutInner() {
     paymentTotals,
     resetPOS,
     clearCart,
+    hasOrderItems,
+    parkSale,
+    parkedSales,
+    restoreParkedSale,
+    discardSale,
     setSelectedHovedordre,
     vipCard,
     setVipCard,
@@ -259,6 +266,54 @@ function RootLayoutInner() {
   const { t } = useLanguage();
 
   const isPriceCheckMode = location.pathname === '/priskontroll';
+
+  // "New sale" or "Restore sale" with items in the basket asks what to do with
+  // the pending sale first.
+  const [showSaleInProgress, setShowSaleInProgress] = useState(false);
+  const [showParkedList, setShowParkedList] = useState(false);
+  const [pendingRestoreId, setPendingRestoreId] = useState<string | null>(null);
+  const handleNewSaleClick = () => {
+    if (hasOrderItems) setShowSaleInProgress(true);
+    else navigate('/salg');
+  };
+  const handleParkClick = () => {
+    parkSale();
+    posToast.success(t('saleParkedToast'));
+  };
+  const restoreAndShow = (id: string) => {
+    restoreParkedSale(id);
+    posToast.success(t('saleRestoredToast'));
+    setShowParkedList(false);
+    navigate('/salg');
+  };
+  const handleRestoreClick = (id: string) => {
+    if (hasOrderItems) {
+      setPendingRestoreId(id);
+      setShowSaleInProgress(true);
+    } else {
+      restoreAndShow(id);
+    }
+  };
+  const finishPendingSale = (action: 'park' | 'delete') => {
+    if (action === 'park') {
+      parkSale();
+      posToast.success(t('saleParkedToast'));
+    } else {
+      discardSale();
+      posToast.success(t('saleDeletedToast'));
+    }
+    setShowSaleInProgress(false);
+    if (pendingRestoreId) {
+      restoreAndShow(pendingRestoreId);
+      setPendingRestoreId(null);
+    } else {
+      navigate('/salg');
+    }
+  };
+  const cancelPendingSale = () => {
+    setShowSaleInProgress(false);
+    setPendingRestoreId(null);
+  };
 
   /* ── Mid-sale credit-exceeded (Aspect4 DK / Prototypes B & C) ────────────
      Open question 5 in docs/vip-card-spec.md: the overrun is discovered
@@ -742,6 +797,12 @@ function RootLayoutInner() {
           currentUser={currentUser}
           onUserChange={setCurrentUser}
           onUserLogout={showUserLogoutNotification}
+          onNewSaleClick={handleNewSaleClick}
+          parkedCount={parkedSales.length}
+          canPark={hasOrderItems}
+          isParkedListOpen={showParkedList}
+          onParkClick={handleParkClick}
+          onParkedListClick={() => setShowParkedList((o) => !o)}
           onPreviousPurchasesClick={() => navigate('/tidligere-kjop')}
         />
       </div>
@@ -803,6 +864,25 @@ function RootLayoutInner() {
             </div>
           </div>
         </EgConfirmModal>
+      )}
+
+      {/* ── Parked sales list ────────────────────────────────────────────── */}
+      {showParkedList && parkedSales.length > 0 && (
+        <ParkedSalesPanel
+          sales={parkedSales}
+          currentUser={currentUser}
+          onRestore={handleRestoreClick}
+          onClose={() => setShowParkedList(false)}
+        />
+      )}
+
+      {/* ── New sale while a sale is in progress ─────────────────────────── */}
+      {showSaleInProgress && (
+        <SaleInProgressModal
+          onPark={() => finishPendingSale('park')}
+          onDelete={() => finishPendingSale('delete')}
+          onCancel={cancelPendingSale}
+        />
       )}
 
       {/* ── Price check close guard (EBS-11361) ──────────────────────────── */}

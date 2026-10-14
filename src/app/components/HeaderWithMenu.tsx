@@ -3,7 +3,7 @@ import NewHeader from '../imports/Header-61-13721';
 import { MainMenuWithPriceCheck } from './MainMenuWithPriceCheck';
 import ProfileBadge from './ProfileBadge';
 
-export function HeaderWithMenu({ isPriceCheckMode, onPriceCheckClick, onPriceCheckClose, currentUser, onUserChange, onUserLogout, onPreviousPurchasesClick }: { isPriceCheckMode?: boolean; onPriceCheckClick?: () => void; onPriceCheckClose?: () => void; currentUser?: string; onUserChange?: (username: string) => void; onUserLogout?: (username: string) => void; onPreviousPurchasesClick?: () => void; }) {
+export function HeaderWithMenu({ isPriceCheckMode, onPriceCheckClick, onPriceCheckClose, currentUser, onUserChange, onUserLogout, onNewSaleClick, onPreviousPurchasesClick, parkedCount, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { parkedCount?: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void; isPriceCheckMode?: boolean; onPriceCheckClick?: () => void; onPriceCheckClose?: () => void; currentUser?: string; onUserChange?: (username: string) => void; onUserLogout?: (username: string) => void; onNewSaleClick?: () => void; onPreviousPurchasesClick?: () => void; }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -40,6 +40,12 @@ export function HeaderWithMenu({ isPriceCheckMode, onPriceCheckClick, onPriceChe
         onPriceCheckClick={onPriceCheckClick}
         onPriceCheckClose={onPriceCheckClose}
         currentUser={currentUser}
+        onNewSaleClick={onNewSaleClick}
+        parkedCount={parkedCount}
+        canPark={canPark}
+        isParkedListOpen={isParkedListOpen}
+        onParkClick={onParkClick}
+        onParkedListClick={onParkedListClick}
         onPreviousPurchasesClick={onPreviousPurchasesClick}
       />
       

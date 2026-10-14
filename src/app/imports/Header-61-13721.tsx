@@ -56,11 +56,14 @@ function Frame632({ onMenuClick, isMenuOpen, isDisabled }: { onMenuClick: () => 
   );
 }
 
-function Frame633({ isDisabled, onPreviousPurchasesClick }: { isDisabled?: boolean; onPreviousPurchasesClick?: () => void }) {
+function Frame633({ isDisabled, onNewSaleClick, onPreviousPurchasesClick }: { isDisabled?: boolean; onNewSaleClick?: () => void; onPreviousPurchasesClick?: () => void }) {
   const { t } = useLanguage();
   return (
     <div className={`content-stretch flex font-['Montserrat',sans-serif] font-normal gap-[30px] items-start leading-[1.75] relative shrink-0 text-[15px] text-center text-nowrap text-white whitespace-pre transition-opacity ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`}>
-      <p className="relative shrink-0">{t('newSale')}</p>
+      <button
+        onClick={onNewSaleClick}
+        className="relative shrink-0 bg-transparent border-none cursor-pointer p-0 text-white font-['Montserrat',sans-serif] font-normal leading-[1.75] text-[15px] text-center text-nowrap whitespace-pre hover:opacity-70 transition-opacity"
+      >{t('newSale')}</button>
       <button
         onClick={onPreviousPurchasesClick}
         className="relative shrink-0 bg-transparent border-none cursor-pointer p-0 text-white font-['Montserrat',sans-serif] font-normal leading-[1.75] text-[15px] text-center text-nowrap whitespace-pre hover:opacity-70 transition-opacity"
@@ -70,12 +73,12 @@ function Frame633({ isDisabled, onPreviousPurchasesClick }: { isDisabled?: boole
   );
 }
 
-function Frame138({ onMenuClick, isMenuOpen, isPriceCheckMode, onPreviousPurchasesClick }: { onMenuClick: () => void; isMenuOpen?: boolean; isPriceCheckMode?: boolean; onPreviousPurchasesClick?: () => void }) {
+function Frame138({ onMenuClick, isMenuOpen, isPriceCheckMode, onNewSaleClick, onPreviousPurchasesClick }: { onMenuClick: () => void; isMenuOpen?: boolean; isPriceCheckMode?: boolean; onNewSaleClick?: () => void; onPreviousPurchasesClick?: () => void }) {
   return (
     <div className="content-stretch flex gap-[40px] items-center relative shrink-0">
       <EgFabriLogoWhite1 />
       <Frame632 onMenuClick={onMenuClick} isMenuOpen={isMenuOpen} isDisabled={isPriceCheckMode} />
-      <Frame633 isDisabled={isPriceCheckMode} onPreviousPurchasesClick={onPreviousPurchasesClick} />
+      <Frame633 isDisabled={isPriceCheckMode} onNewSaleClick={onNewSaleClick} onPreviousPurchasesClick={onPreviousPurchasesClick} />
     </div>
   );
 }
@@ -251,12 +254,12 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
   );
 }
 
-function Header({ onMenuClick, isMenuOpen, isPriceCheckMode, onProfileClick, isProfileOpen, currentUser, onPreviousPurchasesClick }: { onMenuClick: () => void; isMenuOpen?: boolean; isPriceCheckMode?: boolean; onProfileClick: () => void; isProfileOpen?: boolean; currentUser?: string; onPreviousPurchasesClick?: () => void }) {
+function Header({ onMenuClick, isMenuOpen, isPriceCheckMode, onProfileClick, isProfileOpen, currentUser, onNewSaleClick, onPreviousPurchasesClick }: { onMenuClick: () => void; isMenuOpen?: boolean; isPriceCheckMode?: boolean; onProfileClick: () => void; isProfileOpen?: boolean; currentUser?: string; onNewSaleClick?: () => void; onPreviousPurchasesClick?: () => void }) {
   return (
     <div className="bg-[#42424a] relative shrink-0 w-full" data-name="Header">
       <div className="flex flex-row items-center size-full">
         <div className="box-border content-stretch flex items-center justify-between px-[10px] py-[6px] relative w-full">
-          <Frame138 onMenuClick={onMenuClick} isMenuOpen={isMenuOpen} isPriceCheckMode={isPriceCheckMode} onPreviousPurchasesClick={onPreviousPurchasesClick} />
+          <Frame138 onMenuClick={onMenuClick} isMenuOpen={isMenuOpen} isPriceCheckMode={isPriceCheckMode} onNewSaleClick={onNewSaleClick} onPreviousPurchasesClick={onPreviousPurchasesClick} />
           <Frame137 onClick={onProfileClick} isProfileOpen={isProfileOpen} currentUser={currentUser} />
         </div>
       </div>
@@ -280,31 +283,31 @@ function TextButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function Button() {
+function Button({ onClick, disabled }: { onClick?: () => void; disabled?: boolean }) {
   const { t } = useLanguage();
   return (
-    <button className="bg-white box-border content-stretch cursor-pointer flex gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative rounded-bl-[5px] rounded-tl-[5px] shrink-0" data-name="Button">
+    <button onClick={onClick} disabled={disabled} className={`bg-white box-border content-stretch flex ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'} gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative rounded-bl-[5px] rounded-tl-[5px] shrink-0`} data-name="Button">
       <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-bl-[5px] rounded-tl-[5px]" />
       <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">{t('parkSale')}</p>
     </button>
   );
 }
 
-function Frame145() {
+function Frame145({ count }: { count: number }) {
   return (
-    <div className="bg-[#d5d5d7] box-border content-stretch flex items-center justify-center overflow-clip px-[7px] py-0 relative rounded-[100px] shrink-0 w-[22px]">
+    <div className={`${count > 0 ? 'bg-[#090914]' : 'bg-[#d5d5d7]'} box-border content-stretch flex items-center justify-center overflow-clip px-[7px] py-0 relative rounded-[100px] shrink-0 min-w-[22px]`}>
       <div className="flex flex-col font-['Montserrat',sans-serif] font-semibold justify-center leading-[0] relative shrink-0 text-[12px] text-center text-nowrap text-white">
-        <p className="leading-[1.75] whitespace-pre">0</p>
+        <p className="leading-[1.75] whitespace-pre">{count}</p>
       </div>
     </div>
   );
 }
 
-function IconDown() {
+function IconDown({ active }: { active?: boolean }) {
   return (
     <div className="relative shrink-0 size-[12px]" data-name="Icon / Down">
       <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 12 12">
-        <g clipPath="url(#clip0_21_3255)" id="Icon / Down" opacity="0.4">
+        <g clipPath="url(#clip0_21_3255)" id="Icon / Down" opacity={active ? 1 : 0.4}>
           <g id="Icon Plate"></g>
           <path d={svgPaths.p396e8f80} fill="var(--fill-0, black)" id="Vector" />
         </g>
@@ -318,25 +321,32 @@ function IconDown() {
   );
 }
 
-function Button1() {
+function Button1({ count, isOpen, onClick }: { count: number; isOpen?: boolean; onClick?: () => void }) {
+  const hasSales = count > 0;
   return (
-    <div className="bg-[#eae9e9] box-border content-stretch flex gap-[8px] h-[40px] items-center px-[10px] py-[6px] relative rounded-br-[5px] rounded-tr-[5px] shrink-0 w-[62px]" data-name="Button">
-      <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-br-[5px] rounded-tr-[5px]" />
-      <Frame145 />
-      <IconDown />
-    </div>
+    <button
+      onClick={onClick}
+      disabled={!hasSales}
+      aria-expanded={isOpen}
+      className={`${hasSales ? 'bg-white cursor-pointer hover:bg-gray-50' : 'bg-[#eae9e9] cursor-default'} box-border content-stretch flex gap-[8px] h-[40px] items-center px-[10px] py-[6px] relative rounded-br-[5px] rounded-tr-[5px] shrink-0 min-w-[62px]`}
+      data-name="Button"
+    >
+      <div aria-hidden="true" className={`absolute border border-solid inset-0 pointer-events-none rounded-br-[5px] rounded-tr-[5px] ${isOpen ? 'border-[2px] border-[#0a8cf0]' : 'border-[#d5d5d7]'}`} />
+      <Frame145 count={count} />
+      <IconDown active={hasSales} />
+    </button>
   );
 }
 
-function TopMenu({ onPriceCheckClick }: { onPriceCheckClick: () => void }) {
+function TopMenu({ onPriceCheckClick, parkedCount, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { onPriceCheckClick: () => void; parkedCount: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void }) {
   return (
     <div className="bg-white h-[60px] relative shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] shrink-0 w-full" data-name="Top menu">
       <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
         <div className="box-border content-stretch flex h-[60px] items-center justify-between px-[20px] py-[8px] relative w-full [[data-previous-purchases-open]_&]:hidden">
           <TextButton onClick={onPriceCheckClick} />
           <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="Parker salg knapp">
-            <Button />
-            <Button1 />
+            <Button onClick={onParkClick} disabled={!canPark} />
+            <Button1 count={parkedCount} isOpen={isParkedListOpen} onClick={onParkedListClick} />
           </div>
         </div>
       </div>
@@ -386,7 +396,7 @@ function Frame({ onClose, paymentTitle }: { onClose: () => void; paymentTitle?: 
   );
 }
 
-export default function Header1({ onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, isPriceCheckMode, onPriceCheckClick, onPriceCheckClose, currentUser, isPaymentMode, paymentTitle, onPaymentClose, onPreviousPurchasesClick }: { onMenuClick?: () => void; isMenuOpen?: boolean; onProfileClick?: () => void; isProfileOpen?: boolean; isPriceCheckMode?: boolean; onPriceCheckClick?: () => void; onPriceCheckClose?: () => void; currentUser?: string; isPaymentMode?: boolean; paymentTitle?: string; onPaymentClose?: () => void; onPreviousPurchasesClick?: () => void }) {
+export default function Header1({ onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, isPriceCheckMode, onPriceCheckClick, onPriceCheckClose, currentUser, isPaymentMode, paymentTitle, onPaymentClose, onNewSaleClick, onPreviousPurchasesClick, parkedCount = 0, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { parkedCount?: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void; onMenuClick?: () => void; isMenuOpen?: boolean; onProfileClick?: () => void; isProfileOpen?: boolean; isPriceCheckMode?: boolean; onPriceCheckClick?: () => void; onPriceCheckClose?: () => void; currentUser?: string; isPaymentMode?: boolean; paymentTitle?: string; onPaymentClose?: () => void; onNewSaleClick?: () => void; onPreviousPurchasesClick?: () => void }) {
   return (
     <div className="content-stretch flex flex-col items-start relative w-full" data-name="Header">
       <Header 
@@ -396,9 +406,10 @@ export default function Header1({ onMenuClick, isMenuOpen, onProfileClick, isPro
         onProfileClick={() => onProfileClick?.()}
         isProfileOpen={isProfileOpen}
         currentUser={currentUser}
+        onNewSaleClick={onNewSaleClick}
         onPreviousPurchasesClick={onPreviousPurchasesClick}
       />
-      {!isPriceCheckMode && !isPaymentMode && <TopMenu onPriceCheckClick={() => onPriceCheckClick?.()} />}
+      {!isPriceCheckMode && !isPaymentMode && <TopMenu onPriceCheckClick={() => onPriceCheckClick?.()} parkedCount={parkedCount} canPark={canPark} isParkedListOpen={isParkedListOpen} onParkClick={onParkClick} onParkedListClick={onParkedListClick} />}
       {isPriceCheckMode && (
         <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full" data-name="Price check mode">
           <Frame onClose={() => onPriceCheckClose?.()} />
