@@ -398,6 +398,21 @@ const no: Translations = {
   vipCardAlreadyActiveToast: 'Fjern det nåværende VIP-kortet før du skanner et nytt',
   noInvoicesForPayment: 'Ingen fakturaer til betaling',
   invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunden vil vises her. Funksjonaliteten er under utvikling.',
+  pickupInvoiceForPayment: 'Hent faktura til betaling',
+  invoiceNumberDueDate: 'Fakturanummer, forfallsdato',
+  customerRefShort: 'Kundereferanse',
+  invoice: 'Faktura',
+  removeFromSale: 'Fjern fra salget',
+  invoiceForPayment: 'Faktura til betaling',
+  pickupInvoiceTab: 'Hent faktura',
+  createAccountPaymentTab: 'Opprett kontobetaling',
+  accountPayment: 'Kontobetaling',
+  orderBalance: 'Ordresaldo',
+  amount: 'Beløp',
+  addToSale: 'Legg til i salget',
+  creditNote: 'Kreditnota',
+  digitsOnlyError: 'Dette feltet godtar kun sifre',
+  pickupForPayment: 'Hent til betaling',
 };
 
 export default no;

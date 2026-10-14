@@ -398,6 +398,21 @@ const sv: Translations = {
   vipCardAlreadyActiveToast: 'Ta bort det nuvarande VIP-kortet innan du skannar ett nytt',
   noInvoicesForPayment: 'Inga fakturor att betala',
   invoicesForPaymentPlaceholder: 'Fakturor att betala för den här kunden visas här. Funktionen är under utveckling.',
+  pickupInvoiceForPayment: 'Hämta faktura för betalning',
+  invoiceNumberDueDate: 'Fakturanummer, förfallodatum',
+  customerRefShort: 'Kundref.',
+  invoice: 'Faktura',
+  removeFromSale: 'Ta bort från försäljningen',
+  invoiceForPayment: 'Faktura att betala',
+  pickupInvoiceTab: 'Hämta faktura',
+  createAccountPaymentTab: 'Skapa kontobetalning',
+  accountPayment: 'Kontobetalning',
+  orderBalance: 'Ordersaldo',
+  amount: 'Belopp',
+  addToSale: 'Lägg i försäljningen',
+  creditNote: 'Kreditnota',
+  digitsOnlyError: 'Det här fältet accepterar bara siffror',
+  pickupForPayment: 'Hämta för betalning',
 };
 
 export default sv;

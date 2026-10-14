@@ -397,6 +397,21 @@ const en: Translations = {
   vipCardAlreadyActiveToast: 'Remove the current VIP card before scanning another',
   noInvoicesForPayment: 'No invoices for payment',
   invoicesForPaymentPlaceholder: 'Invoices for payment for this customer will appear here. This feature is in development.',
+  pickupInvoiceForPayment: 'Pickup invoice for payment',
+  invoiceNumberDueDate: 'Invoice number, due date',
+  customerRefShort: 'Customer ref.',
+  invoice: 'Invoice',
+  removeFromSale: 'Remove from sale',
+  invoiceForPayment: 'Invoice for payment',
+  pickupInvoiceTab: 'Pickup invoice',
+  createAccountPaymentTab: 'Create account payment',
+  accountPayment: 'Account payment',
+  orderBalance: 'Order balance',
+  amount: 'Amount',
+  addToSale: 'Add to sale',
+  creditNote: 'Credit note',
+  digitsOnlyError: 'This input field only accepts digits',
+  pickupForPayment: 'Pickup for payment',
 };
 
 export default en;

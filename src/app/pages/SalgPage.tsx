@@ -9,6 +9,7 @@ import { usePOS } from '../contexts/POSContext';
 import { OrderGroup } from '../components/OrderGroup';
 import { AggregatedHandOpenOrderGroup } from '../components/AggregatedHandOpenOrderGroup';
 import { AggregatedOrderClosedGroup } from '../components/AggregatedOrderClosedGroup';
+import { InvoiceOrderGroup } from '../components/InvoiceOrderGroup';
 import { SwipeableOrderItem, OrderLineState as SwipeableOrderLineState } from '../components/SwipeableOrderItem';
 import { baseState } from '../components/orderLineState';
 import { SwipeableDefaultOrderItem } from '../components/SwipeableDefaultOrderItem';
@@ -326,6 +327,15 @@ function OrderItemsView({
                   badge={group.badge}
                   lines={group.items.map((item) => ({ id: item.id || `${group.id}-${item.sku}`, productName: item.name, productCode: item.sku, quantity: item.quantity, unit: item.unit, pricePerUnit: item.price, discount: item.discount || 0, total: item.total, originalTotal: item.originalTotal }))}
                   onRemoveAll={() => onRemoveAllItemsFromGroup(group.id)}
+                />
+              );
+            }
+            if (group.status === 'Invoice' && group.invoice) {
+              return (
+                <InvoiceOrderGroup
+                  key={group.id}
+                  invoice={group.invoice}
+                  onRemove={() => onRemoveOrderGroup(group.id)}
                 />
               );
             }
@@ -763,6 +773,7 @@ export default function SalgPage() {
               onBankTerminal={() => {}}
               onExchangeSlip={() => openModal('faktura')}
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
+              onCreateAccountPayment={switchUserFlow === 'C' ? () => openModal('account-payment') : undefined}
               vipCard={vipCard}
               onRemoveVipCard={() => { setVipCard(null); posToast.success(t('vipCardRemovedToast')); }}
               vipOverLimit={vipOverLimit}

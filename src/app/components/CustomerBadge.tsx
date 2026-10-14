@@ -35,6 +35,8 @@ interface CustomerBadgeProps {
   onBankTerminal?: () => void;
   onExchangeSlip?: () => void;
   onPreviousPurchases?: () => void;
+  /** Prototype C: menu choice that opens the Create account payment modal */
+  onCreateAccountPayment?: () => void;
   /** VIP card (Aspect4 DK / Prototypes B & C) — persistent indicator on the sale */
   vipCard?: VipCardData | null;
   /** Aspect4 DK Proto A: remove a blocked VIP card from the sale */
@@ -72,6 +74,7 @@ export function CustomerBadge({
   onBankTerminal,
   onExchangeSlip,
   onPreviousPurchases,
+  onCreateAccountPayment,
   vipCard,
   onRemoveVipCard,
   vipOverLimit = false
@@ -154,6 +157,7 @@ export function CustomerBadge({
               onBankTerminal={onBankTerminal ? () => { closeMenu(); onBankTerminal!(); } : undefined}
               onExchangeSlip={onExchangeSlip ? () => { closeMenu(); onExchangeSlip!(); } : undefined}
               onRemoveVipCard={canRemoveVip ? () => { closeMenu(); onRemoveVipCard!(); } : undefined}
+              onCreateAccountPayment={onCreateAccountPayment ? () => { closeMenu(); onCreateAccountPayment!(); } : undefined}
               onPreviousPurchases={onPreviousPurchases ? () => { closeMenu(); onPreviousPurchases!(); } : undefined}
             />
           </div>

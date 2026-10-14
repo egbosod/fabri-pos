@@ -399,4 +399,19 @@ export interface Translations {
   vipCardAlreadyActiveToast: string;
   noInvoicesForPayment: string;
   invoicesForPaymentPlaceholder: string;
+  pickupInvoiceForPayment: string;
+  invoiceNumberDueDate: string;
+  customerRefShort: string;
+  invoice: string;
+  invoiceForPayment: string;
+  pickupInvoiceTab: string;
+  createAccountPaymentTab: string;
+  accountPayment: string;
+  orderBalance: string;
+  amount: string;
+  addToSale: string;
+  creditNote: string;
+  digitsOnlyError: string;
+  pickupForPayment: string;
+  removeFromSale: string;
 }
