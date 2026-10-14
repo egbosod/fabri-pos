@@ -769,6 +769,40 @@ type CardRowData = EgListRow;
 type CardSection = EgListSection;
 
 /**
+ * Mock-only ERP notices above the Kunde card: none, blue only, red only or
+ * both. Spread across customers from the customer number so each customer
+ * always shows the same combination, and every combination is easy to find.
+ */
+function customerNoticeKinds(customerNumber: string): { info: boolean; error: boolean } {
+  // FNV-1a hash, so neighbouring customer numbers land on unrelated combinations
+  let h = 2166136261;
+  for (const ch of customerNumber) h = Math.imul(h ^ ch.charCodeAt(0), 16777619) >>> 0;
+  const kind = (h >>> 7) % 4; // 0 none · 1 info · 2 error · 3 both
+  return { info: kind === 1 || kind === 3, error: kind === 2 || kind === 3 };
+}
+
+function CustomerNotices({ customer }: { customer: Customer }) {
+  const { t } = useLanguage();
+  const { info, error } = customerNoticeKinds(customer.customerNumber);
+  const box = (tone: 'info' | 'error', text: string) => (
+    <div style={{
+      background: `color-mix(in srgb, var(${tone === 'info' ? '--primary' : '--destructive'}) 6%, var(--card))`,
+      border: `1px solid var(${tone === 'info' ? '--primary' : '--destructive'})`,
+      borderRadius: 'var(--radius-sm)',
+      padding: 15,
+    }}>
+      <p style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.75, margin: 0 }}>{text}</p>
+    </div>
+  );
+  return (
+    <>
+      {info && box('info', t('customerNoticeCashOnly'))}
+      {error && box('error', t('customerNoticeNoPackingSlip'))}
+    </>
+  );
+}
+
+/**
  * An `EgList` card plus the expand/collapse toggle that reveals a second
  * `EgList` holding the grouped detail sections.
  */
@@ -2454,6 +2488,7 @@ export function CustomerSelectionModal({
               {/* Kunde card is suppressed in VIP mode (Prototype C): the card already
                   identifies the customer in the header, so Credit is the only panel
                   that adds information here. */}
+              {selectedCustomer && !isVipMode && <CustomerNotices customer={selectedCustomer} />}
               {selectedCustomer && !isVipMode && (
                 <InfoCard
                   title={t('customerInfoTitle')}
@@ -2510,6 +2545,7 @@ export function CustomerSelectionModal({
                 {scanHasResult && selectedCustomer ? (
                   /* ── Result view: info cards matching right panel ── */
                   <>
+                    <CustomerNotices customer={selectedCustomer} />
                     <InfoCard
                       title={t('customerInfoTitle')}
                       expandLabel={t('expandCustomerDetails')}

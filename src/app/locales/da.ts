@@ -83,6 +83,8 @@ const da: Translations = {
   deleteSale: 'Slet salg',
   saleParkedToast: 'Salget er parkeret',
   saleDeletedToast: 'Salget er slettet',
+  customerNoticeCashOnly: 'Kun kontant. Brug e-mail til post!',
+  customerNoticeNoPackingSlip: 'Kan ikke oprette følgeseddel på kunden. Skal betale kontant!',
   parkedByLabel: 'Parkeret af',
   parkedCustomerLabel: 'Kunde',
   parkedBongLabel: 'Bon',

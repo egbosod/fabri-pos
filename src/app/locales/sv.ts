@@ -80,6 +80,8 @@ const sv: Translations = {
   deleteSale: 'Ta bort försäljning',
   saleParkedToast: 'Försäljningen är parkerad',
   saleDeletedToast: 'Försäljningen är borttagen',
+  customerNoticeCashOnly: 'Endast kontant. Använd e-post för post!',
+  customerNoticeNoPackingSlip: 'Kan inte skapa följesedel för kunden. Måste betala kontant!',
   parkedByLabel: 'Parkerad av',
   parkedCustomerLabel: 'Kund',
   parkedBongLabel: 'Bong',

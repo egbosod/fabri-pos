@@ -80,6 +80,8 @@ const no: Translations = {
   deleteSale: 'Slett salg',
   saleParkedToast: 'Salget er parkert',
   saleDeletedToast: 'Salget er slettet',
+  customerNoticeCashOnly: 'Kun kontant. Benytt e-post for post!',
+  customerNoticeNoPackingSlip: 'Kan ikke opprette pakkseddel på kunde. Må betale kontant!',
   parkedByLabel: 'Parkert av',
   parkedCustomerLabel: 'Kunde',
   parkedBongLabel: 'Bong',
