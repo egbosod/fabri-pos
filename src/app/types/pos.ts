@@ -129,6 +129,7 @@ export type ModalName =
   | 'payment'
   | 'config'
   | 'faktura'
+  | 'account-payment'
   | 'switch-user'
   | 'hovedordre'
   | 'packing-slip-signature'

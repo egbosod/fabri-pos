@@ -773,6 +773,7 @@ export default function SalgPage() {
               onBankTerminal={() => {}}
               onExchangeSlip={() => openModal('faktura')}
               onPreviousPurchases={() => navigate('/tidligere-kjop')}
+              onCreateAccountPayment={switchUserFlow === 'C' ? () => openModal('account-payment') : undefined}
               vipCard={vipCard}
               onRemoveVipCard={() => { setVipCard(null); posToast.success(t('vipCardRemovedToast')); }}
               vipOverLimit={vipOverLimit}

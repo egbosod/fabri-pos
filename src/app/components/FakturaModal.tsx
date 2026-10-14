@@ -12,6 +12,10 @@ interface FakturaModalProps {
   onPickup?: (invoices: InvoiceForPayment[]) => void;
   /** Prototype A: adds the "Create account payment" tab, with credit info. */
   accountPaymentTab?: boolean;
+  /** Prototype C: a modal for the account payment alone (credit info + amount), no invoices. */
+  accountPaymentOnly?: boolean;
+  /** Prototype C: the invoice pickup modal on its own, titled "Invoice for payment". */
+  renamedTitle?: boolean;
   /** Prototype B: invoices and the account payment panel share the modal, no tabs. */
   accountPaymentSideBySide?: boolean;
   /** Fires with the typed amount; it is placed on the sales order as one line. */
@@ -79,7 +83,7 @@ const COLUMNS = '56px minmax(0, 1fr) 120px 150px';
 
 const parseKr = (v?: string) => parseFloat((v ?? '0').replace(/\s/g, '').replace(',', '.')) || 0;
 
-export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = false, accountPaymentSideBySide = false, onAddAccountPayment }: FakturaModalProps) {
+export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = false, accountPaymentSideBySide = false, accountPaymentOnly = false, renamedTitle = false, onAddAccountPayment }: FakturaModalProps) {
   const { t } = useLanguage();
   const invoices = useMemo(() => mockInvoicesFor(customer), [customer]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -89,7 +93,7 @@ export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = 
   const [amountError, setAmountError] = useState(false);
   const amount = parseFloat(amountText.replace(/\s/g, '').replace(',', '.')) || 0;
   const sideBySide = accountPaymentSideBySide;
-  const isAccountTab = accountPaymentTab && !sideBySide && tab === 'account';
+  const isAccountTab = accountPaymentOnly || (accountPaymentTab && !sideBySide && tab === 'account');
 
   const hand = customer && MOCK_BY_CUSTOMER_NUMBER[customer.customerNumber]?.balances;
   const invoiced = hand ? hand.invoiced : parseKr(customer?.invoicedBalance);
@@ -266,7 +270,7 @@ export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = 
         <div className="flex items-center gap-[10px] p-[20px] shrink-0">
           <FileText className="text-foreground" size={24} />
           <p className="text-foreground font-semibold" style={{ fontSize: 'var(--text-lg)' }}>
-            {accountPaymentTab || sideBySide ? t('invoiceForPayment') : t('pickupInvoiceForPayment')}
+            {accountPaymentOnly ? t('createAccountPaymentTab') : accountPaymentTab || sideBySide || renamedTitle ? t('invoiceForPayment') : t('pickupInvoiceForPayment')}
           </p>
         </div>
 

@@ -1,3 +1,4 @@
+import { Banknote } from 'lucide-react';
 import svgPaths from "../imports/svg-5q11sxhjpw";
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -9,6 +10,8 @@ interface CustomerMenuProps {
   onBankTerminal?: () => void;
   onExchangeSlip?: () => void;
   onPreviousPurchases?: () => void;
+  /** Prototype C: opens the separate Create account payment modal. */
+  onCreateAccountPayment?: () => void;
   onRemoveVipCard?: () => void;
 }
 
@@ -189,6 +192,7 @@ export function CustomerMenu({
   onBankTerminal,
   onExchangeSlip,
   onPreviousPurchases,
+  onCreateAccountPayment,
   onRemoveVipCard,
 }: CustomerMenuProps) {
   const { t } = useLanguage();
@@ -216,6 +220,14 @@ export function CustomerMenu({
           onClick={onExchangeSlip ?? (() => {})}
           variant="highlighted"
         />
+
+        {onCreateAccountPayment && (
+          <MenuItem
+            icon={<Banknote size={12} strokeWidth={1.2} />}
+            label={t('createAccountPaymentTab')}
+            onClick={onCreateAccountPayment}
+          />
+        )}
 
         {/* 2 · Previous purchases — always shown */}
         <MenuItem
