@@ -51,6 +51,9 @@ interface POSContextValue {
   setSearchQuery: (q: string) => void;
   inventorySearchValue: string;
   setInventorySearchValue: (v: string) => void;
+  /** The query last submitted with Enter; the product list searches on this, not on every keystroke. */
+  inventorySearchSubmitted: string;
+  setInventorySearchSubmitted: (v: string) => void;
   currentUser: string;
   setCurrentUser: (u: string) => void;
   currentConfigItem: { name: string; code: string; price: number; unit: string } | null;
@@ -356,6 +359,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
   /* ── Search ─────────────────────────────────────────────────────────────── */
   const [searchQuery, setSearchQuery] = useState('');
   const [inventorySearchValue, setInventorySearchValue] = useState('');
+  const [inventorySearchSubmitted, setInventorySearchSubmitted] = useState('');
 
   /* ── User ────────────────────────────────────────────────────────────────── */
   const [currentUser, setCurrentUser] = useState(() => getLoginToken()?.username ?? 'Erik Wheeler');
@@ -511,6 +515,7 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setSelectedHovedordre(null);
     setSearchQuery('');
     setInventorySearchValue('');
+    setInventorySearchSubmitted('');
     setCurrentUser('Erik Wheeler');
     setCurrentConfigItem(null);
     setPendingInventoryItems([]);
@@ -546,6 +551,8 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setSearchQuery,
     inventorySearchValue,
     setInventorySearchValue,
+    inventorySearchSubmitted,
+    setInventorySearchSubmitted,
     currentUser,
     setCurrentUser,
     currentConfigItem,

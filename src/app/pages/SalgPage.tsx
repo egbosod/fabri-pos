@@ -492,15 +492,21 @@ function SearchAndActionsBar({
   hovedordrePlacement?: 'A' | 'B' | 'C';
 }) {
   const { t } = useLanguage();
-  const { searchQuery, inventorySearchValue, setInventorySearchValue, handleAddToSale, selectedHovedordre } = usePOS();
+  const { searchQuery, inventorySearchValue, setInventorySearchValue, setInventorySearchSubmitted, handleAddToSale, selectedHovedordre } = usePOS();
   const { openModal } = useModalParams();
   const [searchFocused, setSearchFocused] = React.useState(false);
 
   const isAspect4 = erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK';
 
+  // Typing only edits the field; the product list opens on Enter.
   const handleSearchInput = (value: string) => {
     setInventorySearchValue(value);
-    if (value.length > 0) openModal('inventory');
+  };
+  const handleSearchSubmit = () => {
+    const value = inventorySearchValue.trim();
+    if (value.length === 0) return;
+    setInventorySearchSubmitted(value);
+    openModal('inventory');
   };
 
   return (
@@ -523,7 +529,7 @@ function SearchAndActionsBar({
               onUpdateAddedItem={onUpdateAddedItem}
             />
           </div>
-          <div className="content-stretch flex gap-[10px] items-center relative rounded-bl-[3px] rounded-br-[3px] shrink-0 w-full" data-name="Search and actions">
+          <div className="content-stretch flex gap-[10px] items-center relative rounded-bl-[3px] rounded-br-[3px] shrink-0 w-full" data-name="Search and actions" data-inventory-anchor>
             <div className="basis-0 bg-card grow h-[48px] min-h-px min-w-px relative rounded-[var(--radius)] shrink-0" data-name="Textfield/Normal">
               <div
                 aria-hidden="true"
@@ -536,6 +542,7 @@ function SearchAndActionsBar({
                     type="text"
                     value={inventorySearchValue}
                     onChange={(e) => handleSearchInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(); }}
                     onFocus={() => setSearchFocused(true)}
                     onBlur={() => setSearchFocused(false)}
                     placeholder={t('searchProducts')}

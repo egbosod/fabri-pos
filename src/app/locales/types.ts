@@ -128,6 +128,14 @@ export interface Translations {
   info: string;
   action: string;
   noItemsFound: string;
+  addMultipleLines: string;
+  includeNonStock: string;
+  loadStock: string;
+  inventory: string;
+  nonStockArticle: string;
+  addProductLines: string;
+  addProductLine: string;
+  loadInventoryRow: string;
   emptyCartTitle: string;
   emptyCartBody: string;
   notInStock: string;
