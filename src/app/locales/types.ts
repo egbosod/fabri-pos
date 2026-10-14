@@ -79,6 +79,8 @@ export interface Translations {
   deleteSale: string;
   saleParkedToast: string;
   saleDeletedToast: string;
+  customerNoticeCashOnly: string;
+  customerNoticeNoPackingSlip: string;
   parkedByLabel: string;
   parkedCustomerLabel: string;
   parkedBongLabel: string;

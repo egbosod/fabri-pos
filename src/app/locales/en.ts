@@ -79,6 +79,8 @@ const en: Translations = {
   deleteSale: 'Delete sale',
   saleParkedToast: 'Sale parked',
   saleDeletedToast: 'Sale deleted',
+  customerNoticeCashOnly: 'Cash only. Use email for post!',
+  customerNoticeNoPackingSlip: 'Cannot create a packing slip for this customer. Must pay in cash!',
   parkedByLabel: 'Parked by',
   parkedCustomerLabel: 'Customer',
   parkedBongLabel: 'Bong',
