@@ -18,7 +18,7 @@ import { PaymentSummary } from '../components/PaymentSummary';
 import { CustomerBadge } from '../components/CustomerBadge';
 import { CartSidebar, SelectCustomerButton, SidebarButton } from '../components/CartSidebar';
 import { CartColumnHeader } from '../components/CartColumnHeader';
-import { Check, RotateCcw, Trash2, Plus, ClipboardList, User } from 'lucide-react';
+import { Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User } from 'lucide-react';
 import type { CartItem, OrderGroupData, ProductItem, RowState } from '../types/pos';
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -305,11 +305,13 @@ function OrderItemsView({
     <div className="basis-0 content-stretch flex flex-col grow items-start min-h-px min-w-px relative shrink-0 w-full" data-name="Order items">
       <div className="content-stretch flex flex-col items-start relative size-full">
         {/* Column headers */}
-        <CartColumnHeader
-          trailing={totalItemCount > 0 && (
-            <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>{totalItemCount} {t('orderLines')}</div>
-          )}
-        />
+        {(orderGroups.length > 0 || addedItems.length > 0) && (
+          <CartColumnHeader
+            trailing={totalItemCount > 0 && (
+              <div className="font-normal" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>{totalItemCount} {t('orderLines')}</div>
+            )}
+          />
+        )}
 
         {/* Groups & items */}
         <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full">
@@ -441,6 +443,16 @@ function OrderItemsView({
             );
           })}
         </div>
+
+        {orderGroups.length === 0 && addedItems.length === 0 && (
+          <div className="flex flex-col grow items-center justify-center gap-[12px] w-full text-center px-[24px]" data-name="Empty cart">
+            <ShoppingCart size={56} strokeWidth={1.75} style={{ color: 'var(--muted-foreground)', opacity: 0.35 }} />
+            <div className="flex flex-col items-center gap-[4px]">
+              <p className="font-semibold" style={{ fontSize: 'var(--text-lg)', color: 'var(--muted-foreground)' }}>{t('emptyCartTitle')}</p>
+              <p className="font-normal max-w-[280px]" style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>{t('emptyCartBody')}</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -495,7 +507,7 @@ function SearchAndActionsBar({
     <div className="basis-0 bg-card grow h-full min-h-px min-w-px relative shrink-0">
       <div className="size-full">
         <div className="box-border content-stretch flex flex-col gap-[20px] items-start justify-end p-[20px] relative size-full">
-          <div className="overflow-auto min-h-0 w-full">
+          <div className={`overflow-auto min-h-0 w-full${orderGroups.length === 0 && addedItems.length === 0 ? ' grow flex flex-col' : ''}`}>
             <OrderItemsView
               searchQuery={searchQuery}
               onAddToSale={handleAddToSale}

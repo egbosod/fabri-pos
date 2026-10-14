@@ -106,6 +106,8 @@ export interface Translations {
   info: string;
   action: string;
   noItemsFound: string;
+  emptyCartTitle: string;
+  emptyCartBody: string;
   notInStock: string;
   nonStock: string;
   expired: string;

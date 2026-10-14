@@ -107,6 +107,8 @@ const sv: Translations = {
   info: 'Info',
   action: 'Åtgärd',
   noItemsFound: 'Inga varor hittades',
+  emptyCartTitle: 'Inga varor',
+  emptyCartBody: 'Sök efter varor, eller skanna streckkod för att lägga till',
   notInStock: 'Inte i lager',
   nonStock: 'Ej lagerhållen',
   expired: 'Utgången',
