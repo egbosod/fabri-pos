@@ -43,6 +43,8 @@ interface GroupHeaderProps {
   struck?: boolean;
   /** Status pill shown just left of the group total. */
   badge?: React.ReactNode;
+  /** Hide the "n lines" count, e.g. for a single-line invoice. */
+  hideLineCount?: boolean;
 }
 
 /**
@@ -50,7 +52,7 @@ interface GroupHeaderProps {
  * column; the line count and chevron end on a fixed right edge, so every
  * group's chevron lines up whatever else its header carries.
  */
-export function GroupHeader({ first, second, total, lineCount, isExpanded, onToggle, struck, badge }: GroupHeaderProps) {
+export function GroupHeader({ first, second, total, lineCount, isExpanded, onToggle, struck, badge, hideLineCount }: GroupHeaderProps) {
   const { t } = useLanguage();
   const strike = struck ? 'line-through' : '';
 
@@ -85,9 +87,11 @@ export function GroupHeader({ first, second, total, lineCount, isExpanded, onTog
         {total !== undefined && total.toFixed(2)}
       </div>
       <div className="flex shrink-0 items-center justify-end gap-[12px]" style={{ width: `${CART_TRAILING_WIDTH}px`, paddingRight: `${CART_TRAILING_PADDING}px` }}>
-        <span className={`text-nowrap ${strike}`} style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
-          {lineCount} {t('orderLines')}
-        </span>
+        {!hideLineCount && (
+          <span className={`text-nowrap ${strike}`} style={{ fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)' }}>
+            {lineCount} {t('orderLines')}
+          </span>
+        )}
         <ChevronDown
           className={`shrink-0 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
           style={{ color: 'var(--muted-foreground)' }}

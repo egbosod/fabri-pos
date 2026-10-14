@@ -11,6 +11,10 @@ export interface Customer {
   type: 'Proff' | 'Privat';
   discountRate?: number;
   category?: string;
+  /** Mock-only balances (kr, as formatted strings) carried over from the customer picker. */
+  totalBalance?: string;
+  invoicedBalance?: string;
+  dueBalance?: string;
 }
 
 export interface Project {
@@ -60,10 +64,24 @@ export interface CartItem {
   };
 }
 
+/** An open customer invoice that can be picked up for payment in the sale. */
+export interface InvoiceForPayment {
+  id: string;
+  number: string;
+  dueDate: string;
+  customerRef: string;
+  total: number;
+  prepaid: number;
+  /** 'account' = a fixed-amount account payment rather than an open invoice. */
+  kind?: 'account';
+}
+
 export interface OrderGroupData {
   id: string;
   type: 'handterminal' | 'order';
-  status?: 'AggregatedHandOpen' | 'AggregatedOrderClosed' | 'normal';
+  status?: 'AggregatedHandOpen' | 'AggregatedOrderClosed' | 'Invoice' | 'normal';
+  /** Set when status is 'Invoice'; the group's single line carries the remaining amount. */
+  invoice?: InvoiceForPayment;
   orderNumber?: string;
   orderDate: string;
   customerName?: string;

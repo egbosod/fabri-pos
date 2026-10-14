@@ -401,6 +401,19 @@ const da: Translations = {
   vipCardAlreadyActiveToast: 'Fjern det nuværende VIP-kort, før du scanner et nyt',
   noInvoicesForPayment: 'Ingen fakturaer til betaling',
   invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunde vises her. Funktionen er under udvikling.',
+  pickupInvoiceForPayment: 'Hent faktura til betaling',
+  invoiceNumberDueDate: 'Fakturanummer, forfaldsdato',
+  customerRefShort: 'Kundereference',
+  invoice: 'Faktura',
+  removeFromSale: 'Fjern fra salget',
+  invoiceForPayment: 'Faktura til betaling',
+  pickupInvoiceTab: 'Hent faktura',
+  createAccountPaymentTab: 'Opret kontobetaling',
+  accountPayment: 'Kontobetaling',
+  orderBalance: 'Ordresaldo',
+  amount: 'Beløb',
+  addToSale: 'Læg i salget',
+  pickupForPayment: 'Hent til betaling',
 };
 
 export default da;

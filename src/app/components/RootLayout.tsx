@@ -217,6 +217,8 @@ function RootLayoutInner() {
     handleAddToSale,
     orderGroups,
     handlePickupOrder,
+    handlePickupInvoices,
+    handleAddAccountPayment,
     handleFetchExpedition,
     handleRemoveAddedItem,
     selectedCustomer,
@@ -652,7 +654,10 @@ function RootLayoutInner() {
       )}
 
       {isModalOpen('faktura') && (
-        <FakturaModal onClose={closeModal} customerName={selectedCustomer?.name} />
+        <FakturaModal onClose={closeModal} customer={selectedCustomer} onPickup={(invoices) => { handlePickupInvoices(invoices); closeModal(); }}
+          accountPaymentTab={switchUserFlow === 'A'}
+          onAddAccountPayment={(amount) => { handleAddAccountPayment(amount); closeModal(); }}
+        />
       )}
 
       <HovedordreModal

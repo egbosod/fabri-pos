@@ -5,6 +5,7 @@ import type {
   Project,
   CartItem,
   OrderGroupData,
+  InvoiceForPayment,
   OrderLineState,
   PaymentTotals,
   VipCardData,
@@ -19,6 +20,8 @@ interface POSContextValue {
   handleUpdateAddedItem: (index: number, patch: Partial<CartItem>) => void;
   orderGroups: OrderGroupData[];
   handlePickupOrder: (orders: any[]) => void;
+  handlePickupInvoices: (invoices: InvoiceForPayment[]) => void;
+  handleAddAccountPayment: (amount: number) => void;
   handleFetchExpedition: (expeditionData: any) => void;
   handleRemoveOrderGroup: (groupId: string) => void;
   handleRemoveAllItemsFromGroup: (groupId: string) => void;
@@ -130,6 +133,45 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
       })),
     }));
     setOrderGroups((prev) => [...prev, ...newGroups]);
+  }, []);
+
+  const handlePickupInvoices = useCallback((invoices: InvoiceForPayment[]) => {
+    setOrderGroups((prev) => {
+      const already = new Set(prev.map((g) => g.invoice?.id));
+      const added: OrderGroupData[] = invoices
+        .filter((inv) => !already.has(inv.id))
+        .map((inv) => {
+          const remaining = inv.total - inv.prepaid;
+          return {
+            id: `invoice-${inv.id}`,
+            type: 'order' as const,
+            status: 'Invoice' as const,
+            invoice: inv,
+            orderDate: inv.dueDate,
+            total: remaining,
+            itemCount: 1,
+            items: [{ name: `Invoice ${inv.number}`, sku: inv.customerRef, quantity: 1, unit: 'STK', price: remaining, discount: 0, total: remaining }],
+          };
+        });
+      return [...prev, ...added];
+    });
+  }, []);
+
+  const handleAddAccountPayment = useCallback((amount: number) => {
+    const id = `account-${Date.now()}`;
+    setOrderGroups((prev) => [
+      ...prev,
+      {
+        id,
+        type: 'order' as const,
+        status: 'Invoice' as const,
+        invoice: { id, number: '', dueDate: '', customerRef: '', total: amount, prepaid: 0, kind: 'account' as const },
+        orderDate: '',
+        total: amount,
+        itemCount: 1,
+        items: [{ name: 'Account payment', sku: '', quantity: 1, unit: 'STK', price: amount, discount: 0, total: amount }],
+      },
+    ]);
   }, []);
 
   const handleFetchExpedition = useCallback((expeditionData: any) => {
@@ -393,6 +435,8 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     handleUpdateAddedItem,
     orderGroups,
     handlePickupOrder,
+    handlePickupInvoices,
+    handleAddAccountPayment,
     handleFetchExpedition,
     handleRemoveOrderGroup,
     handleRemoveAllItemsFromGroup,
