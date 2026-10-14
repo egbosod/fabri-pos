@@ -74,6 +74,26 @@ export interface Translations {
   sendEmail: string;
   salesperson: string;
   saleCompletedToast: string;
+  saleInProgressTitle: string;
+  saleInProgressBody: string;
+  deleteSale: string;
+  saleParkedToast: string;
+  saleDeletedToast: string;
+  parkedByLabel: string;
+  parkedCustomerLabel: string;
+  parkedBongLabel: string;
+  parkedCreatedByLabel: string;
+  parkedSumLabel: string;
+  showOnlyMySales: string;
+  restoreSale: string;
+  parkedYou: string;
+  noParkedSales: string;
+  saleRestoredToast: string;
+  parkedItemName: string;
+  parkedQuantity: string;
+  parkedPerUnit: string;
+  parkedDiscount: string;
+  parkedTotal: string;
   selectCustomerButton: string;
 
   // ── Actions ────────────────────────────────────────────────────────────────

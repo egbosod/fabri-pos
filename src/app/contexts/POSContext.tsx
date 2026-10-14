@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { getLoginToken } from '../utils/loginToken';
 import type {
   Customer,
@@ -12,6 +12,22 @@ import type {
 } from '../types/pos';
 
 /* ─── Context value shape ──────────────────────────────────────────────────── */
+
+export interface ParkedSale {
+  id: string;
+  parkedAt: number;
+  /** Username of whoever parked it; the panel shows "you" for the current user. */
+  parkedBy: string;
+  createdBy: string;
+  customerName: string;
+  bong: string;
+  total: number;
+  addedItems: CartItem[];
+  orderGroups: OrderGroupData[];
+  customer: Customer | null;
+  project: Project | null;
+  vipCard: VipCardData | null;
+}
 
 interface POSContextValue {
   addedItems: CartItem[];
@@ -50,6 +66,14 @@ interface POSContextValue {
   resetPOS: () => void;
   /** Empties the sale (order groups + added lines) but keeps customer, project and user. */
   clearCart: () => void;
+  /** Sales set aside with "Park sale" — snapshots of the cart, customer, project and VIP card. */
+  parkedSales: ParkedSale[];
+  /** Snapshots the live sale into parkedSales, then clears it for a fresh one. */
+  parkSale: () => void;
+  /** Makes a parked sale the live sale again (the caller deals with any open sale first). */
+  restoreParkedSale: (id: string) => void;
+  /** Throws the live sale away (cart, customer, project, VIP card); keeps the user. */
+  discardSale: () => void;
   selectedHovedordre: { ordrenummer: string } | null;
   setSelectedHovedordre: (order: { ordrenummer: string } | null) => void;
   /* Price check (Prissjekkmodus) — separate basket, kept off the live sale */
@@ -84,6 +108,30 @@ export function usePOS(): POSContextValue {
     throw new Error('usePOS must be used within POSProvider');
   }
   return ctx;
+}
+
+/** Mock colleague sales shown next to the cashier's own once something has been parked. */
+function seedColleagueSales(): ParkedSale[] {
+  const mk = (id: string, at: Date, bong: string, total: number, lineName: string, sku: string, quantity = 1): ParkedSale => ({
+    id,
+    parkedAt: at.getTime(),
+    parkedBy: 'egtnpa',
+    createdBy: 'egtnpa',
+    customerName: 'BYGGMESTER SNORRE ROGNE',
+    bong,
+    total,
+    addedItems: [{ name: lineName, sku, price: total / quantity, quantity, unit: 'STK', discount: 0, total }],
+    orderGroups: [],
+    customer: null,
+    project: null,
+    vipCard: null,
+  });
+  return [
+    mk('seed-v3-70', new Date(2026, 9, 13, 10, 57), 'V3-70', 64.9, 'ØYESKRUE SVEIS 432 8X77 Ø15 ELF SB', '27620145'),
+    mk('seed-v3-69', new Date(2026, 9, 13, 10, 56), 'V3-69', -55.16, 'GIPSSKRUE 3,9X35 FOSFATERT 1000 STK', '27610388', -1),
+    mk('seed-v3-68', new Date(2026, 9, 13, 10, 9), 'V3-68', -143.65, 'MALERTAPE GUL 50 MM X 50 M', '27455012', -1),
+    mk('seed-v3-67', new Date(2026, 9, 13, 10, 7), 'V3-67', 423.16, 'BYGNINGSFOLIE 0,2 MM 4X25 M', '27300771'),
+  ];
 }
 
 /* ─── Provider ─────────────────────────────────────────────────────────────── */
@@ -405,6 +453,55 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     setOrderGroups([]);
   }, []);
 
+  /* ── Park / discard the live sale ──────────────────────────────────────── */
+  const [parkedSales, setParkedSales] = useState<ParkedSale[]>([]);
+
+  const discardSale = useCallback(() => {
+    setAddedItems([]);
+    setOrderGroups([]);
+    setSelectedCustomer(null);
+    setSelectedProject(null);
+    setSelectedHovedordre(null);
+    setVipCard(null);
+    setPendingVipCard(null);
+    setVipAcknowledged(false);
+  }, []);
+
+  const bongCounter = useRef(9);
+
+  const parkSale = useCallback(() => {
+    const mine: ParkedSale = {
+      id: `parked-${Date.now()}`,
+      parkedAt: Date.now(),
+      parkedBy: currentUser,
+      createdBy: currentUser,
+      customerName: selectedCustomer?.name ?? '',
+      bong: `BO1-${bongCounter.current++}`,
+      total: paymentTotals.total,
+      addedItems,
+      orderGroups,
+      customer: selectedCustomer,
+      project: selectedProject,
+      vipCard,
+    };
+    // The first park also brings in the other cashiers' sales, so the list
+    // reads like a shared till rather than a one-row table.
+    setParkedSales((prev) => [...(prev.length === 0 ? seedColleagueSales() : prev), mine]);
+    discardSale();
+  }, [addedItems, orderGroups, selectedCustomer, selectedProject, vipCard, currentUser, paymentTotals.total, discardSale]);
+
+  /** Loads a parked sale back as the live sale and removes it from the list. */
+  const restoreParkedSale = useCallback((id: string) => {
+    const sale = parkedSales.find((p) => p.id === id);
+    if (!sale) return;
+    setAddedItems(sale.addedItems);
+    setOrderGroups(sale.orderGroups);
+    setSelectedCustomer(sale.customer);
+    setSelectedProject(sale.project);
+    setVipCard(sale.vipCard);
+    setParkedSales((prev) => prev.filter((p) => p.id !== id));
+  }, [parkedSales]);
+
   /* ── Reset POS ──────────────────────────────────────────────────────────── */
   const resetPOS = useCallback(() => {
     setAddedItems([]);
@@ -463,6 +560,10 @@ export function POSProvider({ children }: { children: React.ReactNode }) {
     hasOrderItems,
     resetPOS,
     clearCart,
+    parkedSales,
+    parkSale,
+    restoreParkedSale,
+    discardSale,
     selectedHovedordre,
     setSelectedHovedordre,
     vipCard,
