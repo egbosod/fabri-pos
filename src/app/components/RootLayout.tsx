@@ -229,6 +229,8 @@ function RootLayoutInner() {
     handleRemoveCustomer,
     inventorySearchValue,
     setInventorySearchValue,
+    inventorySearchSubmitted,
+    setInventorySearchSubmitted,
     currentUser,
     setCurrentUser,
     currentConfigItem,
@@ -617,6 +619,9 @@ function RootLayoutInner() {
             closeModal();
             setInventorySearchValue('');
           }}
+          anchored
+          query={inventorySearchSubmitted}
+          onQueryChange={(v) => { setInventorySearchValue(v); setInventorySearchSubmitted(v); }}
           initialSearchValue={inventorySearchValue}
           scannedArticleData={scannedArticleData}
           onArticleDataProcessed={() => setScannedArticleData(null)}

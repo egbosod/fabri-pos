@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import svgPaths from "../imports/svg-cyizkdbmkk";
 import { useLanguage } from '../contexts/LanguageContext';
+import { matchesProductQuery } from '../utils/productSearch';
 
 function Group3() {
   return (
@@ -54,6 +55,14 @@ interface InventorySearchModalProps {
   scannedArticleData?: ScannedArticleData | null;
   /** Called once the scanned data has been applied to the form */
   onArticleDataProcessed?: () => void;
+  /**
+   * Anchored mode (sale screen): the list sits just above the cart's search
+   * field, left aligned, with no dimmer and no search field of its own. The
+   * cart field is the only active search; it filters via `query`.
+   */
+  anchored?: boolean;
+  query?: string;
+  onQueryChange?: (v: string) => void;
 }
 
 const mockItems: InventoryItem[] = [
@@ -82,18 +91,137 @@ const mockItems: InventoryItem[] = [
   { id: 1003456789, varenr: '1003456789', varetekst: 'MULTI-TOOL GOP 12V-28 SOLO', leverandor: 'Alloc AS', pris: '47,60 kr / STK', beholdning: null, info: ['Non-stock', 'PEFC certificate'], isNonStock: true }
 ];
 
-export function InventorySearchModal({ onClose, onAddItems, initialSearchValue = '', scannedArticleData = null, onArticleDataProcessed = () => {} }: InventorySearchModalProps) {
+// Norwegian building-supply catalogue (searchable: spiker, vindu, planker, ...).
+// Tuple: sku, name, supplier, price, unit, stock (null = not loaded yet), info tags.
+// Items tagged 'Non-stock' are special-order articles with no stock.
+const NB = (
+  sku: string, name: string, supplier: string, price: number, unit: string,
+  beholdning: string | null, info: string[] = [],
+): InventoryItem => ({
+  id: Number(sku),
+  varenr: sku,
+  varetekst: name,
+  leverandor: supplier,
+  pris: `${price.toFixed(2).replace('.', ',')} kr / ${unit}`,
+  beholdning,
+  info,
+  isNonStock: info.includes('Non-stock'),
+});
+
+const norwegianItems: InventoryItem[] = [
+  NB('23083603', 'Beslagsskrue 5,0x40 CS A-250 Corrseal', 'Eikås Sagbruk AS', 179, 'PAK', null, ['EU Ecolabel']),
+  NB('10234567', 'Gipsplate 13mm 1200x2400', 'Alloc AS', 125, 'STK', null, ['Nordic Swan Ecolabel']),
+  NB('10445678', 'Sparkel Gyproc Fuge 10L', 'Alloc AS', 285, 'STK', null, ['Expires 15.03.2027']),
+  NB('20334455', 'Isolasjon 100mm Glava 34', 'Eikås Sagbruk AS', 450, 'PK', null, ['Nordic Swan Ecolabel', 'EU Ecolabel']),
+  NB('30445566', 'Trelast 48x98x4800 C24', 'Eikås Sagbruk AS', 120, 'STK', null, ['FSC Certified', 'PEFC certificate']),
+  NB('40556677', 'Maling Jotun Lady Pure Color 10L', 'BOSCH ROBERT AS', 890, 'STK', null, ['Expires 10.09.2027']),
+  NB('50667788', 'Kabel 3x1,5mm Hvit 100m', 'BOSCH ROBERT AS', 650, 'RLL', null, ['Non-stock']),
+  NB('60778899', 'Skruer TX20 4x50 Gulvplateskrue', 'Eikås Sagbruk AS', 95, 'PK', null, []),
+  NB('70889900', 'Rør PEX 16x2,2mm 50m', 'Alloc AS', 420, 'RLL', null, ['Non-stock', 'EU Ecolabel']),
+  NB('80990011', 'Sement Norbetong Standard 25kg', 'Alloc AS', 89, 'SEK', null, ['Expires 22.11.2026']),
+  NB('91001122', 'Panel Skygge Furu 12x120', 'Eikås Sagbruk AS', 65, 'M', null, ['FSC Certified']),
+  NB('11223344', 'Lim Bison Kit 310ml', 'BOSCH ROBERT AS', 45, 'STK', null, ['Expires 18.07.2026']),
+  NB('22334455', 'Vindu 3-lags 12x12', 'Alloc AS', 3500, 'STK', null, ['Non-stock', 'Nordic Swan Ecolabel']),
+  NB('22334466', 'Vindu 2-lags 10x12 Hvit', 'Alloc AS', 2650, 'STK', '4 STK', ['EU Ecolabel']),
+  NB('22334477', 'Takvindu Velux 78x118', 'Alloc AS', 5900, 'STK', null, ['Non-stock']),
+  NB('33445566', 'Dør Innerdør Hvit 8x21', 'Alloc AS', 2800, 'STK', null, ['FSC Certified']),
+  NB('44556677', 'Fliser Porselensgulv 60x60', 'Alloc AS', 350, 'M2', null, ['Non-stock', 'Expires 05.12.2026']),
+  NB('55667788', 'Spiker 3,1x90 Kamspiker', 'BOSCH ROBERT AS', 125, 'PAK', '240 PAK', []),
+  NB('55667799', 'Spiker 2,8x65 Galvanisert', 'BOSCH ROBERT AS', 98, 'PAK', null, ['EU Ecolabel']),
+  NB('55667800', 'Takspiker 2,8x25 Galvanisert 1kg', 'BOSCH ROBERT AS', 72, 'PAK', null, ['Non-stock']),
+  NB('55667811', 'Rustfrie spiker 2,5x50 A4', 'Eikås Sagbruk AS', 215, 'PAK', null, ['Non-stock', 'Expires 12.04.2027']),
+  NB('66778899', 'Tape Armering 50mm x 90m', 'Alloc AS', 35, 'RLL', null, []),
+  NB('77889900', 'Silikon Neutral Hvit', 'BOSCH ROBERT AS', 55, 'STK', null, ['Expires 30.06.2026']),
+  NB('88990011', 'Kabelkanal 25x16mm Hvit', 'BOSCH ROBERT AS', 25, 'M', null, []),
+  NB('99001122', 'Stikkontakt Enkel Hvit', 'BOSCH ROBERT AS', 38, 'STK', null, []),
+  NB('31001001', 'Planke høvlet furu 28x120 4,8m', 'Eikås Sagbruk AS', 189, 'STK', '86 STK', ['FSC Certified', 'PEFC certificate']),
+  NB('31001002', 'Terrassebord planker impregnert 28x120', 'Eikås Sagbruk AS', 64, 'M', null, ['PEFC certificate']),
+  NB('31001003', 'Planker gran 48x148 3,6m C24', 'Eikås Sagbruk AS', 245, 'STK', null, ['FSC Certified']),
+  NB('31001004', 'Planker lerk 38x150 uhøvlet', 'Eikås Sagbruk AS', 310, 'STK', null, ['Non-stock', 'Expires 20.08.2026']),
+  // Insulation
+  NB('20334456', 'Steinull Rockwool Flexi 100mm 565x1170', 'Isolasjonsgrossisten AS', 389, 'PK', '120 PK', ['Nordic Swan Ecolabel', 'EU Ecolabel']),
+  NB('20334457', 'Steinull Rockwool Flexi 150mm 565x1170', 'Isolasjonsgrossisten AS', 519, 'PK', null, ['Nordic Swan Ecolabel']),
+  NB('20334458', 'Isolasjon Glava Standard 36 200mm', 'Isolasjonsgrossisten AS', 595, 'PK', null, ['EU Ecolabel']),
+  NB('20334459', 'Isolasjon EPS Hvit 100mm 600x1200', 'Isolasjonsgrossisten AS', 79, 'STK', null, []),
+  NB('20334460', 'Isolasjon PIR-plate 50mm 600x2400 Kingspan', 'Isolasjonsgrossisten AS', 285, 'STK', null, ['Non-stock']),
+  NB('20334461', 'Vindsperre Isola Tyvek 1,5x50m', 'Isolasjonsgrossisten AS', 1290, 'RLL', null, ['Expires 14.02.2027']),
+  NB('20334462', 'Dampsperre PE-folie 0,20mm 4x25m', 'Isolasjonsgrossisten AS', 459, 'RLL', null, []),
+  // Roof
+  NB('50100001', 'Takstein betong Nordic svart', 'Takpartner AS', 28, 'STK', '5400 STK', ['PEFC certificate']),
+  NB('50100002', 'Takstein tegl rød engobert', 'Takpartner AS', 34, 'STK', null, ['Non-stock']),
+  NB('50100003', 'Stålplatetak Plannja Trapez 35 sort', 'Takpartner AS', 219, 'M2', null, ['EU Ecolabel']),
+  NB('50100004', 'Undertak Isola Tyvek Supro 1,5x50m', 'Takpartner AS', 1590, 'RLL', null, ['Expires 20.05.2027']),
+  NB('50100005', 'Takrenne PVC 125mm hvit 3m', 'Takpartner AS', 169, 'STK', null, []),
+  NB('50100006', 'Takrenne endestykke 125mm sort', 'Takpartner AS', 45, 'STK', null, []),
+  NB('50100007', 'Takrenne beslag og festebraketter sort', 'Takpartner AS', 29, 'STK', null, ['Non-stock']),
+  NB('50100008', 'Takfoss rørtakfot og snøfanger 2m', 'Takpartner AS', 349, 'STK', null, ['Non-stock', 'Expires 18.09.2026']),
+  NB('50100009', 'Takpapp underlagspapp Icopal 1x10m', 'Takpartner AS', 279, 'RLL', null, ['EU Ecolabel']),
+  // Plates
+  NB('60200001', 'OSB/3 plate 12mm 1220x2440', 'Plateimport AS', 189, 'STK', '312 STK', ['FSC Certified']),
+  NB('60200002', 'OSB/3 plate 18mm 1220x2440 not og fjær', 'Plateimport AS', 295, 'STK', null, ['FSC Certified', 'PEFC certificate']),
+  NB('60200003', 'Kryssfiner bjørk 12mm 1220x2440', 'Plateimport AS', 549, 'STK', null, ['FSC Certified']),
+  NB('60200004', 'Sponplate gulv P5 22mm 600x2400', 'Plateimport AS', 229, 'STK', null, ['PEFC certificate']),
+  NB('60200005', 'MDF plate 16mm 1220x2440', 'Plateimport AS', 365, 'STK', null, ['EU Ecolabel']),
+  NB('60200006', 'Fibersementplate Cembrit 8mm 1200x2500', 'Plateimport AS', 449, 'STK', null, ['Non-stock']),
+  NB('60200007', 'Vindtett gipsplate Glasroc 9mm 900x2700', 'Plateimport AS', 189, 'STK', null, ['Expires 30.11.2026']),
+  NB('60200008', 'Våtromsplate Wedi 12,5mm 600x1200', 'Plateimport AS', 365, 'STK', null, ['Non-stock', 'Nordic Swan Ecolabel']),
+  // DIY tools
+  NB('70300001', 'Hammer Stanley FatMax 570g', 'Verktøy Norge AS', 249, 'STK', '42 STK', []),
+  NB('70300002', 'Sag Bahco håndsag 550mm', 'Verktøy Norge AS', 189, 'STK', null, []),
+  NB('70300003', 'Skrutrekkersett Wera 6 deler', 'Verktøy Norge AS', 329, 'SET', null, []),
+  NB('70300004', 'Vater Stabila 80cm', 'Verktøy Norge AS', 459, 'STK', null, []),
+  NB('70300005', 'Målebånd Stanley 5m', 'Verktøy Norge AS', 99, 'STK', null, []),
+  NB('70300006', 'Tang kombinasjonstang Knipex 180mm', 'Verktøy Norge AS', 389, 'STK', null, ['Non-stock']),
+  NB('70300007', 'Borhammer Bosch GBH 2-26 DRE 800W', 'BOSCH ROBERT AS', 2490, 'STK', null, ['Expires 12.12.2027']),
+  NB('70300008', 'Skrumaskin Makita 18V DDF484 sett', 'Verktøy Norge AS', 2990, 'SET', null, ['Non-stock']),
+  NB('70300009', 'Bor sett HSS-G 1-10mm 19 deler', 'Verktøy Norge AS', 349, 'SET', null, []),
+  NB('70300010', 'Kniv Stanley stikkekniv 18mm', 'Verktøy Norge AS', 69, 'STK', null, []),
+  NB('70300011', 'Sandpapir sett P60-P240 20 ark', 'Verktøy Norge AS', 119, 'PAK', null, []),
+  NB('70300012', 'Arbeidshansker Hestra Job str 9', 'Verktøy Norge AS', 149, 'PAR', null, []),
+];
+mockItems.push(...norwegianItems);
+
+export function InventorySearchModal({ onClose, onAddItems, initialSearchValue = '', scannedArticleData = null, onArticleDataProcessed = () => {}, anchored = false, query = '', onQueryChange }: InventorySearchModalProps) {
   const { t } = useLanguage();
   const [filters, setFilters] = useState({
     multipleLines: true,
     nonStock: true
   });
   
-  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set([516804172]));
-  const [loadedDetails, setLoadedDetails] = useState<Set<number>>(new Set([469650132, 521954131, 516804172, 565151588]));
+  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set<number>());
+  const [loadedDetails, setLoadedDetails] = useState<Set<number>>(new Set([469650132, 521954131, 516804172, 565151588, 55667788, 31001001, 22334466]));
   const [loadedStockAmounts, setLoadedStockAmounts] = useState<Record<number, string>>({});
   const [visibleItems, setVisibleItems] = useState(10);
-  const [searchQuery, setSearchQuery] = useState(initialSearchValue);
+  const [localQuery, setLocalQuery] = useState(initialSearchValue);
+  const searchQuery = anchored ? query : localQuery;
+  const setSearchQuery = (v: string) => (anchored ? onQueryChange?.(v) : setLocalQuery(v));
+  const panelRef = useRef<HTMLDivElement>(null);
+  const [anchorRect, setAnchorRect] = useState<DOMRect | null>(null);
+
+  // Anchored mode: measure the cart search row so the list sits right above it.
+  useLayoutEffect(() => {
+    if (!anchored) return;
+    const measure = () => {
+      const el = document.querySelector('[data-inventory-anchor]');
+      setAnchorRect(el ? el.getBoundingClientRect() : null);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [anchored]);
+
+  // No dimmer means no backdrop to click; close when clicking outside the list and the cart search row.
+  useEffect(() => {
+    if (!anchored) return;
+    const onDown = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (panelRef.current?.contains(target)) return;
+      if (document.querySelector('[data-inventory-anchor]')?.contains(target)) return;
+      onClose();
+    };
+    document.addEventListener('mousedown', onDown);
+    return () => document.removeEventListener('mousedown', onDown);
+  }, [anchored, onClose]);
   const [searchFocused, setSearchFocused] = useState(initialSearchValue.length > 0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -106,6 +234,16 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
 
   const toggleFilter = (filterName: 'multipleLines' | 'nonStock') => {
     setFilters(prev => ({ ...prev, [filterName]: !prev[filterName] }));
+  };
+
+  // 'Choose multiple article lines' off: choosing a row adds just that line.
+  const chooseRow = (item: InventoryItem) => {
+    if (filters.multipleLines) {
+      toggleSelection(item.id);
+    } else {
+      onAddItems([item]);
+      onClose();
+    }
   };
 
   const toggleSelection = (id: number) => {
@@ -121,11 +259,14 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
   };
 
   const loadDetails = (id: number) => {
+    const item = mockItems.find(i => i.id === id);
+    const unit = item?.pris.split('/')[1]?.trim() || 'STK';
     const randomStock = Math.floor(Math.random() * 141) + 10;
-    
+
+    // Non-stock articles are special order, so loading the inventory says so.
     setLoadedStockAmounts(prev => ({
       ...prev,
-      [id]: `${randomStock} STK`
+      [id]: item?.isNonStock ? 'Not in stock' : `${randomStock} ${unit}`
     }));
     
     setLoadedDetails(prev => new Set([...prev, id]));
@@ -140,10 +281,7 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
   };
 
   const filteredItems = mockItems.filter(item => {
-    const matchesSearch = searchQuery === '' || 
-      item.varenr.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.varetekst.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.leverandor.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = matchesProductQuery([item.varetekst, item.varenr, item.leverandor], searchQuery);
     
     if (!matchesSearch) return false;
     
@@ -157,7 +295,7 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
   });
 
   const displayedItems = filteredItems.slice(0, visibleItems);
-  const hasSelection = selectedItems.size > 0;
+  const hasSelection = selectedItems.size > 0 && filters.multipleLines;
 
   const handleAddItems = () => {
     const itemsToAdd = mockItems.filter(item => selectedItems.has(item.id));
@@ -199,51 +337,56 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scannedArticleData]);
 
+  const selectedCount = filters.multipleLines ? selectedItems.size : 0;
+  const addLabel = selectedCount === 0
+    ? t('addToOrderLine')
+    : (selectedCount === 1 ? t('addProductLine') : t('addProductLines')).replace('{n}', String(selectedCount));
+
+  // List styling: compact rows, muted uppercase headers, numbers right-aligned.
+  // Colours are the Fabri POS UI palette this modal always used.
+  const th: React.CSSProperties = { padding: '12px 8px', textAlign: 'left', fontWeight: 700, fontSize: 'var(--text-sm)', letterSpacing: '0.5px', textTransform: 'uppercase', color: '#6b6b72', whiteSpace: 'nowrap', background: '#ffffff' };
+  const td: React.CSSProperties = { padding: '10px 8px', fontSize: 'var(--text-sm)', color: '#090914', verticalAlign: 'middle' };
+  const num: React.CSSProperties = { textAlign: 'right', whiteSpace: 'nowrap' };
+  const chip: React.CSSProperties = { display: 'inline-block', fontSize: 'var(--text-sm)', padding: '2px 8px', borderRadius: 3, whiteSpace: 'nowrap', lineHeight: 1.5 };
+  const switchTrack = 'w-[36px] h-[20px] bg-[#d5d5d7] rounded-full peer peer-checked:bg-[#0d97fc] transition-colors';
+
+  const FilterSwitch = ({ checked, onChange, label }: { checked: boolean; onChange: () => void; label: string }) => (
+    <label className="flex items-center gap-[8px] cursor-pointer select-none">
+      <div className="relative">
+        <input type="checkbox" checked={checked} onChange={onChange} className="sr-only peer" />
+        <div className={switchTrack}></div>
+        <div className="absolute top-[2px] left-[2px] w-[16px] h-[16px] bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-[16px]"></div>
+      </div>
+      <span style={{ fontSize: 'var(--text-sm)', color: '#42424a' }}>{label}</span>
+    </label>
+  );
+
   return (
     <>
-      {/* Backdrop */}
-      <div 
-        className="fixed inset-0 z-40 bg-black opacity-10"
-        onClick={onClose}
-      />
+      {/* Backdrop (not in anchored mode: no dimmer behind the list) */}
+      {!anchored && (
+        <div 
+          className="fixed inset-0 z-40 bg-black opacity-10"
+          onClick={onClose}
+        />
+      )}
       
       {/* Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-[20px]">
-        <div className="w-full max-w-[1200px] pointer-events-auto bg-neutral-50 rounded-[3px] shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] flex flex-col max-h-[90vh]">
+      <div
+        className={anchored ? 'fixed z-50 pointer-events-none' : 'fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-[20px]'}
+        style={anchored ? (anchorRect
+          ? { left: anchorRect.left, bottom: window.innerHeight - anchorRect.top + 8, width: Math.max(anchorRect.width, 720), maxWidth: 'calc(100vw - 20px)' }
+          : { left: 20, bottom: 88, width: 'min(1200px, calc(100vw - 40px))' }) : undefined}
+      >
+        <div ref={panelRef} className={`w-full ${anchored ? '' : 'max-w-[1200px] max-h-[90vh]'} pointer-events-auto rounded-[3px] shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] flex flex-col`} style={{ background: '#ffffff', maxHeight: anchored ? `calc(${anchorRect ? anchorRect.top : 100}px - 24px)` : undefined, border: anchored ? '1px solid #e6e6e8' : undefined }}>
           {/* Header with filters */}
-          <div className="p-[20px] border-b border-[#e6e6e8]">
-            <div className="flex items-center gap-[20px]">
-              <label className="flex items-center gap-[10px] cursor-pointer select-none">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    checked={filters.multipleLines}
-                    onChange={() => toggleFilter('multipleLines')}
-                    className="sr-only peer"
-                  />
-                  <div className="w-[40px] h-[20px] bg-[#d5d5d7] rounded-full peer peer-checked:bg-[#0d97fc] transition-colors"></div>
-                  <div className="absolute top-[2px] left-[2px] w-[16px] h-[16px] bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-[20px]"></div>
-                </div>
-                <span className="text-[14px] text-[#42424a]">{t('addMultipleLines')}</span>
-              </label>
-
-              <label className="flex items-center gap-[10px] cursor-pointer select-none">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    checked={filters.nonStock}
-                    onChange={() => toggleFilter('nonStock')}
-                    className="sr-only peer"
-                  />
-                  <div className="w-[40px] h-[20px] bg-[#d5d5d7] rounded-full peer peer-checked:bg-[#0d97fc] transition-colors"></div>
-                  <div className="absolute top-[2px] left-[2px] w-[16px] h-[16px] bg-white rounded-full shadow-sm transition-transform peer-checked:translate-x-[20px]"></div>
-                </div>
-                <span className="text-[14px] text-[#42424a]">{t('includeNonStock')}</span>
-              </label>
-
+          <div className="px-[12px] py-[10px]">
+            <div className="flex items-center gap-[12px]">
+              <FilterSwitch checked={filters.multipleLines} onChange={() => toggleFilter('multipleLines')} label={t('addMultipleLines')} />
+              <FilterSwitch checked={filters.nonStock} onChange={() => toggleFilter('nonStock')} label={t('includeNonStock')} />
               <button
                 onClick={bulkLoadInventory}
-                className="px-[20px] py-[8px] text-[14px] text-[#42424a] bg-white border border-[#d5d5d7] rounded-[5px] hover:bg-[#f5f5f5] hover:border-[#6b6b72] transition-colors shadow-sm"
+                style={{ padding: '4px 10px', fontSize: 'var(--text-sm)', fontWeight: 'var(--font-weight-semibold)', color: '#42424a', background: '#ffffff', border: '1px solid #d5d5d7', borderRadius: 5, cursor: 'pointer' }}
               >
                 {t('loadStock')}
               </button>
@@ -251,86 +394,71 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
           </div>
 
           {/* Scrollable table container */}
-          <div className="relative flex-1 overflow-hidden">
-            <div 
-              ref={scrollRef}
-              onScroll={handleScroll}
-              className="overflow-auto h-full"
-            >
-              <table className="w-full">
-                <thead className="bg-[#fafafa] sticky top-0 z-10">
+          <div className="relative flex-1 overflow-hidden flex flex-col">
+            <div ref={scrollRef} onScroll={handleScroll} className="overflow-auto flex-1">
+              <table className="w-full" style={{ borderCollapse: 'collapse' }}>
+                <thead className="sticky top-0 z-10">
                   <tr>
-                    {filters.multipleLines && <th className="px-[15px] py-[13px] w-[48px]"></th>}
-                    <th className="px-[15px] py-[13px] text-left">
-                      <p className="font-bold text-[12px] text-[#6b6b72] tracking-[0.5px] uppercase">{t('itemNumber')}</p>
-                    </th>
-                    <th className="px-[15px] py-[13px] text-left">
-                      <p className="font-bold text-[12px] text-[#6b6b72] tracking-[0.5px] uppercase">{t('itemText')}</p>
-                    </th>
-                    <th className="px-[15px] py-[13px] text-left">
-                      <p className="font-bold text-[12px] text-[#6b6b72] tracking-[0.5px] uppercase">{t('supplier')}</p>
-                    </th>
-                    <th className="px-[15px] py-[13px] text-left">
-                      <p className="font-bold text-[12px] text-[#6b6b72] tracking-[0.5px] uppercase">{t('price')}</p>
-                    </th>
-                    <th className="px-[15px] py-[13px] text-left">
-                      <p className="font-bold text-[12px] text-[#6b6b72] tracking-[0.5px] uppercase">{t('stock')}</p>
-                    </th>
-                    <th className="px-[15px] py-[13px] text-left">
-                      <p className="font-bold text-[12px] text-[#6b6b72] tracking-[0.5px] uppercase">{t('info')}</p>
-                    </th>
+                    {filters.multipleLines && <th style={{ ...th, width: 48 }}></th>}
+                    <th style={{ ...th, ...num }}>{t('itemNumber')}</th>
+                    <th style={th}>{t('itemText')}</th>
+                    <th style={th}>{t('quantity')}</th>
+                    <th style={th}>{t('supplier')}</th>
+                    <th style={{ ...th, ...num }}>{t('price')}</th>
+                    <th style={{ ...th, ...num }}>{t('inventory')}</th>
+                    <th style={th}>{t('info')}</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white">
+                <tbody>
                   {displayedItems.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="px-[15px] py-[48px] text-center">
-                        <p className="text-[14px] text-[#6b6b72]">{t('noItemsFound')}</p>
-                      </td>
+                      <td colSpan={8} style={{ ...td, padding: '48px 15px', textAlign: 'center', color: '#6b6b72' }}>{t('noItemsFound')}</td>
                     </tr>
                   ) : (
-                    displayedItems.map((item, index) => {
+                    displayedItems.map((item) => {
                       const isLoaded = loadedDetails.has(item.id);
                       const isSelected = selectedItems.has(item.id);
+                      const unit = item.pris.split('/')[1]?.trim() ?? '';
+                      const rowBg = isSelected ? '#e6f4fe' : '#ffffff';
 
                       return (
-                        <tr 
+                        <tr
                           key={item.id}
-                          className={`hover:bg-[#fafafa] transition-colors border-b border-[#e6e6e8] last:border-b-0 ${isSelected ? 'bg-[#e6f4fe]' : ''}`}
+                          onClick={(e) => { if (!(e.target as HTMLElement).closest('button, input, label')) chooseRow(item); }}
+                          style={{ background: rowBg, borderTop: '1px solid #e6e6e8', transition: 'background 0.1s', cursor: 'pointer' }}
+                          onMouseEnter={(e) => { if (!isSelected) e.currentTarget.style.background = '#fafafa'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = rowBg; }}
                         >
                           {filters.multipleLines && (
-                            <td className="px-[15px] py-[13px]">
+                            <td style={td}>
                               <input
                                 type="checkbox"
                                 checked={isSelected}
                                 onChange={() => toggleSelection(item.id)}
-                                className="w-[16px] h-[16px] text-[#0d97fc] rounded border-[#d5d5d7] focus:ring-2 focus:ring-[#0d97fc] cursor-pointer"
+                                aria-label={item.varenr}
+                                style={{ width: 20, height: 20, accentColor: '#0d97fc', cursor: 'pointer' }}
                               />
                             </td>
                           )}
-                          <td className="px-[15px] py-[13px]">
-                            <p className="text-[14px] text-[#090914]">{item.varenr}</p>
+                          <td style={{ ...td, ...num }}>{item.varenr}</td>
+                          <td style={{ ...td, maxWidth: 300 }}>{item.varetekst}</td>
+                          <td style={{ ...td, whiteSpace: 'nowrap' }}>
+                            <span style={{ display: 'inline-block', minWidth: 16, textAlign: 'right' }}>{isSelected ? 1 : 0}</span>
+                            <span style={{ marginLeft: 6, color: '#6b6b72' }}>{unit}</span>
                           </td>
-                          <td className="px-[15px] py-[13px] max-w-[300px]">
-                            <p className="text-[14px] text-[#090914]">{item.varetekst}</p>
-                          </td>
-                          <td className="px-[15px] py-[13px]">
-                            <p className="text-[14px] text-[#6b6b72]">{item.leverandor}</p>
-                          </td>
-                          <td className="px-[15px] py-[13px] whitespace-nowrap">
-                            <p className="text-[14px] text-[#090914]">{item.pris}</p>
-                          </td>
-                          <td className="px-[15px] py-[13px]">
+                          <td style={{ ...td, color: '#6b6b72' }}>{item.leverandor}</td>
+                          <td style={{ ...td, ...num }}>{item.pris.replace(' / ', '/')}</td>
+                          <td style={{ ...td, ...num }}>
                             {isLoaded ? (
                               (() => {
                                 const displayBeholdning = loadedStockAmounts[item.id] || item.beholdning;
                                 return displayBeholdning === 'Not in stock' ? (
-                                  <span className="text-[12px] text-[#ff8c21] bg-[#fff4e6] px-[8px] py-[4px] rounded-[3px] whitespace-nowrap inline-block">
-                                    Ikke på lager
+                                  <span style={{ ...chip, color: '#f24c35', background: '#fdeceb' }}>
+                                    {t('notInStock')}
                                   </span>
                                 ) : (
-                                  <span className="font-semibold text-[14px] text-[#48b76e] flex items-center gap-[6px]">
-                                    <span className="w-[8px] h-[8px] bg-[#48b76e] rounded-full"></span>
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 600, color: '#48b76e' }}>
+                                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#48b76e' }}></span>
                                     {displayBeholdning}
                                   </span>
                                 );
@@ -338,28 +466,23 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
                             ) : (
                               <button
                                 onClick={() => loadDetails(item.id)}
-                                className="px-[16px] py-[6px] font-semibold text-[12px] text-[#0d97fc] bg-white border border-[#0d97fc] rounded-[3px] hover:bg-[#e6f4fe] transition-colors whitespace-nowrap"
+                                style={{ padding: '3px 12px', fontWeight: 600, fontSize: 'var(--text-sm)', color: '#0d97fc', background: '#ffffff', border: '1px solid #0d97fc', borderRadius: 3, cursor: 'pointer', whiteSpace: 'nowrap' }}
                               >
-                                Last beholdning
+                                {t('loadInventoryRow')}
                               </button>
                             )}
                           </td>
-                          <td className="px-[15px] py-[13px]">
+                          <td style={td}>
                             {item.info.length > 0 && (
                               <div className="flex flex-wrap gap-[6px]">
                                 {item.info.map((tag, idx) => (
-                                  <span
-                                    key={idx}
-                                    className={`text-[12px] px-[8px] py-[2px] rounded-[3px] ${
-                                      tag.includes('Expires')
-                                        ? 'bg-[#fff4e6] text-[#ff8c21]'
-                                        : tag === 'Non-stock'
-                                        ? 'bg-[#e6e6e8] text-[#6b6b72]'
-                                        : 'bg-[#e8f5ec] text-[#48b76e]'
-                                    }`}
-                                  >
-                                    {tag}
-                                  </span>
+                                  tag === 'Non-stock' ? (
+                                    <span key={idx} style={{ ...chip, color: '#f24c35', border: '1px solid #f24c35' }}>{t('nonStockArticle')}</span>
+                                  ) : tag.includes('Expires') ? (
+                                    <span key={idx} style={{ ...chip, color: '#ff8c21', background: '#fff4e6' }}>{tag}</span>
+                                  ) : (
+                                    <span key={idx} style={{ ...chip, color: '#48b76e', background: '#e8f5ec' }}>{tag}</span>
+                                  )
                                 ))}
                               </div>
                             )}
@@ -372,40 +495,9 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
               </table>
             </div>
 
-            {/* Sticky bottom section with search and button */}
-            <div className="sticky bottom-0 bg-white border-t border-[#e6e6e8] px-[20px] py-[15px] shadow-[0px_-2px_4px_0px_rgba(107,107,114,0.06)]">
-              <div className="flex items-center gap-[15px]">
-                {/* Search bar */}
-                <div className="relative flex-1">
-                  <div className="bg-white box-border content-stretch flex gap-[10px] h-[48px] items-center px-[14px] py-[8px] relative rounded-[5px] w-full">
-                    <div 
-                      aria-hidden="true" 
-                      className="absolute border-solid inset-0 pointer-events-none rounded-[5px]"
-                      style={{
-                        borderWidth: searchFocused ? '2px' : '1px',
-                        borderColor: searchFocused ? 'rgb(13, 151, 252)' : 'rgb(213, 213, 215)'
-                      }}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Søk etter ordre"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onFocus={() => setSearchFocused(true)}
-                      onBlur={() => setSearchFocused(false)}
-                      className="basis-0 font-normal grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[14px] bg-transparent border-none outline-none placeholder:text-[#6b6b72]"
-                      style={{
-                        color: searchQuery ? 'rgb(9, 9, 20)' : '#6b6b72',
-                        opacity: searchQuery ? 1 : 0.6
-                      }}
-                    />
-                    <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
-                      <Group3 />
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Add button */}
+            {/* Footer: add button first, then search */}
+            <div style={{ borderTop: '1px solid #e6e6e8', background: '#ffffff', padding: '12px' }}>
+              <div className="flex items-center gap-[12px]">
                 <button
                   onClick={handleAddItems}
                   disabled={!hasSelection}
@@ -425,8 +517,35 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
                     cursor: hasSelection ? 'pointer' : 'not-allowed',
                   }}
                 >
-                  {t('addToOrderLine')}
+                  {addLabel}
                 </button>
+
+                {/* Search bar (not in anchored mode: the cart field is the only search) */}
+                {!anchored && <div className="relative flex-1">
+                  <div className="box-border flex gap-[10px] h-[48px] items-center px-[14px] py-[8px] relative rounded-[5px] w-full" style={{ background: '#ffffff' }}>
+                    <div
+                      aria-hidden="true"
+                      className="absolute border-solid inset-0 pointer-events-none rounded-[5px]"
+                      style={{
+                        borderWidth: searchFocused ? '2px' : '1px',
+                        borderColor: searchFocused ? 'rgb(13, 151, 252)' : 'rgb(213, 213, 215)'
+                      }}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Søk etter ordre"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setSearchFocused(false)}
+                      className="basis-0 font-normal grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[14px] bg-transparent border-none outline-none"
+                      style={{ color: 'rgb(9, 9, 20)' }}
+                    />
+                    <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
+                      <Group3 />
+                    </div>
+                  </div>
+                </div>}
               </div>
             </div>
           </div>
