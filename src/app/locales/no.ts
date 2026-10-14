@@ -107,6 +107,8 @@ const no: Translations = {
   info: 'Info',
   action: 'Handling',
   noItemsFound: 'Ingen varer funnet',
+  emptyCartTitle: 'Ingen varer',
+  emptyCartBody: 'Søk etter varer, eller skann strekkode for å legge til',
   notInStock: 'Ikke på lager',
   nonStock: 'Ikke-lagervare',
   expired: 'Utgått',

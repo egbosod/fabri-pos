@@ -110,6 +110,8 @@ const da: Translations = {
   info: 'Info',
   action: 'Handling',
   noItemsFound: 'Ingen varer fundet',
+  emptyCartTitle: 'Ingen varer',
+  emptyCartBody: 'Søg efter varer, eller scan stregkode for at tilføje',
   notInStock: 'Ikke på lager',
   nonStock: 'Ikke-lagervare',
   expired: 'Udløbet',

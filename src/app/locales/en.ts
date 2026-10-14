@@ -106,6 +106,8 @@ const en: Translations = {
   info: 'Info',
   action: 'Action',
   noItemsFound: 'No items found',
+  emptyCartTitle: 'No items',
+  emptyCartBody: 'Search for items, or scan barcode to add',
   notInStock: 'Not in stock',
   nonStock: 'Non-stock',
   expired: 'Expired',
