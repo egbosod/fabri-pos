@@ -410,6 +410,8 @@ export interface Translations {
   orderBalance: string;
   amount: string;
   addToSale: string;
+  creditNote: string;
+  digitsOnlyError: string;
   pickupForPayment: string;
   removeFromSale: string;
 }

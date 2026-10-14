@@ -410,6 +410,8 @@ const sv: Translations = {
   orderBalance: 'Ordersaldo',
   amount: 'Belopp',
   addToSale: 'Lägg i försäljningen',
+  creditNote: 'Kreditnota',
+  digitsOnlyError: 'Det här fältet accepterar bara siffror',
   pickupForPayment: 'Hämta för betalning',
 };
 

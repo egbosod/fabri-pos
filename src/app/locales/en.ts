@@ -409,6 +409,8 @@ const en: Translations = {
   orderBalance: 'Order balance',
   amount: 'Amount',
   addToSale: 'Add to sale',
+  creditNote: 'Credit note',
+  digitsOnlyError: 'This input field only accepts digits',
   pickupForPayment: 'Pickup for payment',
 };
 

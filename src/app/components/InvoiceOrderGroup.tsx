@@ -31,7 +31,7 @@ export function InvoiceOrderGroup({ invoice, onRemove }: InvoiceOrderGroupProps)
       <div aria-hidden="true" className="absolute inset-0 z-10 rounded-[5px] border border-solid pointer-events-none" style={{ borderColor: 'var(--border)' }} />
 
       <GroupHeader
-        first={<GroupCell title={isAccount ? t('accountPayment') : `${t('invoice')} ${invoice.number}`} subtitle={isAccount ? undefined : invoice.dueDate} />}
+        first={<GroupCell title={isAccount ? t('accountPayment') : `${invoice.kind === 'creditNote' ? t('creditNote') : t('invoice')} ${invoice.number}`} subtitle={isAccount ? undefined : invoice.dueDate} />}
         second={isAccount ? null : <GroupCell title={invoice.customerRef} />}
         total={remaining}
         lineCount={1}

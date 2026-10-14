@@ -410,6 +410,8 @@ const no: Translations = {
   orderBalance: 'Ordresaldo',
   amount: 'Beløp',
   addToSale: 'Legg til i salget',
+  creditNote: 'Kreditnota',
+  digitsOnlyError: 'Dette feltet godtar kun sifre',
   pickupForPayment: 'Hent til betaling',
 };
 

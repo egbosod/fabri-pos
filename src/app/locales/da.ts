@@ -413,6 +413,8 @@ const da: Translations = {
   orderBalance: 'Ordresaldo',
   amount: 'Beløb',
   addToSale: 'Læg i salget',
+  creditNote: 'Kreditnota',
+  digitsOnlyError: 'Dette felt accepterer kun tal',
   pickupForPayment: 'Hent til betaling',
 };
 

@@ -72,8 +72,8 @@ export interface InvoiceForPayment {
   customerRef: string;
   total: number;
   prepaid: number;
-  /** 'account' = a fixed-amount account payment rather than an open invoice. */
-  kind?: 'account';
+  /** 'account' = a fixed-amount account payment; 'creditNote' = a negative invoice. */
+  kind?: 'account' | 'creditNote';
 }
 
 export interface OrderGroupData {
