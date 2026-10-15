@@ -18,6 +18,8 @@ export interface NewProjectData {
 interface CreateNewProjectModalProps {
   onClose: () => void;
   customerName?: string;
+  /** Text already typed in the project field; pre-fills "Name of project". */
+  initialName?: string;
   onProjectCreated?: (project: NewProjectData) => void;
 }
 
@@ -95,10 +97,10 @@ function Field({
 
 // ─── Main Modal ───────────────────────────────────────────────────────────────
 
-export function CreateNewProjectModal({ onClose, customerName, onProjectCreated }: CreateNewProjectModalProps) {
+export function CreateNewProjectModal({ onClose, customerName, initialName = '', onProjectCreated }: CreateNewProjectModalProps) {
   const [formData, setFormData] = useState<NewProjectData>({
     projectId: '',
-    projectName: '',
+    projectName: initialName,
     address: '',
     address2: '',
     postalCode: '',

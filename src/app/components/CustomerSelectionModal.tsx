@@ -933,12 +933,12 @@ const baseInputStyle: React.CSSProperties = {
 
 // ─── Plus button (shared) ─────────────────────────────────────────────────────
 
-function ContactPersonPlusBtn({ onClick }: { onClick: () => void }) {
-  const { t } = useLanguage();
+function PlusBtn({ onClick, title, disabled }: { onClick: () => void; title: string; disabled?: boolean }) {
   return (
     <button
       onClick={onClick}
-      title={t('createNewContactPerson')}
+      title={title}
+      disabled={disabled}
       style={{
         background: 'var(--card)',
         border: '1px solid var(--border)',
@@ -948,7 +948,8 @@ function ContactPersonPlusBtn({ onClick }: { onClick: () => void }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        cursor: 'pointer',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1,
         flexShrink: 0,
         transition: 'background 0.1s',
       }}
@@ -956,6 +957,11 @@ function ContactPersonPlusBtn({ onClick }: { onClick: () => void }) {
       <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
     </button>
   );
+}
+
+function ContactPersonPlusBtn({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+  const { t } = useLanguage();
+  return <PlusBtn onClick={onClick} title={t('createNewContactPerson')} disabled={disabled} />;
 }
 
 // ─── Main Modal ───────────────────────────────────────────────────────────────
@@ -1276,6 +1282,8 @@ export function CustomerSelectionModal({
       email: data.email,
       phoneNumber: data.phoneNumber,
     };
+    // Session only: the mock list is module-level, so it lives until a refresh.
+    if (!mockProjects.some(p => p.id === newProject.id)) mockProjects.push(newProject);
     setSelectedProject(newProject);
     setProjectSearch(newProject.navn);
     setShowCreateProjectModal(false);
@@ -1294,6 +1302,10 @@ export function CustomerSelectionModal({
   };
 
   const handleSaveContactPerson = (contactData: ContactPersonData) => {
+    // Session only: the mock list is module-level, so it lives until a refresh.
+    if (!MOCK_CONTACTS.some(c => c.navn === contactData.name)) {
+      MOCK_CONTACTS.push({ id: Math.max(...MOCK_CONTACTS.map(c => c.id)) + 1, navn: contactData.name, tittel: '' });
+    }
     setContactPerson(contactData.name);
   };
 
@@ -1824,26 +1836,8 @@ export function CustomerSelectionModal({
                                 </div>
                               </InputBox>
                             </div>
-                            {allowCreateProject && selectedCustomer && (
-                              <button
-                                onClick={() => setShowCreateProjectModal(true)}
-                                title={t('createNewProject')}
-                                style={{
-                                  background: 'var(--card)',
-                                  border: '1px solid var(--border)',
-                                  borderRadius: 'var(--radius)',
-                                  width: 48,
-                                  height: 48,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  flexShrink: 0,
-                                  transition: 'background 0.1s',
-                                }}
-                              >
-                                <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
-                              </button>
+                            {allowCreateProject && (
+                              <PlusBtn onClick={() => setShowCreateProjectModal(true)} title={t('createNewProject')} disabled={!selectedCustomer} />
                             )}
                           </div>
                         </div>
@@ -1888,10 +1882,8 @@ export function CustomerSelectionModal({
                                       </svg>
                                     </InputBox>
                                   </div>
-                                  {allowCreateContactPerson && selectedCustomer && (
-                                    <ContactPersonPlusBtn 
-                                      onClick={() => setShowCreateContactPersonModal(true)} 
-                                    />
+                                  {allowCreateContactPerson && (
+                                    <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                                   )}
                                 </div>
                               </div>
@@ -1965,26 +1957,8 @@ export function CustomerSelectionModal({
                                 </div>
                               </InputBox>
                             </div>
-                            {allowCreateProject && selectedCustomer && (
-                              <button
-                                onClick={() => setShowCreateProjectModal(true)}
-                                title={t('createNewProject')}
-                                style={{
-                                  background: 'var(--card)',
-                                  border: '1px solid var(--border)',
-                                  borderRadius: 'var(--radius)',
-                                  width: 48,
-                                  height: 48,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  flexShrink: 0,
-                                  transition: 'background 0.1s',
-                                }}
-                              >
-                                <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
-                              </button>
+                            {allowCreateProject && (
+                              <PlusBtn onClick={() => setShowCreateProjectModal(true)} title={t('createNewProject')} disabled={!selectedCustomer} />
                             )}
                           </div>
                         </div>
@@ -2023,10 +1997,8 @@ export function CustomerSelectionModal({
                                   <path d="M1 1L5 5L9 1" stroke="var(--muted-foreground)" strokeWidth="1.3" strokeLinecap="round" />
                                 </svg>
                               </InputBox>
-                              {allowCreateContactPerson && selectedCustomer && (
-                                <ContactPersonPlusBtn 
-                                  onClick={() => setShowCreateContactPersonModal(true)} 
-                                />
+                              {allowCreateContactPerson && (
+                                <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                               )}
                             </div>
                           </div>
@@ -2098,26 +2070,8 @@ export function CustomerSelectionModal({
                                 </div>
                               </InputBox>
                             </div>
-                            {allowCreateProject && selectedCustomer && (
-                              <button
-                                onClick={() => setShowCreateProjectModal(true)}
-                                title={t('createNewProject')}
-                                style={{
-                                  background: 'var(--card)',
-                                  border: '1px solid var(--border)',
-                                  borderRadius: 'var(--radius)',
-                                  width: 48,
-                                  height: 48,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  flexShrink: 0,
-                                  transition: 'background 0.1s',
-                                }}
-                              >
-                                <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
-                              </button>
+                            {allowCreateProject && (
+                              <PlusBtn onClick={() => setShowCreateProjectModal(true)} title={t('createNewProject')} disabled={!selectedCustomer} />
                             )}
                           </div>
                         </div>
@@ -2158,10 +2112,8 @@ export function CustomerSelectionModal({
                                 />
                               </InputBox>
                               {/* ── CHANGE: conditional plus button ── */}
-                              {allowCreateContactPerson && selectedCustomer && (
-                                <ContactPersonPlusBtn 
-                                  onClick={() => setShowCreateContactPersonModal(true)} 
-                                />
+                              {allowCreateContactPerson && (
+                                <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                               )}
                             </div>
                           </div>
@@ -2372,9 +2324,16 @@ export function CustomerSelectionModal({
                         tab, regardless of card concept or prototype. */}
                     <div>
                       <FieldLabel>{`${t('vipRecipient')} *`}</FieldLabel>
-                      <InputBox focused={false}>
-                        <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
-                      </InputBox>
+                      <div style={{ display: 'flex', gap: 10 }}>
+                        <div style={{ flex: 1 }}>
+                          <InputBox focused={false}>
+                            <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
+                          </InputBox>
+                        </div>
+                        {allowCreateContactPerson && (
+                          <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
+                        )}
+                      </div>
                     </div>
                   </>
                 )}
@@ -2468,10 +2427,8 @@ export function CustomerSelectionModal({
                             </svg>
                           </InputBox>
                           {/* ── CHANGE: conditional plus button ── */}
-                          {allowCreateContactPerson && selectedCustomer && (
-                            <ContactPersonPlusBtn 
-                              onClick={() => setShowCreateContactPersonModal(true)} 
-                            />
+                          {allowCreateContactPerson && (
+                            <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                           )}
                         </div>
                       </div>
@@ -2809,6 +2766,7 @@ export function CustomerSelectionModal({
         <CreateNewProjectModal
           onClose={() => setShowCreateProjectModal(false)}
           customerName={selectedCustomer?.name}
+          initialName={projectSearch.trim() !== selectedProject?.navn ? projectSearch.trim() : ''}
           onProjectCreated={handleProjectCreated}
         />
       )}
