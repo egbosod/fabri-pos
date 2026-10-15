@@ -277,6 +277,8 @@ const sv: Translations = {
   customerReferencePlaceholder: 'Ange kundreferens',
   customerSearchPlaceholder: 'Sök på kund',
   specificCustomerNumber: 'Specifikt kundnummer',
+  getCustomerWithSpecificNumber: 'Hämta kund med specifikt nummer',
+  getCustomer: 'Hämta kund',
   specificCustomerNumberPlaceholder: 'Sök efter specifikt kundnummer',
   getCustomer: 'Hämta kund',
   noCustomersFound: 'Inga kunder hittades',
