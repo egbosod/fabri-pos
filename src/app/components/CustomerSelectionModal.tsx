@@ -986,6 +986,12 @@ export function CustomerSelectionModal({
   const hasSpecificProject = erpScenario === 'AX';
   // Prototype C on AX words the toggles as "Sync" instead of "Specific number".
   const syncWording = erpScenario === 'AX' && switchUserFlow === 'C';
+  // Aspect4 words the customer toggle as an action: Prototype C and A on Aspect4 DK.
+  const customerToggleLabel = isAspect4 && switchUserFlow === 'C'
+    ? t('getCustomerWithSpecificNumber')
+    : erpScenario === 'Aspect4 DK' && switchUserFlow === 'A'
+      ? t('getCustomer')
+      : undefined;
   // Prototype B on AX: same fetch/sync concept, but the button sits in the result row's last column.
   const rowSync = erpScenario === 'AX' && switchUserFlow === 'B';
   // "Specific customer number" — look the customer up in the external ERP
@@ -1683,6 +1689,7 @@ export function CustomerSelectionModal({
 
               {hasSpecificNumber && customerSearchConcept === 'B' && !syncWording && !rowSync && (
                 <SpecificNumberToggle
+                  label={customerToggleLabel}
                   checked={specificNumberOn}
                   onChange={v => { setSpecificNumberOn(v); setErpFetched(false); }}
                 />
@@ -2736,6 +2743,7 @@ export function CustomerSelectionModal({
           />
         ) : undefined) : hasSpecificNumber && !rowSync && customerSearchConcept === 'A' ? (
           <SpecificNumberToggle
+            label={customerToggleLabel}
             checked={specificNumberOn}
             onChange={v => {
               setSpecificNumberOn(v);
