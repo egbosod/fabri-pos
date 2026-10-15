@@ -276,6 +276,8 @@ const en: Translations = {
   customerReferencePlaceholder: 'Enter customer reference',
   customerSearchPlaceholder: 'Search for customer',
   specificCustomerNumber: 'Specific customer number',
+  getCustomerWithSpecificNumber: 'Get customer with specific number',
+  getCustomer: 'Get customer',
   specificCustomerNumberPlaceholder: 'Search for specific customer number',
   getCustomer: 'Get customer',
   noCustomersFound: 'No customers found',

@@ -280,6 +280,8 @@ const da: Translations = {
   customerReferencePlaceholder: 'Indtast kundereference',
   customerSearchPlaceholder: 'Søg på kunde',
   specificCustomerNumber: 'Specifikt kundenummer',
+  getCustomerWithSpecificNumber: 'Hent kunde med specifikt nummer',
+  getCustomer: 'Hent kunde',
   specificCustomerNumberPlaceholder: 'Søg efter specifikt kundenummer',
   getCustomer: 'Hent kunde',
   noCustomersFound: 'Ingen kunder fundet',

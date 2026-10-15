@@ -275,6 +275,8 @@ export interface Translations {
   customerReferencePlaceholder: string;
   customerSearchPlaceholder: string;
   specificCustomerNumber: string;
+  getCustomerWithSpecificNumber: string;
+  getCustomer: string;
   specificCustomerNumberPlaceholder: string;
   getCustomer: string;
   noCustomersFound: string;
