@@ -1618,7 +1618,13 @@ export function CustomerSelectionModal({
         <div
           ref={modalRef}
           className="w-[1016px] max-h-[90vh] pointer-events-auto flex flex-col rounded-[var(--radius-sm)]"
-          style={{ background: 'var(--background)', boxShadow: '2px 2px 4px rgba(107,107,114,0.06), 3px 10px 15px rgba(107,107,114,0.08)' }}
+          style={{
+            background: 'var(--background)',
+            boxShadow: '2px 2px 4px rgba(107,107,114,0.06), 3px 10px 15px rgba(107,107,114,0.08)',
+            // Small easing on width/height so content-driven rescaling (e.g. notice boxes,
+            // expanding lists) doesn't jump — ease in a tad rather than resize instantly.
+            transition: 'width 0.18s ease-out, height 0.18s ease-out, max-height 0.18s ease-out',
+          }}
         >
           {/* ── Header ── */}
           <div style={{ background: 'var(--card)', borderBottom: '1px solid var(--border)', padding: '22px 21px', flexShrink: 0 }}>
