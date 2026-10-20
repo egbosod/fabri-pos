@@ -277,6 +277,12 @@ export default function TidligereKjopPage() {
       return;
     }
     const matched = MOCK_RECEIPTS.filter((r) => r.bongNumber.toLowerCase() === term || r.receiptNumber.toLowerCase() === term);
+    if (matched.length === 0 && /\d/.test(term)) {
+      // Prototype: any number search returns a mock receipt, labelled with the searched number
+      const picked = MOCK_RECEIPTS[Math.floor(Math.random() * MOCK_RECEIPTS.length)];
+      setReceipts([{ ...picked, bongNumber: bongNumber.trim(), expanded: true, items: picked.items.map((i) => ({ ...i, checked: false })) }]);
+      return;
+    }
     setReceipts(matched.map((r) => ({ ...r, expanded: true, items: r.items.map((i) => ({ ...i, checked: false })) })));
   };
 
@@ -295,7 +301,7 @@ export default function TidligereKjopPage() {
   const handleAddAsReturn = () => {
     if (!anyChecked) return;
     getCheckedItems().forEach((item) => {
-      handleAddToSale({ name: item.name, sku: '', price: item.price, quantity: item.quantity, unit: item.unit, discount: item.discount, total: item.total, state: 'return' as any });
+      handleAddToSale({ name: item.name, sku: '', price: item.price, quantity: item.quantity, unit: item.unit, discount: item.discount, total: item.total, state: 'returned' });
     });
     navigate('/salg');
   };
