@@ -387,8 +387,8 @@ function useAnchorRect(ref: React.RefObject<HTMLElement | null>, active: boolean
 
 // ─── Customer Dropdown Table ──────────────────────────────────────────────────
 
-const CUSTOMER_COLS = '80px 1fr 110px 1fr 80px 110px';
-const PROJECT_COLS = '70px 100px 1.2fr 1fr 160px 110px';
+const CUSTOMER_COLS = '80px 1fr 110px 1fr 150px';
+const PROJECT_COLS = '80px 1fr 110px 1fr 150px';
 // AX column structure, also used by the BrandSync table in Prototype C.
 const CUSTOMER_COLS_AX = '80px 1fr 110px 1fr 150px';
 const PROJECT_COLS_AX = '80px 120px 1fr 1fr 150px 140px';
@@ -480,7 +480,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
           <thead>
             <tr>
               {[t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')].map(h => (
-                <th key={h} scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, padding: '0 12px', textAlign: 'left', fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', background: 'var(--card)', borderBottom: '1px solid var(--border)' }}>{h}</th>
+                <th key={h} scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, padding: '0 12px', textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', background: 'var(--card)', borderBottom: '1px solid var(--border)' }}>{h}</th>
               ))}
               {rowAction && <th scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, background: 'var(--card)', borderBottom: '1px solid var(--border)' }} />}
             </tr>
@@ -495,7 +495,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
                 style={{ height: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s' }}
               >
                 {[r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()].map((val, ci) => (
-                  <td key={ci} style={{ padding: '0 12px', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
+                  <td key={ci} style={{ padding: '0 12px', textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
                 ))}
                 {rowAction && <td style={{ padding: '0 12px', textAlign: 'right', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></td>}
               </tr>
@@ -505,16 +505,16 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
       </div>
       ) : (
       <>
-      <div style={{ display: 'grid', gridTemplateColumns: (axColumns ? CUSTOMER_COLS_AX : CUSTOMER_COLS) + (rowAction ? ' 170px' : ''), padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: (axColumns ? CUSTOMER_COLS_AX : CUSTOMER_COLS) + (rowAction ? ' 170px' : ''), padding: '0 12px', height: HEADER_H, overflowY: 'hidden', scrollbarGutter: 'stable', alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
         {(axColumns
           ? [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')]
-          : [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCode'), t('tableHeaderCity')]
+          : [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')]
         ).map(h => (
-          <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
+          <span key={h} style={{ textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: 8, fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
         ))}
         {rowAction && <span />}
       </div>
-      <div style={{ overflowY: 'auto', flex: 1 }}>
+      <div style={{ overflowY: 'auto', scrollbarGutter: 'stable', flex: 1 }}>
         {rows.map((r, i) => (
           <div
             key={r.id}
@@ -535,9 +535,9 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
           >
             {(axColumns
               ? [r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()]
-              : [r.customerNumber, r.name, r.category || '', r.street || '', r.postalCode || '', (r.city || '').toUpperCase()]
+              : [r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()]
             ).map((val, ci) => (
-              <span key={ci} style={{ fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
+              <span key={ci} style={{ textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
             ))}
             {rowAction && <span style={{ display: 'flex', justifyContent: 'flex-end' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></span>}
           </div>
@@ -612,7 +612,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
           <thead>
             <tr>
               {[t('tableHeaderNumber'), t('tableHeaderExtNumber'), t('tableHeaderName'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity'), t('expirationDate')].map(h => (
-                <th key={h} scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, padding: '0 12px', textAlign: 'left', fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', background: 'var(--card)', borderBottom: '1px solid var(--border)' }}>{h}</th>
+                <th key={h} scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, padding: '0 12px', textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px', background: 'var(--card)', borderBottom: '1px solid var(--border)' }}>{h}</th>
               ))}
               {rowAction && <th scope="col" style={{ position: 'sticky', top: 0, zIndex: 1, height: HEADER_H, background: 'var(--card)', borderBottom: '1px solid var(--border)' }} />}
             </tr>
@@ -627,7 +627,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
                 style={{ height: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s', opacity: isExpired(r.utlopsdato) ? 0.55 : 1 }}
               >
                 {[r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, (r.postnr || r.sted ? `${r.postnr}, ${r.sted.toUpperCase()}` : ''), r.utlopsdato.replace(/\./g, '/')].map((val, ci) => (
-                  <td key={ci} style={{ padding: '0 12px', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
+                  <td key={ci} style={{ padding: '0 12px', textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
                 ))}
                 {rowAction && <td style={{ padding: '0 12px', textAlign: 'right', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></td>}
               </tr>
@@ -637,16 +637,16 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
       </div>
       ) : (
       <>
-      <div style={{ display: 'grid', gridTemplateColumns: (axColumns ? PROJECT_COLS_AX : PROJECT_COLS) + (rowAction ? ' 170px' : ''), padding: '0 12px', height: HEADER_H, alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: (axColumns ? PROJECT_COLS_AX : PROJECT_COLS) + (rowAction ? ' 170px' : ''), padding: '0 12px', height: HEADER_H, overflowY: 'hidden', scrollbarGutter: 'stable', alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
         {(axColumns
           ? [t('tableHeaderNumber'), t('tableHeaderExtNumber'), t('tableHeaderName'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity'), t('expirationDate')]
           : [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')]
         ).map(h => (
-          <span key={h} style={{ fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
+          <span key={h} style={{ textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', paddingRight: 8, fontWeight: 700, fontSize: 'var(--text-sm)', color: 'var(--muted-foreground)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</span>
         ))}
         {rowAction && <span />}
       </div>
-      <div style={{ overflowY: 'auto', flex: 1 }}>
+      <div style={{ overflowY: 'auto', scrollbarGutter: 'stable', flex: 1 }}>
         {rows.map((r, i) => (
           <div
             key={r.id}
@@ -668,9 +668,9 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
           >
             {(axColumns
               ? [r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, (r.postnr || r.sted ? `${r.postnr}, ${r.sted.toUpperCase()}` : ''), r.utlopsdato.replace(/\./g, '/')]
-              : [r.nr, r.navn, r.kategori, r.adresse, `${r.postnr} ${r.sted}`]
+              : [r.nr, r.navn, AX_CATEGORY_CODES[r.kategori] ?? r.kategori, r.adresse, (r.postnr || r.sted ? `${r.postnr}, ${r.sted.toUpperCase()}` : '')]
             ).map((val, ci) => (
-              <span key={ci} style={{ fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
+              <span key={ci} style={{ textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
             ))}
             {rowAction && <span style={{ display: 'flex', justifyContent: 'flex-end' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></span>}
           </div>
@@ -933,12 +933,12 @@ const baseInputStyle: React.CSSProperties = {
 
 // ─── Plus button (shared) ─────────────────────────────────────────────────────
 
-function ContactPersonPlusBtn({ onClick }: { onClick: () => void }) {
-  const { t } = useLanguage();
+function PlusBtn({ onClick, title, disabled }: { onClick: () => void; title: string; disabled?: boolean }) {
   return (
     <button
       onClick={onClick}
-      title={t('createNewContactPerson')}
+      title={title}
+      disabled={disabled}
       style={{
         background: 'var(--card)',
         border: '1px solid var(--border)',
@@ -948,7 +948,8 @@ function ContactPersonPlusBtn({ onClick }: { onClick: () => void }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        cursor: 'pointer',
+        cursor: disabled ? 'not-allowed' : 'pointer',
+        opacity: disabled ? 0.5 : 1,
         flexShrink: 0,
         transition: 'background 0.1s',
       }}
@@ -956,6 +957,11 @@ function ContactPersonPlusBtn({ onClick }: { onClick: () => void }) {
       <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
     </button>
   );
+}
+
+function ContactPersonPlusBtn({ onClick, disabled }: { onClick: () => void; disabled?: boolean }) {
+  const { t } = useLanguage();
+  return <PlusBtn onClick={onClick} title={t('createNewContactPerson')} disabled={disabled} />;
 }
 
 // ─── Main Modal ───────────────────────────────────────────────────────────────
@@ -986,10 +992,10 @@ export function CustomerSelectionModal({
   const hasSpecificProject = erpScenario === 'AX';
   // Prototype C on AX words the toggles as "Sync" instead of "Specific number".
   const syncWording = erpScenario === 'AX' && switchUserFlow === 'C';
-  // Aspect4 words the customer toggle as an action: Prototype C and A on Aspect4 DK.
+  // Aspect4 words the customer toggle as an action: Prototype C and A on Aspect4 DK. AX always says "Get customer".
   const customerToggleLabel = isAspect4 && switchUserFlow === 'C'
     ? t('getCustomerWithSpecificNumber')
-    : erpScenario === 'Aspect4 DK' && switchUserFlow === 'A'
+    : (erpScenario === 'Aspect4 DK' && switchUserFlow === 'A') || erpScenario === 'AX'
       ? t('getCustomer')
       : undefined;
   // Prototype B on AX: same fetch/sync concept, but the button sits in the result row's last column.
@@ -1235,8 +1241,13 @@ export function CustomerSelectionModal({
   const syncProjectRows = rowSync && showSyncProject && filteredProjects.length === 0
     ? [{ id: 'erp-fetch', nr: projectSearch.trim(), ekstNr: '', navn: '', kategori: '', adresse: '', postnr: '', sted: '', utlopsdato: '' } as Project]
     : filteredProjects;
+  // AX B and C: no hit at all (nothing local, no ERP number match) offers the toggle that
+  // switches the search over to the ERP, so a name like "Snorre" can still find a customer.
+  // Stays visible while on so it can be switched back.
+  const showSpecificFallback = (syncWording || rowSync) && customerQuery !== '' && (specificNumberOn || (!showSyncCustomer && filteredCustomers.length === 0));
+
   const customerRowAction = rowSync && showSyncCustomer ? {
-    label: filteredCustomers.length === 0 ? t('fetchCustomer') : t('syncCustomer'),
+    label: filteredCustomers.length === 0 ? t('getCustomer') : t('syncCustomer'),
     onClick: () => { setSpecificNumberOn(true); setErpFetched(true); cancelCustomerClose(); setCustomerOpen(true); customerSearchInputRef.current?.focus(); },
   } : undefined;
   const projectRowAction = rowSync && showSyncProject ? {
@@ -1276,6 +1287,8 @@ export function CustomerSelectionModal({
       email: data.email,
       phoneNumber: data.phoneNumber,
     };
+    // Session only: the mock list is module-level, so it lives until a refresh.
+    if (!mockProjects.some(p => p.id === newProject.id)) mockProjects.push(newProject);
     setSelectedProject(newProject);
     setProjectSearch(newProject.navn);
     setShowCreateProjectModal(false);
@@ -1294,6 +1307,10 @@ export function CustomerSelectionModal({
   };
 
   const handleSaveContactPerson = (contactData: ContactPersonData) => {
+    // Session only: the mock list is module-level, so it lives until a refresh.
+    if (!MOCK_CONTACTS.some(c => c.navn === contactData.name)) {
+      MOCK_CONTACTS.push({ id: Math.max(...MOCK_CONTACTS.map(c => c.id)) + 1, navn: contactData.name, tittel: '' });
+    }
     setContactPerson(contactData.name);
   };
 
@@ -1606,7 +1623,13 @@ export function CustomerSelectionModal({
         <div
           ref={modalRef}
           className="w-[1016px] max-h-[90vh] pointer-events-auto flex flex-col rounded-[var(--radius-sm)]"
-          style={{ background: 'var(--background)', boxShadow: '2px 2px 4px rgba(107,107,114,0.06), 3px 10px 15px rgba(107,107,114,0.08)' }}
+          style={{
+            background: 'var(--background)',
+            boxShadow: '2px 2px 4px rgba(107,107,114,0.06), 3px 10px 15px rgba(107,107,114,0.08)',
+            // Small easing on width/height so content-driven rescaling (e.g. notice boxes,
+            // expanding lists) doesn't jump — ease in a tad rather than resize instantly.
+            transition: 'width 0.18s ease-out, height 0.18s ease-out, max-height 0.18s ease-out',
+          }}
         >
           {/* ── Header ── */}
           <div style={{ background: 'var(--card)', borderBottom: '1px solid var(--border)', padding: '22px 21px', flexShrink: 0 }}>
@@ -1824,26 +1847,8 @@ export function CustomerSelectionModal({
                                 </div>
                               </InputBox>
                             </div>
-                            {allowCreateProject && selectedCustomer && (
-                              <button
-                                onClick={() => setShowCreateProjectModal(true)}
-                                title={t('createNewProject')}
-                                style={{
-                                  background: 'var(--card)',
-                                  border: '1px solid var(--border)',
-                                  borderRadius: 'var(--radius)',
-                                  width: 48,
-                                  height: 48,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  flexShrink: 0,
-                                  transition: 'background 0.1s',
-                                }}
-                              >
-                                <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
-                              </button>
+                            {allowCreateProject && (
+                              <PlusBtn onClick={() => setShowCreateProjectModal(true)} title={t('createNewProject')} disabled={!selectedCustomer} />
                             )}
                           </div>
                         </div>
@@ -1888,10 +1893,8 @@ export function CustomerSelectionModal({
                                       </svg>
                                     </InputBox>
                                   </div>
-                                  {allowCreateContactPerson && selectedCustomer && (
-                                    <ContactPersonPlusBtn 
-                                      onClick={() => setShowCreateContactPersonModal(true)} 
-                                    />
+                                  {allowCreateContactPerson && (
+                                    <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                                   )}
                                 </div>
                               </div>
@@ -1965,26 +1968,8 @@ export function CustomerSelectionModal({
                                 </div>
                               </InputBox>
                             </div>
-                            {allowCreateProject && selectedCustomer && (
-                              <button
-                                onClick={() => setShowCreateProjectModal(true)}
-                                title={t('createNewProject')}
-                                style={{
-                                  background: 'var(--card)',
-                                  border: '1px solid var(--border)',
-                                  borderRadius: 'var(--radius)',
-                                  width: 48,
-                                  height: 48,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  flexShrink: 0,
-                                  transition: 'background 0.1s',
-                                }}
-                              >
-                                <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
-                              </button>
+                            {allowCreateProject && (
+                              <PlusBtn onClick={() => setShowCreateProjectModal(true)} title={t('createNewProject')} disabled={!selectedCustomer} />
                             )}
                           </div>
                         </div>
@@ -2023,10 +2008,8 @@ export function CustomerSelectionModal({
                                   <path d="M1 1L5 5L9 1" stroke="var(--muted-foreground)" strokeWidth="1.3" strokeLinecap="round" />
                                 </svg>
                               </InputBox>
-                              {allowCreateContactPerson && selectedCustomer && (
-                                <ContactPersonPlusBtn 
-                                  onClick={() => setShowCreateContactPersonModal(true)} 
-                                />
+                              {allowCreateContactPerson && (
+                                <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                               )}
                             </div>
                           </div>
@@ -2098,26 +2081,8 @@ export function CustomerSelectionModal({
                                 </div>
                               </InputBox>
                             </div>
-                            {allowCreateProject && selectedCustomer && (
-                              <button
-                                onClick={() => setShowCreateProjectModal(true)}
-                                title={t('createNewProject')}
-                                style={{
-                                  background: 'var(--card)',
-                                  border: '1px solid var(--border)',
-                                  borderRadius: 'var(--radius)',
-                                  width: 48,
-                                  height: 48,
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  cursor: 'pointer',
-                                  flexShrink: 0,
-                                  transition: 'background 0.1s',
-                                }}
-                              >
-                                <Plus size={20} style={{ color: 'var(--card-foreground)' }} />
-                              </button>
+                            {allowCreateProject && (
+                              <PlusBtn onClick={() => setShowCreateProjectModal(true)} title={t('createNewProject')} disabled={!selectedCustomer} />
                             )}
                           </div>
                         </div>
@@ -2158,10 +2123,8 @@ export function CustomerSelectionModal({
                                 />
                               </InputBox>
                               {/* ── CHANGE: conditional plus button ── */}
-                              {allowCreateContactPerson && selectedCustomer && (
-                                <ContactPersonPlusBtn 
-                                  onClick={() => setShowCreateContactPersonModal(true)} 
-                                />
+                              {allowCreateContactPerson && (
+                                <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                               )}
                             </div>
                           </div>
@@ -2468,10 +2431,8 @@ export function CustomerSelectionModal({
                             </svg>
                           </InputBox>
                           {/* ── CHANGE: conditional plus button ── */}
-                          {allowCreateContactPerson && selectedCustomer && (
-                            <ContactPersonPlusBtn 
-                              onClick={() => setShowCreateContactPersonModal(true)} 
-                            />
+                          {allowCreateContactPerson && (
+                            <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
                           )}
                         </div>
                       </div>
@@ -2735,9 +2696,21 @@ export function CustomerSelectionModal({
         suggestSpecificNumber={hasSpecificNumber && !specificNumberOn}
         bsTable={brandSyncEnabled && erpScenario === 'AX'}
         axColumns={erpScenario === 'AX'}
-        topSlot={syncWording ? (showSyncCustomer ? (
+        topSlot={showSpecificFallback ? (
+          <SpecificNumberToggle
+            label={t('getCustomerWithSpecificNumber')}
+            checked={specificNumberOn}
+            onChange={v => {
+              setSpecificNumberOn(v);
+              setErpFetched(v);
+              cancelCustomerClose();
+              setCustomerOpen(true);
+              customerSearchInputRef.current?.focus();
+            }}
+          />
+        ) : syncWording ? (showSyncCustomer ? (
           <SyncButton
-            label={filteredCustomers.length === 0 ? t('fetchCustomer') : t('syncCustomer')}
+            label={filteredCustomers.length === 0 ? t('getCustomer') : t('syncCustomer')}
             disabled={false}
             onClick={() => { setSpecificNumberOn(true); setErpFetched(true); cancelCustomerClose(); setCustomerOpen(true); customerSearchInputRef.current?.focus(); }}
           />
@@ -2766,7 +2739,7 @@ export function CustomerSelectionModal({
         panelRef={projectDropdownRef}
         suggestSpecificNumber={hasSpecificProject && !specificProjectOn}
         bsTable={brandSyncEnabled && erpScenario === 'AX'}
-        axColumns={erpScenario === 'AX' || showExpiredProjectsToggle}
+        axColumns
         topSlot={(() => {
           const specificSlot = syncWording ? (showSyncProject ? (
             <SyncButton
@@ -2789,7 +2762,7 @@ export function CustomerSelectionModal({
             />
           ) : undefined;
           return specificSlot || expiredSlot ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: syncWording ? 'flex-start' : 'space-between', gap: 16 }}>
               {expiredSlot}
               {specificSlot}
             </div>
@@ -2809,6 +2782,7 @@ export function CustomerSelectionModal({
         <CreateNewProjectModal
           onClose={() => setShowCreateProjectModal(false)}
           customerName={selectedCustomer?.name}
+          initialName={projectSearch.trim() !== selectedProject?.navn ? projectSearch.trim() : ''}
           onProjectCreated={handleProjectCreated}
         />
       )}

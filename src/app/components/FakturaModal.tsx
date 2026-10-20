@@ -276,7 +276,7 @@ export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = 
 
         {accountPaymentTab && !sideBySide && (
           <div className="flex gap-[24px] px-[20px] shrink-0 border-b border-border" role="tablist">
-            {([['pickup', t('pickupInvoiceTab')], ['account', t('createAccountPaymentTab')]] as const).map(([id, label]) => (
+            {([['pickup', t('pickupInvoiceTab')], ['account', t('accountPayment')]] as const).map(([id, label]) => (
               <button
                 key={id}
                 role="tab"

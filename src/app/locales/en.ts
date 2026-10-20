@@ -290,7 +290,7 @@ const en: Translations = {
   fetchCustomer: 'Fetch customer',
   fetchProject: 'Fetch project',
   syncProject: 'Sync project',
-  syncProjects: 'Sync projects',
+  syncProjects: 'Sync project',
   requisitionPlaceholder: 'Enter requisition number',
   contactPersonPlaceholder: 'Select contact person',
   contactPersonReferencePlaceholder: 'Enter contact person reference',
