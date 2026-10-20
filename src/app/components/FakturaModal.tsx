@@ -12,7 +12,7 @@ interface FakturaModalProps {
   onPickup?: (invoices: InvoiceForPayment[]) => void;
   /** Prototype A: adds the "Create account payment" tab, with credit info. */
   accountPaymentTab?: boolean;
-  /** Prototype A: the tab reads "Choose invoice" and the CTA "Add to payment". */
+  /** Prototype A: the tab reads "Choose invoice" and the account payment CTA "Add to payment". */
   choosePaymentWording?: boolean;
   /** Prototype C: a modal for the account payment alone (credit info + amount), no invoices. */
   accountPaymentOnly?: boolean;
@@ -384,7 +384,7 @@ export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = 
           onCancel={onClose}
           onConfirm={() => (isAccountTab ? onAddAccountPayment?.(amount) : onPickup?.(allInvoices.filter((inv) => selected.has(inv.id))))}
           cancelText={t('cancel')}
-          confirmText={isAccountTab ? t('addToSale') : t(choosePaymentWording ? 'addToPayment' : 'pickupForPayment')}
+          confirmText={isAccountTab ? t(choosePaymentWording ? 'addToPayment' : 'addToSale') : t('pickupForPayment')}
           confirmDisabled={isAccountTab ? amount <= 0 : selected.size === 0}
         />
       </div>
