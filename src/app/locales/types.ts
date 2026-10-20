@@ -446,6 +446,10 @@ export interface Translations {
   addToSale: string;
   creditNote: string;
   digitsOnlyError: string;
+  searchForInvoices: string;
+  searchInvoicesPlaceholder: string;
   pickupForPayment: string;
+  chooseInvoiceTab: string;
+  addToPayment: string;
   removeFromSale: string;
 }

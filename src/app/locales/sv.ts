@@ -446,7 +446,11 @@ const sv: Translations = {
   addToSale: 'Lägg i försäljningen',
   creditNote: 'Kreditnota',
   digitsOnlyError: 'Det här fältet accepterar bara siffror',
+  searchForInvoices: 'Sök efter fakturor',
+  searchInvoicesPlaceholder: 'Fakturanummer skanna eller sök',
   pickupForPayment: 'Hämta för betalning',
+  chooseInvoiceTab: 'Välj faktura',
+  addToPayment: 'Lägg till i betalning',
 };
 
 export default sv;

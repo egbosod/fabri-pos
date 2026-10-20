@@ -407,7 +407,9 @@ function OrderItemsView({
             // a second time to undo. A credit-block "Remove items" deletes the same
             // way, so its lines show as deleted until a swipe state says otherwise.
             const contextDeleted = item.state === 'deleted';
-            const itemState = contextDeleted && swipeState === 'normal' ? 'deleted' : swipeState;
+            // Lines added as a return from Previous purchases rest as returned.
+            const contextReturned = item.state === 'returned';
+            const itemState = swipeState === 'normal' ? (contextDeleted ? 'deleted' : contextReturned ? 'returned' : swipeState) : swipeState;
             const itemTotal = item.total || item.price * item.quantity;
             const originalTotal = item.discount ? itemTotal / (1 - item.discount / 100) : itemTotal;
             return (
@@ -431,6 +433,7 @@ function OrderItemsView({
                   // back on normal after an undo puts it back in.
                   if (newState === 'deleted' && !contextDeleted) onUpdateAddedItem(index, { state: 'deleted' });
                   if (newState === 'normal' && contextDeleted) onUpdateAddedItem(index, { state: 'normal' });
+                  if (contextReturned && baseState(newState) === 'normal') onUpdateAddedItem(index, { state: 'normal' });
                 }}
                 onQuantityChange={(newQuantity, newUnit) => {
                   onUpdateAddedItem(index, {

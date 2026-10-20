@@ -446,7 +446,11 @@ const no: Translations = {
   addToSale: 'Legg til i salget',
   creditNote: 'Kreditnota',
   digitsOnlyError: 'Dette feltet godtar kun sifre',
+  searchForInvoices: 'Søk etter fakturaer',
+  searchInvoicesPlaceholder: 'Fakturanummer scan eller søk',
   pickupForPayment: 'Hent til betaling',
+  chooseInvoiceTab: 'Velg faktura',
+  addToPayment: 'Legg til i betaling',
 };
 
 export default no;

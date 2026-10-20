@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronDown, ChevronUp, FileText } from 'lucide-react';
+import { ChevronDown, ChevronUp, FileText, Search } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ModalCTAFooter } from './ModalCTAFooter';
@@ -12,6 +12,8 @@ interface FakturaModalProps {
   onPickup?: (invoices: InvoiceForPayment[]) => void;
   /** Prototype A: adds the "Create account payment" tab, with credit info. */
   accountPaymentTab?: boolean;
+  /** Prototype A: the tab reads "Choose invoice" and the CTA "Add to payment". */
+  choosePaymentWording?: boolean;
   /** Prototype C: a modal for the account payment alone (credit info + amount), no invoices. */
   accountPaymentOnly?: boolean;
   /** Prototype C: the invoice pickup modal on its own, titled "Invoice for payment". */
@@ -34,6 +36,31 @@ const inv = (cid: string, number: string, dueDate: string, customerRef: string, 
   ({ id: `${cid}-${number}`, number, dueDate, customerRef, total, prepaid, kind });
 
 const MOCK_BY_CUSTOMER_NUMBER: Record<string, { invoices: InvoiceForPayment[]; balances: { due: number; invoiced: number; order: number; total: number } }> = {
+  // Shagrath Dødsbann — a long list (19 rows) to force scrolling or searching; remaining sums to the invoiced balance.
+  '400006': {
+    invoices: [
+      inv('8', '814200', '08.01.24', '302100', 450, 0),
+      inv('8', '814207', '19.01.24', '302103', 1250, 0),
+      inv('8', '814214', '02.02.24', '302106', 320.5, 0),
+      inv('8', '814221', '14.02.24', '302109', 780, 0),
+      inv('8', '814228', '26.02.24', '302112', 215, 0),
+      inv('8', '814235', '11.03.24', '302115', 940, 0),
+      inv('8', '814242', '22.03.24', '302118', 2100, 500),
+      inv('8', '814249', '04.04.24', '302121', 275, 0),
+      inv('8', '814256', '17.04.24', '302124', 390, 0),
+      inv('8', '814263', '29.04.24', '302127', 860, 0),
+      inv('8', '814270', '10.05.24', '302130', 125, 0),
+      inv('8', '814277', '23.05.24', '302133', 1480, 0),
+      inv('8', '814284', '05.06.24', '302136', 560, 0),
+      inv('8', '814291', '18.06.24', '302139', 695, 0),
+      inv('8', '814298', '28.06.24', '302142', 330, 0),
+      inv('8', '814305', '09.07.24', '302145', 410, 0),
+      inv('8', '814312', '19.07.24', '302148', 720, 0),
+      inv('8', '70003117', '30.07.24', '302151', -150, 0, 'creditNote'),
+      inv('8', '814326', '12.08.24', '302154', 1549.5, 0),
+    ],
+    balances: { due: 3700, invoiced: 12800, order: 3700, total: 16500 },
+  },
   // Snorre Vik Tømrer — enough invoices to scroll, two credit notes, balances that add up.
   '400021': {
     invoices: [
@@ -83,14 +110,21 @@ const COLUMNS = '56px minmax(0, 1fr) 120px 150px';
 
 const parseKr = (v?: string) => parseFloat((v ?? '0').replace(/\s/g, '').replace(',', '.')) || 0;
 
-export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = false, accountPaymentSideBySide = false, accountPaymentOnly = false, renamedTitle = false, onAddAccountPayment }: FakturaModalProps) {
+export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = false, accountPaymentSideBySide = false, accountPaymentOnly = false, renamedTitle = false, choosePaymentWording = false, onAddAccountPayment }: FakturaModalProps) {
   const { t } = useLanguage();
-  const invoices = useMemo(() => mockInvoicesFor(customer), [customer]);
+  const allInvoices = useMemo(() => mockInvoicesFor(customer), [customer]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
   const [tab, setTab] = useState<'pickup' | 'account'>('pickup');
   const [amountText, setAmountText] = useState('');
   const [amountError, setAmountError] = useState(false);
+  const [query, setQuery] = useState('');
+  const needle = query.trim().toLowerCase();
+  const invoices = needle
+    ? allInvoices.filter((inv) =>
+        [inv.number, inv.customerRef, inv.dueDate, formatAmount(inv.total - inv.prepaid)].some((v) => v.toLowerCase().includes(needle)))
+    : allInvoices;
+  const showSearch = accountPaymentTab && !accountPaymentSideBySide && tab === 'pickup';
   const amount = parseFloat(amountText.replace(/\s/g, '').replace(',', '.')) || 0;
   const sideBySide = accountPaymentSideBySide;
   const isAccountTab = accountPaymentOnly || (accountPaymentTab && !sideBySide && tab === 'account');
@@ -276,7 +310,7 @@ export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = 
 
         {accountPaymentTab && !sideBySide && (
           <div className="flex gap-[24px] px-[20px] shrink-0 border-b border-border" role="tablist">
-            {([['pickup', t('pickupInvoiceTab')], ['account', t('accountPayment')]] as const).map(([id, label]) => (
+            {([['pickup', t(choosePaymentWording ? 'chooseInvoiceTab' : 'pickupInvoiceTab')], ['account', t('accountPayment')]] as const).map(([id, label]) => (
               <button
                 key={id}
                 role="tab"
@@ -321,14 +355,36 @@ export function FakturaModal({ onClose, customer, onPickup, accountPaymentTab = 
                 </button>
               </div>
             </div>
-          ) : isAccountTab ? accountPanel : invoicePanel}
+          ) : isAccountTab ? accountPanel : showSearch ? (
+            <div className="flex flex-col flex-1 min-h-0 gap-[15px]">
+              <div className="flex flex-col gap-[8px] shrink-0">
+                <label htmlFor="invoice-search" className="text-foreground font-semibold" style={{ fontSize: 'var(--text-base)' }}>
+                  {t('searchForInvoices')}
+                </label>
+                <div className="relative">
+                  <input
+                    id="invoice-search"
+                    type="text"
+                    autoFocus
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder={t('searchInvoicesPlaceholder')}
+                    className="bg-card border border-border h-[48px] rounded-[var(--radius)] pl-[14px] pr-[44px] text-foreground w-full focus:outline-none focus:border-primary"
+                    style={{ fontSize: 'var(--text-base)' }}
+                  />
+                  <Search size={18} className="absolute text-muted-foreground pointer-events-none" style={{ right: 14, top: 15 }} aria-hidden />
+                </div>
+              </div>
+              {invoicePanel}
+            </div>
+          ) : invoicePanel}
         </div>
 
         <ModalCTAFooter
           onCancel={onClose}
-          onConfirm={() => (isAccountTab ? onAddAccountPayment?.(amount) : onPickup?.(invoices.filter((inv) => selected.has(inv.id))))}
+          onConfirm={() => (isAccountTab ? onAddAccountPayment?.(amount) : onPickup?.(allInvoices.filter((inv) => selected.has(inv.id))))}
           cancelText={t('cancel')}
-          confirmText={isAccountTab ? t('addToSale') : t('pickupForPayment')}
+          confirmText={isAccountTab ? t('addToSale') : t(choosePaymentWording ? 'addToPayment' : 'pickupForPayment')}
           confirmDisabled={isAccountTab ? amount <= 0 : selected.size === 0}
         />
       </div>
