@@ -18,7 +18,7 @@ import { PaymentSummary } from '../components/PaymentSummary';
 import { CustomerBadge } from '../components/CustomerBadge';
 import { CartSidebar, SelectCustomerButton, SidebarButton } from '../components/CartSidebar';
 import { CartColumnHeader } from '../components/CartColumnHeader';
-import { Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User } from 'lucide-react';
+import { Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User, ParkingSquare } from 'lucide-react';
 import type { CartItem, OrderGroupData, ProductItem, RowState } from '../types/pos';
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -495,7 +495,8 @@ function SearchAndActionsBar({
   hovedordrePlacement?: 'A' | 'B' | 'C';
 }) {
   const { t } = useLanguage();
-  const { searchQuery, inventorySearchValue, setInventorySearchValue, setInventorySearchSubmitted, handleAddToSale, selectedHovedordre } = usePOS();
+  const { searchQuery, inventorySearchValue, setInventorySearchValue, setInventorySearchSubmitted, handleAddToSale, selectedHovedordre, parkedSales } = usePOS();
+  const { switchUserFlow } = useSettings();
   const { openModal } = useModalParams();
   const [searchFocused, setSearchFocused] = React.useState(false);
 
@@ -559,6 +560,33 @@ function SearchAndActionsBar({
                 </div>
               </div>
             </div>
+            {/* Prototype B: parked sales sit with the other "fetch" actions. */}
+            {switchUserFlow === 'B' && (
+              <button
+                onClick={() => openModal('parked')}
+                disabled={parkedSales.length === 0}
+                className={`border box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 transition-colors ${
+                  parkedSales.length > 0
+                    ? 'bg-card border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    : 'bg-secondary border-border cursor-not-allowed'
+                }`}
+              >
+                <ParkingSquare size={15} className={parkedSales.length > 0 ? 'text-foreground' : 'text-secondary-foreground opacity-60'} />
+                <span
+                  className={`font-semibold ${parkedSales.length > 0 ? 'text-foreground' : 'text-secondary-foreground opacity-60'}`}
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)' }}
+                >
+                  {t('parkedSales')}
+                </span>
+                {parkedSales.length > 0 && (
+                  <div className="absolute bg-accent box-border content-stretch flex items-start right-0 top-0 translate-x-1/2 -translate-y-1/2 overflow-clip px-[7px] py-0 rounded-[100px]">
+                    <div className="flex flex-col font-semibold justify-center leading-[0] relative shrink-0 text-center text-nowrap text-primary-foreground" style={{ fontSize: 'var(--text-sm)' }}>
+                      <p className="leading-[1.75] whitespace-pre">{parkedSales.length}</p>
+                    </div>
+                  </div>
+                )}
+              </button>
+            )}
             {/* Fetch order button */}
             <div className="content-stretch flex gap-[10px] items-start justify-center relative shrink-0">
               <div
@@ -666,6 +694,7 @@ export default function SalgPage() {
     hasOrderItems,
     vipCard,
     setVipCard,
+    parkSale,
   } = usePOS();
 
   const [swipeableOrderLineStates, setSwipeableOrderLineStates] = useState<Record<string, SwipeableOrderLineState>>({});
@@ -767,6 +796,25 @@ export default function SalgPage() {
 
       {/* Sidebar */}
       <CartSidebar>
+        {/* Prototype B: Park sits top-aligned; the rest of the sidebar stays
+            bottom-aligned, so a spacer takes the slack in between. */}
+        {switchUserFlow === 'B' && (
+          <>
+            <button
+              disabled={!hasOrderItems}
+              onClick={() => { parkSale(); posToast.success(t('saleParkedToast')); }}
+              className={`h-[48px] w-full shrink-0 rounded-[var(--radius)] border border-border font-semibold transition-colors ${
+                hasOrderItems
+                  ? 'bg-card text-foreground cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                  : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
+              }`}
+              style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
+            >
+              {t('parkThisSale')}
+            </button>
+            <div className="grow w-full" aria-hidden="true" />
+          </>
+        )}
         {!selectedCustomer ? (
           <div className="content-stretch flex flex-col gap-[20px] items-start relative shrink-0 w-full" data-name="Customer select">
             <SelectCustomerButton onClick={() => openModal('customer')} />

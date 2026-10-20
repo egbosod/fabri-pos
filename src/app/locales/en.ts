@@ -18,6 +18,8 @@ const en: Translations = {
   fetchFromHandTerminal: 'Fetch from hand terminal',
   fetchOrder: 'Fetch order',
   parkSale: 'Park sale',
+  parkThisSale: 'Park this sale',
+  parkedSales: 'Parked sales',
 
   // ── Profile menu ───────────────────────────────────────────────────────────
   switchUser: 'SWITCH USER',

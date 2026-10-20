@@ -133,6 +133,7 @@ export type ModalName =
   | 'switch-user'
   | 'hovedordre'
   | 'packing-slip-signature'
+  | 'parked'
   | 'delivery-note';
 
 export interface PaymentTotals {

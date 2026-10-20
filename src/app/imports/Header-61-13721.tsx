@@ -338,16 +338,18 @@ function Button1({ count, isOpen, onClick }: { count: number; isOpen?: boolean; 
   );
 }
 
-function TopMenu({ onPriceCheckClick, parkedCount, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { onPriceCheckClick: () => void; parkedCount: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void }) {
+function TopMenu({ hideParking, onPriceCheckClick, parkedCount, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { hideParking?: boolean; onPriceCheckClick: () => void; parkedCount: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void }) {
   return (
     <div className="bg-white h-[60px] relative shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] shrink-0 w-full" data-name="Top menu">
       <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
         <div className="box-border content-stretch flex h-[60px] items-center justify-between px-[20px] py-[8px] relative w-full [[data-previous-purchases-open]_&]:hidden">
           <TextButton onClick={onPriceCheckClick} />
-          <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="Parker salg knapp">
-            <Button onClick={onParkClick} disabled={!canPark} />
-            <Button1 count={parkedCount} isOpen={isParkedListOpen} onClick={onParkedListClick} />
-          </div>
+          {!hideParking && (
+            <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="Parker salg knapp">
+              <Button onClick={onParkClick} disabled={!canPark} />
+              <Button1 count={parkedCount} isOpen={isParkedListOpen} onClick={onParkedListClick} />
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -396,7 +398,7 @@ function Frame({ onClose, paymentTitle }: { onClose: () => void; paymentTitle?: 
   );
 }
 
-export default function Header1({ onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, isPriceCheckMode, onPriceCheckClick, onPriceCheckClose, currentUser, isPaymentMode, paymentTitle, onPaymentClose, onNewSaleClick, onPreviousPurchasesClick, parkedCount = 0, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { parkedCount?: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void; onMenuClick?: () => void; isMenuOpen?: boolean; onProfileClick?: () => void; isProfileOpen?: boolean; isPriceCheckMode?: boolean; onPriceCheckClick?: () => void; onPriceCheckClose?: () => void; currentUser?: string; isPaymentMode?: boolean; paymentTitle?: string; onPaymentClose?: () => void; onNewSaleClick?: () => void; onPreviousPurchasesClick?: () => void }) {
+export default function Header1({ hideParking, onMenuClick, isMenuOpen, onProfileClick, isProfileOpen, isPriceCheckMode, onPriceCheckClick, onPriceCheckClose, currentUser, isPaymentMode, paymentTitle, onPaymentClose, onNewSaleClick, onPreviousPurchasesClick, parkedCount = 0, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { hideParking?: boolean; parkedCount?: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void; onMenuClick?: () => void; isMenuOpen?: boolean; onProfileClick?: () => void; isProfileOpen?: boolean; isPriceCheckMode?: boolean; onPriceCheckClick?: () => void; onPriceCheckClose?: () => void; currentUser?: string; isPaymentMode?: boolean; paymentTitle?: string; onPaymentClose?: () => void; onNewSaleClick?: () => void; onPreviousPurchasesClick?: () => void }) {
   return (
     <div className="content-stretch flex flex-col items-start relative w-full" data-name="Header">
       <Header 
@@ -409,7 +411,7 @@ export default function Header1({ onMenuClick, isMenuOpen, onProfileClick, isPro
         onNewSaleClick={onNewSaleClick}
         onPreviousPurchasesClick={onPreviousPurchasesClick}
       />
-      {!isPriceCheckMode && !isPaymentMode && <TopMenu onPriceCheckClick={() => onPriceCheckClick?.()} parkedCount={parkedCount} canPark={canPark} isParkedListOpen={isParkedListOpen} onParkClick={onParkClick} onParkedListClick={onParkedListClick} />}
+      {!isPriceCheckMode && !isPaymentMode && <TopMenu hideParking={hideParking} onPriceCheckClick={() => onPriceCheckClick?.()} parkedCount={parkedCount} canPark={canPark} isParkedListOpen={isParkedListOpen} onParkClick={onParkClick} onParkedListClick={onParkedListClick} />}
       {isPriceCheckMode && (
         <div className="content-stretch flex flex-col gap-[10px] items-start relative shrink-0 w-full" data-name="Price check mode">
           <Frame onClose={() => onPriceCheckClose?.()} />
