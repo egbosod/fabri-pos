@@ -449,7 +449,11 @@ const da: Translations = {
   addToSale: 'Læg i salget',
   creditNote: 'Kreditnota',
   digitsOnlyError: 'Dette felt accepterer kun tal',
+  searchForInvoices: 'Søg efter fakturaer',
+  searchInvoicesPlaceholder: 'Fakturanummer scan eller søg',
   pickupForPayment: 'Hent til betaling',
+  chooseInvoiceTab: 'Vælg faktura',
+  addToPayment: 'Tilføj til betaling',
 };
 
 export default da;

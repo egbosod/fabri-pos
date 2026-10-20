@@ -445,7 +445,11 @@ const en: Translations = {
   addToSale: 'Add to sale',
   creditNote: 'Credit note',
   digitsOnlyError: 'This input field only accepts digits',
+  searchForInvoices: 'Search for invoices',
+  searchInvoicesPlaceholder: 'Scan or search invoice number',
   pickupForPayment: 'Pickup for payment',
+  chooseInvoiceTab: 'Choose invoice',
+  addToPayment: 'Add to payment',
 };
 
 export default en;

@@ -716,6 +716,7 @@ function RootLayoutInner() {
       {isModalOpen('faktura') && (
         <FakturaModal onClose={closeModal} customer={selectedCustomer} onPickup={(invoices) => { handlePickupInvoices(invoices); closeModal(); }}
           accountPaymentTab={switchUserFlow === 'A'}
+          choosePaymentWording={switchUserFlow === 'A'}
           accountPaymentSideBySide={switchUserFlow === 'B'}
           renamedTitle={switchUserFlow === 'C'}
           onAddAccountPayment={(amount) => { handleAddAccountPayment(amount); closeModal(); }}
