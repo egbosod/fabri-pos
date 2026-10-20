@@ -286,6 +286,7 @@ function RootLayoutInner() {
     restoreParkedSale(id);
     posToast.success(t('saleRestoredToast'));
     setShowParkedList(false);
+    if (isModalOpen('parked')) closeModal();
     navigate('/salg');
   };
   const handleRestoreClick = (id: string) => {
@@ -804,6 +805,7 @@ function RootLayoutInner() {
           onUserChange={setCurrentUser}
           onUserLogout={showUserLogoutNotification}
           onNewSaleClick={handleNewSaleClick}
+          hideParking={switchUserFlow === 'B'}
           parkedCount={parkedSales.length}
           canPark={hasOrderItems}
           isParkedListOpen={showParkedList}
@@ -873,12 +875,13 @@ function RootLayoutInner() {
       )}
 
       {/* ── Parked sales list ────────────────────────────────────────────── */}
-      {showParkedList && parkedSales.length > 0 && (
+      {(switchUserFlow === 'B' ? isModalOpen('parked') : showParkedList) && parkedSales.length > 0 && (
         <ParkedSalesPanel
+          variant={switchUserFlow === 'B' ? 'modal' : 'dropdown'}
           sales={parkedSales}
           currentUser={currentUser}
           onRestore={handleRestoreClick}
-          onClose={() => setShowParkedList(false)}
+          onClose={() => (switchUserFlow === 'B' ? closeModal() : setShowParkedList(false))}
         />
       )}
 

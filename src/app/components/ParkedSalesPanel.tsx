@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ParkingSquare, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { Switch } from './ui/switch';
 import type { ParkedSale } from '../contexts/POSContext';
@@ -9,6 +9,8 @@ interface ParkedSalesPanelProps {
   currentUser: string;
   onRestore: (id: string) => void;
   onClose: () => void;
+  /** 'dropdown' hangs under the header toolbar; 'modal' is centred with a title (Prototype B). */
+  variant?: 'dropdown' | 'modal';
 }
 
 const money = (n: number) =>
@@ -26,7 +28,8 @@ const COLS = '48px 1.3fr 1.5fr 0.8fr 1fr 0.9fr 48px';
  * Dropdown under the toolbar's park button: every parked sale, pick one and
  * restore it. Mirrors the Fabri list — select with the radio, chevron expands lines.
  */
-export function ParkedSalesPanel({ sales, currentUser, onRestore, onClose }: ParkedSalesPanelProps) {
+export function ParkedSalesPanel({ sales, currentUser, onRestore, onClose, variant = 'dropdown' }: ParkedSalesPanelProps) {
+  const isModal = variant === 'modal';
   const { t } = useLanguage();
   const [onlyMine, setOnlyMine] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -60,13 +63,26 @@ export function ParkedSalesPanel({ sales, currentUser, onRestore, onClose }: Par
 
   return (
     <>
-      <div className="fixed inset-0 z-40" onClick={onClose} />
+      <div className={`fixed inset-0 z-40${isModal ? ' bg-black/50' : ''}`} onClick={onClose} />
       <div
         role="dialog"
-        aria-label={t('parkSale')}
-        className="fixed right-[10px] top-[104px] z-50 flex flex-col bg-card shadow-lg rounded-[3px] w-[min(784px,calc(100vw-20px))] h-[min(520px,calc(100vh-124px))]"
+        aria-label={isModal ? t('parkedSales') : t('parkSale')}
+        className={
+          isModal
+            ? 'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col bg-card shadow-lg rounded-[var(--radius)] w-[min(784px,calc(100vw-40px))] h-[min(600px,calc(100vh-80px))]'
+            : 'fixed right-[10px] top-[104px] z-50 flex flex-col bg-card shadow-lg rounded-[3px] w-[min(784px,calc(100vw-20px))] h-[min(520px,calc(100vh-124px))]'
+        }
         style={{ fontFamily: "'Montserrat', sans-serif" }}
       >
+        {isModal && (
+          <div className="flex items-center gap-[12px] px-[20px] h-[64px] shrink-0 border-b border-border">
+            <ParkingSquare size={22} className="text-foreground" />
+            <h2 className="grow font-semibold text-foreground" style={{ fontSize: 'var(--text-lg)' }}>{t('parkedSales')}</h2>
+            <button onClick={onClose} aria-label={t('cancel')} className="size-[40px] flex items-center justify-center cursor-pointer rounded-[var(--radius)] hover:bg-secondary">
+              <X size={20} />
+            </button>
+          </div>
+        )}
         <label className="flex items-center gap-[10px] px-[20px] py-[14px] border-b border-border cursor-pointer" style={cell}>
           <Switch checked={onlyMine} onCheckedChange={setOnlyMine} />
           {t('showOnlyMySales')}

@@ -18,6 +18,8 @@ export interface Translations {
   fetchFromHandTerminal: string;
   fetchOrder: string;
   parkSale: string;
+  parkThisSale: string;
+  parkedSales: string;
 
   // ── Profile menu ───────────────────────────────────────────────────────────
   switchUser: string;
