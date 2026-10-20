@@ -2330,16 +2330,9 @@ export function CustomerSelectionModal({
                         tab, regardless of card concept or prototype. */}
                     <div>
                       <FieldLabel>{`${t('vipRecipient')} *`}</FieldLabel>
-                      <div style={{ display: 'flex', gap: 10 }}>
-                        <div style={{ flex: 1 }}>
-                          <InputBox focused={false}>
-                            <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
-                          </InputBox>
-                        </div>
-                        {allowCreateContactPerson && (
-                          <ContactPersonPlusBtn onClick={() => setShowCreateContactPersonModal(true)} disabled={!selectedCustomer} />
-                        )}
-                      </div>
+                      <InputBox focused={false}>
+                        <input style={{ ...baseInputStyle, color: contactPerson ? 'var(--foreground)' : 'var(--muted-foreground)' }} value={contactPerson} placeholder={t('vipRecipientPlaceholder')} onChange={e => setContactPerson(e.target.value)} />
+                      </InputBox>
                     </div>
                   </>
                 )}
