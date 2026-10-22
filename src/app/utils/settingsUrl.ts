@@ -23,6 +23,13 @@ export type CustomerSearchConcept = 'A' | 'B';
 //   B = locked; the block modal adds a "Legg til varer i salg" shortcut next to "Lukk"
 //   C = locked; same block modal as B without the shortcut, just relabeled "Lukk"
 export type PriceCheckLockConcept = 'A' | 'B' | 'C';
+// How a sale is parked and how parked sales are fetched. Independent of SwitchUserFlow.
+//   A = Park in the header; parked sales in a header dropdown
+//   B = Park top of the sidebar; Parked sales button beside the fetch actions, opens a modal
+//   C = Park top of the sidebar with a Parked sales button directly below it, opens a modal
+export type ParkingConcept = 'A' | 'B' | 'C';
+/** Parking concept paired with a flow (D and X reuse A's). */
+export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'D' || flow === 'X' ? 'A' : flow);
 export type ErpScenario = 'Nexstep' | 'Trygg2000' | 'Aspect4' | 'Aspect4 DK' | 'AX' | 'IFS';
 export const ERP_SCENARIOS: ErpScenario[] = ['Nexstep', 'Trygg2000', 'Aspect4', 'Aspect4 DK', 'AX', 'IFS'];
 
@@ -32,6 +39,7 @@ export interface SharedSettings {
   hovedordrePlacement: HovedordrePlacement;
   customerSearchConcept: CustomerSearchConcept;
   priceCheckLockConcept: PriceCheckLockConcept;
+  parkingConcept: ParkingConcept;
   showFlowIndicator: boolean;
   allowCreateProject: boolean;
   allowCreateContactPerson: boolean;
@@ -52,6 +60,7 @@ export const DEFAULT_SETTINGS: SharedSettings = {
   hovedordrePlacement: 'B',
   customerSearchConcept: 'A',
   priceCheckLockConcept: 'A',
+  parkingConcept: 'C',
   showFlowIndicator: true,
   allowCreateProject: false,
   allowCreateContactPerson: false,
@@ -123,6 +132,12 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
     key: 'priceCheckLockConcept',
     param: 'pclock',
     parse: makeEnumParser<PriceCheckLockConcept>(['A', 'B', 'C']),
+    serialize: v => v,
+  },
+  {
+    key: 'parkingConcept',
+    param: 'parkering',
+    parse: makeEnumParser<ParkingConcept>(['A', 'B', 'C']),
     serialize: v => v,
   },
   {

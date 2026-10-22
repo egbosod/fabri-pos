@@ -6,11 +6,12 @@ import {
   type HovedordrePlacement,
   type CustomerSearchConcept,
   type PriceCheckLockConcept,
+  type ParkingConcept,
   type ErpScenario,
 } from '../utils/settingsUrl';
 
 // Re-exported for existing consumers that import these types from SettingsContext.
-export type { SwitchUserFlow, HovedordrePlacement, CustomerSearchConcept, PriceCheckLockConcept, ErpScenario };
+export type { SwitchUserFlow, HovedordrePlacement, CustomerSearchConcept, PriceCheckLockConcept, ParkingConcept, ErpScenario };
 export { DEFAULT_SETTINGS };
 
 export interface SettingsContextType {
@@ -24,6 +25,8 @@ export interface SettingsContextType {
   setCustomerSearchConcept: (concept: CustomerSearchConcept) => void;
   priceCheckLockConcept: PriceCheckLockConcept;
   setPriceCheckLockConcept: (concept: PriceCheckLockConcept) => void;
+  parkingConcept: ParkingConcept;
+  setParkingConcept: (concept: ParkingConcept) => void;
   showFlowIndicator: boolean;
   setShowFlowIndicator: (show: boolean) => void;
   isSettingsModalOpen: boolean;
@@ -82,6 +85,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
   const [priceCheckLockConcept, setPriceCheckLockConcept] = useState<PriceCheckLockConcept>(
     urlSettings.priceCheckLockConcept ?? DEFAULT_SETTINGS.priceCheckLockConcept,
+  );
+  const [parkingConcept, setParkingConcept] = useState<ParkingConcept>(
+    urlSettings.parkingConcept ?? DEFAULT_SETTINGS.parkingConcept,
   );
   const [showFlowIndicator, setShowFlowIndicator] = useState(
     urlSettings.showFlowIndicator ?? DEFAULT_SETTINGS.showFlowIndicator,
@@ -153,6 +159,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setHovedordrePlacement(DEFAULT_SETTINGS.hovedordrePlacement);
     setCustomerSearchConcept(DEFAULT_SETTINGS.customerSearchConcept);
     setPriceCheckLockConcept(DEFAULT_SETTINGS.priceCheckLockConcept);
+    setParkingConcept(DEFAULT_SETTINGS.parkingConcept);
     setShowFlowIndicator(DEFAULT_SETTINGS.showFlowIndicator);
     setIsSettingsModalOpen(false);
     setAllowCreateProject(DEFAULT_SETTINGS.allowCreateProject);
@@ -201,6 +208,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setCustomerSearchConcept,
         priceCheckLockConcept,
         setPriceCheckLockConcept,
+        parkingConcept,
+        setParkingConcept,
         showFlowIndicator,
         setShowFlowIndicator,
         isSettingsModalOpen,
