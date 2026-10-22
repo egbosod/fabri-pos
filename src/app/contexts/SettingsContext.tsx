@@ -72,6 +72,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const setSwitchUserFlow = (flow: SwitchUserFlow) => {
     setSwitchUserFlowState(flow);
     if (flow === 'D') setErpScenario('AX');
+    if (flow === 'X') setErpScenario('Nexstep');
   };
   const [hovedordrePlacement, setHovedordrePlacement] = useState<HovedordrePlacement>(
     urlSettings.hovedordrePlacement ?? DEFAULT_SETTINGS.hovedordrePlacement,

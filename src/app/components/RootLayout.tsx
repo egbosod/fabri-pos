@@ -158,9 +158,9 @@ const VIP_SCAN_CONCEPTS: {
 ];
 
 /** Rotation cursor — module-level so it survives re-renders within a session. */
-const vipScanCursors: Record<'A' | 'B' | 'C' | 'D', number> = { A: 0, B: 0, C: 0, D: 0 };
+const vipScanCursors: Record<'A' | 'B' | 'C' | 'D' | 'X', number> = { A: 0, B: 0, C: 0, D: 0, X: 0 };
 
-function generateFakeVipScan(flow: 'A' | 'B' | 'C' | 'D'): { card: VipCardData; concept: string } {
+function generateFakeVipScan(flow: 'A' | 'B' | 'C' | 'D' | 'X'): { card: VipCardData; concept: string } {
   const concepts = flow === 'C'
     ? [...VIP_SCAN_CONCEPTS.filter(c => !c.hiddenInProtoC)].sort((a, b) => Number(!!b.firstInProtoC) - Number(!!a.firstInProtoC))
     : VIP_SCAN_CONCEPTS;
@@ -434,8 +434,8 @@ function RootLayoutInner() {
       // A, B, C → Switch prototype (user-switch flow + price-check lock, kept in sync)
       if (!isInput && !e.metaKey && !e.ctrlKey && !e.altKey) {
         const key = e.key.toUpperCase();
-        if (key === 'A' || key === 'B' || key === 'C' || key === 'D') {
-          const newFlow = key as 'A' | 'B' | 'C' | 'D';
+        if (key === 'A' || key === 'B' || key === 'C' || key === 'D' || key === 'X') {
+          const newFlow = key as 'A' | 'B' | 'C' | 'D' | 'X';
           setSwitchUserFlow(newFlow);
           setPriceCheckLockConcept(lockConceptForFlow(newFlow));
           prototypeToast(
@@ -482,7 +482,7 @@ function RootLayoutInner() {
         if (erpScenario !== 'Aspect4 DK' || (!isFlowA(switchUserFlow) && switchUserFlow !== 'C' && switchUserFlow !== 'B')) {
           prototypeToast(
             'Card scan unavailable',
-            "Set ERP scenario to 'Aspect4 DK' and Prototype to 'A', 'B', 'C' or 'D' in Settings first",
+            "Set ERP scenario to 'Aspect4 DK' and Prototype to 'A', 'B', 'C', 'D' or 'X' in Settings first",
             { duration: 3000 },
           );
           return;

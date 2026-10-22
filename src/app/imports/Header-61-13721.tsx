@@ -148,7 +148,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
                 role="listbox"
                 className="absolute right-0 top-[calc(100%+6px)] z-[9999] bg-white rounded-[8px] shadow-lg p-2 flex flex-col gap-1.5 w-[220px]"
               >
-                {(['A', 'B', 'C', 'D'] as const).map(flow => (
+                {(['A', 'B', 'C', 'D', 'X'] as const).map(flow => (
                   <button
                     key={flow}
                     type="button"

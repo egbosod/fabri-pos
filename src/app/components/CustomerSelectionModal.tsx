@@ -13,7 +13,7 @@ import type { VipCardData } from '../types/pos';
 import { formatAmount } from '../utils/formatAmount';
 import { posToast } from '../utils/posToast';
 import { EgList, type EgListRow, type EgListSection } from './EgList';
-import { isFlowA } from '../utils/settingsUrl';
+import { isFlowA, isFlowD } from '../utils/settingsUrl';
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -1037,13 +1037,13 @@ export function CustomerSelectionModal({
   // Prototype D: the "Get … with specific number" buttons only look up numbers. Letters or words in the
   // field give no hit, so explain why in a toast instead of switching mode.
   const specificLookupBlocked = (query: string, messageKey: 'specificCustomerNumberOnly' | 'specificProjectNumberOnly') => {
-    if (switchUserFlow !== 'D' || !/\D/.test(query.trim())) return false;
+    if (!isFlowD(switchUserFlow) || !/\D/.test(query.trim())) return false;
     posToast.warning(t(messageKey));
     return true;
   };
   // Prototype D on AX: AX and the local POS only talk through the replicator, so new or edited
   // customers/projects are invisible locally. The button is a force sync from AX.
-  const axSync = switchUserFlow === 'D' && erpScenario === 'AX';
+  const axSync = isFlowD(switchUserFlow) && erpScenario === 'AX';
   // Returns true when the sync found the exact number. Partial or unknown numbers give no hit.
   const notifySynced = (kind: 'customer' | 'project', query: string): boolean => {
     const q = query.trim();
@@ -1060,7 +1060,7 @@ export function CustomerSelectionModal({
     );
     return false;
   };
-  const customerToggleLabel = switchUserFlow === 'D'
+  const customerToggleLabel = isFlowD(switchUserFlow)
     ? t(axSync ? 'syncCustomerFromAx' : 'getCustomerWithSpecificNumber')
     : isAspect4 && switchUserFlow === 'C'
     ? t('getCustomerWithSpecificNumber')
@@ -1794,7 +1794,7 @@ export function CustomerSelectionModal({
 
               {hasSpecificNumber && customerSearchConcept === 'B' && !syncWording && !rowSync && (
                 <SpecificNumberToggle
-                  asButton={switchUserFlow === 'D'}
+                  asButton={isFlowD(switchUserFlow)}
                   label={customerToggleLabel}
                   checked={specificNumberOn}
                   onChange={v => { if (v && specificLookupBlocked(customerQuery, 'specificCustomerNumberOnly')) return; if (v && axSync && !notifySynced('customer', customerQuery)) return; setSpecificNumberOn(v); setErpFetched(false); }}
@@ -2800,7 +2800,7 @@ export function CustomerSelectionModal({
           />
         ) : undefined) : hasSpecificNumber && !rowSync && customerSearchConcept === 'A' ? (
           <SpecificNumberToggle
-            asButton={switchUserFlow === 'D'}
+            asButton={isFlowD(switchUserFlow)}
             label={customerToggleLabel}
             checked={specificNumberOn}
             onChange={v => {
@@ -2837,8 +2837,8 @@ export function CustomerSelectionModal({
             />
           ) : undefined) : hasSpecificProject && !rowSync ? (
             <SpecificNumberToggle
-              asButton={switchUserFlow === 'D'}
-              label={switchUserFlow === 'D' ? t(axSync ? 'syncProjectFromAx' : 'getProjectWithSpecificNumber') : t('specificProjectNumber')}
+              asButton={isFlowD(switchUserFlow)}
+              label={isFlowD(switchUserFlow) ? t(axSync ? 'syncProjectFromAx' : 'getProjectWithSpecificNumber') : t('specificProjectNumber')}
               checked={specificProjectOn}
               onChange={v => { if (v && specificLookupBlocked(projectSearch, 'specificProjectNumberOnly')) return; if (v && axSync && !notifySynced('project', projectSearch)) return; setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
             />

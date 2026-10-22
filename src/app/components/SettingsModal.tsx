@@ -878,7 +878,7 @@ export function SettingsModal() {
                       position: 'relative',
                     }}
                   >
-                    {(['A', 'B', 'C', 'D'] as const).map(flow => (
+                    {(['A', 'B', 'C', 'D', 'X'] as const).map(flow => (
                       <button
                         key={flow}
                         onClick={() => setSwitchUserFlow(flow)}
