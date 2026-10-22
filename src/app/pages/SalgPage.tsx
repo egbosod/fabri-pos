@@ -497,7 +497,7 @@ function SearchAndActionsBar({
 }) {
   const { t } = useLanguage();
   const { searchQuery, inventorySearchValue, setInventorySearchValue, setInventorySearchSubmitted, handleAddToSale, selectedHovedordre, parkedSales } = usePOS();
-  const { switchUserFlow } = useSettings();
+  const { parkingConcept } = useSettings();
   const { openModal } = useModalParams();
   const [searchFocused, setSearchFocused] = React.useState(false);
 
@@ -561,8 +561,8 @@ function SearchAndActionsBar({
                 </div>
               </div>
             </div>
-            {/* Prototype B: parked sales sit with the other "fetch" actions. */}
-            {switchUserFlow === 'B' && (
+            {/* Parking concept B: parked sales sit with the other "fetch" actions. */}
+            {parkingConcept === 'B' && (
               <button
                 onClick={() => openModal('parked')}
                 disabled={parkedSales.length === 0}
@@ -680,7 +680,7 @@ export default function SalgPage() {
   const navigate = useNavigate();
   const { openModal } = useModalParams();
   const { t } = useLanguage();
-  const { erpScenario, hovedordrePlacement, switchUserFlow } = useSettings();
+  const { erpScenario, hovedordrePlacement, switchUserFlow, parkingConcept } = useSettings();
   const {
     selectedCustomer,
     selectedProject,
@@ -696,6 +696,7 @@ export default function SalgPage() {
     vipCard,
     setVipCard,
     parkSale,
+    parkedSales,
   } = usePOS();
 
   const [swipeableOrderLineStates, setSwipeableOrderLineStates] = useState<Record<string, SwipeableOrderLineState>>({});
@@ -797,22 +798,48 @@ export default function SalgPage() {
 
       {/* Sidebar */}
       <CartSidebar>
-        {/* Prototype B: Park sits top-aligned; the rest of the sidebar stays
-            bottom-aligned, so a spacer takes the slack in between. */}
-        {switchUserFlow === 'B' && (
+        {/* Parking concepts B and C: Park sits top-aligned; the rest of the sidebar
+            stays bottom-aligned, so a spacer takes the slack in between.
+            C adds the Parked sales button directly below Park. */}
+        {(parkingConcept === 'B' || parkingConcept === 'C') && (
           <>
-            <button
-              disabled={!hasOrderItems}
-              onClick={() => { parkSale(); posToast.success(t('saleParkedToast')); }}
-              className={`h-[48px] w-full shrink-0 rounded-[var(--radius)] border border-border font-semibold transition-colors ${
-                hasOrderItems
-                  ? 'bg-card text-foreground cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
-                  : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
-              }`}
-              style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
-            >
-              {t('parkThisSale')}
-            </button>
+            <div className="flex flex-col gap-[10px] w-full shrink-0">
+              <button
+                disabled={!hasOrderItems}
+                onClick={() => { parkSale(); posToast.success(t('saleParkedToast')); }}
+                className={`h-[48px] w-full shrink-0 rounded-[var(--radius)] border border-border font-semibold transition-colors ${
+                  hasOrderItems
+                    ? 'bg-card text-foreground cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
+                }`}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
+              >
+                {t('parkThisSale')}
+              </button>
+              {parkingConcept === 'C' && (
+                <button
+                  disabled={parkedSales.length === 0}
+                  onClick={() => openModal('parked')}
+                  className={`relative h-[48px] w-full shrink-0 rounded-[var(--radius)] border border-border font-semibold transition-colors flex items-center justify-center gap-[8px] ${
+                    parkedSales.length > 0
+                      ? 'bg-card text-foreground cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                      : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
+                  }`}
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
+                >
+                  <ParkingSquare size={18} />
+                  {t('parkedSales')}
+                  {parkedSales.length > 0 && (
+                    <span
+                      className="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 bg-accent text-primary-foreground rounded-[100px] px-[7px] font-semibold leading-[1.75]"
+                      style={{ fontSize: 'var(--text-sm)' }}
+                    >
+                      {parkedSales.length}
+                    </span>
+                  )}
+                </button>
+              )}
+            </div>
             <div className="grow w-full" aria-hidden="true" />
           </>
         )}

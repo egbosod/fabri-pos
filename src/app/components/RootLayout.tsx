@@ -33,7 +33,7 @@ import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { posToast } from '../utils/posToast';
 import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS, prototypeToast } from '../utils/prototypeDescriptions';
-import { isFlowA, lockConceptForFlow } from '../utils/settingsUrl';
+import { isFlowA, lockConceptForFlow, parkingConceptForFlow } from '../utils/settingsUrl';
 
 // ─── Mock pools for fake card scans (mirrors CustomerSelectionModal data) ──────
 const SCAN_CUSTOMERS = [
@@ -207,6 +207,8 @@ function RootLayoutInner() {
     setSwitchUserFlow,
     priceCheckLockConcept,
     setPriceCheckLockConcept,
+    parkingConcept,
+    setParkingConcept,
     resetSettings,
     showFlowIndicator,
     setShowFlowIndicator,
@@ -273,6 +275,8 @@ function RootLayoutInner() {
   // the pending sale first.
   const [showSaleInProgress, setShowSaleInProgress] = useState(false);
   const [showParkedList, setShowParkedList] = useState(false);
+  // Parking concepts B and C open parked sales as a centred modal; A keeps the header dropdown.
+  const parkedAsModal = parkingConcept === 'B' || parkingConcept === 'C';
   const [pendingRestoreId, setPendingRestoreId] = useState<string | null>(null);
   const handleNewSaleClick = () => {
     if (hasOrderItems) setShowSaleInProgress(true);
@@ -438,6 +442,7 @@ function RootLayoutInner() {
           const newFlow = key as 'A' | 'B' | 'C' | 'D' | 'X';
           setSwitchUserFlow(newFlow);
           setPriceCheckLockConcept(lockConceptForFlow(newFlow));
+          setParkingConcept(parkingConceptForFlow(newFlow));
           prototypeToast(
             `Switched to Prototype ${newFlow}`,
             `${FLOW_DESCRIPTIONS[newFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[newFlow]}.`,
@@ -528,7 +533,7 @@ function RootLayoutInner() {
     // Use capture phase (true) to intercept the event before browser shortcuts
     window.addEventListener('keydown', handleKeyDown, true);
     return () => window.removeEventListener('keydown', handleKeyDown, true);
-  }, [currentUser, switchUserFlow, setSwitchUserFlow, priceCheckLockConcept, setPriceCheckLockConcept, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, scanCustomerCard, vipCard, setVipCard, pendingVipCard, setPendingVipCard, setVipAcknowledged, t]);
+  }, [currentUser, switchUserFlow, setSwitchUserFlow, priceCheckLockConcept, setPriceCheckLockConcept, setParkingConcept, openModal, activeModal, showUserLogoutNotification, resetPOS, resetSettings, closeModal, navigate, showFlowIndicator, setShowFlowIndicator, erpScenario, scanCustomerCard, vipCard, setVipCard, pendingVipCard, setPendingVipCard, setVipAcknowledged, t]);
 
   /* ── Modals rendering (URL-addressable) ───────────���────────────────── */
   const renderModals = () => (
@@ -804,7 +809,7 @@ function RootLayoutInner() {
           onUserChange={setCurrentUser}
           onUserLogout={showUserLogoutNotification}
           onNewSaleClick={handleNewSaleClick}
-          hideParking={switchUserFlow === 'B'}
+          hideParking={parkedAsModal}
           parkedCount={parkedSales.length}
           canPark={hasOrderItems}
           isParkedListOpen={showParkedList}
@@ -874,13 +879,13 @@ function RootLayoutInner() {
       )}
 
       {/* ── Parked sales list ────────────────────────────────────────────── */}
-      {(switchUserFlow === 'B' ? isModalOpen('parked') : showParkedList) && parkedSales.length > 0 && (
+      {(parkedAsModal ? isModalOpen('parked') : showParkedList) && parkedSales.length > 0 && (
         <ParkedSalesPanel
-          variant={switchUserFlow === 'B' ? 'modal' : 'dropdown'}
+          variant={parkedAsModal ? 'modal' : 'dropdown'}
           sales={parkedSales}
           currentUser={currentUser}
           onRestore={handleRestoreClick}
-          onClose={() => (switchUserFlow === 'B' ? closeModal() : setShowParkedList(false))}
+          onClose={() => (parkedAsModal ? closeModal() : setShowParkedList(false))}
         />
       )}
 

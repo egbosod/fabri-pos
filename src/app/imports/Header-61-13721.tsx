@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ERP_SCENARIOS, lockConceptForFlow } from '../utils/settingsUrl';
+import { ERP_SCENARIOS, lockConceptForFlow, parkingConceptForFlow } from '../utils/settingsUrl';
 import { useCopyShareLink } from '../hooks/useCopyShareLink';
 import { Copy, Check, Settings } from 'lucide-react';
 
@@ -99,7 +99,7 @@ function UserIcon() {
 }
 
 function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void; isProfileOpen?: boolean; currentUser?: string }) {
-  const { switchUserFlow, setSwitchUserFlow, setPriceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario, openSettingsModal } = useSettings();
+  const { switchUserFlow, setSwitchUserFlow, setPriceCheckLockConcept, setParkingConcept, showFlowIndicator, erpScenario, setErpScenario, openSettingsModal } = useSettings();
   const [isFlowMenuOpen, setIsFlowMenuOpen] = useState(false);
   const flowMenuRef = useRef<HTMLDivElement>(null);
   const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
@@ -158,6 +158,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
                       // Same pairing as the A/B/C keyboard shortcut.
                       setSwitchUserFlow(flow);
                       setPriceCheckLockConcept(lockConceptForFlow(flow));
+                      setParkingConcept(parkingConceptForFlow(flow));
                       setIsFlowMenuOpen(false);
                     }}
                     className={`text-right text-[11px] font-semibold font-['Montserrat'] px-2 py-1 rounded-full cursor-pointer transition-colors ${

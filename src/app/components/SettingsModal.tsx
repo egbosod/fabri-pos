@@ -45,6 +45,12 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     customerSearchA: 'A: Bryteren ligger i søkeresultatet, ERP-oppslaget kjøres automatisk.',
     customerSearchB: 'B: Bryteren ligger øverst til høyre i toppen, med en egen «Hent kunde»-knapp.',
 
+    parkingHeading: 'Parkering av salg',
+    parkingDesc: 'Velg hvor «Parker salg» ligger og hvordan parkerte salg hentes frem.',
+    parkingA: 'A: Parker i toppmenyen; parkerte salg åpnes i en nedtrekksliste i toppmenyen.',
+    parkingB: 'B: Parker øverst i sidemenyen; «Parkerte salg» ligger sammen med hent-handlingene og åpnes i en modal.',
+    parkingC: 'C: Parker øverst i sidemenyen med «Parkerte salg» rett under; åpnes i en modal.',
+
     priceCheckLockHeading: 'Prissjekk – kundelås',
     priceCheckLockA: 'A: Ingen lås. Kunde/prosjekt kan byttes fritt i prissjekk; kun varselet ved «Legg til varer i salg» vises ved avvik.',
     priceCheckLockB: 'B: Låst som i dag, men den sperrende modalen har også en «Legg til varer i salg»-knapp ved siden av «Lukk».',
@@ -130,6 +136,12 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     specificCustomerNumber: 'Specific customer number',
     customerSearchA: 'A: Toggle sits in the search results; the ERP lookup runs automatically.',
     customerSearchB: 'B: Toggle sits top right in the header, with an explicit "Get customer" button.',
+
+    parkingHeading: 'Parking a sale',
+    parkingDesc: 'Choose where "Park sale" lives and how parked sales are fetched back.',
+    parkingA: 'A: Park in the header; parked sales open in a header dropdown.',
+    parkingB: 'B: Park at the top of the sidebar; "Parked sales" sits with the fetch actions and opens a modal.',
+    parkingC: 'C: Park at the top of the sidebar with "Parked sales" directly below it; opens a modal.',
 
     priceCheckLockHeading: 'Price check – customer lock',
     priceCheckLockA: 'A: No lock. Customer/project can be swapped freely in price check; only the "Add to Cart" mismatch warning fires on a difference.',
@@ -251,6 +263,8 @@ export function SettingsModal() {
     setCustomerSearchConcept,
     priceCheckLockConcept,
     setPriceCheckLockConcept,
+    parkingConcept,
+    setParkingConcept,
     isSettingsModalOpen,
     closeSettingsModal,
     showFlowIndicator,
@@ -297,6 +311,7 @@ export function SettingsModal() {
   // Collapsible sections — Select customer open by default; shortcuts, developer, design system collapsed
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     userFlow: true,
+    parking: true,
     erp: true,
     shortcuts: false,
     selectCustomer: true,
@@ -637,6 +652,8 @@ export function SettingsModal() {
 
   const customerSearchDescriptions: Record<string, string> = { A: s.customerSearchA, B: s.customerSearchB };
 
+  const parkingDescriptions: Record<string, string> = { A: s.parkingA, B: s.parkingB, C: s.parkingC };
+
   const priceCheckLockDescriptions: Record<string, string> = {
     A: s.priceCheckLockA,
     B: s.priceCheckLockB,
@@ -936,6 +953,79 @@ export function SettingsModal() {
             )}
           </div>
 
+
+          {/* ─ Parking a sale ─ */}
+          <div style={sectionCardStyle}>
+            <SectionHeader sectionKey="parking">{s.parkingHeading}</SectionHeader>
+            {expandedSections.parking && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
+                <DescText>{s.parkingDesc}</DescText>
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        lineHeight: 1.5,
+                        margin: 0,
+                      }}
+                    >
+                      {s.parkingHeading}: {parkingConcept}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {parkingDescriptions[parkingConcept]}
+                    </p>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: 'var(--secondary)',
+                      borderRadius: 999,
+                      padding: 4,
+                      width: 260,
+                      flexShrink: 0,
+                      position: 'relative',
+                    }}
+                  >
+                    {(['A', 'B', 'C'] as const).map(concept => (
+                      <button
+                        key={concept}
+                        onClick={() => setParkingConcept(concept)}
+                        style={{
+                          flex: 1,
+                          padding: '4px 12px',
+                          fontSize: 'var(--text-sm)',
+                          fontWeight: 'var(--font-weight-semibold)',
+                          fontFamily: "'Montserrat', sans-serif",
+                          borderRadius: 999,
+                          border: 'none',
+                          cursor: 'pointer',
+                          background: parkingConcept === concept ? 'var(--card)' : 'transparent',
+                          color: parkingConcept === concept ? 'var(--primary)' : 'var(--muted-foreground)',
+                          boxShadow: parkingConcept === concept ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
+                          transition: 'all 0.15s ease-in-out',
+                          zIndex: 1,
+                        }}
+                      >
+                        {concept}
+                      </button>
+                    ))}
+                  </div>
+                </RowCard>
+              </div>
+            )}
+          </div>
 
           {/* ─ ERP System Selection ─ */}
           <div style={sectionCardStyle}>
