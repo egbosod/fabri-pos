@@ -4,7 +4,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ERP_SCENARIOS, lockConceptForFlow } from '../utils/settingsUrl';
 import { useCopyShareLink } from '../hooks/useCopyShareLink';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Settings } from 'lucide-react';
 
 function EgFabriLogoWhite1() {
   return (
@@ -99,7 +99,7 @@ function UserIcon() {
 }
 
 function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void; isProfileOpen?: boolean; currentUser?: string }) {
-  const { switchUserFlow, setSwitchUserFlow, setPriceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
+  const { switchUserFlow, setSwitchUserFlow, setPriceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario, openSettingsModal } = useSettings();
   const [isFlowMenuOpen, setIsFlowMenuOpen] = useState(false);
   const flowMenuRef = useRef<HTMLDivElement>(null);
   const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
@@ -218,6 +218,16 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
             title="Copy share link"
           >
             {copyStatus === 'copied' ? <Check size={14} strokeWidth={3} /> : <Copy size={14} strokeWidth={3} />}
+          </button>
+          {/* Inverse of the copy button (white circle, pink icon) so the two read as different actions. */}
+          <button
+            type="button"
+            onClick={openSettingsModal}
+            className="bg-white text-[#FF00FF] w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Open prototype settings"
+            title="Prototype settings"
+          >
+            <Settings size={14} strokeWidth={2.5} />
           </button>
         </div>
       )}
