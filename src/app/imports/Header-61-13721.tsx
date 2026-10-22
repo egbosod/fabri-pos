@@ -210,15 +210,26 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
               </div>
             )}
           </div>
-          <button
-            type="button"
-            onClick={copyShareLink}
-            className="bg-[#FF00FF] text-white w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
-            aria-label="Copy share link"
-            title="Copy share link"
-          >
-            {copyStatus === 'copied' ? <Check size={14} strokeWidth={3} /> : <Copy size={14} strokeWidth={3} />}
-          </button>
+          <div className="relative group">
+            <button
+              type="button"
+              onClick={copyShareLink}
+              className="bg-[#FF00FF] text-white w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+              aria-label="Copy share link"
+              aria-describedby="copy-share-link-tooltip"
+            >
+              {copyStatus === 'copied' ? <Check size={14} strokeWidth={3} /> : <Copy size={14} strokeWidth={3} />}
+            </button>
+            {/* Pink prototype tooltip, English-only like the pink toasts. Shown on hover and keyboard focus. */}
+            <div
+              id="copy-share-link-tooltip"
+              role="tooltip"
+              className="pointer-events-none absolute left-1/2 top-[calc(100%+8px)] z-[9999] -translate-x-1/2 whitespace-nowrap rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4] opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+            >
+              <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
+              Prototype settings stored for receiver
+            </div>
+          </div>
           {/* Inverse of the copy button (white circle, pink icon) so the two read as different actions. */}
           <button
             type="button"

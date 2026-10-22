@@ -185,7 +185,7 @@ const MOCK_CONTACTS = [
 
 // ─── Scan Card Button ─────────────────────────────────────────────────────────
 
-function SpecificNumberToggle({ checked, onChange, label, asButton }: { checked: boolean; onChange: (v: boolean) => void; label?: string; asButton?: boolean }) {
+function SpecificNumberToggle({ checked, onChange, label, asButton, disabled }: { checked: boolean; onChange: (v: boolean) => void; label?: string; asButton?: boolean; disabled?: boolean }) {
   const { t } = useLanguage();
   const [hover, setHover] = useState(false);
   // Prototype D: a one-off secondary button. It turns specific-number mode on and returns to its default look.
@@ -195,13 +195,16 @@ function SpecificNumberToggle({ checked, onChange, label, asButton }: { checked:
       <div style={{ padding: '8px 14px', flexShrink: 0 }}>
         <button
           onClick={() => { onChange(true); setHover(false); }}
+          disabled={disabled}
           onMouseDown={e => e.preventDefault()}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
           style={{
-            background: hover ? '#F1F0F1' : '#FFFFFF',
-            color: '#101115',
-            border: '1px solid #C7C7C8',
+            // Disabled look matches the disabled Confirm button (secondary fill, 60% opacity); the border stays transparent so the size doesn't change.
+            background: disabled ? 'var(--secondary)' : hover ? '#F1F0F1' : '#FFFFFF',
+            color: disabled ? 'var(--secondary-foreground)' : '#101115',
+            border: `1px solid ${disabled ? 'transparent' : '#C7C7C8'}`,
+            opacity: disabled ? 0.6 : 1,
             borderRadius: 5,
             height: 40,
             padding: '6px 13px',
@@ -210,7 +213,7 @@ function SpecificNumberToggle({ checked, onChange, label, asButton }: { checked:
             fontSize: 13,
             lineHeight: 1.75,
             whiteSpace: 'nowrap',
-            cursor: 'pointer',
+            cursor: disabled ? 'not-allowed' : 'pointer',
           }}
         >
           {label ?? t('specificCustomerNumber')}
@@ -497,7 +500,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
         </div>
       )}
       {rows.length === 0 ? (
-        <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
+        <div style={{ padding: emptyText ? '4px 28px 16px' : '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
           {emptyText ?? t(suggestSpecificNumber ? 'noCustomersFoundTrySpecific' : 'noCustomersFound')}
         </div>
       ) : bsTable ? (
@@ -639,7 +642,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
       )}
       {rows.length === 0 ? (
         (suggestSpecificNumber || emptyText) && (
-          <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
+          <div style={{ padding: emptyText ? '4px 28px 16px' : '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
             {emptyText ?? t('noProjectsFoundTrySpecific')}
           </div>
         )
@@ -1059,6 +1062,18 @@ export function CustomerSelectionModal({
       partial ? t('syncNeedsFullNumber') : t(kind === 'customer' ? 'customerNotFoundInAx' : 'projectNotFoundInAx').replace('{number}', q),
     );
     return false;
+  };
+  // Prototype D: the modal puts focus in the customer field on open. That automatic focus must not
+  // open the dropdown; it opens once the user types (or focuses the field themselves).
+  const openedAt = useRef(Date.now());
+  const isAutoFocus = () => isFlowD(switchUserFlow) && Date.now() - openedAt.current < 500;
+  // The AX sync button stays disabled until the search is either a single hit, or no hit for a digits-only query.
+  const canSync = (hits: number, query: string) => hits === 1 || (hits === 0 && /^\d+$/.test(query.trim()));
+  // One hit in the list: the button fakes a force sync from AX. Green toast, list and selection stay as they are.
+  const fakeForceSync = (kind: 'customer' | 'project', hits: { length: number }, number: string | undefined): boolean => {
+    if (!axSync || hits.length !== 1 || !number) return false;
+    posToast.success(t(kind === 'customer' ? 'customerSyncedFromAx' : 'projectSyncedFromAx').replace('{number}', number));
+    return true;
   };
   const customerToggleLabel = isFlowD(switchUserFlow)
     ? t(axSync ? 'syncCustomerFromAx' : 'getCustomerWithSpecificNumber')
@@ -1795,9 +1810,10 @@ export function CustomerSelectionModal({
               {hasSpecificNumber && customerSearchConcept === 'B' && !syncWording && !rowSync && (
                 <SpecificNumberToggle
                   asButton={isFlowD(switchUserFlow)}
+                  disabled={axSync && !canSync(filteredCustomers.length, customerQuery)}
                   label={customerToggleLabel}
                   checked={specificNumberOn}
-                  onChange={v => { if (v && specificLookupBlocked(customerQuery, 'specificCustomerNumberOnly')) return; if (v && axSync && !notifySynced('customer', customerQuery)) return; setSpecificNumberOn(v); setErpFetched(false); }}
+                  onChange={v => { if (v && fakeForceSync('customer', filteredCustomers, filteredCustomers[0]?.customerNumber)) return; if (v && specificLookupBlocked(customerQuery, 'specificCustomerNumberOnly')) return; if (v && axSync && !notifySynced('customer', customerQuery)) return; setSpecificNumberOn(v); setErpFetched(false); }}
                 />
               )}
             </div>
@@ -1885,7 +1901,7 @@ export function CustomerSelectionModal({
                                       setSelectedCustomer(null);
                                     }
                                   }}
-                                  onFocus={() => { cancelCustomerClose(); setCustomerOpen(true); }}
+                                  onFocus={() => { if (isAutoFocus()) return; cancelCustomerClose(); setCustomerOpen(true); }}
                                   onBlur={() => { customerBlurTimer.current = window.setTimeout(() => setCustomerOpen(false), 150); }}
                                   onKeyDown={e => {
                                     if (e.ctrlKey && e.key === '-') {
@@ -2019,7 +2035,7 @@ export function CustomerSelectionModal({
                                       setSelectedCustomer(null);
                                     }
                                   }}
-                                  onFocus={() => setCustomerOpen(true)}
+                                  onFocus={() => { if (isAutoFocus()) return; setCustomerOpen(true); }}
                                   onBlur={() => setTimeout(() => setCustomerOpen(false), 150)}
                                 />
                                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
@@ -2132,7 +2148,7 @@ export function CustomerSelectionModal({
                                       setSelectedCustomer(null);
                                     }
                                   }}
-                                  onFocus={() => setCustomerOpen(true)}
+                                  onFocus={() => { if (isAutoFocus()) return; setCustomerOpen(true); }}
                                   onBlur={() => setTimeout(() => setCustomerOpen(false), 150)}
                                 />
                                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
@@ -2801,9 +2817,11 @@ export function CustomerSelectionModal({
         ) : undefined) : hasSpecificNumber && !rowSync && customerSearchConcept === 'A' ? (
           <SpecificNumberToggle
             asButton={isFlowD(switchUserFlow)}
+            disabled={axSync && !canSync(filteredCustomers.length, customerQuery)}
             label={customerToggleLabel}
             checked={specificNumberOn}
             onChange={v => {
+              if (v && fakeForceSync('customer', filteredCustomers, filteredCustomers[0]?.customerNumber)) return;
               if (v && specificLookupBlocked(customerQuery, 'specificCustomerNumberOnly')) return;
               if (v && axSync && !notifySynced('customer', customerQuery)) return;
               setSpecificNumberOn(v);
@@ -2838,9 +2856,10 @@ export function CustomerSelectionModal({
           ) : undefined) : hasSpecificProject && !rowSync ? (
             <SpecificNumberToggle
               asButton={isFlowD(switchUserFlow)}
+              disabled={axSync && !canSync(filteredProjects.length, projectSearch)}
               label={isFlowD(switchUserFlow) ? t(axSync ? 'syncProjectFromAx' : 'getProjectWithSpecificNumber') : t('specificProjectNumber')}
               checked={specificProjectOn}
-              onChange={v => { if (v && specificLookupBlocked(projectSearch, 'specificProjectNumberOnly')) return; if (v && axSync && !notifySynced('project', projectSearch)) return; setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
+              onChange={v => { if (v && fakeForceSync('project', filteredProjects, filteredProjects[0]?.nr)) return; if (v && specificLookupBlocked(projectSearch, 'specificProjectNumberOnly')) return; if (v && axSync && !notifySynced('project', projectSearch)) return; setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
             />
           ) : undefined;
           const expiredSlot = showExpiredProjectsToggle && (!projectSpecificMode || isFlowA(switchUserFlow)) ? (
