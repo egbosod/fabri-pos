@@ -7,6 +7,7 @@ import { useSettings } from '../contexts/SettingsContext';
 import { usePOS } from '../contexts/POSContext';
 import { LogOut, KeyRound, Lock, Pencil } from 'lucide-react';
 import { setLoginToken } from '../utils/loginToken';
+import { isFlowA } from '../utils/settingsUrl';
 
 // --- Assets ---
 
@@ -212,7 +213,7 @@ function UserOption({ name, isExpanded, authMode, setAuthMode, onClick, onUserSw
           {name}
         </button>
         
-        {switchUserFlow === 'A' ? (
+        {isFlowA(switchUserFlow) ? (
           <div className="flex flex-col gap-[10px] w-full pl-2">
             {authMode === 'selection' && (
               <>

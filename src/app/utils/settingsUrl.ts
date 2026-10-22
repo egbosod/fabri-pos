@@ -2,7 +2,15 @@
 // Keeping the mapping in one spec array (SHARED_SETTINGS) means readSettingsFromURL and
 // buildShareURL can never drift out of sync with each other.
 
-export type SwitchUserFlow = 'A' | 'B' | 'C';
+// D starts as a copy of A (see isFlowA) and diverges in the "Get customer" part of the customer modal.
+// X starts as a copy of D: the place where improvements are collected.
+export type SwitchUserFlow = 'A' | 'B' | 'C' | 'D' | 'X';
+/** Prototype D is a copy of A: every A behaviour applies to D unless explicitly branched. */
+export const isFlowA = (flow: SwitchUserFlow): boolean => flow === 'A' || flow === 'D' || flow === 'X';
+/** Prototype X is a copy of D: every D behaviour applies to X unless explicitly branched. */
+export const isFlowD = (flow: SwitchUserFlow): boolean => flow === 'D' || flow === 'X';
+/** Price-check lock concept paired with a flow (D reuses A's). */
+export const lockConceptForFlow = (flow: SwitchUserFlow): PriceCheckLockConcept => (flow === 'D' || flow === 'X' ? 'A' : flow);
 // Where the Hovedordre trigger lives. Independent of SwitchUserFlow.
 //   A = action bar only   B = sidebar, shown disabled up front   C = sidebar, only once a customer exists
 export type HovedordrePlacement = 'A' | 'B' | 'C';
@@ -25,7 +33,6 @@ export interface SharedSettings {
   customerSearchConcept: CustomerSearchConcept;
   priceCheckLockConcept: PriceCheckLockConcept;
   showFlowIndicator: boolean;
-  showDebugBanner: boolean;
   allowCreateProject: boolean;
   allowCreateContactPerson: boolean;
   showExpiredProjectsToggle: boolean;
@@ -46,7 +53,6 @@ export const DEFAULT_SETTINGS: SharedSettings = {
   customerSearchConcept: 'A',
   priceCheckLockConcept: 'A',
   showFlowIndicator: true,
-  showDebugBanner: false,
   allowCreateProject: false,
   allowCreateContactPerson: false,
   showExpiredProjectsToggle: false,
@@ -92,7 +98,7 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'switchUserFlow',
     param: 'flow',
-    parse: makeEnumParser<SwitchUserFlow>(['A', 'B', 'C']),
+    parse: makeEnumParser<SwitchUserFlow>(['A', 'B', 'C', 'D', 'X']),
     serialize: v => v,
   },
   {
@@ -122,12 +128,6 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'showFlowIndicator',
     param: 'flowindicator',
-    parse: parseBoolean,
-    serialize: serializeBoolean,
-  },
-  {
-    key: 'showDebugBanner',
-    param: 'debug',
     parse: parseBoolean,
     serialize: serializeBoolean,
   },

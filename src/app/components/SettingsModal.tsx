@@ -74,6 +74,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
 
     developerHeading: 'Utvikler',
     selectCustomerHeading: 'Velg kunde',
+    selectCustomerToggleAll: 'Slå alt i denne seksjonen av/på',
     allowCreateProject: 'Tillat oppretting av nytt prosjekt',
     allowCreateProjectDesc: 'Vis en pluss-knapp ved «Prosjekt» i kundevalg for å opprette nye prosjekter.',
     allowCreateContactPerson: 'Tillat oppretting av ny kontaktperson',
@@ -82,8 +83,6 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     showExpiredProjectsToggleDesc: 'Vis en bryter over søkeresultatlisten for «Prosjekt» i kundevalg som tar med utgåtte prosjekter.',
     showPasswordOption: 'Vis «Endre passord»-alternativ',
     showPasswordOptionDesc: 'Vis et passordalternativ i modalen for brukerbytte.',
-    showDebugBanner: 'Vis debug-banner',
-    showDebugBannerDesc: 'Vis overlegg for miljødebugging (kan også slås av og på med D).',
 
     wcagHeading: 'Designsystem',
     brandSync: 'BrandSync',
@@ -161,6 +160,7 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
 
     developerHeading: 'Developer',
     selectCustomerHeading: 'Select customer',
+    selectCustomerToggleAll: 'Toggle everything in this section on or off',
     allowCreateProject: 'Allow creating new project',
     allowCreateProjectDesc: 'Show a plus button next to "Project" in customer selection to create new projects.',
     allowCreateContactPerson: 'Allow creating new contact person',
@@ -169,8 +169,6 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     showExpiredProjectsToggleDesc: 'Show a toggle above the "Project" search result list in customer selection that includes expired projects.',
     showPasswordOption: 'Show "Change password" option',
     showPasswordOptionDesc: 'Show a password option in the user switch modal.',
-    showDebugBanner: 'Show debug banner',
-    showDebugBannerDesc: 'Display the environment debug overlay (also toggled with the D key).',
 
     wcagHeading: 'Design System',
     brandSync: 'BrandSync',
@@ -257,8 +255,6 @@ export function SettingsModal() {
     closeSettingsModal,
     showFlowIndicator,
     setShowFlowIndicator,
-    showDebugBanner,
-    setShowDebugBanner,
     allowCreateProject,
     setAllowCreateProject,
     allowCreateContactPerson,
@@ -409,48 +405,74 @@ export function SettingsModal() {
     sectionKey,
     children,
     icon,
+    masterToggle,
   }: {
     sectionKey: string;
     children: React.ReactNode;
     icon?: React.ReactNode;
+    /** Optional toggle-all control shown before the chevron, for sections
+     * made up of several independent toggles. */
+    masterToggle?: { checked: boolean; onChange: () => void; label: string };
   }) => {
     const isExpanded = expandedSections[sectionKey];
     return (
-      <button
-        onClick={() => toggleSection(sectionKey)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          background: 'none',
-          border: 'none',
-          cursor: 'pointer',
-          padding: 0,
-          textAlign: 'left',
-          width: '100%',
-        }}
-      >
-        {icon && (
-          <span style={{ color: 'var(--muted-foreground)', display: 'flex', alignItems: 'center' }}>
-            {icon}
-          </span>
-        )}
-        <span
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, width: '100%' }}>
+        <button
+          onClick={() => toggleSection(sectionKey)}
           style={{
-            fontFamily: "'Montserrat', sans-serif",
-            fontSize: 'var(--text-lg)',
-            fontWeight: 'var(--font-weight-semibold)',
-            color: 'var(--foreground)',
-            lineHeight: 1.5,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+            textAlign: 'left',
             flex: 1,
+            minWidth: 0,
           }}
         >
-          {children}
-        </span>
-        <span style={{ color: 'var(--muted-foreground)', display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+          {icon && (
+            <span style={{ color: 'var(--muted-foreground)', display: 'flex', alignItems: 'center' }}>
+              {icon}
+            </span>
+          )}
+          <span
+            style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: 'var(--text-lg)',
+              fontWeight: 'var(--font-weight-semibold)',
+              color: 'var(--foreground)',
+              lineHeight: 1.5,
+              flex: 1,
+            }}
+          >
+            {children}
+          </span>
+        </button>
+        {masterToggle && (
+          <Toggle
+            checked={masterToggle.checked}
+            onChange={masterToggle.onChange}
+            ariaLabel={masterToggle.label}
+          />
+        )}
+        <button
+          onClick={() => toggleSection(sectionKey)}
+          aria-label={isExpanded ? 'Collapse' : 'Expand'}
+          style={{
+            color: 'var(--muted-foreground)',
+            display: 'flex',
+            alignItems: 'center',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: 0,
+          }}
+        >
           {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        </span>
-      </button>
+        </button>
+      </div>
     );
   };
 
@@ -488,9 +510,18 @@ export function SettingsModal() {
     </div>
   );
 
-  const Toggle = ({ checked, onChange }: { checked: boolean; onChange: () => void }) => (
+  const Toggle = ({
+    checked,
+    onChange,
+    ariaLabel,
+  }: {
+    checked: boolean;
+    onChange: () => void;
+    ariaLabel?: string;
+  }) => (
     <button
       onClick={onChange}
+      aria-label={ariaLabel}
       style={{
         width: 48,
         height: 24,
@@ -842,12 +873,12 @@ export function SettingsModal() {
                       background: 'var(--secondary)',
                       borderRadius: 999,
                       padding: 4,
-                      width: 200,
+                      width: 260,
                       flexShrink: 0,
                       position: 'relative',
                     }}
                   >
-                    {(['A', 'B', 'C'] as const).map(flow => (
+                    {(['A', 'B', 'C', 'D', 'X'] as const).map(flow => (
                       <button
                         key={flow}
                         onClick={() => setSwitchUserFlow(flow)}
@@ -1138,7 +1169,7 @@ export function SettingsModal() {
                       background: 'var(--secondary)',
                       borderRadius: 999,
                       padding: 4,
-                      width: 200,
+                      width: 260,
                       flexShrink: 0,
                       position: 'relative',
                     }}
@@ -1181,7 +1212,29 @@ export function SettingsModal() {
 
           {/* ─ Select customer ─ */}
           <div style={sectionCardStyle}>
-            <SectionHeader sectionKey="selectCustomer">
+            <SectionHeader
+              sectionKey="selectCustomer"
+              masterToggle={{
+                label: s.selectCustomerToggleAll,
+                checked:
+                  allowCreateProject &&
+                  allowCreateContactPerson &&
+                  showExpiredProjectsToggle &&
+                  scanCustomerCard,
+                onChange: () => {
+                  const allOn =
+                    allowCreateProject &&
+                    allowCreateContactPerson &&
+                    showExpiredProjectsToggle &&
+                    scanCustomerCard;
+                  const next = !allOn;
+                  setAllowCreateProject(next);
+                  setAllowCreateContactPerson(next);
+                  setShowExpiredProjectsToggle(next);
+                  setScanCustomerCard(next);
+                },
+              }}
+            >
               {s.selectCustomerHeading}
             </SectionHeader>
             {expandedSections.selectCustomer && (
@@ -1427,34 +1480,6 @@ export function SettingsModal() {
                   />
                 </RowCard>
 
-                <RowCard>
-                  <div>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontWeight: 'var(--font-weight-semibold)',
-                        fontSize: 'var(--text-base)',
-                        color: 'var(--foreground)',
-                        margin: 0,
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {s.showDebugBanner}
-                    </p>
-                    <p
-                      style={{
-                        fontFamily: "'Montserrat', sans-serif",
-                        fontSize: 'var(--text-sm)',
-                        color: 'var(--muted-foreground)',
-                        margin: '4px 0 0',
-                        lineHeight: 1.4,
-                      }}
-                    >
-                      {s.showDebugBannerDesc}
-                    </p>
-                  </div>
-                  <Toggle checked={showDebugBanner} onChange={() => setShowDebugBanner(!showDebugBanner)} />
-                </RowCard>
               </div>
             )}
           </div>

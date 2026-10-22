@@ -13,6 +13,7 @@ import type { VipCardData } from '../types/pos';
 import { formatAmount } from '../utils/formatAmount';
 import { posToast } from '../utils/posToast';
 import { EgList, type EgListRow, type EgListSection } from './EgList';
+import { isFlowA, isFlowD } from '../utils/settingsUrl';
 
 // ─── Interfaces ───────────────────────────────────────────────────────────────
 
@@ -184,8 +185,42 @@ const MOCK_CONTACTS = [
 
 // ─── Scan Card Button ─────────────────────────────────────────────────────────
 
-function SpecificNumberToggle({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label?: string }) {
+function SpecificNumberToggle({ checked, onChange, label, asButton, disabled }: { checked: boolean; onChange: (v: boolean) => void; label?: string; asButton?: boolean; disabled?: boolean }) {
   const { t } = useLanguage();
+  const [hover, setHover] = useState(false);
+  // Prototype D: a one-off secondary button. It turns specific-number mode on and returns to its default look.
+  // Fabri design system: Button / Secondary / Normal.
+  if (asButton) {
+    return (
+      <div style={{ padding: '8px 14px', flexShrink: 0 }}>
+        <button
+          onClick={() => { onChange(true); setHover(false); }}
+          disabled={disabled}
+          onMouseDown={e => e.preventDefault()}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          style={{
+            // Disabled look matches the disabled Confirm button (secondary fill, 60% opacity); the border stays transparent so the size doesn't change.
+            background: disabled ? 'var(--secondary)' : hover ? '#F1F0F1' : '#FFFFFF',
+            color: disabled ? 'var(--secondary-foreground)' : '#101115',
+            border: `1px solid ${disabled ? 'transparent' : '#C7C7C8'}`,
+            opacity: disabled ? 0.6 : 1,
+            borderRadius: 5,
+            height: 40,
+            padding: '6px 13px',
+            fontFamily: "'Montserrat', sans-serif",
+            fontWeight: 600,
+            fontSize: 13,
+            lineHeight: 1.75,
+            whiteSpace: 'nowrap',
+            cursor: disabled ? 'not-allowed' : 'pointer',
+          }}
+        >
+          {label ?? t('specificCustomerNumber')}
+        </button>
+      </div>
+    );
+  }
   return (
     <label
       onMouseDown={e => e.preventDefault()}
@@ -414,7 +449,7 @@ const AX_CATEGORY_CODES: Record<string, string> = {
   Tømrere: '237',
 };
 
-function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, awaitingInput, suggestSpecificNumber, bsTable = false, axColumns = false, rowAction }: {
+function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, awaitingInput, suggestSpecificNumber, emptyText, bsTable = false, axColumns = false, rowAction }: {
   rect: DOMRect | null;
   modalRight: number | null;
   rows: DropdownCustomer[];
@@ -425,6 +460,8 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
   panelRef?: React.Ref<HTMLDivElement>;
   awaitingInput?: boolean;
   suggestSpecificNumber?: boolean;
+  /** Overrides the empty-state text (Prototype D on AX). */
+  emptyText?: string;
   /** BrandSync table styling: semantic table, fixed header, dividers, hover row (Settings → BrandSync, ERP AX). */
   bsTable?: boolean;
   /** AX column content and structure in the plain list styling (Prototypes A and B). */
@@ -463,8 +500,8 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
         </div>
       )}
       {rows.length === 0 ? (
-        <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
-          {t(suggestSpecificNumber ? 'noCustomersFoundTrySpecific' : 'noCustomersFound')}
+        <div style={{ padding: emptyText ? '4px 28px 16px' : '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
+          {emptyText ?? t(suggestSpecificNumber ? 'noCustomersFoundTrySpecific' : 'noCustomersFound')}
         </div>
       ) : bsTable ? (
       /* BrandSync Table: real <table>, header fixed while rows scroll, dividers
@@ -492,11 +529,14 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
                 onMouseEnter={() => onHover(i)}
                 onMouseLeave={() => onHover(null)}
                 onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
-                style={{ height: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s' }}
+                style={{ height: 'auto', minHeight: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s' }}
               >
-                {[r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()].map((val, ci) => (
-                  <td key={ci} style={{ padding: '0 12px', textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
-                ))}
+                {[r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()].map((val, ci) => {
+                  const wraps = ci === 1 || ci === 3 || ci === 4;
+                  return (
+                    <td key={ci} style={{ padding: wraps ? '8px 12px' : '0 12px', textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: wraps ? 'clip' : 'ellipsis', whiteSpace: wraps ? 'normal' : 'nowrap', wordBreak: wraps ? 'break-word' : undefined, borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
+                  );
+                })}
                 {rowAction && <td style={{ padding: '0 12px', textAlign: 'right', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></td>}
               </tr>
             ))}
@@ -505,7 +545,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
       </div>
       ) : (
       <>
-      <div style={{ display: 'grid', gridTemplateColumns: (axColumns ? CUSTOMER_COLS_AX : CUSTOMER_COLS) + (rowAction ? ' 170px' : ''), padding: '0 12px', height: HEADER_H, overflowY: 'hidden', scrollbarGutter: 'stable', alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: (axColumns ? CUSTOMER_COLS_AX : CUSTOMER_COLS) + (rowAction ? ' 170px' : ''), padding: '0 12px', height: HEADER_H, overflowY: 'hidden', alignItems: 'center', flexShrink: 0, borderBottom: '1px solid var(--border)', background: 'var(--card)' }}>
         {(axColumns
           ? [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')]
           : [t('tableHeaderNumber'), t('tableHeaderName'), t('tableHeaderCategory'), t('tableHeaderAddress'), t('tableHeaderPostalCodeCity')]
@@ -514,15 +554,15 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
         ))}
         {rowAction && <span />}
       </div>
-      <div style={{ overflowY: 'auto', scrollbarGutter: 'stable', flex: 1 }}>
+      <div style={{ overflowY: 'auto', flex: 1 }}>
         {rows.map((r, i) => (
           <div
             key={r.id}
             style={{
               display: 'grid',
               gridTemplateColumns: (axColumns ? CUSTOMER_COLS_AX : CUSTOMER_COLS) + (rowAction ? ' 170px' : ''),
-              padding: '0 12px',
-              height: ROW_H,
+              padding: '8px 12px',
+              minHeight: ROW_H,
               alignItems: 'center',
               borderTop: i === 0 ? 'none' : '1px solid var(--border)',
               background: hoveredIdx === i ? 'color-mix(in srgb, var(--primary) 8%, transparent)' : 'var(--card)',
@@ -536,9 +576,12 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
             {(axColumns
               ? [r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()]
               : [r.customerNumber, r.name, AX_CATEGORY_CODES[r.category || ''] ?? r.category ?? '', r.street || '', `${r.postalCode || ''} ${(r.city || '').toUpperCase()}`.trim()]
-            ).map((val, ci) => (
-              <span key={ci} style={{ textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
-            ))}
+            ).map((val, ci) => {
+              const wraps = ci === 1 || ci === 3 || ci === 4;
+              return (
+                <span key={ci} style={{ textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: wraps ? 'clip' : 'ellipsis', whiteSpace: wraps ? 'normal' : 'nowrap', wordBreak: wraps ? 'break-word' : undefined, paddingRight: 8 }}>{val}</span>
+              );
+            })}
             {rowAction && <span style={{ display: 'flex', justifyContent: 'flex-end' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></span>}
           </div>
         ))}
@@ -551,7 +594,7 @@ function CustomerDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, on
 
 // ─── Project Dropdown Table ───────────────────────────────────────────────────
 
-function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, suggestSpecificNumber, bsTable = false, axColumns = false, rowAction }: {
+function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onSelect, topSlot, panelRef, suggestSpecificNumber, emptyText, bsTable = false, axColumns = false, rowAction }: {
   rect: DOMRect | null;
   modalRight: number | null;
   rows: Project[];
@@ -561,6 +604,8 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
   topSlot?: React.ReactNode;
   panelRef?: React.Ref<HTMLDivElement>;
   suggestSpecificNumber?: boolean;
+  /** Overrides the empty-state text (Prototype D on AX). */
+  emptyText?: string;
   /** BrandSync table styling, same as the customer list (Settings → BrandSync, ERP AX). */
   bsTable?: boolean;
   /** AX column content and structure in the plain list styling (Prototypes A and B). */
@@ -596,9 +641,9 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
         </div>
       )}
       {rows.length === 0 ? (
-        suggestSpecificNumber && (
-          <div style={{ padding: '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
-            {t('noProjectsFoundTrySpecific')}
+        (suggestSpecificNumber || emptyText) && (
+          <div style={{ padding: emptyText ? '4px 28px 16px' : '4px 14px 16px', fontSize: 'var(--text-base)', color: 'var(--muted-foreground)' }}>
+            {emptyText ?? t('noProjectsFoundTrySpecific')}
           </div>
         )
       ) : bsTable ? (
@@ -624,10 +669,10 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
                 onMouseEnter={() => onHover(i)}
                 onMouseLeave={() => onHover(null)}
                 onMouseDown={(e) => { e.preventDefault(); onSelect(r); }}
-                style={{ height: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s', opacity: isExpired(r.utlopsdato) ? 0.55 : 1 }}
+                style={{ height: ROW_H, cursor: 'pointer', background: hoveredIdx === i ? 'var(--accent)' : 'var(--card)', transition: 'background 0.07s' }}
               >
                 {[r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, (r.postnr || r.sted ? `${r.postnr}, ${r.sted.toUpperCase()}` : ''), r.utlopsdato.replace(/\./g, '/')].map((val, ci) => (
-                  <td key={ci} style={{ padding: '0 12px', textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
+                  <td key={ci} style={{ padding: '0 12px', textAlign: 'left', fontSize: 'var(--text-base)', color: ci === 5 && isExpired(r.utlopsdato) ? 'var(--destructive)' : 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}>{val}</td>
                 ))}
                 {rowAction && <td style={{ padding: '0 12px', textAlign: 'right', borderTop: i === 0 ? 'none' : '1px solid var(--border)' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></td>}
               </tr>
@@ -660,7 +705,6 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
               background: hoveredIdx === i ? 'color-mix(in srgb, var(--primary) 8%, transparent)' : 'var(--card)',
               cursor: 'pointer',
               transition: 'background 0.07s',
-              opacity: isExpired(r.utlopsdato) ? 0.55 : 1,
             }}
             onMouseEnter={() => onHover(i)}
             onMouseLeave={() => onHover(null)}
@@ -670,7 +714,7 @@ function ProjectDropdownTable({ rect, modalRight, rows, hoveredIdx, onHover, onS
               ? [r.nr, r.ekstNr, r.navn.toUpperCase(), r.adresse, (r.postnr || r.sted ? `${r.postnr}, ${r.sted.toUpperCase()}` : ''), r.utlopsdato.replace(/\./g, '/')]
               : [r.nr, r.navn, AX_CATEGORY_CODES[r.kategori] ?? r.kategori, r.adresse, (r.postnr || r.sted ? `${r.postnr}, ${r.sted.toUpperCase()}` : '')]
             ).map((val, ci) => (
-              <span key={ci} style={{ textAlign: 'left', fontSize: 'var(--text-base)', color: 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
+              <span key={ci} style={{ textAlign: 'left', fontSize: 'var(--text-base)', color: axColumns && ci === 5 && isExpired(r.utlopsdato) ? 'var(--destructive)' : 'var(--foreground)', lineHeight: 1.38, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', paddingRight: 8 }}>{val}</span>
             ))}
             {rowAction && <span style={{ display: 'flex', justifyContent: 'flex-end' }}><RowActionButton label={rowAction.label} onClick={rowAction.onClick} /></span>}
           </div>
@@ -993,9 +1037,49 @@ export function CustomerSelectionModal({
   // Prototype C on AX words the toggles as "Sync" instead of "Specific number".
   const syncWording = erpScenario === 'AX' && switchUserFlow === 'C';
   // Aspect4 words the customer toggle as an action: Prototype C and A on Aspect4 DK. AX always says "Get customer".
-  const customerToggleLabel = isAspect4 && switchUserFlow === 'C'
+  // Prototype D: the "Get … with specific number" buttons only look up numbers. Letters or words in the
+  // field give no hit, so explain why in a toast instead of switching mode.
+  const specificLookupBlocked = (query: string, messageKey: 'specificCustomerNumberOnly' | 'specificProjectNumberOnly') => {
+    if (!isFlowD(switchUserFlow) || !/\D/.test(query.trim())) return false;
+    posToast.warning(t(messageKey));
+    return true;
+  };
+  // Prototype D on AX: AX and the local POS only talk through the replicator, so new or edited
+  // customers/projects are invisible locally. The button is a force sync from AX.
+  const axSync = isFlowD(switchUserFlow) && erpScenario === 'AX';
+  // Returns true when the sync found the exact number. Partial or unknown numbers give no hit.
+  const notifySynced = (kind: 'customer' | 'project', query: string): boolean => {
+    const q = query.trim();
+    const numbers = kind === 'customer'
+      ? [...mockCustomers, ...erpOnlyCustomers].map(c => c.customerNumber)
+      : [...mockProjects, ...erpOnlyProjects].map(p => p.nr);
+    if (numbers.includes(q)) {
+      posToast.success(t(kind === 'customer' ? 'customerSyncedFromAx' : 'projectSyncedFromAx').replace('{number}', q));
+      return true;
+    }
+    const partial = q === '' || numbers.some(n => n.startsWith(q));
+    posToast[partial ? 'warning' : 'error'](
+      partial ? t('syncNeedsFullNumber') : t(kind === 'customer' ? 'customerNotFoundInAx' : 'projectNotFoundInAx').replace('{number}', q),
+    );
+    return false;
+  };
+  // Prototype D: the modal puts focus in the customer field on open. That automatic focus must not
+  // open the dropdown; it opens once the user types (or focuses the field themselves).
+  const openedAt = useRef(Date.now());
+  const isAutoFocus = () => isFlowD(switchUserFlow) && Date.now() - openedAt.current < 500;
+  // The AX sync button stays disabled until the search is either a single hit, or no hit for a digits-only query.
+  const canSync = (hits: number, query: string) => hits === 1 || (hits === 0 && /^\d+$/.test(query.trim()));
+  // One hit in the list: the button fakes a force sync from AX. Green toast, list and selection stay as they are.
+  const fakeForceSync = (kind: 'customer' | 'project', hits: { length: number }, number: string | undefined): boolean => {
+    if (!axSync || hits.length !== 1 || !number) return false;
+    posToast.success(t(kind === 'customer' ? 'customerSyncedFromAx' : 'projectSyncedFromAx').replace('{number}', number));
+    return true;
+  };
+  const customerToggleLabel = isFlowD(switchUserFlow)
+    ? t(axSync ? 'syncCustomerFromAx' : 'getCustomerWithSpecificNumber')
+    : isAspect4 && switchUserFlow === 'C'
     ? t('getCustomerWithSpecificNumber')
-    : (erpScenario === 'Aspect4 DK' && switchUserFlow === 'A') || erpScenario === 'AX'
+    : (erpScenario === 'Aspect4 DK' && isFlowA(switchUserFlow)) || erpScenario === 'AX'
       ? t('getCustomer')
       : undefined;
   // Prototype B on AX: same fetch/sync concept, but the button sits in the result row's last column.
@@ -1202,10 +1286,17 @@ export function CustomerSelectionModal({
     customerQuery !== '' &&
     (customerSearchConcept === 'A' || erpFetched);
 
-  const filteredCustomers = customerQuery === ''
-    ? []
+  // Prototype D on AX: re-entering a field that holds a selection lists that selection as the hit,
+  // instead of searching for the "Name (123)" display text and finding nothing.
+  const customerIsSelected = axSync && !!selectedCustomer && customerQuery === `${selectedCustomer.name} (${selectedCustomer.customerNumber})`;
+  const filteredCustomers = customerIsSelected
+    ? [selectedCustomer as Customer]
+    : customerQuery === ''
+    ? (axSync ? mockCustomers : [])
     : specificMode
-      ? (erpLookupReady ? matchesSearch(erpOnlyCustomers) : [])
+      ? (erpLookupReady
+          ? (axSync ? [...erpOnlyCustomers, ...mockCustomers].filter(c => c.customerNumber === customerQuery.trim()) : matchesSearch(erpOnlyCustomers))
+          : [])
       : matchesSearch(mockCustomers);
 
   // Same toggle for projects: look up in the external ERP, fetched as you type.
@@ -1214,8 +1305,11 @@ export function CustomerSelectionModal({
   const localProjects = showExpiredProjectsToggle && includeExpired
     ? [...mockProjects.filter(p => isExpired(p.utlopsdato)), ...mockProjects.filter(p => !isExpired(p.utlopsdato))]
     : mockProjects.filter(p => !isExpired(p.utlopsdato));
-  const filteredProjects = projectSpecificMode
-    ? (projectSearch ? erpOnlyProjects.filter(p => p.nr.includes(projectSearch) || p.navn.toLowerCase().includes(projectSearch.toLowerCase())) : [])
+  const projectIsSelected = axSync && !!selectedProject && projectSearch === selectedProject.navn;
+  const filteredProjects = projectIsSelected
+    ? [selectedProject as Project]
+    : projectSpecificMode
+    ? (axSync ? [...erpOnlyProjects, ...mockProjects].filter(p => p.nr === projectSearch.trim()) : projectSearch ? erpOnlyProjects.filter(p => p.nr.includes(projectSearch) || p.navn.toLowerCase().includes(projectSearch.toLowerCase())) : [])
     : projectSearch
     ? localProjects.filter(p =>
         p.navn.toLowerCase().includes(projectSearch.toLowerCase()) ||
@@ -1260,6 +1354,8 @@ export function CustomerSelectionModal({
   const handleCustomerSelect = (c: Customer) => {
     setSelectedCustomer(c);
     setCustomerSearch(`${c.name} (${c.customerNumber})`);
+    // Prototype D on AX: after a sync + pick, go back to normal search so a new lookup is possible.
+    if (axSync) { setSpecificNumberOn(false); setErpFetched(false); }
     setCustomerOpen(false);
     setHoveredCustomer(null);
   };
@@ -1267,6 +1363,7 @@ export function CustomerSelectionModal({
   const handleProjectSelect = (p: Project) => {
     setSelectedProject(p);
     setProjectSearch(p.navn);
+    if (axSync) setSpecificProjectOn(false);
     setProjectOpen(false);
     setHoveredProject(null);
   };
@@ -1296,7 +1393,7 @@ export function CustomerSelectionModal({
 
   const handleConfirm = () => {
     // Prototype A keeps Confirm clickable and explains what is missing in a toast.
-    if (switchUserFlow === 'A') {
+    if (isFlowA(switchUserFlow)) {
       const missing = firstMissingMandatory();
       if (missing) {
         posToast.error(missing);
@@ -1712,9 +1809,11 @@ export function CustomerSelectionModal({
 
               {hasSpecificNumber && customerSearchConcept === 'B' && !syncWording && !rowSync && (
                 <SpecificNumberToggle
+                  asButton={isFlowD(switchUserFlow)}
+                  disabled={axSync && !canSync(filteredCustomers.length, customerQuery)}
                   label={customerToggleLabel}
                   checked={specificNumberOn}
-                  onChange={v => { setSpecificNumberOn(v); setErpFetched(false); }}
+                  onChange={v => { if (v && fakeForceSync('customer', filteredCustomers, filteredCustomers[0]?.customerNumber)) return; if (v && specificLookupBlocked(customerQuery, 'specificCustomerNumberOnly')) return; if (v && axSync && !notifySynced('customer', customerQuery)) return; setSpecificNumberOn(v); setErpFetched(false); }}
                 />
               )}
             </div>
@@ -1797,12 +1896,12 @@ export function CustomerSelectionModal({
                                     setCustomerSearch(e.target.value);
                                     setCustomerOpen(true);
                                     setErpFetched(false);
-                                    if (syncWording || rowSync) setSpecificNumberOn(false);
+                                    if (syncWording || rowSync || axSync) setSpecificNumberOn(false);
                                     if (e.target.value === '') {
                                       setSelectedCustomer(null);
                                     }
                                   }}
-                                  onFocus={() => { cancelCustomerClose(); setCustomerOpen(true); }}
+                                  onFocus={() => { if (isAutoFocus()) return; cancelCustomerClose(); setCustomerOpen(true); }}
                                   onBlur={() => { customerBlurTimer.current = window.setTimeout(() => setCustomerOpen(false), 150); }}
                                   onKeyDown={e => {
                                     if (e.ctrlKey && e.key === '-') {
@@ -1838,7 +1937,7 @@ export function CustomerSelectionModal({
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
                                   placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
-                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording || rowSync) setSpecificProjectOn(false); }}
+                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording || rowSync || axSync) setSpecificProjectOn(false); if (axSync && e.target.value === '') setSelectedProject(null); }}
                                   onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
                                   onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
@@ -1936,7 +2035,7 @@ export function CustomerSelectionModal({
                                       setSelectedCustomer(null);
                                     }
                                   }}
-                                  onFocus={() => setCustomerOpen(true)}
+                                  onFocus={() => { if (isAutoFocus()) return; setCustomerOpen(true); }}
                                   onBlur={() => setTimeout(() => setCustomerOpen(false), 150)}
                                 />
                                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
@@ -1959,7 +2058,7 @@ export function CustomerSelectionModal({
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
                                   placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
-                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording || rowSync) setSpecificProjectOn(false); }}
+                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording || rowSync || axSync) setSpecificProjectOn(false); if (axSync && e.target.value === '') setSelectedProject(null); }}
                                   onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
                                   onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
@@ -2049,7 +2148,7 @@ export function CustomerSelectionModal({
                                       setSelectedCustomer(null);
                                     }
                                   }}
-                                  onFocus={() => setCustomerOpen(true)}
+                                  onFocus={() => { if (isAutoFocus()) return; setCustomerOpen(true); }}
                                   onBlur={() => setTimeout(() => setCustomerOpen(false), 150)}
                                 />
                                 <div className="opacity-50 overflow-clip relative shrink-0 size-[14px]">
@@ -2072,7 +2171,7 @@ export function CustomerSelectionModal({
                                   style={{ ...baseInputStyle, color: projectSearch ? 'var(--foreground)' : 'var(--muted-foreground)' }}
                                   value={projectSearch}
                                   placeholder={projectSpecificMode ? t('specificProjectNumberPlaceholder') : t('projectSearchPlaceholder')}
-                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording || rowSync) setSpecificProjectOn(false); }}
+                                  onChange={e => { setProjectSearch(e.target.value); setProjectOpen(true); if (syncWording || rowSync || axSync) setSpecificProjectOn(false); if (axSync && e.target.value === '') setSelectedProject(null); }}
                                   onFocus={() => { cancelProjectClose(); setProjectOpen(true); }}
                                   onBlur={() => { projectBlurTimer.current = window.setTimeout(() => setProjectOpen(false), 150); }}
                                 />
@@ -2671,7 +2770,7 @@ export function CustomerSelectionModal({
               onConfirm={handleConfirm}
               cancelText={t('cancel')}
               confirmText={t('confirm')}
-              confirmDisabled={!selectedCustomer || (switchUserFlow !== 'A' && !vipMandatoryFilled)}
+              confirmDisabled={!selectedCustomer || (!isFlowA(switchUserFlow) && !vipMandatoryFilled)}
               extraAction={vipCard ? {
                 label: t('removeVipCard'),
                 onClick: handleVipRemoveOrDismiss,
@@ -2692,8 +2791,9 @@ export function CustomerSelectionModal({
         onSelect={r => { if (r.id !== 'erp-fetch') handleCustomerSelect(r as Customer); }}
         rowAction={customerRowAction}
         panelRef={customerDropdownRef}
-        awaitingInput={customerQuery === ''}
+        awaitingInput={customerQuery === '' && !axSync}
         suggestSpecificNumber={hasSpecificNumber && !specificNumberOn}
+        emptyText={axSync && !specificNumberOn ? t('noCustomerSyncHint') : undefined}
         bsTable={brandSyncEnabled && erpScenario === 'AX'}
         axColumns={erpScenario === 'AX'}
         topSlot={showSpecificFallback ? (
@@ -2716,9 +2816,14 @@ export function CustomerSelectionModal({
           />
         ) : undefined) : hasSpecificNumber && !rowSync && customerSearchConcept === 'A' ? (
           <SpecificNumberToggle
+            asButton={isFlowD(switchUserFlow)}
+            disabled={axSync && !canSync(filteredCustomers.length, customerQuery)}
             label={customerToggleLabel}
             checked={specificNumberOn}
             onChange={v => {
+              if (v && fakeForceSync('customer', filteredCustomers, filteredCustomers[0]?.customerNumber)) return;
+              if (v && specificLookupBlocked(customerQuery, 'specificCustomerNumberOnly')) return;
+              if (v && axSync && !notifySynced('customer', customerQuery)) return;
               setSpecificNumberOn(v);
               setErpFetched(false);
               cancelCustomerClose();
@@ -2738,6 +2843,7 @@ export function CustomerSelectionModal({
         rowAction={projectRowAction}
         panelRef={projectDropdownRef}
         suggestSpecificNumber={hasSpecificProject && !specificProjectOn}
+        emptyText={axSync && !specificProjectOn ? t('noProjectSyncHint') : undefined}
         bsTable={brandSyncEnabled && erpScenario === 'AX'}
         axColumns
         topSlot={(() => {
@@ -2749,12 +2855,14 @@ export function CustomerSelectionModal({
             />
           ) : undefined) : hasSpecificProject && !rowSync ? (
             <SpecificNumberToggle
-              label={t('specificProjectNumber')}
+              asButton={isFlowD(switchUserFlow)}
+              disabled={axSync && !canSync(filteredProjects.length, projectSearch)}
+              label={isFlowD(switchUserFlow) ? t(axSync ? 'syncProjectFromAx' : 'getProjectWithSpecificNumber') : t('specificProjectNumber')}
               checked={specificProjectOn}
-              onChange={v => { setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
+              onChange={v => { if (v && fakeForceSync('project', filteredProjects, filteredProjects[0]?.nr)) return; if (v && specificLookupBlocked(projectSearch, 'specificProjectNumberOnly')) return; if (v && axSync && !notifySynced('project', projectSearch)) return; setSpecificProjectOn(v); cancelProjectClose(); setProjectOpen(true); projectSearchInputRef.current?.focus(); }}
             />
           ) : undefined;
-          const expiredSlot = showExpiredProjectsToggle && !projectSpecificMode ? (
+          const expiredSlot = showExpiredProjectsToggle && (!projectSpecificMode || isFlowA(switchUserFlow)) ? (
             <SpecificNumberToggle
               label={t('includeExpiredProjects')}
               checked={includeExpired}
@@ -2762,7 +2870,7 @@ export function CustomerSelectionModal({
             />
           ) : undefined;
           return specificSlot || expiredSlot ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: syncWording ? 'flex-start' : 'space-between', gap: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: 24 }}>
               {expiredSlot}
               {specificSlot}
             </div>

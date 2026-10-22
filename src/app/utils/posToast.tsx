@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner@2.0.3';
 import { X } from 'lucide-react';
 
@@ -15,6 +15,39 @@ const COLORS: Record<Kind, { border: string; bg: string }> = {
   warning: { border: 'var(--Orange-Orange-60, #E66F04)', bg: 'var(--Orange-Orange-98, #FFF8F3)' },
   success: { border: 'var(--Green-Green-50, #3BAF5E)',   bg: 'var(--Green-Green-98, #F0FAF2)' },
 };
+
+function CloseButton({ onClick }: { onClick: () => void }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <button
+      type="button"
+      aria-label="Close"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        flexShrink: 0,
+        width: 32,
+        height: 32,
+        borderRadius: '50%',
+        border: 'none',
+        // Nudge towards --foreground rather than swapping to another token, so
+        // the hover reads in light mode (darker) and dark mode (lighter) alike.
+        background: hovered
+          ? 'color-mix(in srgb, var(--foreground) 12%, var(--muted))'
+          : 'var(--muted)',
+        color: 'var(--foreground)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        transition: 'background 150ms ease',
+      }}
+    >
+      <X size={16} strokeWidth={1.5} />
+    </button>
+  );
+}
 
 function show(kind: Kind, message: string, duration = 2500) {
   const { border, bg } = COLORS[kind];
@@ -40,26 +73,7 @@ function show(kind: Kind, message: string, duration = 2500) {
         }}
       >
         <span>{message}</span>
-        <button
-          type="button"
-          aria-label="Close"
-          onClick={() => toast.dismiss(id)}
-          style={{
-            flexShrink: 0,
-            width: 32,
-            height: 32,
-            borderRadius: '50%',
-            border: 'none',
-            background: 'var(--muted)',
-            color: 'var(--foreground)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-          }}
-        >
-          <X size={16} strokeWidth={1.5} />
-        </button>
+        <CloseButton onClick={() => toast.dismiss(id)} />
       </div>
     ),
     { duration },

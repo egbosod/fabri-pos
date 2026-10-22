@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ERP_SCENARIOS } from '../utils/settingsUrl';
+import { ERP_SCENARIOS, lockConceptForFlow } from '../utils/settingsUrl';
 import { useCopyShareLink } from '../hooks/useCopyShareLink';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Settings } from 'lucide-react';
 
 function EgFabriLogoWhite1() {
   return (
@@ -99,7 +99,7 @@ function UserIcon() {
 }
 
 function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void; isProfileOpen?: boolean; currentUser?: string }) {
-  const { switchUserFlow, setSwitchUserFlow, setPriceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario } = useSettings();
+  const { switchUserFlow, setSwitchUserFlow, setPriceCheckLockConcept, showFlowIndicator, erpScenario, setErpScenario, openSettingsModal } = useSettings();
   const [isFlowMenuOpen, setIsFlowMenuOpen] = useState(false);
   const flowMenuRef = useRef<HTMLDivElement>(null);
   const [isErpMenuOpen, setIsErpMenuOpen] = useState(false);
@@ -148,7 +148,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
                 role="listbox"
                 className="absolute right-0 top-[calc(100%+6px)] z-[9999] bg-white rounded-[8px] shadow-lg p-2 flex flex-col gap-1.5 w-[220px]"
               >
-                {(['A', 'B', 'C'] as const).map(flow => (
+                {(['A', 'B', 'C', 'D', 'X'] as const).map(flow => (
                   <button
                     key={flow}
                     type="button"
@@ -157,7 +157,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
                     onClick={() => {
                       // Same pairing as the A/B/C keyboard shortcut.
                       setSwitchUserFlow(flow);
-                      setPriceCheckLockConcept(flow);
+                      setPriceCheckLockConcept(lockConceptForFlow(flow));
                       setIsFlowMenuOpen(false);
                     }}
                     className={`text-right text-[11px] font-semibold font-['Montserrat'] px-2 py-1 rounded-full cursor-pointer transition-colors ${
@@ -210,14 +210,35 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
               </div>
             )}
           </div>
+          <div className="relative group">
+            <button
+              type="button"
+              onClick={copyShareLink}
+              className="bg-[#FF00FF] text-white w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+              aria-label="Copy share link"
+              aria-describedby="copy-share-link-tooltip"
+            >
+              {copyStatus === 'copied' ? <Check size={14} strokeWidth={3} /> : <Copy size={14} strokeWidth={3} />}
+            </button>
+            {/* Pink prototype tooltip, English-only like the pink toasts. Shown on hover and keyboard focus. */}
+            <div
+              id="copy-share-link-tooltip"
+              role="tooltip"
+              className="pointer-events-none absolute left-1/2 top-[calc(100%+8px)] z-[9999] -translate-x-1/2 whitespace-nowrap rounded-[6px] bg-[#FF00FF] text-white px-3 py-2 shadow-lg font-['Montserrat'] text-[12px] leading-[1.4] opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-within:opacity-100"
+            >
+              <div className="absolute -top-[5px] left-1/2 -translate-x-1/2 w-[10px] h-[10px] bg-[#FF00FF] rotate-45" />
+              Prototype settings stored for receiver
+            </div>
+          </div>
+          {/* Inverse of the copy button (white circle, pink icon) so the two read as different actions. */}
           <button
             type="button"
-            onClick={copyShareLink}
-            className="bg-[#FF00FF] text-white w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
-            aria-label="Copy share link"
-            title="Copy share link"
+            onClick={openSettingsModal}
+            className="bg-white text-[#FF00FF] w-[24px] h-[24px] rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+            aria-label="Open prototype settings"
+            title="Prototype settings"
           >
-            {copyStatus === 'copied' ? <Check size={14} strokeWidth={3} /> : <Copy size={14} strokeWidth={3} />}
+            <Settings size={14} strokeWidth={2.5} />
           </button>
         </div>
       )}

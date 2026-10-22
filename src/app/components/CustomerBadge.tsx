@@ -5,6 +5,7 @@ import { CustomerMenu } from './CustomerMenu';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useSettings } from '../contexts/SettingsContext';
 import type { VipCardData } from '../types/pos';
+import { isFlowA } from '../utils/settingsUrl';
 
 interface Customer {
   id: string;
@@ -127,7 +128,7 @@ export function CustomerBadge({
 
   // Prototypes A and C both allow overriding a blocked card at the till
   // (unlike B, which is a hard stop) — same banner + remove action for both.
-  const showsBlockedBanner = switchUserFlow === 'A' || switchUserFlow === 'C';
+  const showsBlockedBanner = isFlowA(switchUserFlow) || switchUserFlow === 'C';
   // Prototype C: a block that only comes from exceeding the credit limit is
   // handled by the credit-exceeded dialog and the VIP card modal, so the
   // sidebar banner is reserved for cards that are blocked in their own right.

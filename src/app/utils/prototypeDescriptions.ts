@@ -8,16 +8,20 @@ import { toast } from 'sonner@2.0.3';
 // own NO/EN panel strings — this badge/toast layer has always been
 // English-only prototyper-facing text.
 
-export const FLOW_DESCRIPTIONS: Record<'A' | 'B' | 'C', string> = {
+export const FLOW_DESCRIPTIONS: Record<'A' | 'B' | 'C' | 'D' | 'X', string> = {
   A: 'In-menu PIN / Password',
   B: 'Modal with PIN / Password tabs',
   C: 'In-menu with navigation to login',
+  D: 'Copy of A (In-menu PIN / Password), "Get customer" variant',
+  X: 'Copy of D: collects improvements',
 };
 
-export const PRICE_CHECK_LOCK_DESCRIPTIONS: Record<'A' | 'B' | 'C', string> = {
+export const PRICE_CHECK_LOCK_DESCRIPTIONS: Record<'A' | 'B' | 'C' | 'D' | 'X', string> = {
   A: 'Price check: no customer lock',
   B: 'Price check: locked, "Legg til varer i salg" shortcut in the modal',
   C: 'Price check: locked (button reads "Lukk")',
+  D: 'Price check: no customer lock',
+  X: 'Price check: no customer lock',
 };
 
 // ── Two toast families, deliberately kept apart ──────────────────────────────
