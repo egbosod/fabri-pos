@@ -33,16 +33,13 @@ Prototype credentials: password `1234`, PIN `1234`.
 - Product search and cart management
 - Payment flow with multiple payment methods
 - Design system with CSS variables
-- Toggleable debug banner
 
-## Settings & Debug
+## Settings
 
 - Press `.` (period) to open Settings modal
-- Press `d` to toggle debug banner
 - Press `a` / `b` / `c` to switch user flow, `i` for the flow indicator, `h` to reset
 - `Ctrl`+`L` to log out, `Ctrl`+`,` to simulate a card scan
 - `utils/environmentNavigation.ts` still exposes `isFigmaMake()` / `getEnvironment()`
-  for the debug banner
 
 ## Design System
 

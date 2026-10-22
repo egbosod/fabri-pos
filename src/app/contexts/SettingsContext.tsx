@@ -26,8 +26,6 @@ export interface SettingsContextType {
   setPriceCheckLockConcept: (concept: PriceCheckLockConcept) => void;
   showFlowIndicator: boolean;
   setShowFlowIndicator: (show: boolean) => void;
-  showDebugBanner: boolean;
-  setShowDebugBanner: (show: boolean) => void;
   isSettingsModalOpen: boolean;
   openSettingsModal: () => void;
   closeSettingsModal: () => void;
@@ -63,12 +61,18 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 const urlSettings = readSettingsFromURL(window.location.search);
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [switchUserFlow, setSwitchUserFlow] = useState<SwitchUserFlow>(
+  const [switchUserFlow, setSwitchUserFlowState] = useState<SwitchUserFlow>(
     urlSettings.switchUserFlow ?? DEFAULT_SETTINGS.switchUserFlow,
   );
   const [erpScenario, setErpScenario] = useState<ErpScenario>(
     urlSettings.erpScenario ?? DEFAULT_SETTINGS.erpScenario,
   );
+  // Prototype D defaults to ERP AX: picking D (header, Settings or shortcut) selects AX.
+  // The ERP can still be changed afterwards.
+  const setSwitchUserFlow = (flow: SwitchUserFlow) => {
+    setSwitchUserFlowState(flow);
+    if (flow === 'D') setErpScenario('AX');
+  };
   const [hovedordrePlacement, setHovedordrePlacement] = useState<HovedordrePlacement>(
     urlSettings.hovedordrePlacement ?? DEFAULT_SETTINGS.hovedordrePlacement,
   );
@@ -80,9 +84,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
   const [showFlowIndicator, setShowFlowIndicator] = useState(
     urlSettings.showFlowIndicator ?? DEFAULT_SETTINGS.showFlowIndicator,
-  );
-  const [showDebugBanner, setShowDebugBanner] = useState(
-    urlSettings.showDebugBanner ?? DEFAULT_SETTINGS.showDebugBanner,
   );
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
   const [allowCreateProject, setAllowCreateProject] = useState(
@@ -152,7 +153,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setCustomerSearchConcept(DEFAULT_SETTINGS.customerSearchConcept);
     setPriceCheckLockConcept(DEFAULT_SETTINGS.priceCheckLockConcept);
     setShowFlowIndicator(DEFAULT_SETTINGS.showFlowIndicator);
-    setShowDebugBanner(DEFAULT_SETTINGS.showDebugBanner);
     setIsSettingsModalOpen(false);
     setAllowCreateProject(DEFAULT_SETTINGS.allowCreateProject);
     setAllowCreateContactPerson(DEFAULT_SETTINGS.allowCreateContactPerson);
@@ -167,7 +167,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setShowForgotPassword(DEFAULT_SETTINGS.showForgotPassword);
   }, []);
 
-  // Keyboard listener for "." (settings) and "d" (debug banner)
+  // Keyboard listener for "." (settings)
   // NOTE: A/B/C flow shortcuts are handled in RootLayout where toast is available
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -176,10 +176,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
 
       if (event.key === '.' && !isInput) {
         setIsSettingsModalOpen(prev => !prev);
-      }
-
-      if (event.key === 'd' && !isInput) {
-        setShowDebugBanner(prev => !prev);
       }
 
       if (event.key === 'e' && !isInput) {
@@ -206,8 +202,6 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setPriceCheckLockConcept,
         showFlowIndicator,
         setShowFlowIndicator,
-        showDebugBanner,
-        setShowDebugBanner,
         isSettingsModalOpen,
         openSettingsModal,
         closeSettingsModal,

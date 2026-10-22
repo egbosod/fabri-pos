@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import svgPaths from "./svg-xmty2pj7q1";
 import { useSettings } from '../contexts/SettingsContext';
 import { useLanguage } from '../contexts/LanguageContext';
-import { ERP_SCENARIOS } from '../utils/settingsUrl';
+import { ERP_SCENARIOS, lockConceptForFlow } from '../utils/settingsUrl';
 import { useCopyShareLink } from '../hooks/useCopyShareLink';
 import { Copy, Check } from 'lucide-react';
 
@@ -148,7 +148,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
                 role="listbox"
                 className="absolute right-0 top-[calc(100%+6px)] z-[9999] bg-white rounded-[8px] shadow-lg p-2 flex flex-col gap-1.5 w-[220px]"
               >
-                {(['A', 'B', 'C'] as const).map(flow => (
+                {(['A', 'B', 'C', 'D'] as const).map(flow => (
                   <button
                     key={flow}
                     type="button"
@@ -157,7 +157,7 @@ function Frame137({ onClick, isProfileOpen, currentUser }: { onClick: () => void
                     onClick={() => {
                       // Same pairing as the A/B/C keyboard shortcut.
                       setSwitchUserFlow(flow);
-                      setPriceCheckLockConcept(flow);
+                      setPriceCheckLockConcept(lockConceptForFlow(flow));
                       setIsFlowMenuOpen(false);
                     }}
                     className={`text-right text-[11px] font-semibold font-['Montserrat'] px-2 py-1 rounded-full cursor-pointer transition-colors ${

@@ -20,6 +20,7 @@ import { CartSidebar, SelectCustomerButton, SidebarButton } from '../components/
 import { CartColumnHeader } from '../components/CartColumnHeader';
 import { Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User, ParkingSquare } from 'lucide-react';
 import type { CartItem, OrderGroupData, ProductItem, RowState } from '../types/pos';
+import { isFlowA } from '../utils/settingsUrl';
 
 /* ═══════════════════════════════════════════════════════════════════════════
    SVG helpers (Salg-specific icons)
@@ -781,7 +782,7 @@ export default function SalgPage() {
         swipeableOrderLineStates={swipeableOrderLineStates}
         onSwipeableStateChange={handleSwipeableStateChange}
         // Prototype A keeps the two-step swipe (arm, then tap the panel); B and C act on release.
-        commitOnRelease={switchUserFlow !== 'A'}
+        commitOnRelease={!isFlowA(switchUserFlow)}
         // Prototype C edits the quantity inline between the steppers.
         inlineQuantity={switchUserFlow === 'C'}
         onRemoveOrderGroup={handleRemoveOrderGroup}

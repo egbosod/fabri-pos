@@ -13,7 +13,6 @@ import { PackingSlipSignatureModal } from './PackingSlipSignatureModal';
 import { DeliveryNoteModal } from './DeliveryNoteModal';
 import { FakturaModal } from './FakturaModal';
 import { HovedordreModal } from './HovedordreModal';
-import { EnvDebugBanner } from './EnvDebugBanner';
 import ProfileBadge from './ProfileBadge';
 import ToastParkertSalg from '../imports/ToastParkertSalg';
 import ToastLogoutSuccess from '../imports/ToastLogoutSuccess';
@@ -34,6 +33,7 @@ import { AlertCircle } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { posToast } from '../utils/posToast';
 import { FLOW_DESCRIPTIONS, PRICE_CHECK_LOCK_DESCRIPTIONS, prototypeToast } from '../utils/prototypeDescriptions';
+import { isFlowA, lockConceptForFlow } from '../utils/settingsUrl';
 
 // ─── Mock pools for fake card scans (mirrors CustomerSelectionModal data) ──────
 const SCAN_CUSTOMERS = [
@@ -158,9 +158,9 @@ const VIP_SCAN_CONCEPTS: {
 ];
 
 /** Rotation cursor — module-level so it survives re-renders within a session. */
-const vipScanCursors: Record<'A' | 'B' | 'C', number> = { A: 0, B: 0, C: 0 };
+const vipScanCursors: Record<'A' | 'B' | 'C' | 'D', number> = { A: 0, B: 0, C: 0, D: 0 };
 
-function generateFakeVipScan(flow: 'A' | 'B' | 'C'): { card: VipCardData; concept: string } {
+function generateFakeVipScan(flow: 'A' | 'B' | 'C' | 'D'): { card: VipCardData; concept: string } {
   const concepts = flow === 'C'
     ? [...VIP_SCAN_CONCEPTS.filter(c => !c.hiddenInProtoC)].sort((a, b) => Number(!!b.firstInProtoC) - Number(!!a.firstInProtoC))
     : VIP_SCAN_CONCEPTS;
@@ -434,10 +434,10 @@ function RootLayoutInner() {
       // A, B, C → Switch prototype (user-switch flow + price-check lock, kept in sync)
       if (!isInput && !e.metaKey && !e.ctrlKey && !e.altKey) {
         const key = e.key.toUpperCase();
-        if (key === 'A' || key === 'B' || key === 'C') {
-          const newFlow = key as 'A' | 'B' | 'C';
+        if (key === 'A' || key === 'B' || key === 'C' || key === 'D') {
+          const newFlow = key as 'A' | 'B' | 'C' | 'D';
           setSwitchUserFlow(newFlow);
-          setPriceCheckLockConcept(newFlow);
+          setPriceCheckLockConcept(lockConceptForFlow(newFlow));
           prototypeToast(
             `Switched to Prototype ${newFlow}`,
             `${FLOW_DESCRIPTIONS[newFlow]}. ${PRICE_CHECK_LOCK_DESCRIPTIONS[newFlow]}.`,
@@ -479,10 +479,10 @@ function RootLayoutInner() {
         e.preventDefault();
         e.stopPropagation();
 
-        if (erpScenario !== 'Aspect4 DK' || (switchUserFlow !== 'A' && switchUserFlow !== 'C' && switchUserFlow !== 'B')) {
+        if (erpScenario !== 'Aspect4 DK' || (!isFlowA(switchUserFlow) && switchUserFlow !== 'C' && switchUserFlow !== 'B')) {
           prototypeToast(
             'Card scan unavailable',
-            "Set ERP scenario to 'Aspect4 DK' and Prototype to 'A', 'B' or 'C' in Settings first",
+            "Set ERP scenario to 'Aspect4 DK' and Prototype to 'A', 'B', 'C' or 'D' in Settings first",
             { duration: 3000 },
           );
           return;
@@ -558,7 +558,7 @@ function RootLayoutInner() {
           onVipRemoved={() => { setVipCard(null); posToast.success(t('vipCardRemovedToast')); }}
           onVipAcknowledged={() => setVipAcknowledged(true)}
           blockedOverridable={switchUserFlow === 'C'}
-          stackedDeliveryAddress={switchUserFlow === 'A' || switchUserFlow === 'C'}
+          stackedDeliveryAddress={isFlowA(switchUserFlow) || switchUserFlow === 'C'}
           onCardScanPanelChange={handleCardScanPanelChange}
           initialCustomer={isPriceCheckMode ? priceCheckCustomer : selectedCustomer}
           initialProject={isPriceCheckMode ? priceCheckProject : selectedProject}
@@ -716,8 +716,8 @@ function RootLayoutInner() {
 
       {isModalOpen('faktura') && (
         <FakturaModal onClose={closeModal} customer={selectedCustomer} onPickup={(invoices) => { handlePickupInvoices(invoices); closeModal(); }}
-          accountPaymentTab={switchUserFlow === 'A'}
-          choosePaymentWording={switchUserFlow === 'A'}
+          accountPaymentTab={isFlowA(switchUserFlow)}
+          choosePaymentWording={isFlowA(switchUserFlow)}
           accountPaymentSideBySide={switchUserFlow === 'B'}
           renamedTitle={switchUserFlow === 'C'}
           onAddAccountPayment={(amount) => { handleAddAccountPayment(amount); closeModal(); }}
@@ -793,7 +793,6 @@ function RootLayoutInner() {
       className="bg-background content-stretch flex flex-col isolate items-start relative h-screen w-full"
       style={{ fontFamily: "'Montserrat', sans-serif" }}
     >
-      <EnvDebugBanner />
 
       {/* ── Shared Header ────────────────────────────────────────────────── */}
       <div className="content-stretch flex flex-col items-start relative shrink-0 w-full z-[3]">

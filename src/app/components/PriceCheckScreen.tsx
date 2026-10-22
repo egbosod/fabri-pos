@@ -13,6 +13,7 @@ import { CartSidebar, SelectCustomerButton, SidebarButton } from './CartSidebar'
 import svgPaths from '../imports/svg-v4b5vuykpy';
 import { ShoppingCart, AlertTriangle, Lock } from 'lucide-react';
 import { EgConfirmModal } from './EgConfirmModal';
+import { isFlowA } from '../utils/settingsUrl';
 
 /* ─── Search icon (matches the rest of the app's search fields) ───────────── */
 function SearchIcon() {
@@ -163,7 +164,7 @@ export default function PriceCheckScreen() {
                       return (
                         <SwipeableDefaultOrderItem
                           // Prototype A keeps the two-step swipe; B and C act on release.
-                          commitOnRelease={switchUserFlow !== 'A'}
+                          commitOnRelease={!isFlowA(switchUserFlow)}
                           inlineQuantity={switchUserFlow === 'C'}
                           key={index}
                           productName={item.name}
