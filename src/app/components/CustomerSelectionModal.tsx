@@ -1391,7 +1391,14 @@ export function CustomerSelectionModal({
     setShowCreateProjectModal(false);
   };
 
+  // Prototype D on AX: Contact person is mandatory. Confirm stays clickable and an orange toast explains what to fix.
+  const axContactRequired = isFlowD(switchUserFlow) && erpScenario === 'AX';
+
   const handleConfirm = () => {
+    if (axContactRequired && selectedCustomer && contactPerson.trim() === '') {
+      posToast.warning(t('contactPersonMandatoryToast'));
+      return;
+    }
     // Prototype A keeps Confirm clickable and explains what is missing in a toast.
     if (isFlowA(switchUserFlow)) {
       const missing = firstMissingMandatory();
@@ -2089,7 +2096,7 @@ export function CustomerSelectionModal({
                         {/* Kontaktperson (native select) + Rekvisisjonsnummer */}
                         <div style={{ display: 'flex', gap: 22 }}>
                           <div style={{ flex: 1 }}>
-                            <FieldLabel>{t('contactPerson')}</FieldLabel>
+                            <FieldLabel>{t('contactPerson')}{axContactRequired ? ' *' : ''}</FieldLabel>
                             {/* ── CHANGE: flex wrapper + conditional plus button ── */}
                             <div style={{ display: 'flex', gap: 10 }}>
                               <InputBox focused={false} style={{ cursor: 'default', flex: 1 }}>

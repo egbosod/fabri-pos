@@ -445,6 +445,7 @@ const sv: Translations = {
   cannotChangeCustomerFetchedOrder: 'Kan inte ändra kund på försäljningen när ordern är hämtad för betalning',
   projectMandatoryToast: 'Projektval är obligatoriskt för vald kund!',
   fieldMandatoryToast: '{field} är obligatoriskt!',
+  contactPersonMandatoryToast: 'Kontaktperson är obligatorisk. Välj en kontaktperson för att fortsätta.',
   vipCardAlreadyActiveToast: 'Ta bort det nuvarande VIP-kortet innan du skannar ett nytt',
   noInvoicesForPayment: 'Inga fakturor att betala',
   invoicesForPaymentPlaceholder: 'Fakturor att betala för den här kunden visas här. Funktionen är under utveckling.',

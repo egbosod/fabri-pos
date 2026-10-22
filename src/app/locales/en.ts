@@ -444,6 +444,7 @@ const en: Translations = {
   cannotChangeCustomerFetchedOrder: 'Cannot change customer on the sale when the order is fetched for payment',
   projectMandatoryToast: 'Project selection is mandatory for selected customer!',
   fieldMandatoryToast: '{field} is mandatory!',
+  contactPersonMandatoryToast: 'Contact person is mandatory. Select a contact person to continue.',
   vipCardAlreadyActiveToast: 'Remove the current VIP card before scanning another',
   noInvoicesForPayment: 'No invoices for payment',
   invoicesForPaymentPlaceholder: 'Invoices for payment for this customer will appear here. This feature is in development.',

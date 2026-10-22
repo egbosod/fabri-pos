@@ -446,6 +446,7 @@ export interface Translations {
   cannotChangeCustomerFetchedOrder: string;
   projectMandatoryToast: string;
   fieldMandatoryToast: string;
+  contactPersonMandatoryToast: string;
   vipCardAlreadyActiveToast: string;
   noInvoicesForPayment: string;
   invoicesForPaymentPlaceholder: string;

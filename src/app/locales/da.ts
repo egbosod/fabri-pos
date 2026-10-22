@@ -448,6 +448,7 @@ const da: Translations = {
   cannotChangeCustomerFetchedOrder: 'Kan ikke ændre kunde på salget, når ordren er hentet til betaling',
   projectMandatoryToast: 'Projektvalg er obligatorisk for valgt kunde!',
   fieldMandatoryToast: '{field} er obligatorisk!',
+  contactPersonMandatoryToast: 'Kontaktperson er obligatorisk. Vælg en kontaktperson for at fortsætte.',
   vipCardAlreadyActiveToast: 'Fjern det nuværende VIP-kort, før du scanner et nyt',
   noInvoicesForPayment: 'Ingen fakturaer til betaling',
   invoicesForPaymentPlaceholder: 'Fakturaer til betaling for denne kunde vises her. Funktionen er under udvikling.',
