@@ -800,7 +800,7 @@ function RootLayoutInner() {
     >
 
       {/* ── Shared Header ────────────────────────────────────────────────── */}
-      <div className="content-stretch flex flex-col items-start relative shrink-0 w-full z-[3]">
+      <div id="app-header" className="content-stretch flex flex-col items-start relative shrink-0 w-full z-[3] [[data-fetch-orders-fullscreen]_&]:z-[60]">
         <HeaderWithMenu
           isPriceCheckMode={isPriceCheckMode}
           onPriceCheckClick={() => navigate('/priskontroll')}
@@ -822,8 +822,8 @@ function RootLayoutInner() {
       {/* ── Profile Menu Overlay ─────────────────────────────────────────── */}
       {showProfileMenu && (
         <>
-          <div className="fixed bottom-0 left-0 right-0 top-[60px] z-40" onClick={() => setShowProfileMenu(false)} />
-          <div className="fixed right-[10px] top-[70px] z-50">
+          <div className="fixed bottom-0 left-0 right-0 top-[60px] z-40 [[data-fetch-orders-fullscreen]_&]:z-[60]" onClick={() => setShowProfileMenu(false)} />
+          <div className="fixed right-[10px] top-[70px] z-50 [[data-fetch-orders-fullscreen]_&]:z-[70]">
             <ProfileBadge
               currentUser={currentUser}
               autoSwitchToUser={autoSwitchToUser}

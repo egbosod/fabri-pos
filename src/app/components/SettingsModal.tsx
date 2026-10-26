@@ -79,6 +79,14 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scOpenSettingsDesc: 'Vis eller skjul dette innstillingspanelet',
 
     developerHeading: 'Utvikler',
+    fetchOrdersHeading: 'Hent ordre',
+    fetchOrdersFullscreen: 'Hent ordre i fullskjerm',
+    orderTypeOffLabel: 'Av',
+    orderTypeHeading: 'Ordretype',
+    orderTypeOff: 'Av: ordretype vises ikke.',
+    orderTypeColumn: '1: Egen kolonne «Ordretype» midt mellom kundenavn og totalsum.',
+    orderTypePrefix: '2: Foran ordrenummer, f.eks. «O # 520591».',
+    fetchOrdersFullscreenDesc: 'Vis «Hent ordre for betaling» over hele skjermen i stedet for som en vanlig modal.',
     selectCustomerHeading: 'Velg kunde',
     selectCustomerToggleAll: 'Slå alt i denne seksjonen av/på',
     allowCreateProject: 'Tillat oppretting av nytt prosjekt',
@@ -171,6 +179,14 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     scOpenSettingsDesc: 'Show or hide this settings panel',
 
     developerHeading: 'Developer',
+    fetchOrdersHeading: 'Fetch orders',
+    fetchOrdersFullscreen: 'Fetch orders full screen',
+    orderTypeOffLabel: 'Off',
+    orderTypeHeading: 'Order type',
+    orderTypeOff: 'Off: order type is not shown.',
+    orderTypeColumn: '1: Separate "Order type" column between customer name and total.',
+    orderTypePrefix: '2: In front of the order number, e.g. "O # 520591".',
+    fetchOrdersFullscreenDesc: 'Show "Fetch orders for payment" across the whole screen instead of as a normal modal.',
     selectCustomerHeading: 'Select customer',
     selectCustomerToggleAll: 'Toggle everything in this section on or off',
     allowCreateProject: 'Allow creating new project',
@@ -275,6 +291,10 @@ export function SettingsModal() {
     setAllowCreateContactPerson,
     showExpiredProjectsToggle,
     setShowExpiredProjectsToggle,
+    fetchOrdersLayout,
+    setFetchOrdersLayout,
+    orderTypeDisplay,
+    setOrderTypeDisplay,
     brandSyncEnabled,
     setBrandSyncEnabled,
     brandSyncDark,
@@ -315,6 +335,7 @@ export function SettingsModal() {
     erp: true,
     shortcuts: false,
     selectCustomer: true,
+    fetchOrders: true,
     developer: false,
     wcag: false,
   });
@@ -1455,6 +1476,110 @@ export function SettingsModal() {
                     </p>
                   </div>
                   <Toggle checked={scanCustomerCard} onChange={() => setScanCustomerCard(!scanCustomerCard)} />
+                </RowCard>
+              </div>
+            )}
+          </div>
+
+          {/* ─ Fetch orders ─ */}
+          <div style={sectionCardStyle}>
+            <SectionHeader sectionKey="fetchOrders">{s.fetchOrdersHeading}</SectionHeader>
+            {expandedSections.fetchOrders && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 10 }}>
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.fetchOrdersFullscreen}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {s.fetchOrdersFullscreenDesc}
+                    </p>
+                  </div>
+                  <Toggle
+                    checked={fetchOrdersLayout === 'fullscreen'}
+                    onChange={() => setFetchOrdersLayout(fetchOrdersLayout === 'fullscreen' ? 'modal' : 'fullscreen')}
+                  />
+                </RowCard>
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.orderTypeHeading}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {{ off: s.orderTypeOff, column: s.orderTypeColumn, prefix: s.orderTypePrefix }[orderTypeDisplay]}
+                    </p>
+                  </div>
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      background: 'var(--secondary)',
+                      borderRadius: 999,
+                      padding: 4,
+                      width: 240,
+                      flexShrink: 0,
+                      position: 'relative',
+                    }}
+                  >
+                    {([['off', s.orderTypeOffLabel], ['column', '1'], ['prefix', '2']] as const).map(([value, label]) => (
+                      <button
+                        key={value}
+                        onClick={() => setOrderTypeDisplay(value)}
+                        style={{
+                          flex: 1,
+                          padding: '4px 12px',
+                          fontSize: 'var(--text-sm)',
+                          fontWeight: 'var(--font-weight-semibold)',
+                          fontFamily: "'Montserrat', sans-serif",
+                          borderRadius: 999,
+                          border: 'none',
+                          cursor: 'pointer',
+                          background: orderTypeDisplay === value ? 'var(--card)' : 'transparent',
+                          color: orderTypeDisplay === value ? 'var(--primary)' : 'var(--muted-foreground)',
+                          boxShadow: orderTypeDisplay === value ? '0 1px 3px rgba(255,0,255,0.3)' : 'none',
+                          transition: 'all 0.15s ease-in-out',
+                          zIndex: 1,
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 </RowCard>
               </div>
             )}

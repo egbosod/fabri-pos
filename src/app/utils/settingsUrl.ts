@@ -30,6 +30,13 @@ export type PriceCheckLockConcept = 'A' | 'B' | 'C';
 export type ParkingConcept = 'A' | 'B' | 'C';
 /** Parking concept paired with a flow (D and X reuse A's). */
 export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'D' || flow === 'X' ? 'A' : flow);
+// Layout of the "Fetch orders" (Hent ordre for betaling) view. Independent of SwitchUserFlow.
+//   modal = centred modal   fullscreen = fills the whole screen
+export type FetchOrdersLayout = 'modal' | 'fullscreen';
+// How the order type (O / P / PN) is shown in Fetch orders. Independent of SwitchUserFlow.
+//   off = not shown   column = own "Ordretype" column between customer and total
+//   prefix = in front of the order number, e.g. "O # 520591"
+export type OrderTypeDisplay = 'off' | 'column' | 'prefix';
 export type ErpScenario = 'Nexstep' | 'Trygg2000' | 'Aspect4' | 'Aspect4 DK' | 'AX' | 'IFS';
 export const ERP_SCENARIOS: ErpScenario[] = ['Nexstep', 'Trygg2000', 'Aspect4', 'Aspect4 DK', 'AX', 'IFS'];
 
@@ -40,6 +47,8 @@ export interface SharedSettings {
   customerSearchConcept: CustomerSearchConcept;
   priceCheckLockConcept: PriceCheckLockConcept;
   parkingConcept: ParkingConcept;
+  fetchOrdersLayout: FetchOrdersLayout;
+  orderTypeDisplay: OrderTypeDisplay;
   showFlowIndicator: boolean;
   allowCreateProject: boolean;
   allowCreateContactPerson: boolean;
@@ -61,6 +70,8 @@ export const DEFAULT_SETTINGS: SharedSettings = {
   customerSearchConcept: 'A',
   priceCheckLockConcept: 'A',
   parkingConcept: 'C',
+  fetchOrdersLayout: 'modal',
+  orderTypeDisplay: 'off',
   showFlowIndicator: true,
   allowCreateProject: false,
   allowCreateContactPerson: false,
@@ -138,6 +149,18 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
     key: 'parkingConcept',
     param: 'parkering',
     parse: makeEnumParser<ParkingConcept>(['A', 'B', 'C']),
+    serialize: v => v,
+  },
+  {
+    key: 'fetchOrdersLayout',
+    param: 'hentordre',
+    parse: makeEnumParser<FetchOrdersLayout>(['modal', 'fullscreen']),
+    serialize: v => v,
+  },
+  {
+    key: 'orderTypeDisplay',
+    param: 'ordretype',
+    parse: makeEnumParser<OrderTypeDisplay>(['off', 'column', 'prefix']),
     serialize: v => v,
   },
   {

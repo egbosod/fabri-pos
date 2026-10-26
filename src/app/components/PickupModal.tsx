@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useLayoutEffect } from 'react';
 import svgPaths from "../imports/svg-p6kc57wo9f";
 import { useLanguage } from '../contexts/LanguageContext';
+import { useSettings } from '../contexts/SettingsContext';
 
 interface OrderItem {
   name: string;
@@ -12,6 +13,12 @@ interface OrderItem {
   total: number;
   originalTotal: number;
 }
+
+// O = Ordrebekreftelse, P = Pakkseddel, PN = Pakkseddel negativ
+type OrderType = 'O' | 'P' | 'PN';
+const ORDER_TYPE_LABELS: Record<OrderType, string> = { O: 'Ordrebekreftelse', P: 'Pakkseddel', PN: 'Pakkseddel negativ' };
+// Sample data: the types are assigned in rotation for the prototype.
+const SAMPLE_ORDER_TYPES: OrderType[] = ['O', 'P', 'O', 'PN', 'O', 'P'];
 
 interface Order {
   id: string;
@@ -32,6 +39,7 @@ interface Order {
   };
   isCustomerWithoutAccount: boolean;
   requiresPrepayment: boolean;
+  orderType: OrderType;
 }
 
 interface PickupModalProps {
@@ -123,6 +131,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: true,
+    orderType: 'O',
     items: generateOrderItems(3, 1000),
     totals: undefined
   },
@@ -138,6 +147,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(12, 2000)
   },
   {
@@ -152,6 +162,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(8, 3000)
   },
   {
@@ -165,6 +176,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: true,
     requiresPrepayment: true,
+    orderType: 'O',
     items: generateOrderItems(4, 4000),
     totals: undefined
   },
@@ -179,6 +191,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: true,
     requiresPrepayment: true,
+    orderType: 'O',
     items: generateOrderItems(12, 5000),
     totals: undefined
   },
@@ -194,6 +207,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(15, 6000)
   },
   {
@@ -208,6 +222,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(6, 7000)
   },
   {
@@ -220,6 +235,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: true,
     requiresPrepayment: true,
+    orderType: 'O',
     items: generateOrderItems(2, 8000),
     totals: undefined
   },
@@ -236,6 +252,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: true,
+    orderType: 'O',
     items: generateOrderItems(20, 9000),
     totals: undefined
   },
@@ -250,6 +267,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(8, 10000)
   },
   {
@@ -264,6 +282,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(10, 11000)
   },
   {
@@ -276,6 +295,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: true,
     requiresPrepayment: true,
+    orderType: 'O',
     items: generateOrderItems(5, 12000),
     totals: undefined
   },
@@ -291,6 +311,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(14, 13000)
   },
   {
@@ -305,6 +326,7 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: false,
     requiresPrepayment: false,
+    orderType: 'O',
     items: generateOrderItems(7, 14000)
   },
   {
@@ -318,10 +340,15 @@ const mockOrders: Order[] = [
     total: 0,
     isCustomerWithoutAccount: true,
     requiresPrepayment: true,
+    orderType: 'O',
     items: generateOrderItems(3, 15000),
     totals: undefined
   }
 ];
+
+mockOrders.forEach((order, i) => {
+  order.orderType = SAMPLE_ORDER_TYPES[i % SAMPLE_ORDER_TYPES.length];
+});
 
 // Calculate totals for all orders
 mockOrders.forEach(order => {
@@ -393,6 +420,23 @@ function IconDown() {
 
 export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
   const { t } = useLanguage();
+  const { fetchOrdersLayout, orderTypeDisplay } = useSettings();
+  const isFullscreen = fetchOrdersLayout === 'fullscreen';
+  // Full screen keeps the app's top menu header visible: start the overlay below it.
+  const [headerBottom, setHeaderBottom] = useState(0);
+  useLayoutEffect(() => {
+    if (!isOpen || !isFullscreen) return;
+    const measure = () => setHeaderBottom(document.getElementById('app-header')?.getBoundingClientRect().bottom ?? 0);
+    // Hides the header's Top menu row (Check price, Park) while the full-screen view is open
+    // (see Header-61-13721). Set before measuring so the overlay starts right below the header.
+    document.documentElement.setAttribute('data-fetch-orders-fullscreen', '');
+    measure();
+    window.addEventListener('resize', measure);
+    return () => {
+      window.removeEventListener('resize', measure);
+      document.documentElement.removeAttribute('data-fetch-orders-fullscreen');
+    };
+  }, [isOpen, isFullscreen]);
   const [customerSearch, setCustomerSearch] = useState('');
   const [orderNumberSearch, setOrderNumberSearch] = useState('');
   const [customerWithoutAccount, setCustomerWithoutAccount] = useState(false);
@@ -468,8 +512,11 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-[5px] w-full max-w-[968px] h-[768px] flex flex-col overflow-hidden shadow-[2px_2px_4px_0px_rgba(126,126,126,0.06),3px_10px_15px_0px_rgba(126,126,126,0.06)]">
+    <div
+      className={`fixed inset-x-0 bottom-0 z-50 flex items-center justify-center ${isFullscreen ? 'bg-white' : 'inset-y-0 bg-black/50'}`}
+      style={isFullscreen ? { top: headerBottom } : undefined}
+    >
+      <div className={`bg-white w-full flex flex-col overflow-hidden ${isFullscreen ? 'h-full' : 'rounded-[5px] max-w-[968px] h-[768px]'} shadow-[2px_2px_4px_0px_rgba(126,126,126,0.06),3px_10px_15px_0px_rgba(126,126,126,0.06)]`}>
         {/* Header */}
         <div className="bg-white relative shrink-0 w-full" data-name="Module header">
           <div aria-hidden="true" className="absolute border-[#e6e6e8] border-[0px_0px_1.461px] border-solid inset-0 pointer-events-none" />
@@ -580,14 +627,19 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
 
         {/* Table Header */}
         <div className="box-border content-stretch flex flex-col gap-[10px] items-start pl-[67px] pr-0 py-0 relative shrink-0 pb-[10px]">
-          <div className="font-medium h-[15px] leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap w-[876px]">
+          <div className={`font-medium h-[15px] leading-[0] relative shrink-0 text-[#6b6b72] text-[12px] text-nowrap ${isFullscreen ? 'w-[calc(100vw-87px)]' : 'w-[876px]'}`}>
             <div className="absolute flex flex-col justify-center left-0 top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Ordrenr, dato</p>
             </div>
             <div className="absolute flex flex-col justify-center left-[121px] top-[7.5px] translate-y-[-50%]">
               <p className="leading-[normal] text-nowrap whitespace-pre">Kunde, prosjekt</p>
             </div>
-            <div className="absolute flex flex-col justify-center left-[819px] top-[7.5px] translate-y-[-50%]">
+            {orderTypeDisplay === 'column' && (
+              <div className="absolute flex flex-col justify-center left-[398px] top-[7.5px] translate-y-[-50%]">
+                <p className="leading-[normal] text-nowrap whitespace-pre">Ordretype</p>
+              </div>
+            )}
+            <div className={`absolute flex flex-col justify-center top-[7.5px] translate-y-[-50%] ${isFullscreen ? 'right-[28px]' : 'left-[819px]'}`}>
               <p className="leading-[normal] text-nowrap whitespace-pre">Totalsum</p>
             </div>
           </div>
@@ -629,7 +681,7 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
                         <div className={`box-border content-stretch flex gap-[5px] items-center py-0 relative w-full ${isExpanded ? 'pl-[10px] pr-[30px]' : 'px-[10px]'}`}>
                           {/* Left side - Checkbox and Order Info */}
                           <div 
-                            className="content-stretch flex gap-[43px] items-center relative shrink-0 w-[430px] cursor-pointer"
+                            className={`content-stretch flex items-center relative shrink-0 w-[430px] cursor-pointer ${orderTypeDisplay === 'prefix' ? 'gap-[9px]' : 'gap-[29px]'}`}
                             onClick={() => toggleOrderSelection(order.id)}
                           >
                             <div className="content-stretch flex gap-[15px] items-center relative shrink-0">
@@ -662,14 +714,10 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
                                 </div>
                               )}
 
-                              {/* Order Number and Date */}
-                              <div className="font-normal grid-cols-[max-content] grid-rows-[max-content] inline-grid leading-[0] place-items-start relative shrink-0 text-nowrap">
-                                <div className="[grid-area:1_/_1] flex flex-col justify-center ml-[4px] mt-[26.5px] relative text-[#42424a] text-[12px] translate-y-[-50%]">
-                                  <p className="leading-[normal]">{order.date}</p>
-                                </div>
-                                <div className="[grid-area:1_/_1] flex flex-col justify-center ml-0 mt-[8.5px] relative text-[#22222c] text-[14px] translate-y-[-50%]">
-                                  <p className="leading-[normal] text-nowrap whitespace-pre">{order.orderNumber}</p>
-                                </div>
+                              {/* Order Number and Date: fixed width, left aligned so the customer column lines up in every row */}
+                              <div className={`font-normal flex flex-col items-start gap-[2px] relative shrink-0 text-nowrap text-left ${orderTypeDisplay === 'prefix' ? 'w-[110px]' : 'w-[90px]'}`}>
+                                <p className="leading-[normal] text-[#22222c] text-[14px]">{orderTypeDisplay === 'prefix' ? `${order.orderType} # ${order.orderNumber}` : order.orderNumber}</p>
+                                <p className="leading-[normal] text-[#42424a] text-[12px]">{order.date}</p>
                               </div>
                             </div>
 
@@ -685,6 +733,13 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
                               )}
                             </div>
                           </div>
+
+                          {/* Order type column (concept 1) */}
+                          {orderTypeDisplay === 'column' && (
+                            <div className="shrink-0 w-[170px] text-[#22222c] text-[14px] text-nowrap">
+                              {ORDER_TYPE_LABELS[order.orderType]}
+                            </div>
+                          )}
 
                           {/* Right side - Label/Counter and Total */}
                           <div className="basis-0 grow min-h-px min-w-px relative shrink-0" data-name="sum">
@@ -888,7 +943,7 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
 
         {/* Footer */}
         <div className="relative shrink-0 w-full border-t border-[#e6e6e8]">
-          <div className="flex flex-row items-center justify-between size-full px-[20px] py-[20px]">
+          <div className={`flex items-center size-full px-[20px] py-[20px] ${isFullscreen ? 'flex-row-reverse justify-end gap-[10px]' : 'flex-row justify-between'}`}>
             <button
               onClick={onClose}
               className="bg-white box-border content-stretch flex gap-[8px] h-[48px] items-center px-[20px] py-[6px] relative rounded-[5px] shrink-0 hover:bg-gray-50 transition-colors"

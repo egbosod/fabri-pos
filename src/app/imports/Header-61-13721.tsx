@@ -362,7 +362,7 @@ function Button1({ count, isOpen, onClick }: { count: number; isOpen?: boolean; 
 
 function TopMenu({ hideParking, onPriceCheckClick, parkedCount, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { hideParking?: boolean; onPriceCheckClick: () => void; parkedCount: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void }) {
   return (
-    <div className="bg-white h-[60px] relative shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] shrink-0 w-full" data-name="Top menu">
+    <div className="bg-white h-[60px] relative shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] shrink-0 w-full [[data-fetch-orders-fullscreen]_&]:hidden" data-name="Top menu">
       <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
         <div className="box-border content-stretch flex h-[60px] items-center justify-between px-[20px] py-[8px] relative w-full [[data-previous-purchases-open]_&]:hidden">
           <TextButton onClick={onPriceCheckClick} />
