@@ -7,11 +7,13 @@ import {
   type CustomerSearchConcept,
   type PriceCheckLockConcept,
   type ParkingConcept,
+  type FetchOrdersLayout,
+  type OrderTypeDisplay,
   type ErpScenario,
 } from '../utils/settingsUrl';
 
 // Re-exported for existing consumers that import these types from SettingsContext.
-export type { SwitchUserFlow, HovedordrePlacement, CustomerSearchConcept, PriceCheckLockConcept, ParkingConcept, ErpScenario };
+export type { SwitchUserFlow, HovedordrePlacement, CustomerSearchConcept, PriceCheckLockConcept, ParkingConcept, FetchOrdersLayout, OrderTypeDisplay, ErpScenario };
 export { DEFAULT_SETTINGS };
 
 export interface SettingsContextType {
@@ -27,6 +29,10 @@ export interface SettingsContextType {
   setPriceCheckLockConcept: (concept: PriceCheckLockConcept) => void;
   parkingConcept: ParkingConcept;
   setParkingConcept: (concept: ParkingConcept) => void;
+  fetchOrdersLayout: FetchOrdersLayout;
+  setFetchOrdersLayout: (layout: FetchOrdersLayout) => void;
+  orderTypeDisplay: OrderTypeDisplay;
+  setOrderTypeDisplay: (display: OrderTypeDisplay) => void;
   showFlowIndicator: boolean;
   setShowFlowIndicator: (show: boolean) => void;
   isSettingsModalOpen: boolean;
@@ -88,6 +94,12 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   );
   const [parkingConcept, setParkingConcept] = useState<ParkingConcept>(
     urlSettings.parkingConcept ?? DEFAULT_SETTINGS.parkingConcept,
+  );
+  const [fetchOrdersLayout, setFetchOrdersLayout] = useState<FetchOrdersLayout>(
+    urlSettings.fetchOrdersLayout ?? DEFAULT_SETTINGS.fetchOrdersLayout,
+  );
+  const [orderTypeDisplay, setOrderTypeDisplay] = useState<OrderTypeDisplay>(
+    urlSettings.orderTypeDisplay ?? DEFAULT_SETTINGS.orderTypeDisplay,
   );
   const [showFlowIndicator, setShowFlowIndicator] = useState(
     urlSettings.showFlowIndicator ?? DEFAULT_SETTINGS.showFlowIndicator,
@@ -160,6 +172,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setCustomerSearchConcept(DEFAULT_SETTINGS.customerSearchConcept);
     setPriceCheckLockConcept(DEFAULT_SETTINGS.priceCheckLockConcept);
     setParkingConcept(DEFAULT_SETTINGS.parkingConcept);
+    setFetchOrdersLayout(DEFAULT_SETTINGS.fetchOrdersLayout);
+    setOrderTypeDisplay(DEFAULT_SETTINGS.orderTypeDisplay);
     setShowFlowIndicator(DEFAULT_SETTINGS.showFlowIndicator);
     setIsSettingsModalOpen(false);
     setAllowCreateProject(DEFAULT_SETTINGS.allowCreateProject);
@@ -210,6 +224,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setPriceCheckLockConcept,
         parkingConcept,
         setParkingConcept,
+        fetchOrdersLayout,
+        setFetchOrdersLayout,
+        orderTypeDisplay,
+        setOrderTypeDisplay,
         showFlowIndicator,
         setShowFlowIndicator,
         isSettingsModalOpen,
