@@ -40,6 +40,20 @@ export type OrderTypeDisplay = 'off' | 'column' | 'prefix';
 export type ErpScenario = 'Nexstep' | 'Trygg2000' | 'Aspect4' | 'Aspect4 DK' | 'AX' | 'IFS';
 export const ERP_SCENARIOS: ErpScenario[] = ['Nexstep', 'Trygg2000', 'Aspect4', 'Aspect4 DK', 'AX', 'IFS'];
 
+/**
+ * Pick order defaults per prototype. Switching prototype applies these (the toggles in
+ * Settings can still be changed afterwards); a shared link only carries values that differ.
+ *   A = full screen + order type 1 (column)   B = modal + order type 2 (prefix)
+ * Other prototypes (C, D, X) keep the global defaults.
+ */
+export const pickOrderDefaultsForFlow = (
+  flow: SwitchUserFlow,
+): { fetchOrdersLayout: FetchOrdersLayout; orderTypeDisplay: OrderTypeDisplay } => {
+  if (flow === 'A') return { fetchOrdersLayout: 'fullscreen', orderTypeDisplay: 'column' };
+  if (flow === 'B') return { fetchOrdersLayout: 'modal', orderTypeDisplay: 'prefix' };
+  return { fetchOrdersLayout: DEFAULT_SETTINGS.fetchOrdersLayout, orderTypeDisplay: DEFAULT_SETTINGS.orderTypeDisplay };
+};
+
 export interface SharedSettings {
   switchUserFlow: SwitchUserFlow;
   erpScenario: ErpScenario;
@@ -276,9 +290,14 @@ export function buildShareURL(settings: SharedSettings, loc: Location = window.l
     params.delete(name);
   }
 
+  // Pick order settings are compared against the current prototype's defaults, so the
+  // receiver (who starts from that prototype's defaults) ends up with the same layout.
+  const flowDefaults = pickOrderDefaultsForFlow(settings.switchUserFlow);
   for (const spec of SHARED_SETTINGS) {
     const value = settings[spec.key];
-    if (value !== DEFAULT_SETTINGS[spec.key]) {
+    const defaultValue =
+      spec.key === 'fetchOrdersLayout' || spec.key === 'orderTypeDisplay' ? flowDefaults[spec.key] : DEFAULT_SETTINGS[spec.key];
+    if (value !== defaultValue) {
       params.set(spec.param, spec.serialize(value as never));
     }
   }
