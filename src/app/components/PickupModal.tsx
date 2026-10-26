@@ -665,26 +665,10 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
                             <div className="content-stretch flex gap-[15px] items-center relative shrink-0">
                               {/* Checkbox */}
                               {isSelected ? (
-                                <div className="relative shrink-0 size-[24px]" data-name="Checkbox">
-                                  <div className="absolute bottom-[-25%] left-[-12.5%] right-[-12.5%] top-0">
-                                    <svg className="block size-full" fill="none" preserveAspectRatio="none" viewBox="0 0 30 30">
-                                      <g filter="url(#filter0_d_209_24031)" id="Checkbox">
-                                        <rect fill="#0D97FC" height="24" rx="5" width="24" x="3" />
-                                        <path d="M15.5 11L11.5 15L9.5 13" id="Vector" stroke="white" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
-                                      </g>
-                                      <defs>
-                                        <filter colorInterpolationFilters="sRGB" filterUnits="userSpaceOnUse" height="30" id="filter0_d_209_24031" width="30" x="0" y="0">
-                                          <feFlood floodOpacity="0" result="BackgroundImageFix" />
-                                          <feColorMatrix in="SourceAlpha" result="hardAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
-                                          <feOffset dy="3" />
-                                          <feGaussianBlur stdDeviation="1.5" />
-                                          <feColorMatrix type="matrix" values="0 0 0 0 0.419608 0 0 0 0 0.419608 0 0 0 0 0.447059 0 0 0 0.06 0" />
-                                          <feBlend in2="BackgroundImageFix" mode="normal" result="effect1_dropShadow_209_24031" />
-                                          <feBlend in="SourceGraphic" in2="effect1_dropShadow_209_24031" mode="normal" result="shape" />
-                                        </filter>
-                                      </defs>
-                                    </svg>
-                                  </div>
+                                <div className="relative shrink-0 size-[24px] rounded-[5px] bg-[#0D97FC] flex items-center justify-center shadow-[0px_3px_1.5px_0px_rgba(107,107,114,0.06)]" data-name="Checkbox">
+                                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="block">
+                                    <path d="M3.5 8.5L6.5 11.5L12.5 5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
                                 </div>
                               ) : (
                                 <div className="bg-white relative rounded-[5px] shrink-0 size-[24px]" data-name="Checkbox">
