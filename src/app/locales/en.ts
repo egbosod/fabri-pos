@@ -16,7 +16,7 @@ const en: Translations = {
   exchangeSlip: 'Exchange slip',
   priceCheck: 'Price check',
   fetchFromHandTerminal: 'Fetch from hand terminal',
-  fetchOrder: 'Fetch order',
+  fetchOrder: 'Pickup order',
   parkSale: 'Park sale',
   parkThisSale: 'Park this sale',
   parkedSales: 'Parked sales',
@@ -151,11 +151,11 @@ const en: Translations = {
     'Scan/search items to check price for customer/project. Then add items to the sale if the customer wants them.',
 
   // ── Pickup order modal ─────────────────────────────────────────────────────
-  fetchOrderForPayment: 'Fetch order for payment',
+  fetchOrderForPayment: 'Pick order for payment',
   orderNumber: 'Order number',
   orderNumberShort: 'Order no',
   noOrdersFound: 'No orders found',
-  fetchForPayment: 'Fetch for payment',
+  fetchForPayment: 'Pick for payment',
   orderDate: 'Order date',
   phoneNumber: 'Phone number',
   totalAmount: 'Total amount',

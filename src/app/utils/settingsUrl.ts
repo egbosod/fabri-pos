@@ -30,7 +30,7 @@ export type PriceCheckLockConcept = 'A' | 'B' | 'C';
 export type ParkingConcept = 'A' | 'B' | 'C';
 /** Parking concept paired with a flow (D and X reuse A's). */
 export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'D' || flow === 'X' ? 'A' : flow);
-// Layout of the "Fetch orders" (Hent ordre for betaling) view. Independent of SwitchUserFlow.
+// Layout of the "Pickup order" (Hent ordre for betaling) view. Independent of SwitchUserFlow.
 //   modal = centred modal   fullscreen = fills the whole screen
 export type FetchOrdersLayout = 'modal' | 'fullscreen';
 // How the order type (O / P / PN) is shown in Fetch orders. Independent of SwitchUserFlow.
