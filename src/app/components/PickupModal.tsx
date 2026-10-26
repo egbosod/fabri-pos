@@ -437,8 +437,8 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
       document.documentElement.removeAttribute('data-fetch-orders-fullscreen');
     };
   }, [isOpen, isFullscreen]);
-  const [customerSearch, setCustomerSearch] = useState('');
-  const [orderNumberSearch, setOrderNumberSearch] = useState('');
+  const [search, setSearch] = useState('');
+  const [searchFocused, setSearchFocused] = useState(false);
   const [customerWithoutAccount, setCustomerWithoutAccount] = useState(false);
   const [showPrepaidOnly, setShowPrepaidOnly] = useState(false);
   const [selectedOrders, setSelectedOrders] = useState<Set<string>>(new Set());
@@ -447,18 +447,14 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
   // Filter orders based on search and filter criteria
   const filteredOrders = useMemo(() => {
     return mockOrders.filter(order => {
-      if (customerSearch) {
-        const searchLower = customerSearch.toLowerCase();
-        const matchesCustomer = order.customer.toLowerCase().includes(searchLower);
-        const matchesCustomerNumber = order.customerNumber?.toLowerCase().includes(searchLower);
-        const matchesPhone = order.phoneNumber?.includes(searchLower);
-        if (!matchesCustomer && !matchesCustomerNumber && !matchesPhone) {
-          return false;
-        }
-      }
-
-      if (orderNumberSearch) {
-        if (!order.orderNumber.toLowerCase().includes(orderNumberSearch.toLowerCase())) {
+      if (search) {
+        const searchLower = search.toLowerCase();
+        const matches =
+          order.orderNumber.toLowerCase().includes(searchLower) ||
+          order.customer.toLowerCase().includes(searchLower) ||
+          order.customerNumber?.toLowerCase().includes(searchLower) ||
+          order.phoneNumber?.includes(searchLower);
+        if (!matches) {
           return false;
         }
       }
@@ -477,7 +473,7 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
 
       return true;
     });
-  }, [customerSearch, orderNumberSearch, customerWithoutAccount, showPrepaidOnly]);
+  }, [search, customerWithoutAccount, showPrepaidOnly]);
 
   if (!isOpen) return null;
 
@@ -536,41 +532,23 @@ export function PickupModal({ isOpen, onClose, onPickup }: PickupModalProps) {
           <div className="size-full">
             <div className="box-border content-stretch flex flex-col gap-[7px] items-start pb-[15px] pt-[20px] px-[20px] relative w-full">
               <div className="content-stretch flex gap-[40px] items-start leading-[0] relative shrink-0">
-                {/* Kunde input */}
+                {/* Single search: order number or customer */}
                 <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-name="Input and label">
-                  <p className="[grid-area:1_/_1] font-bold leading-[1.75] ml-px mt-0 relative text-[#22222c] text-[14px]">{t('customer')}</p>
-                  <div className="[grid-area:1_/_1] bg-white box-border content-stretch flex gap-[6px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] w-[300px]" data-name="Textfield/Normal">
-                    <div 
-                      aria-hidden="true" 
-                      className={`absolute border-2 border-solid inset-0 pointer-events-none rounded-[5px] ${customerSearch ? 'border-[#0d97fc]' : 'border-[#d5d5d7]'}`} 
-                      style={customerSearch ? { boxShadow: '2px 2px 3px 0px inset rgba(0,0,0,0.1)' } : {}}
+                  <p className="[grid-area:1_/_1] font-bold leading-[1.75] ml-px mt-0 relative text-[#22222c] text-[14px]">{t('searchForOrders')}</p>
+                  <div className="[grid-area:1_/_1] bg-white box-border content-stretch flex gap-[6px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] w-[480px]" data-name="Textfield/Normal">
+                    <div
+                      aria-hidden="true"
+                      className={`absolute border-2 border-solid inset-0 pointer-events-none rounded-[5px] ${search || searchFocused ? 'border-[#0d97fc]' : 'border-[#d5d5d7]'}`}
+                      style={search ? { boxShadow: '2px 2px 3px 0px inset rgba(0,0,0,0.1)' } : {}}
                     />
                     <input
                       type="text"
-                      value={customerSearch}
-                      onChange={(e) => setCustomerSearch(e.target.value)}
-                      placeholder={t('searchPlaceholder')}
-                      className="basis-0 font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px] bg-transparent border-none outline-none placeholder:text-[#6b6b72]"
-                    />
-                    <IconSearch />
-                  </div>
-                </div>
-
-                {/* Ordrenummer input */}
-                <div className="grid-cols-[max-content] grid-rows-[max-content] inline-grid place-items-start relative shrink-0" data-name="Input and label">
-                  <p className="[grid-area:1_/_1] font-bold leading-[1.75] ml-px mt-0 relative text-[#22222c] text-[14px]">{t('orderNumber')}</p>
-                  <div className="[grid-area:1_/_1] bg-white box-border content-stretch flex gap-[10px] h-[48px] items-center ml-0 mt-[26px] px-[14px] py-[8px] relative rounded-[5px] w-[300px]" data-name="Textfield/Normal">
-                    <div 
-                      aria-hidden="true" 
-                      className={`absolute border-2 border-solid inset-0 pointer-events-none rounded-[5px] ${orderNumberSearch ? 'border-[#0d97fc]' : 'border-[#d5d5d7]'}`}
-                      style={orderNumberSearch ? { boxShadow: '2px 2px 3px 0px inset rgba(0,0,0,0.1)' } : {}}
-                    />
-                    <input
-                      type="text"
-                      value={orderNumberSearch}
-                      onChange={(e) => setOrderNumberSearch(e.target.value)}
-                      placeholder="Søk etter ordrenummer"
-                      className="basis-0 font-normal grow leading-[1.75] min-h-px min-w-px opacity-60 relative shrink-0 text-[#6b6b72] text-[14px] bg-transparent border-none outline-none placeholder:text-[#6b6b72]"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      onFocus={() => setSearchFocused(true)}
+                      onBlur={() => setSearchFocused(false)}
+                      placeholder={t('orderSearchPlaceholder')}
+                      className="basis-0 font-normal grow leading-[1.75] min-h-px min-w-px relative shrink-0 text-[#22222c] text-[14px] bg-transparent border-none outline-none placeholder:text-[#6b6b72]"
                     />
                     <IconSearch />
                   </div>

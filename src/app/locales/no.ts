@@ -157,6 +157,8 @@ const no: Translations = {
   orderNumberShort: 'Ordrenr',
   noOrdersFound: 'Ingen ordre funnet',
   fetchForPayment: 'Hent for betaling',
+  searchForOrders: 'Søk etter ordre',
+  orderSearchPlaceholder: 'Skriv inn ordrenummer eller deler av kundenavn for å søke',
   orderDate: 'Ordredato',
   phoneNumber: 'Telefonnummer',
   totalAmount: 'Totalbeløp',

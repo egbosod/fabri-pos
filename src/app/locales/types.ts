@@ -155,6 +155,8 @@ export interface Translations {
   orderNumberShort: string;
   noOrdersFound: string;
   fetchForPayment: string;
+  searchForOrders: string;
+  orderSearchPlaceholder: string;
   orderDate: string;
   phoneNumber: string;
   totalAmount: string;
