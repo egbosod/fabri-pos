@@ -160,6 +160,8 @@ const da: Translations = {
   orderNumberShort: 'Ordrenr',
   noOrdersFound: 'Ingen ordrer fundet',
   fetchForPayment: 'Hent til betaling',
+  searchForOrders: 'Søg efter ordrer',
+  orderSearchPlaceholder: 'Indtast ordrenummer eller dele af kundenavn for at søge',
   orderDate: 'Ordredato',
   phoneNumber: 'Telefonnummer',
   totalAmount: 'Totalbeløb',

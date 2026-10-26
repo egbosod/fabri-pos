@@ -157,6 +157,8 @@ const sv: Translations = {
   orderNumberShort: 'Ordernr',
   noOrdersFound: 'Inga ordrar hittades',
   fetchForPayment: 'Hämta för betalning',
+  searchForOrders: 'Sök efter ordrar',
+  orderSearchPlaceholder: 'Ange ordernummer eller delar av kundnamn för att söka',
   orderDate: 'Orderdatum',
   phoneNumber: 'Telefonnummer',
   totalAmount: 'Totalt belopp',

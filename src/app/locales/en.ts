@@ -156,6 +156,8 @@ const en: Translations = {
   orderNumberShort: 'Order no',
   noOrdersFound: 'No orders found',
   fetchForPayment: 'Pick for payment',
+  searchForOrders: 'Search for orders',
+  orderSearchPlaceholder: 'Enter order number or part of customer name to search',
   orderDate: 'Order date',
   phoneNumber: 'Phone number',
   totalAmount: 'Total amount',
