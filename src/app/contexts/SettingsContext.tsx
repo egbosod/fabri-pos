@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useRef, ReactN
 import {
   DEFAULT_SETTINGS,
   readSettingsFromURL,
+  pickOrderDefaultsForFlow,
   type SwitchUserFlow,
   type HovedordrePlacement,
   type CustomerSearchConcept,
@@ -80,6 +81,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   // The ERP can still be changed afterwards.
   const setSwitchUserFlow = (flow: SwitchUserFlow) => {
     setSwitchUserFlowState(flow);
+    // Pick order layout + order type follow the prototype (A: full screen + 1, B: modal + 2).
+    const pickOrder = pickOrderDefaultsForFlow(flow);
+    setFetchOrdersLayout(pickOrder.fetchOrdersLayout);
+    setOrderTypeDisplay(pickOrder.orderTypeDisplay);
     if (flow === 'D') setErpScenario('AX');
     if (flow === 'X') setErpScenario('Nexstep');
   };
@@ -96,10 +101,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     urlSettings.parkingConcept ?? DEFAULT_SETTINGS.parkingConcept,
   );
   const [fetchOrdersLayout, setFetchOrdersLayout] = useState<FetchOrdersLayout>(
-    urlSettings.fetchOrdersLayout ?? DEFAULT_SETTINGS.fetchOrdersLayout,
+    urlSettings.fetchOrdersLayout ?? pickOrderDefaultsForFlow(switchUserFlow).fetchOrdersLayout,
   );
   const [orderTypeDisplay, setOrderTypeDisplay] = useState<OrderTypeDisplay>(
-    urlSettings.orderTypeDisplay ?? DEFAULT_SETTINGS.orderTypeDisplay,
+    urlSettings.orderTypeDisplay ?? pickOrderDefaultsForFlow(switchUserFlow).orderTypeDisplay,
   );
   const [showFlowIndicator, setShowFlowIndicator] = useState(
     urlSettings.showFlowIndicator ?? DEFAULT_SETTINGS.showFlowIndicator,
