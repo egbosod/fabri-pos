@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
-import { SimpleCartIcon } from './SimpleCartIcon';
+import { BasketShoppingIcon } from './BasketShoppingIcon';
 import { Switch } from './ui/switch';
 import type { ParkedSale } from '../contexts/POSContext';
 
@@ -77,7 +77,7 @@ export function ParkedSalesPanel({ sales, currentUser, onRestore, onClose, varia
       >
         {isModal && (
           <div className="flex items-center gap-[12px] px-[20px] h-[64px] shrink-0 border-b border-border">
-            <SimpleCartIcon size={22} className="text-foreground" />
+            <BasketShoppingIcon size={22} className="text-foreground" />
             <h2 className="grow font-semibold text-foreground" style={{ fontSize: 'var(--text-lg)' }}>{t('parkedSales')}</h2>
             <button onClick={onClose} aria-label={t('cancel')} className="size-[40px] flex items-center justify-center cursor-pointer rounded-[var(--radius)] hover:bg-secondary">
               <X size={20} />
