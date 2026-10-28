@@ -71,8 +71,8 @@ export function PaymentSummary({
         
         {/* Å betale */}
         <div className="content-stretch flex items-center justify-between relative shrink-0 w-full pt-[5px]" style={{ borderTop: '1px solid #e6e6e8' }}>
-          <p className="font-bold leading-[1.75] relative shrink-0 text-[#090914] text-[15px]">{t('toPay')}</p>
-          <p className="font-bold leading-[1.75] relative shrink-0 text-[#090914] text-[15px]">{formatCurrency(total)}</p>
+          <p className="font-bold leading-[1.75] relative shrink-0 text-[#090914] text-[18px]">{t('toPay')}</p>
+          <p className="font-bold leading-[1.75] relative shrink-0 text-[#090914] text-[18px]">{formatCurrency(total)}</p>
         </div>
       </div>
     </div>
