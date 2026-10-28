@@ -566,15 +566,15 @@ function SearchAndActionsBar({
               <button
                 onClick={() => openModal('parked')}
                 disabled={parkedSales.length === 0}
-                className={`border box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 transition-colors ${
+                className={`box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 transition-colors ${
                   parkedSales.length > 0
-                    ? 'bg-card border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
-                    : 'bg-secondary border-border cursor-not-allowed'
+                    ? 'bg-card border border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
                 }`}
               >
-                <ParkingSquare size={15} className={parkedSales.length > 0 ? 'text-foreground' : 'text-secondary-foreground opacity-60'} />
+                <ParkingSquare size={15} className={parkedSales.length > 0 ? 'text-foreground' : undefined} />
                 <span
-                  className={`font-semibold ${parkedSales.length > 0 ? 'text-foreground' : 'text-secondary-foreground opacity-60'}`}
+                  className={`font-semibold ${parkedSales.length > 0 ? 'text-foreground' : ''}`}
                   style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)' }}
                 >
                   {t('parkedSales')}
@@ -621,14 +621,14 @@ function SearchAndActionsBar({
               <button
                 onClick={() => openModal('hovedordre')}
                 disabled={!selectedCustomer}
-                className={`border box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 transition-colors ${
+                className={`box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center px-[13px] py-[6px] relative rounded-[var(--radius)] shrink-0 transition-colors ${
                   selectedCustomer
-                    ? 'bg-card border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
-                    : 'bg-secondary border-border cursor-not-allowed'
+                    ? 'bg-card border border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
                 }`}
               >
                 <span
-                  className={selectedCustomer ? 'text-foreground' : 'text-secondary-foreground opacity-60'}
+                  className={selectedCustomer ? 'text-foreground' : undefined}
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   {selectedHovedordre ? selectedHovedordre.ordrenummer : t('velgHovedordre')}
@@ -652,16 +652,16 @@ function SidebarHovedordreButton({ disabled = false }: { disabled?: boolean }) {
     <button
       onClick={() => openModal('hovedordre')}
       disabled={disabled}
-      className={`border h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full transition-colors ${
+      className={`h-[48px] min-w-[100px] relative rounded-[var(--radius)] shrink-0 w-full transition-colors ${
         disabled
-          ? 'bg-secondary border-border cursor-not-allowed'
-          : 'bg-card border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+          ? 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
+          : 'bg-card border border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
       }`}
     >
       <div className="flex flex-row items-center justify-center min-w-inherit size-full">
         <div className="box-border content-stretch flex gap-[8px] h-[48px] items-center justify-center min-w-inherit px-[15px] py-[6px] relative w-full">
           <span
-            className={disabled ? 'text-secondary-foreground opacity-60' : 'text-foreground'}
+            className={disabled ? undefined : 'text-foreground'}
             style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 'var(--font-weight-semibold)' as React.CSSProperties['fontWeight'], fontSize: 'var(--text-lg)', lineHeight: 1.75 }}
           >
             {selectedHovedordre ? selectedHovedordre.ordrenummer : t('velgHovedordre')}
@@ -807,9 +807,9 @@ export default function SalgPage() {
               <button
                 disabled={!hasOrderItems}
                 onClick={() => { parkSale(); posToast.success(t('saleParkedToast')); }}
-                className={`h-[48px] w-full shrink-0 rounded-[var(--radius)] border border-border font-semibold transition-colors ${
+                className={`h-[48px] w-full shrink-0 rounded-[var(--radius)] font-semibold transition-colors ${
                   hasOrderItems
-                    ? 'bg-card text-foreground cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    ? 'bg-card text-foreground border border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
                     : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
                 }`}
                 style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
@@ -820,9 +820,9 @@ export default function SalgPage() {
                 <button
                   disabled={parkedSales.length === 0}
                   onClick={() => openModal('parked')}
-                  className={`relative h-[48px] w-full shrink-0 rounded-[var(--radius)] border border-border font-semibold transition-colors flex items-center justify-center gap-[8px] ${
+                  className={`relative h-[48px] w-full shrink-0 rounded-[var(--radius)] font-semibold transition-colors flex items-center justify-center gap-[8px] ${
                     parkedSales.length > 0
-                      ? 'bg-card text-foreground cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                      ? 'bg-card text-foreground border border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
                       : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
                   }`}
                   style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
