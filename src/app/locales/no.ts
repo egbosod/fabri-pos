@@ -129,6 +129,7 @@ const no: Translations = {
   price: 'Pris',
   stock: 'Beholdning',
   info: 'Info',
+  warehouse: 'Lager',
   action: 'Handling',
   noItemsFound: 'Ingen varer funnet',
   addMultipleLines: 'Velg flere varelinjer',

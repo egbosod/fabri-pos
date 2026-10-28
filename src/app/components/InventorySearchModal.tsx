@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import svgPaths from "../imports/svg-cyizkdbmkk";
 import { useLanguage } from '../contexts/LanguageContext';
 import { matchesProductQuery } from '../utils/productSearch';
+import { useSettings } from '../contexts/SettingsContext';
 
 function Group3() {
   return (
@@ -32,6 +33,8 @@ interface InventoryItem {
   beholdning: string | null;
   info: string[];
   isNonStock: boolean;
+  /** Trygg2000 warehouse balances (Lager), shown as neutral Info tags in Prototype A. Negative = in minus. */
+  lager?: { lager: number; qty: number }[];
 }
 
 /**
@@ -142,6 +145,10 @@ const norwegianItems: InventoryItem[] = [
   NB('20334456', 'Steinull Rockwool Flexi 100mm 565x1170', 'Isolasjonsgrossisten AS', 389, 'PK', '120 PK', ['Nordic Swan Ecolabel', 'EU Ecolabel']),
   NB('20334457', 'Steinull Rockwool Flexi 150mm 565x1170', 'Isolasjonsgrossisten AS', 519, 'PK', null, ['Nordic Swan Ecolabel']),
   NB('20334458', 'Isolasjon Glava Standard 36 200mm', 'Isolasjonsgrossisten AS', 595, 'PK', null, ['EU Ecolabel']),
+  NB('20334463', 'Isolasjon Glava Proff 37 100mm', 'Isolasjonsgrossisten AS', 539, 'PK', null, ['EU Ecolabel']),
+  NB('20334464', 'Isolasjon Glava Proff 37 150mm', 'Isolasjonsgrossisten AS', 689, 'PK', null, ['EU Ecolabel']),
+  NB('20334465', 'Vindsperre Glava Windprotect 25mm 600x1200', 'Isolasjonsgrossisten AS', 249, 'PK', null, []),
+  NB('20334466', 'Isolasjon Glava Gulvplate 45mm 565x1175', 'Isolasjonsgrossisten AS', 475, 'PK', null, ['Nordic Swan Ecolabel']),
   NB('20334459', 'Isolasjon EPS Hvit 100mm 600x1200', 'Isolasjonsgrossisten AS', 79, 'STK', null, []),
   NB('20334460', 'Isolasjon PIR-plate 50mm 600x2400 Kingspan', 'Isolasjonsgrossisten AS', 285, 'STK', null, ['Non-stock']),
   NB('20334461', 'Vindsperre Isola Tyvek 1,5x50m', 'Isolasjonsgrossisten AS', 1290, 'RLL', null, ['Expires 14.02.2027']),
@@ -181,8 +188,31 @@ const norwegianItems: InventoryItem[] = [
 ];
 mockItems.push(...norwegianItems);
 
+// Mock Lager balances around the Glava products; some are in minus.
+const MOCK_LAGER: Record<string, { lager: number; qty: number }[]> = {
+  '20334455': [{ lager: 10, qty: 11 }],
+  '20334458': [{ lager: 10, qty: -3 }, { lager: 20, qty: 24 }],
+  '20334463': [{ lager: 10, qty: 42 }],
+  '20334464': [{ lager: 10, qty: -12 }],
+  '20334465': [{ lager: 20, qty: 7 }, { lager: 30, qty: 0 }],
+  '20334466': [{ lager: 10, qty: -1 }, { lager: 30, qty: 18 }],
+};
+mockItems.forEach(item => { item.lager = MOCK_LAGER[item.varenr]; });
+
 export function InventorySearchModal({ onClose, onAddItems, initialSearchValue = '', scannedArticleData = null, onArticleDataProcessed = () => {}, anchored = false, query = '', onQueryChange }: InventorySearchModalProps) {
   const { t } = useLanguage();
+  const { erpScenario, switchUserFlow } = useSettings();
+  // Lager info: Trygg2000 only, and Prototype A / B / C only (not D/X, which merely start as copies of A).
+  // A shows it as neutral tags in Info; B gives it its own column, so the list grows wider.
+  // C is a copy of B, but shows only one warehouse tag per item.
+  const isTrygg = erpScenario === 'Trygg2000';
+  const showLager = isTrygg && switchUserFlow === 'A';
+  const showLagerColumn = isTrygg && (switchUserFlow === 'B' || switchUserFlow === 'C');
+  const lagerTagsPerItem = switchUserFlow === 'C' ? 1 : Infinity;
+  const minListWidth = showLagerColumn ? 940 : 720;
+  const lagerChip = (l: { lager: number; qty: number }) => (
+    <span key={`lager-${l.lager}`} style={{ ...chip, color: '#22222c', background: '#ffffff', border: '1px solid #c4c4c9' }}>{t('warehouse')} {l.lager}: {l.qty}</span>
+  );
   const [filters, setFilters] = useState({
     multipleLines: true,
     nonStock: true
@@ -375,7 +405,7 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
       <div
         className={anchored ? 'fixed z-50 pointer-events-none' : 'fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-[20px]'}
         style={anchored ? (anchorRect
-          ? { left: anchorRect.left, bottom: window.innerHeight - anchorRect.top + 8, width: Math.max(anchorRect.width, 720), maxWidth: 'calc(100vw - 20px)' }
+          ? { left: anchorRect.left, bottom: window.innerHeight - anchorRect.top + 8, width: Math.max(anchorRect.width, minListWidth), maxWidth: 'calc(100vw - 20px)' }
           : { left: 20, bottom: 88, width: 'min(1200px, calc(100vw - 40px))' }) : undefined}
       >
         <div ref={panelRef} className={`w-full ${anchored ? '' : 'max-w-[1200px] max-h-[90vh]'} pointer-events-auto rounded-[3px] shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] flex flex-col`} style={{ background: '#ffffff', maxHeight: anchored ? `calc(${anchorRect ? anchorRect.top : 100}px - 24px)` : undefined, border: anchored ? '1px solid #e6e6e8' : undefined }}>
@@ -406,13 +436,14 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
                     <th style={th}>{t('supplier')}</th>
                     <th style={{ ...th, ...num }}>{t('price')}</th>
                     <th style={{ ...th, ...num }}>{t('inventory')}</th>
+                    {showLagerColumn && <th style={th}>{t('warehouse')}</th>}
                     <th style={th}>{t('info')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {displayedItems.length === 0 ? (
                     <tr>
-                      <td colSpan={8} style={{ ...td, padding: '48px 15px', textAlign: 'center', color: '#6b6b72' }}>{t('noItemsFound')}</td>
+                      <td colSpan={showLagerColumn ? 9 : 8} style={{ ...td, padding: '48px 15px', textAlign: 'center', color: '#6b6b72' }}>{t('noItemsFound')}</td>
                     </tr>
                   ) : (
                     displayedItems.map((item) => {
@@ -472,9 +503,17 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
                               </button>
                             )}
                           </td>
+                          {showLagerColumn && (
+                            <td style={td}>
+                              {item.lager && (
+                                <div className="flex flex-wrap gap-[6px]">{item.lager.slice(0, lagerTagsPerItem).map(lagerChip)}</div>
+                              )}
+                            </td>
+                          )}
                           <td style={td}>
-                            {item.info.length > 0 && (
+                            {(item.info.length > 0 || (showLager && item.lager)) && (
                               <div className="flex flex-wrap gap-[6px]">
+                                {showLager && item.lager?.map(lagerChip)}
                                 {item.info.map((tag, idx) => (
                                   tag === 'Non-stock' ? (
                                     <span key={idx} style={{ ...chip, color: '#f24c35', border: '1px solid #f24c35' }}>{t('nonStockArticle')}</span>

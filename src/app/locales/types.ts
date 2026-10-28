@@ -128,6 +128,7 @@ export interface Translations {
   price: string;
   stock: string;
   info: string;
+  warehouse: string;
   action: string;
   noItemsFound: string;
   addMultipleLines: string;

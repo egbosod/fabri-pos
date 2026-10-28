@@ -128,6 +128,7 @@ const en: Translations = {
   price: 'Price',
   stock: 'Stock',
   info: 'Info',
+  warehouse: 'Warehouse',
   action: 'Action',
   noItemsFound: 'No items found',
   addMultipleLines: 'Choose multiple article lines',

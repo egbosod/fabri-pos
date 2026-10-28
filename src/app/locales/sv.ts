@@ -129,6 +129,7 @@ const sv: Translations = {
   price: 'Pris',
   stock: 'Lagersaldo',
   info: 'Info',
+  warehouse: 'Lager',
   action: 'Åtgärd',
   noItemsFound: 'Inga varor hittades',
   addMultipleLines: 'Välj flera artikelrader',
