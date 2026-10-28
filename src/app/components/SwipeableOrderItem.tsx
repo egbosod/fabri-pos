@@ -24,6 +24,10 @@ interface SwipeableOrderItemProps {
   locked?: boolean;
   commitOnRelease?: boolean;
   onStateChange?: (newState: OrderLineState) => void;
+  /** Tapping the product name opens the item details drawer. */
+  onOpenDetails?: () => void;
+  /** The line whose details drawer is open. */
+  active?: boolean;
   onQuantityChange?: (value: number) => void;
   onPriceChange?: (value: number) => void;
   onDiscountChange?: (value: number) => void;
@@ -43,12 +47,14 @@ export function SwipeableOrderItem({
   locked,
   commitOnRelease,
   onStateChange,
+  onOpenDetails,
+  active,
   onQuantityChange,
   onPriceChange,
   onDiscountChange
 }: SwipeableOrderItemProps) {
   const { tLabel } = useLanguage();
-  const { confirm, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange, { locked, commitOnRelease });
+  const { confirm, wasDragged, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange, { locked, commitOnRelease });
 
   const base = baseState(state);
   // Content is struck through from the moment a delete is armed until it is undone.
@@ -58,7 +64,7 @@ export function SwipeableOrderItem({
   // A returned line reads as a negative quantity.
   const displayQuantity = base === 'returned' && quantity > 0 ? -quantity : quantity;
 
-  const getBackgroundColor = () => (isDeleted ? 'var(--muted)' : 'var(--secondary)');
+  const getBackgroundColor = () => (isDeleted ? 'var(--muted)' : active ? 'var(--row-active)' : 'var(--secondary)');
 
   return (
     <div 
@@ -83,7 +89,11 @@ export function SwipeableOrderItem({
         {...rowHandlers}
       >
         {/* Product name and code */}
-        <div className="box-border content-stretch flex flex-col h-[62px] items-start justify-center px-[10px] py-[5px] relative shrink-0" style={{ ...NAME_COLUMN_STYLE }}>
+        <div
+          className="box-border content-stretch flex flex-col h-[62px] items-start justify-center px-[10px] py-[5px] relative shrink-0"
+          style={{ ...NAME_COLUMN_STYLE }}
+          onClick={() => { if (state === 'normal' && !wasDragged()) onOpenDetails?.(); }}
+        >
           <div className="content-stretch flex gap-[10px] items-center overflow-clip relative shrink-0">
             <div className="flex flex-col font-['Montserrat',sans-serif] justify-center leading-[0] relative shrink-0 text-[0px] text-nowrap">
               <p className="leading-[19px] whitespace-pre">

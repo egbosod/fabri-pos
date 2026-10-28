@@ -26,6 +26,10 @@ interface SwipeableDefaultOrderItemProps {
   commitOnRelease?: boolean;
   inlineQuantity?: boolean;
   onStateChange?: (newState: OrderLineState) => void;
+  /** Tapping the product name opens the item details drawer. */
+  onOpenDetails?: () => void;
+  /** The line whose details drawer is open. */
+  active?: boolean;
   onQuantityChange?: (newQuantity: number, newUnit: string) => void;
 }
 
@@ -43,10 +47,12 @@ export function SwipeableDefaultOrderItem({
   commitOnRelease,
   inlineQuantity,
   onStateChange,
+  onOpenDetails,
+  active,
   onQuantityChange
 }: SwipeableDefaultOrderItemProps) {
   const { tLabel } = useLanguage();
-  const { confirm, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange, { commitOnRelease });
+  const { confirm, wasDragged, rowStyle, rowHandlers } = useOrderLineSwipe(state, onStateChange, { commitOnRelease });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const quantityRef = useRef<HTMLDivElement>(null);
   const [previewQuantity, setPreviewQuantity] = useState<string | null>(null);
@@ -60,7 +66,7 @@ export function SwipeableDefaultOrderItem({
   // A returned line reads as a negative quantity.
   const signedQuantity = base === 'returned' && quantity > 0 ? -quantity : quantity;
 
-  const getBackgroundColor = () => (isDeleted ? 'var(--muted)' : 'var(--secondary)');
+  const getBackgroundColor = () => (isDeleted ? 'var(--muted)' : active ? 'var(--row-active)' : 'var(--secondary)');
 
   const handleQuantityClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -148,7 +154,11 @@ export function SwipeableDefaultOrderItem({
           {...rowHandlers}
         >
           {/* Product name and code */}
-          <div className="flex items-center px-[10px] py-[5px] h-full" style={{ ...NAME_COLUMN_STYLE }}>
+          <div
+            className="flex items-center px-[10px] py-[5px] h-full"
+            style={{ ...NAME_COLUMN_STYLE }}
+            onClick={() => { if (state === 'normal' && !wasDragged()) onOpenDetails?.(); }}
+          >
             <div className="flex flex-col">
               <span 
                 className={`font-['Montserrat',sans-serif] ${isDeleted ? 'line-through' : ''}`}

@@ -13,6 +13,7 @@ import { InvoiceOrderGroup } from '../components/InvoiceOrderGroup';
 import { SwipeableOrderItem, OrderLineState as SwipeableOrderLineState } from '../components/SwipeableOrderItem';
 import { baseState } from '../components/orderLineState';
 import { SwipeableDefaultOrderItem } from '../components/SwipeableDefaultOrderItem';
+import { ItemDetailsDrawer, type ItemDetailsDrawerItem } from '../components/ItemDetailsDrawer';
 import { PriceCheckEmptyState } from '../components/PriceCheckEmptyState';
 import { PaymentSummary } from '../components/PaymentSummary';
 import { CustomerBadge } from '../components/CustomerBadge';
@@ -278,6 +279,7 @@ function OrderItemsView({
 }) {
   const { t } = useLanguage();
   const hasResults = searchQuery.length > 0;
+  const [detailsItem, setDetailsItem] = React.useState<(ItemDetailsDrawerItem & { rowKey: string; onDelete: () => void }) | null>(null);
 
   const totalItemCount = React.useMemo(() => {
     let count = 0;
@@ -391,6 +393,15 @@ function OrderItemsView({
                       state={item.isDeleted && swipeState === 'normal' ? 'deleted' : swipeState}
                       locked={item.isDeleted}
                       onStateChange={(newState) => onSwipeableStateChange(group.id, index, newState)}
+                      active={detailsItem?.rowKey === key}
+                      onOpenDetails={() => setDetailsItem({
+                        rowKey: key,
+                        name: item.name,
+                        sku: item.sku,
+                        price: item.price,
+                        discount: item.discount,
+                        onDelete: () => onSwipeableStateChange(group.id, index, 'deleted'),
+                      })}
                       onQuantityChange={() => {}}
                       onPriceChange={() => {}}
                       onDiscountChange={() => {}}
@@ -428,6 +439,18 @@ function OrderItemsView({
                 originalTotal={originalTotal}
                 label={item.label}
                 state={itemState}
+                active={detailsItem?.rowKey === key}
+                onOpenDetails={() => setDetailsItem({
+                  rowKey: key,
+                  name: item.name,
+                  sku: item.sku,
+                  price: item.price,
+                  discount: item.discount,
+                  onDelete: () => {
+                    onSwipeableStateChange('added', index, 'deleted');
+                    onUpdateAddedItem(index, { state: 'deleted' });
+                  },
+                })}
                 onStateChange={(newState) => {
                   onSwipeableStateChange('added', index, newState);
                   // Settling on deleted takes the line out of the sale total; settling
@@ -447,6 +470,8 @@ function OrderItemsView({
             );
           })}
         </div>
+
+        <ItemDetailsDrawer item={detailsItem} onClose={() => setDetailsItem(null)} onDelete={detailsItem?.onDelete} />
 
         {orderGroups.length === 0 && addedItems.length === 0 && (
           <div className="flex flex-col grow items-center justify-center gap-[12px] w-full text-center px-[24px]" data-name="Empty cart">

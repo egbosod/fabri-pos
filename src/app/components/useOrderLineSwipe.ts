@@ -124,6 +124,8 @@ export function useOrderLineSwipe(
   return {
     /** Tapping an armed panel confirms it. */
     confirm: () => change(CONFIRMS_TO[state]),
+    /** True when the last pointer gesture was a drag rather than a tap. */
+    wasDragged: () => movedRef.current,
     rowStyle: {
       transform: `translateX(${offset}px)`,
       transition: isDragging ? 'none' : 'transform 0.3s ease-out',
