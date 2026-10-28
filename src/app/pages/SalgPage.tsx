@@ -575,7 +575,7 @@ function SearchAndActionsBar({
                 <ParkingSquare size={15} className={parkedSales.length > 0 ? 'text-foreground' : undefined} />
                 <span
                   className={`font-semibold ${parkedSales.length > 0 ? 'text-foreground' : ''}`}
-                  style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)' }}
+                  style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
                 >
                   {t('parkedSales')}
                 </span>
@@ -599,7 +599,7 @@ function SearchAndActionsBar({
                   <div className="absolute left-0 size-[15px] top-0" />
                   <OrdersIcon />
                 </div>
-                <p className="font-semibold leading-[1.75] relative shrink-0 text-foreground text-nowrap whitespace-pre" style={{ fontSize: 'var(--text-sm)' }}>{t('fetchOrder')}</p>
+                <p className="font-semibold leading-[1.75] relative shrink-0 text-foreground text-nowrap whitespace-pre" style={{ fontSize: 'var(--text-lg)' }}>{t('fetchOrder')}</p>
               </div>
             </div>
             {/* PDA button */}
