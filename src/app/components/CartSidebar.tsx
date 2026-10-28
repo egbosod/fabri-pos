@@ -24,7 +24,7 @@ export function SelectCustomerButton({ onClick }: { onClick: () => void }) {
           <div className="flex items-center justify-center shrink-0 text-foreground">
             <User size={12} className="text-foreground" />
           </div>
-          <span className="font-semibold text-foreground" style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-sm)' }}>{t('selectCustomerButton')}</span>
+          <span className="font-semibold text-foreground" style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)', lineHeight: 1.75 }}>{t('selectCustomerButton')}</span>
         </div>
       </div>
     </button>
