@@ -17,9 +17,10 @@ import { ItemDetailsDrawer, type ItemDetailsDrawerItem } from '../components/Ite
 import { PriceCheckEmptyState } from '../components/PriceCheckEmptyState';
 import { PaymentSummary } from '../components/PaymentSummary';
 import { CustomerBadge } from '../components/CustomerBadge';
+import { SimpleCartIcon } from '../components/SimpleCartIcon';
 import { CartSidebar, SelectCustomerButton, SidebarButton } from '../components/CartSidebar';
 import { CartColumnHeader } from '../components/CartColumnHeader';
-import { Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User, ParkingSquare } from 'lucide-react';
+import { Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User } from 'lucide-react';
 import type { CartItem, OrderGroupData, ProductItem, RowState } from '../types/pos';
 import { isFlowA } from '../utils/settingsUrl';
 
@@ -597,7 +598,7 @@ function SearchAndActionsBar({
                     : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
                 }`}
               >
-                <ParkingSquare size={15} className={parkedSales.length > 0 ? 'text-foreground' : undefined} />
+                <SimpleCartIcon size={15} className={parkedSales.length > 0 ? 'text-foreground' : undefined} />
                 <span
                   className={`font-semibold ${parkedSales.length > 0 ? 'text-foreground' : ''}`}
                   style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
@@ -852,7 +853,7 @@ export default function SalgPage() {
                   }`}
                   style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
                 >
-                  <ParkingSquare size={18} />
+                  <SimpleCartIcon size={18} />
                   {t('parkedSales')}
                   {parkedSales.length > 0 && (
                     <span
