@@ -94,6 +94,8 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     allowCreateContactPerson: 'Tillat oppretting av ny kontaktperson',
     allowCreateContactPersonDesc: 'Vis en pluss-knapp ved «Kontaktperson» i kundevalg for å opprette nye kontakter.',
     showExpiredProjectsToggle: 'Inkluder utgåtte prosjekter',
+    showWarehouseTag: 'Vis lager-tagg i produktsøk',
+    showWarehouseTagDesc: 'Vis lagersaldo per lager (f.eks. «Lager 10: 11») i produktsøkelisten. Vises kun for Trygg2000.',
     showExpiredProjectsToggleDesc: 'Vis en bryter over søkeresultatlisten for «Prosjekt» i kundevalg som tar med utgåtte prosjekter.',
     showPasswordOption: 'Vis «Endre passord»-alternativ',
     showPasswordOptionDesc: 'Vis et passordalternativ i modalen for brukerbytte.',
@@ -194,6 +196,8 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     allowCreateContactPerson: 'Allow creating new contact person',
     allowCreateContactPersonDesc: 'Show a plus button next to "Contact person" in customer selection to create new contacts.',
     showExpiredProjectsToggle: 'Include expired projects',
+    showWarehouseTag: 'Show warehouse tag in product search',
+    showWarehouseTagDesc: 'Show the stock balance per warehouse (e.g. "Lager 10: 11") in the product search list. Only shown for Trygg2000.',
     showExpiredProjectsToggleDesc: 'Show a toggle above the "Project" search result list in customer selection that includes expired projects.',
     showPasswordOption: 'Show "Change password" option',
     showPasswordOptionDesc: 'Show a password option in the user switch modal.',
@@ -291,6 +295,8 @@ export function SettingsModal() {
     setAllowCreateContactPerson,
     showExpiredProjectsToggle,
     setShowExpiredProjectsToggle,
+    showWarehouseTag,
+    setShowWarehouseTag,
     fetchOrdersLayout,
     setFetchOrdersLayout,
     orderTypeDisplay,
@@ -1309,6 +1315,35 @@ export function SettingsModal() {
                       </button>
                     ))}
                   </div>
+                </RowCard>
+
+                <RowCard>
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontWeight: 'var(--font-weight-semibold)',
+                        fontSize: 'var(--text-base)',
+                        color: 'var(--foreground)',
+                        margin: 0,
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {s.showWarehouseTag}
+                    </p>
+                    <p
+                      style={{
+                        fontFamily: "'Montserrat', sans-serif",
+                        fontSize: 'var(--text-sm)',
+                        color: 'var(--muted-foreground)',
+                        margin: '4px 0 0',
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      {s.showWarehouseTagDesc}
+                    </p>
+                  </div>
+                  <Toggle checked={showWarehouseTag} onChange={() => setShowWarehouseTag(!showWarehouseTag)} />
                 </RowCard>
 
               </div>

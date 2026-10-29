@@ -129,6 +129,12 @@ export interface Translations {
   stock: string;
   info: string;
   warehouse: string;
+  stockInStock: string;
+  stockInOrder: string;
+  stockInPurchase: string;
+  stockAvailable: string;
+  showMoreWarehouses: string;
+  showFewerWarehouses: string;
   action: string;
   noItemsFound: string;
   addMultipleLines: string;

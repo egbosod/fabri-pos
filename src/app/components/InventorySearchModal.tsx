@@ -3,6 +3,7 @@ import svgPaths from "../imports/svg-cyizkdbmkk";
 import { useLanguage } from '../contexts/LanguageContext';
 import { matchesProductQuery } from '../utils/productSearch';
 import { useSettings } from '../contexts/SettingsContext';
+import { getWarehouseStock, primaryStock, registerWarehouseStock } from '../utils/warehouseStock';
 
 function Group3() {
   return (
@@ -127,11 +128,51 @@ const norwegianItems: InventoryItem[] = [
   NB('22334455', 'Vindu 3-lags 12x12', 'Alloc AS', 3500, 'STK', null, ['Non-stock', 'Nordic Swan Ecolabel']),
   NB('22334466', 'Vindu 2-lags 10x12 Hvit', 'Alloc AS', 2650, 'STK', '4 STK', ['EU Ecolabel']),
   NB('22334477', 'Takvindu Velux 78x118', 'Alloc AS', 5900, 'STK', null, ['Non-stock']),
+  // Windows (25 in total)
+  NB('22334480', 'Vindu fast karm 6x9 Hvit', 'Alloc AS', 1450, 'STK', null, ['EU Ecolabel']),
+  NB('22334481', 'Vindu fast karm 9x12 Hvit', 'Alloc AS', 1990, 'STK', null, []),
+  NB('22334482', 'Vindu fast karm 12x12 Hvit', 'Alloc AS', 2350, 'STK', null, []),
+  NB('22334483', 'Vindu tilt og sving 6x9 Hvit', 'Alloc AS', 2290, 'STK', null, []),
+  NB('22334484', 'Vindu tilt og sving 9x12 Hvit', 'Alloc AS', 3190, 'STK', null, ['Nordic Swan Ecolabel']),
+  NB('22334485', 'Vindu tilt og sving 10x12 Hvit', 'Alloc AS', 3390, 'STK', null, []),
+  NB('22334486', 'Vindu tilt og sving 12x12 Hvit', 'Alloc AS', 3690, 'STK', null, ['EU Ecolabel']),
+  NB('22334487', 'Vindu 2-lags 6x9 Hvit', 'Eikås Sagbruk AS', 1890, 'STK', null, []),
+  NB('22334488', 'Vindu 2-lags 12x12 Hvit', 'Eikås Sagbruk AS', 3050, 'STK', null, []),
+  NB('22334489', 'Vindu 3-lags 9x12 Hvit', 'Eikås Sagbruk AS', 3790, 'STK', null, ['Nordic Swan Ecolabel']),
+  NB('22334490', 'Vindu 3-lags 10x12 Hvit', 'Eikås Sagbruk AS', 3990, 'STK', null, []),
+  NB('22334491', 'Vindu 3-lags 12x14 Hvit', 'Eikås Sagbruk AS', 4590, 'STK', null, ['EU Ecolabel']),
+  NB('22334492', 'Vindu 3-lags 12x12 Antrasitt', 'Alloc AS', 4290, 'STK', null, []),
+  NB('22334493', 'Vindu 3-lags 9x12 Antrasitt', 'Alloc AS', 3890, 'STK', null, []),
+  NB('22334494', 'Vindu tre/alu 10x12 Hvit', 'Alloc AS', 5490, 'STK', null, ['FSC Certified']),
+  NB('22334495', 'Vindu tre/alu 12x14 Antrasitt', 'Alloc AS', 6290, 'STK', null, ['FSC Certified']),
+  NB('22334496', 'Vindu bad dreie 6x6 Hvit', 'Alloc AS', 1350, 'STK', null, []),
+  NB('22334497', 'Vindu kjeller 4x6 Hvit', 'Alloc AS', 990, 'STK', null, []),
+  NB('22334498', 'Takvindu Velux 55x98', 'Takpartner AS', 4900, 'STK', null, []),
+  NB('22334499', 'Takvindu Velux 66x118', 'Takpartner AS', 5400, 'STK', null, []),
+  NB('22334500', 'Takvindu Velux 94x140', 'Takpartner AS', 7200, 'STK', null, ['Non-stock']),
+  NB('22334501', 'Takvindu Fakro 78x140', 'Takpartner AS', 5800, 'STK', null, []),
   NB('33445566', 'Dør Innerdør Hvit 8x21', 'Alloc AS', 2800, 'STK', null, ['FSC Certified']),
   NB('44556677', 'Fliser Porselensgulv 60x60', 'Alloc AS', 350, 'M2', null, ['Non-stock', 'Expires 05.12.2026']),
   NB('55667788', 'Spiker 3,1x90 Kamspiker', 'BOSCH ROBERT AS', 125, 'PAK', '240 PAK', []),
   NB('55667799', 'Spiker 2,8x65 Galvanisert', 'BOSCH ROBERT AS', 98, 'PAK', null, ['EU Ecolabel']),
   NB('55667800', 'Takspiker 2,8x25 Galvanisert 1kg', 'BOSCH ROBERT AS', 72, 'PAK', null, ['Non-stock']),
+  // Nails (20 in total)
+  NB('55667820', 'Spiker 2,8x50 Galvanisert', 'BOSCH ROBERT AS', 89, 'PAK', null, []),
+  NB('55667821', 'Spiker 3,1x75 Kamspiker', 'BOSCH ROBERT AS', 119, 'PAK', null, []),
+  NB('55667822', 'Spiker 3,4x100 Kamspiker', 'BOSCH ROBERT AS', 139, 'PAK', null, []),
+  NB('55667823', 'Spiker 4,0x120 Galvanisert', 'BOSCH ROBERT AS', 159, 'PAK', null, []),
+  NB('55667824', 'Ringspiker 2,8x50 Varmforsinket', 'Eikås Sagbruk AS', 149, 'PAK', null, []),
+  NB('55667825', 'Ringspiker 3,1x75 Varmforsinket', 'Eikås Sagbruk AS', 179, 'PAK', null, []),
+  NB('55667826', 'Rustfrie spiker 3,1x75 A4', 'Eikås Sagbruk AS', 269, 'PAK', null, []),
+  NB('55667827', 'Rustfrie spiker 2,8x65 A2', 'Eikås Sagbruk AS', 229, 'PAK', null, []),
+  NB('55667828', 'Takspiker 2,8x30 Galvanisert', 'Takpartner AS', 79, 'PAK', null, []),
+  NB('55667829', 'Papirspiker 3,0x25 Galvanisert', 'Takpartner AS', 65, 'PAK', null, []),
+  NB('55667830', 'Gipsspiker 2,5x30 Fosfatert', 'Plateimport AS', 59, 'PAK', null, []),
+  NB('55667831', 'Stiftspiker 1,2x25 Galvanisert', 'BOSCH ROBERT AS', 49, 'PAK', null, []),
+  NB('55667832', 'Stiftspiker 1,4x40 Galvanisert', 'BOSCH ROBERT AS', 55, 'PAK', null, []),
+  NB('55667833', 'Panelspiker 2,0x40 Sort', 'Eikås Sagbruk AS', 75, 'PAK', null, []),
+  NB('55667834', 'Kledningsspiker 2,8x50 Rustfri', 'Eikås Sagbruk AS', 245, 'PAK', null, []),
+  NB('55667835', 'Spiker 6,0x150 Galvanisert', 'BOSCH ROBERT AS', 199, 'PAK', null, []),
   NB('55667811', 'Rustfrie spiker 2,5x50 A4', 'Eikås Sagbruk AS', 215, 'PAK', null, ['Non-stock', 'Expires 12.04.2027']),
   NB('66778899', 'Tape Armering 50mm x 90m', 'Alloc AS', 35, 'RLL', null, []),
   NB('77889900', 'Silikon Neutral Hvit', 'BOSCH ROBERT AS', 55, 'STK', null, ['Expires 30.06.2026']),
@@ -149,6 +190,14 @@ const norwegianItems: InventoryItem[] = [
   NB('20334464', 'Isolasjon Glava Proff 37 150mm', 'Isolasjonsgrossisten AS', 689, 'PK', null, ['EU Ecolabel']),
   NB('20334465', 'Vindsperre Glava Windprotect 25mm 600x1200', 'Isolasjonsgrossisten AS', 249, 'PK', null, []),
   NB('20334466', 'Isolasjon Glava Gulvplate 45mm 565x1175', 'Isolasjonsgrossisten AS', 475, 'PK', null, ['Nordic Swan Ecolabel']),
+  NB('20334467', 'Isolasjon Glava Proff 37 200mm', 'Isolasjonsgrossisten AS', 849, 'PK', null, ['EU Ecolabel']),
+  NB('20334468', 'Isolasjon Glava Skillevegg 36 70mm', 'Isolasjonsgrossisten AS', 399, 'PK', null, []),
+  NB('20334469', 'Isolasjon Glava Takplate 33 250mm', 'Isolasjonsgrossisten AS', 925, 'PK', null, ['Nordic Swan Ecolabel']),
+  NB('20334470', 'Isolasjon Glava Vegg Proff 37 100mm', 'Isolasjonsgrossisten AS', 559, 'PK', null, ['EU Ecolabel']),
+  NB('20334471', 'Isolasjon Glava Kjellervegg 34 100mm', 'Isolasjonsgrossisten AS', 479, 'PK', null, []),
+  NB('20334472', 'Isolasjon Glava Loft Proff 37 300mm', 'Isolasjonsgrossisten AS', 1049, 'PK', null, ['EU Ecolabel']),
+  NB('20334473', 'Isolasjon Glava Klemfilt 36 150mm', 'Isolasjonsgrossisten AS', 629, 'PK', null, ['Nordic Swan Ecolabel']),
+  NB('20334474', 'Isolasjon Glava Lydplate 40 50mm', 'Isolasjonsgrossisten AS', 339, 'PK', null, []),
   NB('20334459', 'Isolasjon EPS Hvit 100mm 600x1200', 'Isolasjonsgrossisten AS', 79, 'STK', null, []),
   NB('20334460', 'Isolasjon PIR-plate 50mm 600x2400 Kingspan', 'Isolasjonsgrossisten AS', 285, 'STK', null, ['Non-stock']),
   NB('20334461', 'Vindsperre Isola Tyvek 1,5x50m', 'Isolasjonsgrossisten AS', 1290, 'RLL', null, ['Expires 14.02.2027']),
@@ -188,25 +237,24 @@ const norwegianItems: InventoryItem[] = [
 ];
 mockItems.push(...norwegianItems);
 
-// Mock Lager balances around the Glava products; some are in minus.
-const MOCK_LAGER: Record<string, { lager: number; qty: number }[]> = {
-  '20334455': [{ lager: 10, qty: 11 }],
-  '20334458': [{ lager: 10, qty: -3 }, { lager: 20, qty: 24 }],
-  '20334463': [{ lager: 10, qty: 42 }],
-  '20334464': [{ lager: 10, qty: -12 }],
-  '20334465': [{ lager: 20, qty: 7 }, { lager: 30, qty: 0 }],
-  '20334466': [{ lager: 10, qty: -1 }, { lager: 30, qty: 18 }],
+registerWarehouseStock(mockItems);
+
+/** Inventory text for a product with warehouse data: the primary warehouse quantity. */
+const stockLabel = (item: InventoryItem): string | null => {
+  if (!item.lager) return item.beholdning;
+  if (item.isNonStock) return 'Not in stock';
+  return `${primaryStock(item.lager)} ${item.pris.split('/')[1]?.trim() || 'STK'}`;
 };
-mockItems.forEach(item => { item.lager = MOCK_LAGER[item.varenr]; });
+mockItems.forEach(item => { item.lager = getWarehouseStock(item.varenr); });
 
 export function InventorySearchModal({ onClose, onAddItems, initialSearchValue = '', scannedArticleData = null, onArticleDataProcessed = () => {}, anchored = false, query = '', onQueryChange }: InventorySearchModalProps) {
   const { t } = useLanguage();
-  const { erpScenario, switchUserFlow } = useSettings();
-  // Lager info: Trygg2000 only, and Prototype A / B / C only (not D/X, which merely start as copies of A).
-  // A shows it as neutral tags in Info; B gives it its own column, so the list grows wider.
+  const { erpScenario, switchUserFlow, showWarehouseTag } = useSettings();
+  // Lager info: Trygg2000 only, and only when the Settings toggle (default off) is on.
+  // A, D and X show it as neutral tags in Info; B gives it its own column, so the list grows wider.
   // C is a copy of B, but shows only one warehouse tag per item.
-  const isTrygg = erpScenario === 'Trygg2000';
-  const showLager = isTrygg && switchUserFlow === 'A';
+  const isTrygg = erpScenario === 'Trygg2000' && showWarehouseTag;
+  const showLager = isTrygg && (switchUserFlow === 'A' || switchUserFlow === 'D' || switchUserFlow === 'X');
   const showLagerColumn = isTrygg && (switchUserFlow === 'B' || switchUserFlow === 'C');
   const lagerTagsPerItem = switchUserFlow === 'C' ? 1 : Infinity;
   const minListWidth = showLagerColumn ? 940 : 720;
@@ -293,12 +341,14 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
     const unit = item?.pris.split('/')[1]?.trim() || 'STK';
     const randomStock = Math.floor(Math.random() * 141) + 10;
 
-    // Non-stock articles are special order, so loading the inventory says so.
+    // Products with warehouse mock data show the first (primary) warehouse quantity as Inventory in
+    // every ERP and prototype (see stockLabel), so a product in minus on Lager is in minus here too.
+    // Only the Lager tags and column are Trygg2000-specific. Random stock is the fallback.
     setLoadedStockAmounts(prev => ({
       ...prev,
       [id]: item?.isNonStock ? 'Not in stock' : `${randomStock} ${unit}`
     }));
-    
+
     setLoadedDetails(prev => new Set([...prev, id]));
   };
 
@@ -482,14 +532,16 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
                           <td style={{ ...td, ...num }}>
                             {isLoaded ? (
                               (() => {
-                                const displayBeholdning = loadedStockAmounts[item.id] || item.beholdning;
+                                const displayBeholdning = item.lager ? stockLabel(item) : loadedStockAmounts[item.id] || item.beholdning;
+                                const inMinus = displayBeholdning?.startsWith('-');
+                                const stockColor = inMinus ? '#f24c35' : '#48b76e';
                                 return displayBeholdning === 'Not in stock' ? (
                                   <span style={{ ...chip, color: '#f24c35', background: '#fdeceb' }}>
                                     {t('notInStock')}
                                   </span>
                                 ) : (
-                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 600, color: '#48b76e' }}>
-                                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#48b76e' }}></span>
+                                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontWeight: 600, color: stockColor }}>
+                                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: stockColor }}></span>
                                     {displayBeholdning}
                                   </span>
                                 );

@@ -45,6 +45,8 @@ export interface SettingsContextType {
   setAllowCreateContactPerson: (allow: boolean) => void;
   showExpiredProjectsToggle: boolean;
   setShowExpiredProjectsToggle: (show: boolean) => void;
+  showWarehouseTag: boolean;
+  setShowWarehouseTag: (show: boolean) => void;
   brandSyncEnabled: boolean;
   setBrandSyncEnabled: (enabled: boolean) => void;
   brandSyncDark: boolean;
@@ -116,6 +118,9 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [allowCreateContactPerson, setAllowCreateContactPerson] = useState(
     urlSettings.allowCreateContactPerson ?? DEFAULT_SETTINGS.allowCreateContactPerson,
   );
+  const [showWarehouseTag, setShowWarehouseTag] = useState(
+    urlSettings.showWarehouseTag ?? DEFAULT_SETTINGS.showWarehouseTag,
+  );
   const [showExpiredProjectsToggle, setShowExpiredProjectsToggle] = useState(
     urlSettings.showExpiredProjectsToggle ?? DEFAULT_SETTINGS.showExpiredProjectsToggle,
   );
@@ -184,6 +189,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setAllowCreateProject(DEFAULT_SETTINGS.allowCreateProject);
     setAllowCreateContactPerson(DEFAULT_SETTINGS.allowCreateContactPerson);
     setShowExpiredProjectsToggle(DEFAULT_SETTINGS.showExpiredProjectsToggle);
+    setShowWarehouseTag(DEFAULT_SETTINGS.showWarehouseTag);
     setBrandSyncEnabled(DEFAULT_SETTINGS.brandSyncEnabled);
     setBrandSyncDark(DEFAULT_SETTINGS.brandSyncDark);
     setShowPasswordOption(DEFAULT_SETTINGS.showPasswordOption);
@@ -244,6 +250,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setAllowCreateContactPerson,
         showExpiredProjectsToggle,
         setShowExpiredProjectsToggle,
+        showWarehouseTag,
+        setShowWarehouseTag,
         brandSyncEnabled,
         setBrandSyncEnabled,
         brandSyncDark,

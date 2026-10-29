@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ExternalLink, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from './ui/sheet';
 import { useLanguage } from '../contexts/LanguageContext';
+import { getWarehouseStock, warehouseName } from '../utils/warehouseStock';
 import productImage from '../../assets/item-drawer-product.png';
 
 export interface ItemDetailsDrawerItem {
@@ -28,6 +29,13 @@ const STOCK_ROWS = [
     available: 13,
   })),
 ];
+// "På lager" is the warehouse balance from the product search result (the first row is the
+// same number as Inventory there). The other columns are sample values derived from it.
+const stockRowsFor = (sku: string) =>
+  getWarehouseStock(sku)?.map(({ lager, qty }) => {
+    const inOrder = Math.round(Math.abs(qty) / 4);
+    return { warehouse: warehouseName(lager), inStock: qty, inOrder, inPurchase: 0, available: qty - inOrder };
+  });
 const STOCK_COLUMNS = [141, 75, 63, 58, 59];
 
 const fmt = (n: number) => n.toFixed(2).replace('.', ',');
@@ -67,10 +75,10 @@ function DetailCard({ rows }: { rows: { label: string; value: React.ReactNode }[
   );
 }
 
-function StockTable({ expanded, onToggle }: { expanded: boolean; onToggle: () => void }) {
+function StockTable({ expanded, onToggle, stockRows = STOCK_ROWS }: { expanded: boolean; onToggle: () => void; stockRows?: typeof STOCK_ROWS }) {
   const { t } = useLanguage();
-  const headers = [t('warehouse'), 'På lager', 'I ordre', 'I best.', 'Disp.'];
-  const rows = expanded ? STOCK_ROWS : STOCK_ROWS.slice(0, 1);
+  const headers = [t('warehouse'), t('stockInStock'), t('stockInOrder'), t('stockInPurchase'), t('stockAvailable')];
+  const rows = expanded ? stockRows : stockRows.slice(0, 1);
   return (
     <div className="flex flex-col items-start">
       <div
@@ -94,7 +102,7 @@ function StockTable({ expanded, onToggle }: { expanded: boolean; onToggle: () =>
           </div>
         ))}
       </div>
-      <button
+      {stockRows.length > 1 && <button
         type="button"
         onClick={onToggle}
         className="cursor-pointer uppercase"
@@ -110,8 +118,8 @@ function StockTable({ expanded, onToggle }: { expanded: boolean; onToggle: () =>
           color: 'var(--primary)',
         }}
       >
-        {expanded ? 'Vis færre lager' : 'Vis flere lager'}
-      </button>
+        {expanded ? t('showFewerWarehouses') : t('showMoreWarehouses')}
+      </button>}
     </div>
   );
 }
@@ -189,6 +197,7 @@ const footerButton: React.CSSProperties = {
 
 export function ItemDetailsDrawer({ item, onClose, onDelete }: ItemDetailsDrawerProps) {
   const { t } = useLanguage();
+  const syncedStock = item ? stockRowsFor(item.sku) : undefined;
   const [stockExpanded, setStockExpanded] = useState(false);
   const [comment, setComment] = useState('');
   const [serial, setSerial] = useState('');
@@ -289,7 +298,7 @@ export function ItemDetailsDrawer({ item, onClose, onDelete }: ItemDetailsDrawer
                 { label: 'Mva.', value: '25%' },
               ]}
             />
-            <StockTable expanded={stockExpanded} onToggle={() => setStockExpanded((v) => !v)} />
+            <StockTable expanded={stockExpanded} onToggle={() => setStockExpanded((v) => !v)} stockRows={syncedStock ?? STOCK_ROWS} />
           </div>
 
           <div className="flex flex-col shrink-0" style={{ gap: 20 }}>

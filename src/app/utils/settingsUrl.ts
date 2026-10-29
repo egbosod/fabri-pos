@@ -67,6 +67,7 @@ export interface SharedSettings {
   allowCreateProject: boolean;
   allowCreateContactPerson: boolean;
   showExpiredProjectsToggle: boolean;
+  showWarehouseTag: boolean;
   brandSyncEnabled: boolean;
   brandSyncDark: boolean;
   showPasswordOption: boolean;
@@ -90,6 +91,7 @@ export const DEFAULT_SETTINGS: SharedSettings = {
   allowCreateProject: false,
   allowCreateContactPerson: false,
   showExpiredProjectsToggle: false,
+  showWarehouseTag: false,
   brandSyncEnabled: false,
   brandSyncDark: false,
   showPasswordOption: false,
@@ -198,6 +200,12 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'showExpiredProjectsToggle',
     param: 'utgatte',
+    parse: parseBoolean,
+    serialize: serializeBoolean,
+  },
+  {
+    key: 'showWarehouseTag',
+    param: 'lager',
     parse: parseBoolean,
     serialize: serializeBoolean,
   },
