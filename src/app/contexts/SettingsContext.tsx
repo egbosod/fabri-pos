@@ -118,8 +118,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const [allowCreateContactPerson, setAllowCreateContactPerson] = useState(
     urlSettings.allowCreateContactPerson ?? DEFAULT_SETTINGS.allowCreateContactPerson,
   );
+  // The warehouse tag defaults to on when the ERP is Trygg2000 (it only ever shows there); a link's
+  // explicit value wins. It can still be toggled in Settings.
   const [showWarehouseTag, setShowWarehouseTag] = useState(
-    urlSettings.showWarehouseTag ?? DEFAULT_SETTINGS.showWarehouseTag,
+    urlSettings.showWarehouseTag ?? (erpScenario === 'Trygg2000' || DEFAULT_SETTINGS.showWarehouseTag),
   );
   const [showExpiredProjectsToggle, setShowExpiredProjectsToggle] = useState(
     urlSettings.showExpiredProjectsToggle ?? DEFAULT_SETTINGS.showExpiredProjectsToggle,
@@ -173,6 +175,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
       return;
     }
     setScanCustomerCard(erpScenario === 'Aspect4' || erpScenario === 'Aspect4 DK');
+    setShowWarehouseTag(erpScenario === 'Trygg2000');
   }, [erpScenario]);
 
   const resetSettings = useCallback(() => {

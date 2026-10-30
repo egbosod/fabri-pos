@@ -3,7 +3,7 @@ import svgPaths from "../imports/svg-cyizkdbmkk";
 import { useLanguage } from '../contexts/LanguageContext';
 import { matchesProductQuery } from '../utils/productSearch';
 import { useSettings } from '../contexts/SettingsContext';
-import { getWarehouseStock, primaryStock, registerWarehouseStock } from '../utils/warehouseStock';
+import { getWarehouseStock, primaryStock, registerWarehouseStock, shelfNumber, warehouseName } from '../utils/warehouseStock';
 
 function Group3() {
   return (
@@ -251,15 +251,20 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
   const { t } = useLanguage();
   const { erpScenario, switchUserFlow, showWarehouseTag } = useSettings();
   // Lager info: Trygg2000 only, and only when the Settings toggle (default off) is on.
-  // A, D and X show it as neutral tags in Info; B gives it its own column, so the list grows wider.
-  // C is a copy of B, but shows only one warehouse tag per item.
+  // A and D show it as neutral tags in Info; B gives it its own column, so the list grows wider.
+  // B, C and X show only one warehouse tag per item (the first). X is the same as C, but the tag is the
+  // warehouse name only (no quantity), and it is the first warehouse, the top row of the drawer table.
   const isTrygg = erpScenario === 'Trygg2000' && showWarehouseTag;
-  const showLager = isTrygg && (switchUserFlow === 'A' || switchUserFlow === 'D' || switchUserFlow === 'X');
-  const showLagerColumn = isTrygg && (switchUserFlow === 'B' || switchUserFlow === 'C');
-  const lagerTagsPerItem = switchUserFlow === 'C' ? 1 : Infinity;
+  const showLager = isTrygg && (switchUserFlow === 'A' || switchUserFlow === 'D');
+  const showLagerColumn = isTrygg && (switchUserFlow === 'B' || switchUserFlow === 'C' || switchUserFlow === 'X');
+  const lagerTagsPerItem = showLagerColumn ? 1 : Infinity;
+  // X shows the warehouse name only, the same name as in the drawer table; no quantity.
+  const lagerNameOnly = switchUserFlow === 'X';
+  // Where the column is titled "Location" (Proto B) the tag is the shelf number at that location.
+  const lagerShelf = switchUserFlow === 'B';
   const minListWidth = showLagerColumn ? 940 : 720;
-  const lagerChip = (l: { lager: number; qty: number }) => (
-    <span key={`lager-${l.lager}`} style={{ ...chip, color: '#22222c', background: '#ffffff', border: '1px solid #c4c4c9' }}>{t('warehouse')} {l.lager}: {l.qty}</span>
+  const lagerChip = (l: { lager: number; qty: number }, sku: string) => (
+    <span key={`lager-${l.lager}`} style={{ ...chip, color: '#22222c', background: '#ffffff', border: '1px solid #c4c4c9' }}>{lagerShelf ? shelfNumber(sku, l.lager) : lagerNameOnly ? warehouseName(l.lager) : `${t('warehouse')} ${l.lager}: ${l.qty}`}</span>
   );
   const [filters, setFilters] = useState({
     multipleLines: true,
@@ -486,7 +491,7 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
                     <th style={th}>{t('supplier')}</th>
                     <th style={{ ...th, ...num }}>{t('price')}</th>
                     <th style={{ ...th, ...num }}>{t('inventory')}</th>
-                    {showLagerColumn && <th style={th}>{t('warehouse')}</th>}
+                    {showLagerColumn && <th style={th}>{switchUserFlow === 'B' ? t('location') : t('warehouse')}</th>}
                     <th style={th}>{t('info')}</th>
                   </tr>
                 </thead>
@@ -558,14 +563,14 @@ export function InventorySearchModal({ onClose, onAddItems, initialSearchValue =
                           {showLagerColumn && (
                             <td style={td}>
                               {item.lager && (
-                                <div className="flex flex-wrap gap-[6px]">{item.lager.slice(0, lagerTagsPerItem).map(lagerChip)}</div>
+                                <div className="flex flex-wrap gap-[6px]">{item.lager.slice(0, lagerTagsPerItem).map(l => lagerChip(l, item.varenr))}</div>
                               )}
                             </td>
                           )}
                           <td style={td}>
                             {(item.info.length > 0 || (showLager && item.lager)) && (
                               <div className="flex flex-wrap gap-[6px]">
-                                {showLager && item.lager?.map(lagerChip)}
+                                {showLager && item.lager?.map(l => lagerChip(l, item.varenr))}
                                 {item.info.map((tag, idx) => (
                                   tag === 'Non-stock' ? (
                                     <span key={idx} style={{ ...chip, color: '#f24c35', border: '1px solid #f24c35' }}>{t('nonStockArticle')}</span>
