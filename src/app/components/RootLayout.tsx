@@ -275,8 +275,16 @@ function RootLayoutInner() {
   // the pending sale first.
   const [showSaleInProgress, setShowSaleInProgress] = useState(false);
   const [showParkedList, setShowParkedList] = useState(false);
-  // Parking concepts B, C and D open parked sales as a centred modal; A keeps the header dropdown.
-  const parkedAsModal = parkingConcept === 'B' || parkingConcept === 'C' || parkingConcept === 'D';
+  // Parking concepts B and C open parked sales as a centred modal; A keeps the header dropdown.
+  const parkedAsModal = parkingConcept === 'B' || parkingConcept === 'C';
+  // D is opened by its sidebar button via ?modal=parked, but shows as a dropdown 4px under that button group.
+  const parkedFromSidebar = parkedAsModal || parkingConcept === 'D';
+  const parkedAnchor = () => {
+    const el = document.querySelector('[data-park-anchor]');
+    if (!el) return undefined;
+    const rect = el.getBoundingClientRect();
+    return { top: rect.bottom + 4, right: window.innerWidth - rect.right };
+  };
   const [pendingRestoreId, setPendingRestoreId] = useState<string | null>(null);
   const handleNewSaleClick = () => {
     if (hasOrderItems) setShowSaleInProgress(true);
@@ -879,13 +887,14 @@ function RootLayoutInner() {
       )}
 
       {/* ── Parked sales list ────────────────────────────────────────────── */}
-      {(parkedAsModal ? isModalOpen('parked') : showParkedList) && parkedSales.length > 0 && (
+      {(parkedFromSidebar ? isModalOpen('parked') : showParkedList) && parkedSales.length > 0 && (
         <ParkedSalesPanel
           variant={parkedAsModal ? 'modal' : 'dropdown'}
           sales={parkedSales}
           currentUser={currentUser}
           onRestore={handleRestoreClick}
-          onClose={() => (parkedAsModal ? closeModal() : setShowParkedList(false))}
+          onClose={() => (parkedFromSidebar ? closeModal() : setShowParkedList(false))}
+          anchor={parkingConcept === 'D' ? parkedAnchor() : undefined}
         />
       )}
 

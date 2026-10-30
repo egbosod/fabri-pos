@@ -831,7 +831,7 @@ export default function SalgPage() {
           <>
             {/* Concept D: one split button. Left parks the sale, right is a cart
                 dropdown button (count + chevron) that opens the parked sales. */}
-            <div className="flex w-full shrink-0 gap-[2px]" data-name="Park split button">
+            <div className="flex w-full shrink-0 gap-[2px]" data-name="Park split button" data-park-anchor>
               <button
                 disabled={!hasOrderItems}
                 onClick={() => { parkSale(); posToast.success(t('saleParkedToast')); }}

@@ -12,6 +12,8 @@ interface ParkedSalesPanelProps {
   onClose: () => void;
   /** 'dropdown' hangs under the header toolbar; 'modal' is centred with a title (Prototype B). */
   variant?: 'dropdown' | 'modal';
+  /** Dropdown only: pin the panel to a trigger (top edge and right inset in px) instead of the header spot. */
+  anchor?: { top: number; right: number };
 }
 
 const money = (n: number) =>
@@ -29,7 +31,7 @@ const COLS = '48px 1.3fr 1.5fr 0.8fr 1fr 0.9fr 48px';
  * Dropdown under the toolbar's park button: every parked sale, pick one and
  * restore it. Mirrors the Fabri list — select with the radio, chevron expands lines.
  */
-export function ParkedSalesPanel({ sales, currentUser, onRestore, onClose, variant = 'dropdown' }: ParkedSalesPanelProps) {
+export function ParkedSalesPanel({ sales, currentUser, onRestore, onClose, variant = 'dropdown', anchor }: ParkedSalesPanelProps) {
   const isModal = variant === 'modal';
   const { t } = useLanguage();
   const [onlyMine, setOnlyMine] = useState(false);
@@ -73,7 +75,10 @@ export function ParkedSalesPanel({ sales, currentUser, onRestore, onClose, varia
             ? 'fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex flex-col bg-card shadow-lg rounded-[var(--radius)] w-[min(784px,calc(100vw-40px))] h-[min(600px,calc(100vh-80px))]'
             : 'fixed right-[10px] top-[104px] z-50 flex flex-col bg-card shadow-lg rounded-[3px] w-[min(784px,calc(100vw-20px))] h-[min(520px,calc(100vh-124px))]'
         }
-        style={{ fontFamily: "'Montserrat', sans-serif" }}
+        style={{
+          fontFamily: "'Montserrat', sans-serif",
+          ...(anchor && !isModal ? { top: anchor.top, right: anchor.right, height: `min(520px, calc(100vh - ${anchor.top + 10}px))` } : {}),
+        }}
       >
         {isModal && (
           <div className="flex items-center gap-[12px] px-[20px] h-[64px] shrink-0 border-b border-border">
