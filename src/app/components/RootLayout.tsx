@@ -817,7 +817,7 @@ function RootLayoutInner() {
           onUserChange={setCurrentUser}
           onUserLogout={showUserLogoutNotification}
           onNewSaleClick={handleNewSaleClick}
-          hideParking={parkedAsModal}
+          hideParking={parkedFromSidebar}
           parkedCount={parkedSales.length}
           canPark={hasOrderItems}
           isParkedListOpen={showParkedList}
