@@ -372,6 +372,7 @@ function ParkedSalesButton({ count, isOpen, onClick }: { count: number; isOpen?:
       aria-expanded={isOpen}
       className={`${hasSales ? 'bg-white cursor-pointer hover:bg-gray-50' : 'bg-[#eae9e9] cursor-default'} box-border content-stretch flex gap-[8px] h-[40px] items-center px-[13px] py-[6px] relative rounded-[5px] shrink-0`}
       data-name="Button"
+      data-park-anchor
     >
       <div aria-hidden="true" className={`absolute border border-solid inset-0 pointer-events-none rounded-[5px] ${isOpen ? 'border-[2px] border-[#0a8cf0]' : 'border-[#d5d5d7]'}`} />
       <span className={hasSales ? 'text-[#090914]' : 'text-[#090914] opacity-50'}><BasketShoppingIcon size={14} /></span>

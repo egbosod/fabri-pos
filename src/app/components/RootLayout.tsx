@@ -894,7 +894,7 @@ function RootLayoutInner() {
           currentUser={currentUser}
           onRestore={handleRestoreClick}
           onClose={() => (parkedFromSidebar ? closeModal() : setShowParkedList(false))}
-          anchor={parkingConcept === 'D' ? parkedAnchor() : undefined}
+          anchor={parkingConcept === 'D' || parkingConcept === 'E' ? parkedAnchor() : undefined}
         />
       )}
 
