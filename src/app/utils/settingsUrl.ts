@@ -29,8 +29,8 @@ export type PriceCheckLockConcept = 'A' | 'B' | 'C';
 //   C = Park top of the sidebar with a Parked sales button directly below it, opens a modal
 //   D = Park top of the sidebar as a split button: Park this sale + a cart dropdown button for parked sales (modal)
 export type ParkingConcept = 'A' | 'B' | 'C' | 'D';
-/** Parking concept paired with a flow (D and X reuse A's). */
-export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'D' || flow === 'X' ? 'A' : flow);
+/** Parking concept paired with a flow (X reuses A's). */
+export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'X' ? 'A' : flow);
 // Layout of the "Pickup order" (Hent ordre for betaling) view. Independent of SwitchUserFlow.
 //   modal = centred modal   fullscreen = fills the whole screen
 export type FetchOrdersLayout = 'modal' | 'fullscreen';
