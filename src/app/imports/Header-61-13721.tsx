@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { ERP_SCENARIOS, lockConceptForFlow, parkingConceptForFlow } from '../utils/settingsUrl';
 import { useCopyShareLink } from '../hooks/useCopyShareLink';
 import { Copy, Check, Settings } from 'lucide-react';
+import { BasketShoppingIcon } from '../components/BasketShoppingIcon';
 
 function EgFabriLogoWhite1() {
   return (
@@ -305,12 +306,13 @@ function TextButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function Button({ onClick, disabled }: { onClick?: () => void; disabled?: boolean }) {
+function Button({ onClick, disabled, separate }: { onClick?: () => void; disabled?: boolean; separate?: boolean }) {
   const { t } = useLanguage();
+  const round = separate ? 'rounded-[5px]' : 'rounded-bl-[5px] rounded-tl-[5px]';
   return (
-    <button onClick={onClick} disabled={disabled} className={`bg-white box-border content-stretch flex ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'} gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative rounded-bl-[5px] rounded-tl-[5px] shrink-0`} data-name="Button">
-      <div aria-hidden="true" className="absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none rounded-bl-[5px] rounded-tl-[5px]" />
-      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">{t('parkSale')}</p>
+    <button onClick={onClick} disabled={disabled} className={`bg-white box-border content-stretch flex ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'} gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative ${round} shrink-0`} data-name="Button">
+      <div aria-hidden="true" className={`absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none ${round}`} />
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">{separate ? t('parkThisSale') : t('parkSale')}</p>
     </button>
   );
 }
@@ -360,17 +362,45 @@ function Button1({ count, isOpen, onClick }: { count: number; isOpen?: boolean; 
   );
 }
 
+function ParkedSalesButton({ count, isOpen, onClick }: { count: number; isOpen?: boolean; onClick?: () => void }) {
+  const { t } = useLanguage();
+  const hasSales = count > 0;
+  return (
+    <button
+      onClick={onClick}
+      disabled={!hasSales}
+      aria-expanded={isOpen}
+      className={`${hasSales ? 'bg-white cursor-pointer hover:bg-gray-50' : 'bg-[#eae9e9] cursor-default'} box-border content-stretch flex gap-[8px] h-[40px] items-center px-[13px] py-[6px] relative rounded-[5px] shrink-0`}
+      data-name="Button"
+    >
+      <div aria-hidden="true" className={`absolute border border-solid inset-0 pointer-events-none rounded-[5px] ${isOpen ? 'border-[2px] border-[#0a8cf0]' : 'border-[#d5d5d7]'}`} />
+      <span className={hasSales ? 'text-[#090914]' : 'text-[#090914] opacity-50'}><BasketShoppingIcon size={14} /></span>
+      <p className={`font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre ${hasSales ? '' : 'opacity-50'}`}>{t('parkedSales')}</p>
+      {hasSales && <Frame145 count={count} />}
+      <IconDown active={hasSales} />
+    </button>
+  );
+}
+
 function TopMenu({ hideParking, onPriceCheckClick, parkedCount, canPark, isParkedListOpen, onParkClick, onParkedListClick }: { hideParking?: boolean; onPriceCheckClick: () => void; parkedCount: number; canPark?: boolean; isParkedListOpen?: boolean; onParkClick?: () => void; onParkedListClick?: () => void }) {
+  const { parkingConcept } = useSettings();
   return (
     <div className="bg-white h-[60px] relative shadow-[2px_2px_4px_0px_rgba(107,107,114,0.06),3px_10px_15px_0px_rgba(107,107,114,0.06)] shrink-0 w-full [[data-fetch-orders-fullscreen]_&]:hidden" data-name="Top menu">
       <div className="flex flex-row items-center overflow-clip rounded-[inherit] size-full">
         <div className="box-border content-stretch flex h-[60px] items-center justify-between px-[20px] py-[8px] relative w-full [[data-previous-purchases-open]_&]:hidden">
           <TextButton onClick={onPriceCheckClick} />
           {!hideParking && (
-            <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="Parker salg knapp">
-              <Button onClick={onParkClick} disabled={!canPark} />
-              <Button1 count={parkedCount} isOpen={isParkedListOpen} onClick={onParkedListClick} />
-            </div>
+            parkingConcept === 'E' ? (
+              <div className="content-stretch flex gap-[10px] items-center relative shrink-0" data-name="Parker salg knapper">
+                <Button separate onClick={onParkClick} disabled={!canPark} />
+                <ParkedSalesButton count={parkedCount} isOpen={isParkedListOpen} onClick={onParkedListClick} />
+              </div>
+            ) : (
+              <div className="content-stretch flex gap-[2px] items-center relative shrink-0" data-name="Parker salg knapp">
+                <Button onClick={onParkClick} disabled={!canPark} />
+                <Button1 count={parkedCount} isOpen={isParkedListOpen} onClick={onParkedListClick} />
+              </div>
+            )
           )}
         </div>
       </div>
