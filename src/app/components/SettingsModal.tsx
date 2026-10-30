@@ -50,6 +50,8 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     parkingA: 'A: Parker i toppmenyen; parkerte salg åpnes i en nedtrekksliste i toppmenyen.',
     parkingB: 'B: Parker øverst i sidemenyen; «Parkerte salg» ligger sammen med hent-handlingene og åpnes i en modal.',
     parkingC: 'C: Parker øverst i sidemenyen med «Parkerte salg» rett under; åpnes i en modal.',
+    parkingE: 'E: Som A i toppmenyen, men som to separate knapper: «Parker dette salget» + «Parkerte salg» (ikon, antall, pil); nedtrekksliste rett under knappene.',
+    parkingD: 'D: Parker øverst i sidemenyen som delt knapp: «Parker dette salget» + en nedtrekksknapp med handlekurv for parkerte salg; åpnes i en modal.',
 
     priceCheckLockHeading: 'Prissjekk – kundelås',
     priceCheckLockA: 'A: Ingen lås. Kunde/prosjekt kan byttes fritt i prissjekk; kun varselet ved «Legg til varer i salg» vises ved avvik.',
@@ -152,6 +154,8 @@ const STRINGS: Record<PanelLang, Record<string, string>> = {
     parkingA: 'A: Park in the header; parked sales open in a header dropdown.',
     parkingB: 'B: Park at the top of the sidebar; "Parked sales" sits with the fetch actions and opens a modal.',
     parkingC: 'C: Park at the top of the sidebar with "Parked sales" directly below it; opens a modal.',
+    parkingE: 'E: Like A in the header, but as two separate buttons: "Park this sale" + "Parked sales" (icon, count, chevron); dropdown directly under the buttons.',
+    parkingD: 'D: Park at the top of the sidebar as a split button: "Park this sale" + a cart dropdown button for parked sales; opens a modal.',
 
     priceCheckLockHeading: 'Price check – customer lock',
     priceCheckLockA: 'A: No lock. Customer/project can be swapped freely in price check; only the "Add to Cart" mismatch warning fires on a difference.',
@@ -679,7 +683,7 @@ export function SettingsModal() {
 
   const customerSearchDescriptions: Record<string, string> = { A: s.customerSearchA, B: s.customerSearchB };
 
-  const parkingDescriptions: Record<string, string> = { A: s.parkingA, B: s.parkingB, C: s.parkingC };
+  const parkingDescriptions: Record<string, string> = { A: s.parkingA, B: s.parkingB, C: s.parkingC, D: s.parkingD, E: s.parkingE };
 
   const priceCheckLockDescriptions: Record<string, string> = {
     A: s.priceCheckLockA,
@@ -1020,12 +1024,12 @@ export function SettingsModal() {
                       background: 'var(--secondary)',
                       borderRadius: 999,
                       padding: 4,
-                      width: 260,
+                      width: 320,
                       flexShrink: 0,
                       position: 'relative',
                     }}
                   >
-                    {(['A', 'B', 'C'] as const).map(concept => (
+                    {(['A', 'B', 'C', 'D', 'E'] as const).map(concept => (
                       <button
                         key={concept}
                         onClick={() => setParkingConcept(concept)}

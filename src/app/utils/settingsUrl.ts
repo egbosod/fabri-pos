@@ -27,9 +27,11 @@ export type PriceCheckLockConcept = 'A' | 'B' | 'C';
 //   A = Park in the header; parked sales in a header dropdown
 //   B = Park top of the sidebar; Parked sales button beside the fetch actions, opens a modal
 //   C = Park top of the sidebar with a Parked sales button directly below it, opens a modal
-export type ParkingConcept = 'A' | 'B' | 'C';
-/** Parking concept paired with a flow (D and X reuse A's). */
-export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'D' || flow === 'X' ? 'A' : flow);
+//   D = Park top of the sidebar as a split button: Park this sale + a cart dropdown button for parked sales (modal)
+//   E = Header like A, but two separate buttons: Park this sale + "Parked sales" (icon, count, chevron); dropdown under the buttons
+export type ParkingConcept = 'A' | 'B' | 'C' | 'D' | 'E';
+/** Parking concept paired with a flow (X gets E: concept D's buttons in A's header spot). */
+export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'X' ? 'E' : flow);
 // Layout of the "Pickup order" (Hent ordre for betaling) view. Independent of SwitchUserFlow.
 //   modal = centred modal   fullscreen = fills the whole screen
 export type FetchOrdersLayout = 'modal' | 'fullscreen';
@@ -164,7 +166,7 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'parkingConcept',
     param: 'parkering',
-    parse: makeEnumParser<ParkingConcept>(['A', 'B', 'C']),
+    parse: makeEnumParser<ParkingConcept>(['A', 'B', 'C', 'D', 'E']),
     serialize: v => v,
   },
   {
