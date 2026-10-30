@@ -27,8 +27,8 @@ export type PriceCheckLockConcept = 'A' | 'B' | 'C';
 //   A = Park in the header; parked sales in a header dropdown
 //   B = Park top of the sidebar; Parked sales button beside the fetch actions, opens a modal
 //   C = Park top of the sidebar with a Parked sales button directly below it, opens a modal
-//   D = Park top of the sidebar as a split button: Park this sale + a cart dropdown button for parked sales (modal)
-//   E = Header like A, but two separate buttons: Park this sale + "Parked sales" (icon, count, chevron); dropdown under the buttons
+//   D = Park top of the sidebar as a split button: Park sale + a cart dropdown button for parked sales (modal)
+//   E = Header like A, but two separate buttons: Park sale + "Parked sales" (icon, count, chevron); dropdown under the buttons
 export type ParkingConcept = 'A' | 'B' | 'C' | 'D' | 'E';
 /** Parking concept paired with a flow (X gets E: concept D's buttons in A's header spot). */
 export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'X' ? 'E' : flow);

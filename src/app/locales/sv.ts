@@ -19,7 +19,6 @@ const sv: Translations = {
   fetchFromHandTerminal: 'Hämta från handterminal',
   fetchOrder: 'Hämta order',
   parkSale: 'Parkera försäljning',
-  parkThisSale: 'Parkera denna försäljning',
   parkedSales: 'Parkerade försäljningar',
 
   // ── Profile menu ───────────────────────────────────────────────────────────
