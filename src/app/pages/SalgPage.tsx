@@ -842,7 +842,7 @@ export default function SalgPage() {
                 }`}
                 style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
               >
-                {t('parkThisSale')}
+                {t('parkSale')}
               </button>
               <button
                 disabled={parkedSales.length === 0}
@@ -877,7 +877,7 @@ export default function SalgPage() {
                 }`}
                 style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
               >
-                {t('parkThisSale')}
+                {t('parkSale')}
               </button>
               {parkingConcept === 'C' && (
                 <button

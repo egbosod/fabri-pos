@@ -22,7 +22,6 @@ const da: Translations = {
   fetchFromHandTerminal: 'Hent fra håndterminal',
   fetchOrder: 'Hent ordre',
   parkSale: 'Parker salg',
-  parkThisSale: 'Parker dette salg',
   parkedSales: 'Parkerede salg',
 
   // ── Profile menu ───────────────────────────────────────────────────────────

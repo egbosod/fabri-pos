@@ -312,7 +312,7 @@ function Button({ onClick, disabled, separate }: { onClick?: () => void; disable
   return (
     <button onClick={onClick} disabled={disabled} className={`bg-white box-border content-stretch flex ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-gray-50'} gap-[8px] h-[40px] items-center overflow-visible px-[13px] py-[6px] relative ${round} shrink-0`} data-name="Button">
       <div aria-hidden="true" className={`absolute border border-[#d5d5d7] border-solid inset-0 pointer-events-none ${round}`} />
-      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">{separate ? t('parkThisSale') : t('parkSale')}</p>
+      <p className="font-['Montserrat',sans-serif] font-semibold leading-[1.75] relative shrink-0 text-[#090914] text-[13px] text-nowrap whitespace-pre">{t('parkSale')}</p>
     </button>
   );
 }
