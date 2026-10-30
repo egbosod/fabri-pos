@@ -275,8 +275,8 @@ function RootLayoutInner() {
   // the pending sale first.
   const [showSaleInProgress, setShowSaleInProgress] = useState(false);
   const [showParkedList, setShowParkedList] = useState(false);
-  // Parking concepts B and C open parked sales as a centred modal; A keeps the header dropdown.
-  const parkedAsModal = parkingConcept === 'B' || parkingConcept === 'C';
+  // Parking concepts B, C and D open parked sales as a centred modal; A keeps the header dropdown.
+  const parkedAsModal = parkingConcept === 'B' || parkingConcept === 'C' || parkingConcept === 'D';
   const [pendingRestoreId, setPendingRestoreId] = useState<string | null>(null);
   const handleNewSaleClick = () => {
     if (hasOrderItems) setShowSaleInProgress(true);

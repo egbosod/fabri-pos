@@ -20,7 +20,7 @@ import { CustomerBadge } from '../components/CustomerBadge';
 import { BasketShoppingIcon } from '../components/BasketShoppingIcon';
 import { CartSidebar, SelectCustomerButton, SidebarButton } from '../components/CartSidebar';
 import { CartColumnHeader } from '../components/CartColumnHeader';
-import { Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User } from 'lucide-react';
+import { ChevronDown, Check, RotateCcw, ShoppingCart, Trash2, Plus, ClipboardList, User } from 'lucide-react';
 import type { CartItem, OrderGroupData, ProductItem, RowState } from '../types/pos';
 import { isFlowA } from '../utils/settingsUrl';
 
@@ -827,6 +827,43 @@ export default function SalgPage() {
         {/* Parking concepts B and C: Park sits top-aligned; the rest of the sidebar
             stays bottom-aligned, so a spacer takes the slack in between.
             C adds the Parked sales button directly below Park. */}
+        {parkingConcept === 'D' && (
+          <>
+            {/* Concept D: one split button. Left parks the sale, right is a cart
+                dropdown button (count + chevron) that opens the parked sales. */}
+            <div className="flex w-full shrink-0 gap-[2px]" data-name="Park split button">
+              <button
+                disabled={!hasOrderItems}
+                onClick={() => { parkSale(); posToast.success(t('saleParkedToast')); }}
+                className={`h-[48px] grow rounded-l-[var(--radius)] font-semibold transition-colors ${
+                  hasOrderItems
+                    ? 'bg-card text-foreground border border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
+                }`}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
+              >
+                {t('parkThisSale')}
+              </button>
+              <button
+                disabled={parkedSales.length === 0}
+                onClick={() => openModal('parked')}
+                aria-label={t('parkedSales')}
+                aria-haspopup="dialog"
+                className={`relative h-[48px] shrink-0 px-[14px] rounded-r-[var(--radius)] font-semibold transition-colors flex items-center gap-[8px] ${
+                  parkedSales.length > 0
+                    ? 'bg-card text-foreground border border-border cursor-pointer hover:border-primary hover:bg-primary/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring'
+                    : 'bg-secondary text-secondary-foreground opacity-60 cursor-not-allowed'
+                }`}
+                style={{ fontFamily: "'Montserrat', sans-serif", fontSize: 'var(--text-lg)' }}
+              >
+                <BasketShoppingIcon size={18} />
+                {parkedSales.length > 0 && <span>{parkedSales.length}</span>}
+                <ChevronDown size={16} />
+              </button>
+            </div>
+            <div className="grow w-full" aria-hidden="true" />
+          </>
+        )}
         {(parkingConcept === 'B' || parkingConcept === 'C') && (
           <>
             <div className="flex flex-col gap-[10px] w-full shrink-0">

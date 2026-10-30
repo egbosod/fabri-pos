@@ -27,7 +27,8 @@ export type PriceCheckLockConcept = 'A' | 'B' | 'C';
 //   A = Park in the header; parked sales in a header dropdown
 //   B = Park top of the sidebar; Parked sales button beside the fetch actions, opens a modal
 //   C = Park top of the sidebar with a Parked sales button directly below it, opens a modal
-export type ParkingConcept = 'A' | 'B' | 'C';
+//   D = Park top of the sidebar as a split button: Park this sale + a cart dropdown button for parked sales (modal)
+export type ParkingConcept = 'A' | 'B' | 'C' | 'D';
 /** Parking concept paired with a flow (D and X reuse A's). */
 export const parkingConceptForFlow = (flow: SwitchUserFlow): ParkingConcept => (flow === 'D' || flow === 'X' ? 'A' : flow);
 // Layout of the "Pickup order" (Hent ordre for betaling) view. Independent of SwitchUserFlow.
@@ -164,7 +165,7 @@ const SHARED_SETTINGS: AnySettingSpec[] = [
   {
     key: 'parkingConcept',
     param: 'parkering',
-    parse: makeEnumParser<ParkingConcept>(['A', 'B', 'C']),
+    parse: makeEnumParser<ParkingConcept>(['A', 'B', 'C', 'D']),
     serialize: v => v,
   },
   {
